@@ -29,7 +29,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://renyixiong-ai.github.io/2024/01/22/diffusion_process/process.png">
 <meta property="article:published_time" content="2024-01-22T04:00:00.000Z">
-<meta property="article:modified_time" content="2024-01-23T07:49:32.324Z">
+<meta property="article:modified_time" content="2024-02-02T14:48:47.233Z">
 <meta property="article:author" content="Ren Yixiong">
 <meta property="article:tag" content="Nonequilibrium Thermodynamics">
 <meta property="article:tag" content="Unsupervised Learning">
@@ -218,7 +218,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-01-23 15:49:32" itemprop="dateModified" datetime="2024-01-23T15:49:32+08:00">2024-01-23</time>
+                <time title="修改时间：2024-02-02 22:48:47" itemprop="dateModified" datetime="2024-02-02T22:48:47+08:00">2024-02-02</time>
               </span>
 
           
@@ -234,14 +234,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.6k</span>
+              <span>4.6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>8 分钟</span>
             </span>
 
         </div>
@@ -277,11 +277,27 @@ p(x^{(0)})&=\int \mathrm{d}x^{(1\cdots T)}p(x^{(0\cdots T)})\frac{q(x^{(1\cdots 
 &=\int \mathrm{d}x^{(1\cdots T)}q(x^{(1\cdots T)}|x^{(0)})p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})} \\
 \end{align}</script><h1 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h1><p>目标是为了最小化模型似然估计。</p>
 <script type="math/tex; mode=display">
-\begin{align*}
+\begin{align}
 L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
 &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln \left( \int \mathrm{d}x^{(1\cdots T)}q(x^{(1\cdots T)}|x^{(0)})p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right) \\
 &\geq \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)})\ln \left( p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right) \\
-\end{align*}</script>
+&= \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)})\ln  p(x^{(T)}) + \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \sum_{t=T}^{1}\ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)\\
+&= \int \mathrm{d}x^{(T)}q(x^{(T)})\ln  \pi(x^{(T)}) + \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \sum_{t=T}^{1}\ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)\\
+&= \int \mathrm{d}x^{(T)}q(x^{(T)})\ln  \pi(x^{(T)}) + \sum_{t=1}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)\\
+&= \sum_{t=1}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)-H_p (x^{T})\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)-H_p (x^{T})+\int \mathrm{d}x^{(0,1)}q(x^{(0, 1)}) \ln\left( \frac{p(x^{(0)}|x^{(1)})}{q(x^{(1)}|x^{(0)})}\right)\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)-H_p (x^{T})+\int \mathrm{d}x^{(0,1)}q(x^{(0, 1)}) \ln\left( \frac{\pi(x^{(0)})}{\pi(x^{(1)})}\right)\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)-H_p (x^{T})\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)}, x^{(0)})}\right)-H_p (x^{T})\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}  \frac{q(x^{(t-1)}|x^{(0)})}{q(x^{(t)}|x^{(0)})}  \right)-H_p (x^{T})\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}\right)+\sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln \left( \frac{q(x^{(t-1)}|x^{(0)})}{q(x^{(t)}|x^{(0)})}\right) -H_p (x^{T})\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}\right)+\sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)})  \left( \ln q(x^{(t-1)}|x^{(0)})-\ln{q(x^{(t)}|x^{(0)})}\right) -H_p (x^{T})\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}\right)+\sum_{t=2}^{T}  \left( H_q(x^{(t)}|x^{(0)})-H_q(x^{(t-1)}|x^{(0)})\right) -H_p (x^{T})\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}\right)+  H_q(x^{(T)}|x^{(0)})-H_q(x^{(1)}|x^{(0)})-H_p (x^{T})\\
+&= -\sum_{t=2}^{T} \int \mathrm{d}x^{(0, t)}q(x^{(0, t)}) \text{D}_{KL}\left( {q(x^{(t-1)}|x^{(t)}, x^{(0)})}||{p(x^{(t-1)}|x^{(t)})} \right)+  H_q(x^{(T)}|x^{(0)})-H_q(x^{(1)}|x^{(0)})-H_p (x^{T})\\
+&=K
+\end{align}</script><p>其中公式（16）定义$H_p (x^{T}) = -\int \mathrm{d}x^{(T)}q(x^{(T)})\ln \pi(x^{(T)})$；公式（20）因为这个过程是马尔科夫过程，只与前一个状态有关；公式（21）为贝叶斯公式。经过以上的变换，成功找到下界，任务目标变为:</p>
+<script type="math/tex; mode=display">\hat p(x^{(t-1)}|x^{(t)})=\text{argmax}_{p(x^{(t-1)}|x^{(t)})}K~</script>
     </div>
 
     
@@ -424,12 +440,12 @@ L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">21k</span>
+    <span title="站点总字数">24k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">38 分钟</span>
+    <span title="站点阅读时长">43 分钟</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>

@@ -185,11 +185,27 @@ p(x^{(0)})&=\int \mathrm{d}x^{(1\cdots T)}p(x^{(0\cdots T)})\frac{q(x^{(1\cdots 
 &=\int \mathrm{d}x^{(1\cdots T)}q(x^{(1\cdots T)}|x^{(0)})p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})} \\
 \end{align}</script><h1 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h1><p>目标是为了最小化模型似然估计。</p>
 <script type="math/tex; mode=display">
-\begin{align*}
+\begin{align}
 L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
 &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln \left( \int \mathrm{d}x^{(1\cdots T)}q(x^{(1\cdots T)}|x^{(0)})p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right) \\
 &\geq \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)})\ln \left( p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right) \\
-\end{align*}</script>]]></content>
+&= \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)})\ln  p(x^{(T)}) + \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \sum_{t=T}^{1}\ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)\\
+&= \int \mathrm{d}x^{(T)}q(x^{(T)})\ln  \pi(x^{(T)}) + \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \sum_{t=T}^{1}\ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)\\
+&= \int \mathrm{d}x^{(T)}q(x^{(T)})\ln  \pi(x^{(T)}) + \sum_{t=1}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)\\
+&= \sum_{t=1}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)-H_p (x^{T})\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)-H_p (x^{T})+\int \mathrm{d}x^{(0,1)}q(x^{(0, 1)}) \ln\left( \frac{p(x^{(0)}|x^{(1)})}{q(x^{(1)}|x^{(0)})}\right)\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)-H_p (x^{T})+\int \mathrm{d}x^{(0,1)}q(x^{(0, 1)}) \ln\left( \frac{\pi(x^{(0)})}{\pi(x^{(1)})}\right)\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)-H_p (x^{T})\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)}, x^{(0)})}\right)-H_p (x^{T})\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}  \frac{q(x^{(t-1)}|x^{(0)})}{q(x^{(t)}|x^{(0)})}  \right)-H_p (x^{T})\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}\right)+\sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln \left( \frac{q(x^{(t-1)}|x^{(0)})}{q(x^{(t)}|x^{(0)})}\right) -H_p (x^{T})\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}\right)+\sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)})  \left( \ln q(x^{(t-1)}|x^{(0)})-\ln{q(x^{(t)}|x^{(0)})}\right) -H_p (x^{T})\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}\right)+\sum_{t=2}^{T}  \left( H_q(x^{(t)}|x^{(0)})-H_q(x^{(t-1)}|x^{(0)})\right) -H_p (x^{T})\\
+&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}\right)+  H_q(x^{(T)}|x^{(0)})-H_q(x^{(1)}|x^{(0)})-H_p (x^{T})\\
+&= -\sum_{t=2}^{T} \int \mathrm{d}x^{(0, t)}q(x^{(0, t)}) \text{D}_{KL}\left( {q(x^{(t-1)}|x^{(t)}, x^{(0)})}||{p(x^{(t-1)}|x^{(t)})} \right)+  H_q(x^{(T)}|x^{(0)})-H_q(x^{(1)}|x^{(0)})-H_p (x^{T})\\
+&=K
+\end{align}</script><p>其中公式（16）定义$H_p (x^{T}) = -\int \mathrm{d}x^{(T)}q(x^{(T)})\ln \pi(x^{(T)})$；公式（20）因为这个过程是马尔科夫过程，只与前一个状态有关；公式（21）为贝叶斯公式。经过以上的变换，成功找到下界，任务目标变为:</p>
+<script type="math/tex; mode=display">\hat p(x^{(t-1)}|x^{(t)})=\text{argmax}_{p(x^{(t-1)}|x^{(t)})}K~</script>]]></content>
       <tags>
         <tag>Nonequilibrium Thermodynamics</tag>
         <tag>Unsupervised Learning</tag>
