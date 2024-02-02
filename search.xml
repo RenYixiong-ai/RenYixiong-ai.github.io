@@ -1,87 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Deep Unsupervised Learning using Nonequilibrium Thermodynamics</title>
-    <url>/2024/01/22/diffusion_process/</url>
-    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>本篇文章来自于：<br>Deep Unsupervised Learning using Nonequilibrium Thermodynamics，arXiv:1503.03585v8 [cs.LG] 18 Nov 2015</p>
-<p>该篇文章为首次提出Deffusion Model的概念。算法的主要目标是构造一个前向传播、扩散的过程，通过这个过程可以将复杂的分布逐渐变为一个简单的分布。</p>
-<p><img src="/2024/01/22/diffusion_process/process.png" alt="生成图片"></p>
-<span id="more"></span>
-<p>其中第一行是 swiss roll 数据，通过扩散过程，从左到右，逐渐变为一个高斯分布。第二行是训练的模型，从右到左逐步从高斯分布生成原始的数据分布。</p>
-<h1 id="Forward-Trajectory"><a href="#Forward-Trajectory" class="headerlink" title="Forward Trajectory"></a>Forward Trajectory</h1><p>数据分布为$q(x^{(0)})$，最终分布$\pi (y)$，其中利用马尔科夫扩散核$T_{\pi}(y|y’;\beta)$，$\beta$为扩散率。</p>
-<script type="math/tex; mode=display">
-\begin{align}
-\pi(y) &= \int \mathrm{d}y' T_{\pi}(y|y';\beta)\pi (y') \\
-q(x^{(t)}|x^{(t-1)}) &= T_{\pi}(x^{(t)}|x^{(t-1)};\beta_t) \\
-q(x^{(0\dots T)}) &= q(x^{(0)})\prod_{t=1}^{T} q(x^{(t)}|x^{(t-1)}) \\
-\end{align}</script><h1 id="Reverse-Trajectory"><a href="#Reverse-Trajectory" class="headerlink" title="Reverse Trajectory"></a>Reverse Trajectory</h1><p>$p$为逆向使用数据的过程。</p>
-<script type="math/tex; mode=display">
-\begin{align}
-p(x^{(T)}) &= \pi(x^{(T)}) \\
-p(x^{(0\dots T)}) &= p(x^{(T)})\prod_{t=T}^{1} p(x^{(t-1)}|x^{(t)}) \\
-\end{align}</script><h1 id="Model-Probability"><a href="#Model-Probability" class="headerlink" title="Model Probability"></a>Model Probability</h1><script type="math/tex; mode=display">\begin{equation} p(x^{(0)})=\int \mathrm{d}x^{(1\cdots T)}p(x^{(0\cdots T)})\end{equation}</script><p>但是，事实上逆向轨迹几乎不可能被追踪，因此需要借助前向过程。</p>
-<script type="math/tex; mode=display">
-\begin{align}
-p(x^{(0)})&=\int \mathrm{d}x^{(1\cdots T)}p(x^{(0\cdots T)})\frac{q(x^{(1\cdots T)|x^{(0)}})}{q(x^{(1\cdots T)|x^{(0)}})} \\
-&=\int \mathrm{d}x^{(1\cdots T)}q(x^{(1\cdots T)}|x^{(0)})\frac{p(x^{(0\cdots T)})}{q(x^{(1\cdots T)}|x^{(0)})} \\
-&=\int \mathrm{d}x^{(1\cdots T)}q(x^{(1\cdots T)}|x^{(0)})p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})} \\
-\end{align}</script><h1 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h1><p>目标是为了最小化模型似然估计。</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
-&= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln \left( \int \mathrm{d}x^{(1\cdots T)}q(x^{(1\cdots T)}|x^{(0)})p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right) \\
-&\geq \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)})\ln \left( p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right) \\
-\end{align*}</script>]]></content>
-      <tags>
-        <tag>Nonequilibrium Thermodynamics</tag>
-        <tag>Unsupervised Learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Git Note</title>
-    <url>/2022/09/16/git/</url>
-    <content><![CDATA[<h1 id="Git简单教程"><a href="#Git简单教程" class="headerlink" title="Git简单教程"></a>Git简单教程</h1><p>工作逻辑图：<br><img src="/2022/09/16/git/workflow.png" alt="逻辑图"></p>
-<p>每次更改完文件，需要将文件先增加进版本库，然后再提交改变确认本次所有修改完成，并备注本次内容。</p>
-<p>reference:</p>
-<ul>
-<li><a href="https://mofanpy.com/tutorials/others/git/">莫凡PYTHON</a></li>
-</ul>
-<span id="more"></span>
-<h1 id="基础操作"><a href="#基础操作" class="headerlink" title="基础操作"></a>基础操作</h1><p>创建一个新的仓库</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
-<p>查看当前版本库状态</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git status</span><br></pre></td></tr></table></figure>
-<p>增加进版本库</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git add .       #添加所有更改进版本库</span><br><span class="line">git add 文件     #添加具体文件进版本库</span><br></pre></td></tr></table></figure>
-<p>提交改变</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git commit -m &quot;这次提交的备注&quot;</span><br></pre></td></tr></table></figure>
-<h1 id="回到从前"><a href="#回到从前" class="headerlink" title="回到从前"></a>回到从前</h1><h2 id="查看历史版本"><a href="#查看历史版本" class="headerlink" title="查看历史版本"></a>查看历史版本</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git lod --oneline</span><br></pre></td></tr></table></figure>
-<h2 id="回到过去的版本"><a href="#回到过去的版本" class="headerlink" title="回到过去的版本"></a>回到过去的版本</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 不管我们之前有没有做了一些 add 工作, 这一步让我们回到 上一次的 commit</span><br><span class="line">$ git reset --hard HEAD    </span><br><span class="line"># 输出</span><br><span class="line">HEAD is now at 904e1ba change 2</span><br><span class="line">-----------------------</span><br><span class="line"># 看看所有的log</span><br><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br><span class="line">-----------------------</span><br><span class="line"># 回到 c6762a1 change 1</span><br><span class="line"># 方式1: &quot;HEAD^&quot;</span><br><span class="line">$ git reset --hard HEAD^  </span><br><span class="line"></span><br><span class="line"># 方式2: &quot;commit id&quot;</span><br><span class="line">$ git reset --hard c6762a1</span><br><span class="line">-----------------------</span><br><span class="line"># 看看现在的 log</span><br><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br></pre></td></tr></table></figure>
-<h2 id="在回到历史版本之后再回来"><a href="#在回到历史版本之后再回来" class="headerlink" title="在回到历史版本之后再回来"></a>在回到历史版本之后再回来</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#第一步</span><br><span class="line">$ git reflog</span><br><span class="line"># 输出</span><br><span class="line">c6762a1 HEAD@&#123;0&#125;: reset: moving to c6762a1</span><br><span class="line">904e1ba HEAD@&#123;1&#125;: commit (amend): change 2</span><br><span class="line">0107760 HEAD@&#123;2&#125;: commit: change 2</span><br><span class="line">c6762a1 HEAD@&#123;3&#125;: commit: change 1</span><br><span class="line">13be9a7 HEAD@&#123;4&#125;: commit (initial): create 1.py</span><br><span class="line"></span><br><span class="line">#第二步</span><br><span class="line">$ git reset --hard 904e1ba</span><br><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br></pre></td></tr></table></figure>
-<h2 id="单个文件回到过去"><a href="#单个文件回到过去" class="headerlink" title="单个文件回到过去"></a>单个文件回到过去</h2><p>利用 <code>checkout</code> 将过去版本的文件覆盖现在同名文件，然后作为当前版本的一个新的更新，更新进版本库。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br><span class="line">---------------------</span><br><span class="line">$ git checkout c6762a1 -- 1.py  #checkout + id + -- + 文件名字</span><br></pre></td></tr></table></figure>
-<p>然后增加进版本库并提交改变</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ git add 1.py</span><br><span class="line">$ git commit -m &quot;back to change 1 and add comment for 1.py&quot;</span><br><span class="line">$ git log --oneline</span><br><span class="line"></span><br><span class="line"># 输出</span><br><span class="line">47f167e back to change 1 and add comment for 1.py</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br></pre></td></tr></table></figure>
-<h1 id="推送到远程仓库"><a href="#推送到远程仓库" class="headerlink" title="推送到远程仓库"></a>推送到远程仓库</h1><p>创建远程仓库、设置本地文件帐号密码。首先在 github 创建新的仓库（不要添加README文件，以及创建主分支），之后按照 github 上提示，将本地文件推送到新的仓库。</p>
-<p>将主分支推送到远程仓库（老项目为master, 新项目为main）<br><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure></p>
-<p>如果远程库和本地库不相同，想要强行覆盖远程库<br>“””<br>    git push -u origin master -f<br>“””</p>
-<h1 id="拉取远程仓库内容"><a href="#拉取远程仓库内容" class="headerlink" title="拉取远程仓库内容"></a>拉取远程仓库内容</h1><p>本地文件在拉取远程仓库前没有修改：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git pull origin master</span><br></pre></td></tr></table></figure>
-<h2 id="本地文件发生改动"><a href="#本地文件发生改动" class="headerlink" title="本地文件发生改动"></a>本地文件发生改动</h2><p>首先获取远程仓库的文件：<br><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git fetch --all</span><br></pre></td></tr></table></figure></p>
-<p>接下来有两个选择：</p>
-<ul>
-<li>直接覆盖本地文件</li>
-<li>将远程仓库文件作为本地的一个分支</li>
-</ul>
-<p>直接覆盖方案：<br><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git reset --hard origin/master</span><br></pre></td></tr></table></figure></p>
-<p>创建其它分支方案：<br><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git reset --hard origin/&lt;branch_name&gt;</span><br></pre></td></tr></table></figure></p>
-<h1 id="将远程内容部署到本地"><a href="#将远程内容部署到本地" class="headerlink" title="将远程内容部署到本地"></a>将远程内容部署到本地</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://.....</span><br></pre></td></tr></table></figure>
-]]></content>
-      <tags>
-        <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Score matching model</title>
     <url>/2024/01/19/Score_matching_model/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这篇文章主要描述基于得分匹配（Score matching model）的想法，以及之后主要的修改思路。这种思路是生成模型的一种，与GAN、normal-flow等模型具备同样的功能。</p>
@@ -237,6 +156,87 @@ Data Distribution.
         <tag>Implicit Score Matching</tag>
         <tag>Denoising Score Matching</tag>
         <tag>Sliced Score Matching</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Deep Unsupervised Learning using Nonequilibrium Thermodynamics</title>
+    <url>/2024/01/22/diffusion_process/</url>
+    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>本篇文章来自于：<br>Deep Unsupervised Learning using Nonequilibrium Thermodynamics，arXiv:1503.03585v8 [cs.LG] 18 Nov 2015</p>
+<p>该篇文章为首次提出Deffusion Model的概念。算法的主要目标是构造一个前向传播、扩散的过程，通过这个过程可以将复杂的分布逐渐变为一个简单的分布。</p>
+<p><img src="/2024/01/22/diffusion_process/process.png" alt="生成图片"></p>
+<span id="more"></span>
+<p>其中第一行是 swiss roll 数据，通过扩散过程，从左到右，逐渐变为一个高斯分布。第二行是训练的模型，从右到左逐步从高斯分布生成原始的数据分布。</p>
+<h1 id="Forward-Trajectory"><a href="#Forward-Trajectory" class="headerlink" title="Forward Trajectory"></a>Forward Trajectory</h1><p>数据分布为$q(x^{(0)})$，最终分布$\pi (y)$，其中利用马尔科夫扩散核$T_{\pi}(y|y’;\beta)$，$\beta$为扩散率。</p>
+<script type="math/tex; mode=display">
+\begin{align}
+\pi(y) &= \int \mathrm{d}y' T_{\pi}(y|y';\beta)\pi (y') \\
+q(x^{(t)}|x^{(t-1)}) &= T_{\pi}(x^{(t)}|x^{(t-1)};\beta_t) \\
+q(x^{(0\dots T)}) &= q(x^{(0)})\prod_{t=1}^{T} q(x^{(t)}|x^{(t-1)}) \\
+\end{align}</script><h1 id="Reverse-Trajectory"><a href="#Reverse-Trajectory" class="headerlink" title="Reverse Trajectory"></a>Reverse Trajectory</h1><p>$p$为逆向使用数据的过程。</p>
+<script type="math/tex; mode=display">
+\begin{align}
+p(x^{(T)}) &= \pi(x^{(T)}) \\
+p(x^{(0\dots T)}) &= p(x^{(T)})\prod_{t=T}^{1} p(x^{(t-1)}|x^{(t)}) \\
+\end{align}</script><h1 id="Model-Probability"><a href="#Model-Probability" class="headerlink" title="Model Probability"></a>Model Probability</h1><script type="math/tex; mode=display">\begin{equation} p(x^{(0)})=\int \mathrm{d}x^{(1\cdots T)}p(x^{(0\cdots T)})\end{equation}</script><p>但是，事实上逆向轨迹几乎不可能被追踪，因此需要借助前向过程。</p>
+<script type="math/tex; mode=display">
+\begin{align}
+p(x^{(0)})&=\int \mathrm{d}x^{(1\cdots T)}p(x^{(0\cdots T)})\frac{q(x^{(1\cdots T)|x^{(0)}})}{q(x^{(1\cdots T)|x^{(0)}})} \\
+&=\int \mathrm{d}x^{(1\cdots T)}q(x^{(1\cdots T)}|x^{(0)})\frac{p(x^{(0\cdots T)})}{q(x^{(1\cdots T)}|x^{(0)})} \\
+&=\int \mathrm{d}x^{(1\cdots T)}q(x^{(1\cdots T)}|x^{(0)})p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})} \\
+\end{align}</script><h1 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h1><p>目标是为了最小化模型似然估计。</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
+&= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln \left( \int \mathrm{d}x^{(1\cdots T)}q(x^{(1\cdots T)}|x^{(0)})p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right) \\
+&\geq \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)})\ln \left( p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right) \\
+\end{align*}</script>]]></content>
+      <tags>
+        <tag>Nonequilibrium Thermodynamics</tag>
+        <tag>Unsupervised Learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Git Note</title>
+    <url>/2022/09/16/git/</url>
+    <content><![CDATA[<h1 id="Git简单教程"><a href="#Git简单教程" class="headerlink" title="Git简单教程"></a>Git简单教程</h1><p>工作逻辑图：<br><img src="/2022/09/16/git/workflow.png" alt="逻辑图"></p>
+<p>每次更改完文件，需要将文件先增加进版本库，然后再提交改变确认本次所有修改完成，并备注本次内容。</p>
+<p>reference:</p>
+<ul>
+<li><a href="https://mofanpy.com/tutorials/others/git/">莫凡PYTHON</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="基础操作"><a href="#基础操作" class="headerlink" title="基础操作"></a>基础操作</h1><p>创建一个新的仓库</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+<p>查看当前版本库状态</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git status</span><br></pre></td></tr></table></figure>
+<p>增加进版本库</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git add .       #添加所有更改进版本库</span><br><span class="line">git add 文件     #添加具体文件进版本库</span><br></pre></td></tr></table></figure>
+<p>提交改变</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git commit -m &quot;这次提交的备注&quot;</span><br></pre></td></tr></table></figure>
+<h1 id="回到从前"><a href="#回到从前" class="headerlink" title="回到从前"></a>回到从前</h1><h2 id="查看历史版本"><a href="#查看历史版本" class="headerlink" title="查看历史版本"></a>查看历史版本</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git lod --oneline</span><br></pre></td></tr></table></figure>
+<h2 id="回到过去的版本"><a href="#回到过去的版本" class="headerlink" title="回到过去的版本"></a>回到过去的版本</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 不管我们之前有没有做了一些 add 工作, 这一步让我们回到 上一次的 commit</span><br><span class="line">$ git reset --hard HEAD    </span><br><span class="line"># 输出</span><br><span class="line">HEAD is now at 904e1ba change 2</span><br><span class="line">-----------------------</span><br><span class="line"># 看看所有的log</span><br><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br><span class="line">-----------------------</span><br><span class="line"># 回到 c6762a1 change 1</span><br><span class="line"># 方式1: &quot;HEAD^&quot;</span><br><span class="line">$ git reset --hard HEAD^  </span><br><span class="line"></span><br><span class="line"># 方式2: &quot;commit id&quot;</span><br><span class="line">$ git reset --hard c6762a1</span><br><span class="line">-----------------------</span><br><span class="line"># 看看现在的 log</span><br><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br></pre></td></tr></table></figure>
+<h2 id="在回到历史版本之后再回来"><a href="#在回到历史版本之后再回来" class="headerlink" title="在回到历史版本之后再回来"></a>在回到历史版本之后再回来</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#第一步</span><br><span class="line">$ git reflog</span><br><span class="line"># 输出</span><br><span class="line">c6762a1 HEAD@&#123;0&#125;: reset: moving to c6762a1</span><br><span class="line">904e1ba HEAD@&#123;1&#125;: commit (amend): change 2</span><br><span class="line">0107760 HEAD@&#123;2&#125;: commit: change 2</span><br><span class="line">c6762a1 HEAD@&#123;3&#125;: commit: change 1</span><br><span class="line">13be9a7 HEAD@&#123;4&#125;: commit (initial): create 1.py</span><br><span class="line"></span><br><span class="line">#第二步</span><br><span class="line">$ git reset --hard 904e1ba</span><br><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br></pre></td></tr></table></figure>
+<h2 id="单个文件回到过去"><a href="#单个文件回到过去" class="headerlink" title="单个文件回到过去"></a>单个文件回到过去</h2><p>利用 <code>checkout</code> 将过去版本的文件覆盖现在同名文件，然后作为当前版本的一个新的更新，更新进版本库。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br><span class="line">---------------------</span><br><span class="line">$ git checkout c6762a1 -- 1.py  #checkout + id + -- + 文件名字</span><br></pre></td></tr></table></figure>
+<p>然后增加进版本库并提交改变</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ git add 1.py</span><br><span class="line">$ git commit -m &quot;back to change 1 and add comment for 1.py&quot;</span><br><span class="line">$ git log --oneline</span><br><span class="line"></span><br><span class="line"># 输出</span><br><span class="line">47f167e back to change 1 and add comment for 1.py</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br></pre></td></tr></table></figure>
+<h1 id="推送到远程仓库"><a href="#推送到远程仓库" class="headerlink" title="推送到远程仓库"></a>推送到远程仓库</h1><p>创建远程仓库、设置本地文件帐号密码。首先在 github 创建新的仓库（不要添加README文件，以及创建主分支），之后按照 github 上提示，将本地文件推送到新的仓库。</p>
+<p>将主分支推送到远程仓库（老项目为master, 新项目为main）<br><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure></p>
+<p>如果远程库和本地库不相同，想要强行覆盖远程库<br>“””<br>    git push -u origin master -f<br>“””</p>
+<h1 id="拉取远程仓库内容"><a href="#拉取远程仓库内容" class="headerlink" title="拉取远程仓库内容"></a>拉取远程仓库内容</h1><p>本地文件在拉取远程仓库前没有修改：</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git pull origin master</span><br></pre></td></tr></table></figure>
+<h2 id="本地文件发生改动"><a href="#本地文件发生改动" class="headerlink" title="本地文件发生改动"></a>本地文件发生改动</h2><p>首先获取远程仓库的文件：<br><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git fetch --all</span><br></pre></td></tr></table></figure></p>
+<p>接下来有两个选择：</p>
+<ul>
+<li>直接覆盖本地文件</li>
+<li>将远程仓库文件作为本地的一个分支</li>
+</ul>
+<p>直接覆盖方案：<br><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git reset --hard origin/master</span><br></pre></td></tr></table></figure></p>
+<p>创建其它分支方案：<br><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git reset --hard origin/&lt;branch_name&gt;</span><br></pre></td></tr></table></figure></p>
+<h1 id="将远程内容部署到本地"><a href="#将远程内容部署到本地" class="headerlink" title="将远程内容部署到本地"></a>将远程内容部署到本地</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://.....</span><br></pre></td></tr></table></figure>
+]]></content>
+      <tags>
+        <tag>Git</tag>
       </tags>
   </entry>
   <entry>
