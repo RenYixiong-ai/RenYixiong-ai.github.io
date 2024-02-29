@@ -20,23 +20,27 @@
     var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":-1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="简介本篇文章来自于：Deep Unsupervised Learning using Nonequilibrium Thermodynamics，arXiv:1503.03585v8 [cs.LG] 18 Nov 2015 该篇文章为首次提出Deffusion Model的概念。算法的主要目标是构造一个前向传播、扩散的过程，通过这个过程可以将复杂的分布逐渐变为一个简单的分布。">
+  <meta name="description" content="简介sora完成了文本生成视频的任务，其中视频的时长与连贯性都有非常惊艳的效果，不仅将视频时长拓展到了60S的水平，而且即使视频中发生物品遮挡，在之后也能成功接上，视频整体非常连贯。 感谢Datawhale开源社区提供相关资源。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Deep Unsupervised Learning using Nonequilibrium Thermodynamics">
-<meta property="og:url" content="https://renyixiong-ai.github.io/2024/01/22/diffusion_process/index.html">
+<meta property="og:title" content="Sora原理分析">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/02/28/sora/index.html">
 <meta property="og:site_name" content="Polar Bear Blacksmith Shop">
-<meta property="og:description" content="简介本篇文章来自于：Deep Unsupervised Learning using Nonequilibrium Thermodynamics，arXiv:1503.03585v8 [cs.LG] 18 Nov 2015 该篇文章为首次提出Deffusion Model的概念。算法的主要目标是构造一个前向传播、扩散的过程，通过这个过程可以将复杂的分布逐渐变为一个简单的分布。">
+<meta property="og:description" content="简介sora完成了文本生成视频的任务，其中视频的时长与连贯性都有非常惊艳的效果，不仅将视频时长拓展到了60S的水平，而且即使视频中发生物品遮挡，在之后也能成功接上，视频整体非常连贯。 感谢Datawhale开源社区提供相关资源。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2024/01/22/diffusion_process/process.png">
-<meta property="article:published_time" content="2024-01-22T04:00:00.000Z">
-<meta property="article:modified_time" content="2024-02-02T14:48:47.233Z">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/02/28/sora/ViT.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/02/28/sora/fig1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/02/28/sora/tuplet.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/02/28/sora/ViViT.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/02/28/sora/diffusion_model.png">
+<meta property="article:published_time" content="2024-02-28T14:15:00.000Z">
+<meta property="article:modified_time" content="2024-02-29T04:02:00.503Z">
 <meta property="article:author" content="Ren Yixiong">
-<meta property="article:tag" content="Nonequilibrium Thermodynamics">
-<meta property="article:tag" content="Unsupervised Learning">
+<meta property="article:tag" content="sora">
+<meta property="article:tag" content="Transform">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/01/22/diffusion_process/process.png">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/02/28/sora/ViT.png">
 
-<link rel="canonical" href="https://renyixiong-ai.github.io/2024/01/22/diffusion_process/">
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/02/28/sora/">
 
 
 <script id="page-configurations">
@@ -49,7 +53,7 @@
   };
 </script>
 
-  <title>Deep Unsupervised Learning using Nonequilibrium Thermodynamics | Polar Bear Blacksmith Shop</title>
+  <title>Sora原理分析 | Polar Bear Blacksmith Shop</title>
   
 
 
@@ -188,7 +192,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/01/22/diffusion_process/">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/02/28/sora/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -201,7 +205,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Deep Unsupervised Learning using Nonequilibrium Thermodynamics
+          Sora原理分析
         </h1>
 
         <div class="post-meta">
@@ -211,15 +215,24 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2024-01-22 12:00:00" itemprop="dateCreated datePublished" datetime="2024-01-22T12:00:00+08:00">2024-01-22</time>
+              <time title="创建时间：2024-02-28 22:15:00" itemprop="dateCreated datePublished" datetime="2024-02-28T22:15:00+08:00">2024-02-28</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-02-02 22:48:47" itemprop="dateModified" datetime="2024-02-02T22:48:47+08:00">2024-02-02</time>
+                <time title="修改时间：2024-02-29 12:02:00" itemprop="dateModified" datetime="2024-02-29T12:02:00+08:00">2024-02-29</time>
               </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+                </span>
+            </span>
 
           
             <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
@@ -234,14 +247,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>4.6k</span>
+              <span>868</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>8 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -253,51 +266,29 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>本篇文章来自于：<br>Deep Unsupervised Learning using Nonequilibrium Thermodynamics，arXiv:1503.03585v8 [cs.LG] 18 Nov 2015</p>
-<p>该篇文章为首次提出Deffusion Model的概念。算法的主要目标是构造一个前向传播、扩散的过程，通过这个过程可以将复杂的分布逐渐变为一个简单的分布。</p>
-<p><img src="/2024/01/22/diffusion_process/process.png" alt="生成图片"></p>
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><a target="_blank" rel="noopener" href="https://openai.com/research/video-generation-models-as-world-simulators">sora</a>完成了文本生成视频的任务，其中视频的时长与连贯性都有非常惊艳的效果，不仅将视频时长拓展到了60S的水平，而且即使视频中发生物品遮挡，在之后也能成功接上，视频整体非常连贯。</p>
+<p>感谢<a target="_blank" rel="noopener" href="https://datawhaler.feishu.cn/wiki/FA8UwCrsNiEO0gkh9Uici8RUn5f">Datawhale开源社区</a>提供相关资源。</p>
 <span id="more"></span>
-<p>其中第一行是 swiss roll 数据，通过扩散过程，从左到右，逐渐变为一个高斯分布。第二行是训练的模型，从右到左逐步从高斯分布生成原始的数据分布。</p>
-<h1 id="Forward-Trajectory"><a href="#Forward-Trajectory" class="headerlink" title="Forward Trajectory"></a>Forward Trajectory</h1><p>数据分布为$q(x^{(0)})$，最终分布$\pi (y)$，其中利用马尔科夫扩散核$T_{\pi}(y|y’;\beta)$，$\beta$为扩散率。</p>
-<script type="math/tex; mode=display">
-\begin{align}
-\pi(y) &= \int \mathrm{d}y' T_{\pi}(y|y';\beta)\pi (y') \\
-q(x^{(t)}|x^{(t-1)}) &= T_{\pi}(x^{(t)}|x^{(t-1)};\beta_t) \\
-q(x^{(0\dots T)}) &= q(x^{(0)})\prod_{t=1}^{T} q(x^{(t)}|x^{(t-1)}) \\
-\end{align}</script><h1 id="Reverse-Trajectory"><a href="#Reverse-Trajectory" class="headerlink" title="Reverse Trajectory"></a>Reverse Trajectory</h1><p>$p$为逆向使用数据的过程。</p>
-<script type="math/tex; mode=display">
-\begin{align}
-p(x^{(T)}) &= \pi(x^{(T)}) \\
-p(x^{(0\dots T)}) &= p(x^{(T)})\prod_{t=T}^{1} p(x^{(t-1)}|x^{(t)}) \\
-\end{align}</script><h1 id="Model-Probability"><a href="#Model-Probability" class="headerlink" title="Model Probability"></a>Model Probability</h1><script type="math/tex; mode=display">\begin{equation} p(x^{(0)})=\int \mathrm{d}x^{(1\cdots T)}p(x^{(0\cdots T)})\end{equation}</script><p>但是，事实上逆向轨迹几乎不可能被追踪，因此需要借助前向过程。</p>
-<script type="math/tex; mode=display">
-\begin{align}
-p(x^{(0)})&=\int \mathrm{d}x^{(1\cdots T)}p(x^{(0\cdots T)})\frac{q(x^{(1\cdots T)|x^{(0)}})}{q(x^{(1\cdots T)|x^{(0)}})} \\
-&=\int \mathrm{d}x^{(1\cdots T)}q(x^{(1\cdots T)}|x^{(0)})\frac{p(x^{(0\cdots T)})}{q(x^{(1\cdots T)}|x^{(0)})} \\
-&=\int \mathrm{d}x^{(1\cdots T)}q(x^{(1\cdots T)}|x^{(0)})p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})} \\
-\end{align}</script><h1 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h1><p>目标是为了最小化模型似然估计。</p>
-<script type="math/tex; mode=display">
-\begin{align}
-L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
-&= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln \left( \int \mathrm{d}x^{(1\cdots T)}q(x^{(1\cdots T)}|x^{(0)})p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right) \\
-&\geq \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)})\ln \left( p(x^{(T)})\prod_{t=T}^{1}\frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right) \\
-&= \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)})\ln  p(x^{(T)}) + \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \sum_{t=T}^{1}\ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)\\
-&= \int \mathrm{d}x^{(T)}q(x^{(T)})\ln  \pi(x^{(T)}) + \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \sum_{t=T}^{1}\ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)\\
-&= \int \mathrm{d}x^{(T)}q(x^{(T)})\ln  \pi(x^{(T)}) + \sum_{t=1}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)\\
-&= \sum_{t=1}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)-H_p (x^{T})\\
-&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)-H_p (x^{T})+\int \mathrm{d}x^{(0,1)}q(x^{(0, 1)}) \ln\left( \frac{p(x^{(0)}|x^{(1)})}{q(x^{(1)}|x^{(0)})}\right)\\
-&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)-H_p (x^{T})+\int \mathrm{d}x^{(0,1)}q(x^{(0, 1)}) \ln\left( \frac{\pi(x^{(0)})}{\pi(x^{(1)})}\right)\\
-&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)})}\right)-H_p (x^{T})\\
-&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t)}|x^{(t-1)}, x^{(0)})}\right)-H_p (x^{T})\\
-&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}  \frac{q(x^{(t-1)}|x^{(0)})}{q(x^{(t)}|x^{(0)})}  \right)-H_p (x^{T})\\
-&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}\right)+\sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln \left( \frac{q(x^{(t-1)}|x^{(0)})}{q(x^{(t)}|x^{(0)})}\right) -H_p (x^{T})\\
-&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}\right)+\sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)})  \left( \ln q(x^{(t-1)}|x^{(0)})-\ln{q(x^{(t)}|x^{(0)})}\right) -H_p (x^{T})\\
-&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}\right)+\sum_{t=2}^{T}  \left( H_q(x^{(t)}|x^{(0)})-H_q(x^{(t-1)}|x^{(0)})\right) -H_p (x^{T})\\
-&= \sum_{t=2}^{T} \int \mathrm{d}x^{(0\cdots T)}q(x^{(0\cdots T)}) \ln\left( \frac{p(x^{(t-1)}|x^{(t)})}{q(x^{(t-1)}|x^{(t)}, x^{(0)})}\right)+  H_q(x^{(T)}|x^{(0)})-H_q(x^{(1)}|x^{(0)})-H_p (x^{T})\\
-&= -\sum_{t=2}^{T} \int \mathrm{d}x^{(0, t)}q(x^{(0, t)}) \text{D}_{KL}\left( {q(x^{(t-1)}|x^{(t)}, x^{(0)})}||{p(x^{(t-1)}|x^{(t)})} \right)+  H_q(x^{(T)}|x^{(0)})-H_q(x^{(1)}|x^{(0)})-H_p (x^{T})\\
-&=K
-\end{align}</script><p>其中公式（16）定义$H_p (x^{T}) = -\int \mathrm{d}x^{(T)}q(x^{(T)})\ln \pi(x^{(T)})$；公式（20）因为这个过程是马尔科夫过程，只与前一个状态有关；公式（21）为贝叶斯公式。经过以上的变换，成功找到下界，任务目标变为:</p>
-<script type="math/tex; mode=display">\hat p(x^{(t-1)}|x^{(t)})=\text{argmax}_{p(x^{(t-1)}|x^{(t)})}K~</script>
+<h1 id="Vision-Transformer"><a href="#Vision-Transformer" class="headerlink" title="Vision Transformer"></a>Vision Transformer</h1><p>基于官网的介绍：</p>
+<blockquote>
+<p>We leverage a transformer architecture that operates on spacetime patches of video and image latent codes.</p>
+</blockquote>
+<p>可见sora的基本架构来源于Transform，这里需要先介绍该领域的经典模型<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2010.11929.pdf">Vision Transformer(ViT)</a>。</p>
+<p>Transform 是广泛应用于 NLP 的架构，会将不同的 token 以序列方式进行处理。在 CV 上，也有很多将 Transform 引入的尝试，ViT 基本将原生的架构引入视觉领域。</p>
+<p><img src="/2024/02/28/sora/ViT.png" alt="ViT"></p>
+<p>首先图片不能直接将像素作为一个基本单位作为一个token，这样输入规模将会过大。需要进行分割，将整张图片进行分割，左下角将整张图片分为9个部分，每个部分作为基本的单位，然后将位置信息直接相加，称为 Patch ，接下来将其线性化，输入到Transform Encoder。</p>
+<h1 id="Video-Vision-Transformer"><a href="#Video-Vision-Transformer" class="headerlink" title="Video Vision Transformer"></a>Video Vision Transformer</h1><blockquote>
+<p>At a high level, we turn videos into patches by first compressing videos into a lower-dimensional latent space, and subsequently decomposing the representation into spacetime patches.</p>
+</blockquote>
+<p>将视频同样进行切块的技术，考虑之前的文章<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2103.15691.pdf">ViViT: A Video Vision Transformer(ViViT)</a></p>
+<p><img src="/2024/02/28/sora/fig1.png" alt="Turning visual data into patches"></p>
+<p>针对于时间部分，同样是划分为小部分块，称为 tuplet。然后以一定序列的方式进行编码，一维化输入到 Transform。</p>
+<p><img src="/2024/02/28/sora/tuplet.png" alt="Tuplet"></p>
+<p>训练过程为：</p>
+<p><img src="/2024/02/28/sora/ViViT.png" alt="ViViT"></p>
+<h1 id="Scaling-transformers-for-video-generation"><a href="#Scaling-transformers-for-video-generation" class="headerlink" title="Scaling transformers for video generation"></a>Scaling transformers for video generation</h1><p>整个训练过称为 diffusion model</p>
+<p><img src="/2024/02/28/sora/diffusion_model.png" alt="diffusion_model"></p>
+
     </div>
 
     
@@ -306,8 +297,8 @@ L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Nonequilibrium-Thermodynamics/" rel="tag"># Nonequilibrium Thermodynamics</a>
-              <a href="/tags/Unsupervised-Learning/" rel="tag"># Unsupervised Learning</a>
+              <a href="/tags/sora/" rel="tag"># sora</a>
+              <a href="/tags/Transform/" rel="tag"># Transform</a>
           </div>
 
         
@@ -316,13 +307,10 @@ L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/01/19/Score_matching_model/" rel="prev" title="Score matching model">
-      <i class="fa fa-chevron-left"></i> Score matching model
+    <a href="/2024/01/28/statistical_physics_CMB/" rel="prev" title="统计物理读书笔记">
+      <i class="fa fa-chevron-left"></i> 统计物理读书笔记
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2024/01/28/statistical_physics_CMB/" rel="next" title="统计物理读书笔记">
-      统计物理读书笔记 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -381,7 +369,7 @@ L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Forward-Trajectory"><span class="nav-number">2.</span> <span class="nav-text">Forward Trajectory</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Reverse-Trajectory"><span class="nav-number">3.</span> <span class="nav-text">Reverse Trajectory</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Model-Probability"><span class="nav-number">4.</span> <span class="nav-text">Model Probability</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%AD%E7%BB%83"><span class="nav-number">5.</span> <span class="nav-text">训练</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Vision-Transformer"><span class="nav-number">2.</span> <span class="nav-text">Vision Transformer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Video-Vision-Transformer"><span class="nav-number">3.</span> <span class="nav-text">Video Vision Transformer</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Scaling-transformers-for-video-generation"><span class="nav-number">4.</span> <span class="nav-text">Scaling transformers for video generation</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

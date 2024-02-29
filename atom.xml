@@ -6,7 +6,7 @@
   <link href="https://renyixiong-ai.github.io/atom.xml" rel="self"/>
   
   <link href="https://renyixiong-ai.github.io/"/>
-  <updated>2024-02-28T06:51:18.040Z</updated>
+  <updated>2024-02-29T04:02:00.503Z</updated>
   <id>https://renyixiong-ai.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Sora原理分析</title>
+    <link href="https://renyixiong-ai.github.io/2024/02/28/sora/"/>
+    <id>https://renyixiong-ai.github.io/2024/02/28/sora/</id>
+    <published>2024-02-28T14:15:00.000Z</published>
+    <updated>2024-02-29T04:02:00.503Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><a href="https://openai.com/research/video-generation-models-as-world-simulators">sora</a>完成了文本生成视频的任务，其中视频的时长与连贯性都有非常惊艳的效果，不仅将视频时长拓展到了60S的水平，而且即使视频中发生物品遮挡，在之后也能成功接上，视频整体非常连贯。</p><p>感谢<a href="https://datawhaler.feishu.cn/wiki/FA8UwCrsNiEO0gkh9Uici8RUn5f">Datawhale开源社区</a>提供相关资源。</p><span id="more"></span><h1 id="Vision-Transformer"><a href="#Vision-Transformer" class="headerlink" title="Vision Transformer"></a>Vision Transformer</h1><p>基于官网的介绍：</p><blockquote><p>We leverage a transformer architecture that operates on spacetime patches of video and image latent codes.</p></blockquote><p>可见sora的基本架构来源于Transform，这里需要先介绍该领域的经典模型<a href="https://arxiv.org/pdf/2010.11929.pdf">Vision Transformer(ViT)</a>。</p><p>Transform 是广泛应用于 NLP 的架构，会将不同的 token 以序列方式进行处理。在 CV 上，也有很多将 Transform 引入的尝试，ViT 基本将原生的架构引入视觉领域。</p><p><img src="/2024/02/28/sora/ViT.png" alt="ViT"></p><p>首先图片不能直接将像素作为一个基本单位作为一个token，这样输入规模将会过大。需要进行分割，将整张图片进行分割，左下角将整张图片分为9个部分，每个部分作为基本的单位，然后将位置信息直接相加，称为 Patch ，接下来将其线性化，输入到Transform Encoder。</p><h1 id="Video-Vision-Transformer"><a href="#Video-Vision-Transformer" class="headerlink" title="Video Vision Transformer"></a>Video Vision Transformer</h1><blockquote><p>At a high level, we turn videos into patches by first compressing videos into a lower-dimensional latent space, and subsequently decomposing the representation into spacetime patches.</p></blockquote><p>将视频同样进行切块的技术，考虑之前的文章<a href="https://arxiv.org/pdf/2103.15691.pdf">ViViT: A Video Vision Transformer(ViViT)</a></p><p><img src="/2024/02/28/sora/fig1.png" alt="Turning visual data into patches"></p><p>针对于时间部分，同样是划分为小部分块，称为 tuplet。然后以一定序列的方式进行编码，一维化输入到 Transform。</p><p><img src="/2024/02/28/sora/tuplet.png" alt="Tuplet"></p><p>训练过程为：</p><p><img src="/2024/02/28/sora/ViViT.png" alt="ViViT"></p><h1 id="Scaling-transformers-for-video-generation"><a href="#Scaling-transformers-for-video-generation" class="headerlink" title="Scaling transformers for video generation"></a>Scaling transformers for video generation</h1><p>整个训练过称为 diffusion model</p><p><img src="/2024/02/28/sora/diffusion_model.png" alt="diffusion_model"></p>]]></content>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h1&gt;&lt;p&gt;&lt;a href=&quot;https://openai.com/research/video-generation-models-as-world-simulators&quot;&gt;sora&lt;/a&gt;完成了文本生成视频的任务，其中视频的时长与连贯性都有非常惊艳的效果，不仅将视频时长拓展到了60S的水平，而且即使视频中发生物品遮挡，在之后也能成功接上，视频整体非常连贯。&lt;/p&gt;
+&lt;p&gt;感谢&lt;a href=&quot;https://datawhaler.feishu.cn/wiki/FA8UwCrsNiEO0gkh9Uici8RUn5f&quot;&gt;Datawhale开源社区&lt;/a&gt;提供相关资源。&lt;/p&gt;</summary>
+    
+    
+    
+    <category term="机器学习" scheme="https://renyixiong-ai.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="sora" scheme="https://renyixiong-ai.github.io/tags/sora/"/>
+    
+    <category term="Transform" scheme="https://renyixiong-ai.github.io/tags/Transform/"/>
+    
+  </entry>
   
   <entry>
     <title>统计物理读书笔记</title>
