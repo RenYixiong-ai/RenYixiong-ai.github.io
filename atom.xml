@@ -6,7 +6,7 @@
   <link href="https://renyixiong-ai.github.io/atom.xml" rel="self"/>
   
   <link href="https://renyixiong-ai.github.io/"/>
-  <updated>2024-02-29T04:02:00.503Z</updated>
+  <updated>2024-02-29T07:41:11.320Z</updated>
   <id>https://renyixiong-ai.github.io/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ViT and ViViT</title>
+    <link href="https://renyixiong-ai.github.io/2024/02/29/ViT_ViViT/"/>
+    <id>https://renyixiong-ai.github.io/2024/02/29/ViT_ViViT/</id>
+    <published>2024-02-29T06:00:00.000Z</published>
+    <updated>2024-02-29T07:41:11.320Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>将 Transformer 架构加入视觉领域，ViT与ViViT是分别是将该架构加入图片分类与视频分类领域，是该方向的两篇代表作。</p><ul><li>ViT: AN IMAGE IS WORTH 16X16 WORDS: TRANSFORMERS FOR IMAGE RECOGNITION AT SCALE</li><li>ViViT: ViViT: A Video Vision Transformer</li></ul><span id="more"></span><h1 id="Vision-Transformer-ViT"><a href="#Vision-Transformer-ViT" class="headerlink" title="Vision Transformer(ViT)"></a>Vision Transformer(ViT)</h1><p>ViT尽可能的遵循原始<a href="https://arxiv.org/abs/1706.03762">Transformer</a>。</p><p><img src="/2024/02/29/ViT_ViViT/ViT.png" alt="ViT structure"></p><p>标准的 Transformer 的输入是一维序列，因此首先需要将二维的图像整形为一维的序列。将其作为整体，称作patch，输入到Transformer进行 embedding。</p><p>位置编码直接相加进path embedding。</p><p>Trandformer Encoder架构为：</p><p><img src="/2024/02/29/ViT_ViViT/transformer_encoder.png" alt="Trandformer Encoder"></p><p>数学公式总结为：</p><script type="math/tex; mode=display">\begin{align}z_0 &= [x_\text{class}; x_p^1 E;x_p^2 E;\cdots ;x_p^N E]+E_\text{pos}\quad E\in \mathcal R^{(p^2\cdot C)\times D},E_{pos}\in \mathcal R^{(N+1)\times D} \\z'_l &= MSA(LN(z_{l-1}))+z_{l-1} \quad l=1\cdots L \\z_l &= MLP(LN(z'_l))+z'_l \quad l=1\cdots L \\y &= LN(z_L^0)\end{align}</script><p>其中$C$是通道数，$D$是样本数，$p^2$是分块之后的数量，MSA是multiheaded selfattention，MLP是多层感知机，LN是 Layernorm，并且$z_0^0=x_\text{class}$</p><h1 id="Video-Vision-Transformer-ViViT"><a href="#Video-Vision-Transformer-ViViT" class="headerlink" title="Video Vision Transformer(ViViT)"></a>Video Vision Transformer(ViViT)</h1><p>基于图像，进一步整合时空的Transformer结构。能够对视频进行有效的处理。</p><p><img src="/2024/02/29/ViT_ViViT/ViViT.png" alt="ViViT"></p><p>除了ViT提出的patch embedding，在处理时空信息上本文提出了Tubelet embedding。</p><p><img src="/2024/02/29/ViT_ViViT/tubelet_embedding.png" alt="Tubelet embedding"></p><p>其在时间信息上同样进行编码，组成一个包含部分时间与部分空间信息的embedding。这样就成功让Transformer可以输入时间与空间信息，接下来需要处理的是patch embedding 与 tubelet embedding 两部分信息如何输入进 transformer。虽然其同为编码信息，但是时间和空间的信息如何有效的耦合就是新的问题。这篇文章提出了四种架构。</p><h2 id="Spation-temporal-attendtion"><a href="#Spation-temporal-attendtion" class="headerlink" title="Spation-temporal attendtion"></a>Spation-temporal attendtion</h2><p>直接认为两者地位等价，作为相同的token进行输入。显然则会导致输入的信息过于庞大，这是最吃资源的一种。</p><h2 id="Factorised-encoder"><a href="#Factorised-encoder" class="headerlink" title="Factorised encoder"></a>Factorised encoder</h2><p><img src="/2024/02/29/ViT_ViViT/factorised_encoder.png" alt="Factorised"></p><p>这种方案包含两层encoder，第一层将在同一个tubelet 附近的 patch进行encoder，然后下一步将其在时间上进行encoder。</p><h2 id="Factorised-self-attention"><a href="#Factorised-self-attention" class="headerlink" title="Factorised self-attention"></a>Factorised self-attention</h2><p><img src="/2024/02/29/ViT_ViViT/Factorised_self-attention.png" alt="Factorised self-attention"></p><p>与第一种方案一样，同样认为等价的地位，但只进行self-attention操作。首先先处理空间，然后是时间。</p><h2 id="Factorised-dot-product-attention"><a href="#Factorised-dot-product-attention" class="headerlink" title="Factorised dot-product attention"></a>Factorised dot-product attention</h2><p><img src="/2024/02/29/ViT_ViViT/Factorised%20dot-product%20attention.png" alt="Factorised dot-product attention"></p><p>分别处理时间与空间上的embedding，然后拼接再作为一个整体。</p>]]></content>
+    
+    
+    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h1&gt;&lt;p&gt;将 Transformer 架构加入视觉领域，ViT与ViViT是分别是将该架构加入图片分类与视频分类领域，是该方向的两篇代表作。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;ViT: AN IMAGE IS WORTH 16X16 WORDS: TRANSFORMERS FOR IMAGE RECOGNITION AT SCALE&lt;/li&gt;
+&lt;li&gt;ViViT: ViViT: A Video Vision Transformer&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="机器学习" scheme="https://renyixiong-ai.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+    
+    
+    <category term="ViT" scheme="https://renyixiong-ai.github.io/tags/ViT/"/>
+    
+    <category term="ViViT" scheme="https://renyixiong-ai.github.io/tags/ViViT/"/>
+    
+    <category term="Transform" scheme="https://renyixiong-ai.github.io/tags/Transform/"/>
+    
+  </entry>
   
   <entry>
     <title>Sora原理分析</title>
@@ -34,9 +63,9 @@
     <category term="机器学习" scheme="https://renyixiong-ai.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
     
     
-    <category term="sora" scheme="https://renyixiong-ai.github.io/tags/sora/"/>
-    
     <category term="Transform" scheme="https://renyixiong-ai.github.io/tags/Transform/"/>
+    
+    <category term="sora" scheme="https://renyixiong-ai.github.io/tags/sora/"/>
     
   </entry>
   

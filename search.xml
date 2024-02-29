@@ -211,6 +211,50 @@ x_i&\geq0 \\
       </tags>
   </entry>
   <entry>
+    <title>ViT and ViViT</title>
+    <url>/2024/02/29/ViT_ViViT/</url>
+    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>将 Transformer 架构加入视觉领域，ViT与ViViT是分别是将该架构加入图片分类与视频分类领域，是该方向的两篇代表作。</p>
+<ul>
+<li>ViT: AN IMAGE IS WORTH 16X16 WORDS: TRANSFORMERS FOR IMAGE RECOGNITION AT SCALE</li>
+<li>ViViT: ViViT: A Video Vision Transformer</li>
+</ul>
+<span id="more"></span>
+<h1 id="Vision-Transformer-ViT"><a href="#Vision-Transformer-ViT" class="headerlink" title="Vision Transformer(ViT)"></a>Vision Transformer(ViT)</h1><p>ViT尽可能的遵循原始<a href="https://arxiv.org/abs/1706.03762">Transformer</a>。</p>
+<p><img src="/2024/02/29/ViT_ViViT/ViT.png" alt="ViT structure"></p>
+<p>标准的 Transformer 的输入是一维序列，因此首先需要将二维的图像整形为一维的序列。将其作为整体，称作patch，输入到Transformer进行 embedding。</p>
+<p>位置编码直接相加进path embedding。</p>
+<p>Trandformer Encoder架构为：</p>
+<p><img src="/2024/02/29/ViT_ViViT/transformer_encoder.png" alt="Trandformer Encoder"></p>
+<p>数学公式总结为：</p>
+<script type="math/tex; mode=display">\begin{align}
+z_0 &= [x_\text{class}; x_p^1 E;x_p^2 E;\cdots ;x_p^N E]+E_\text{pos}\quad E\in \mathcal R^{(p^2\cdot C)\times D},E_{pos}\in \mathcal R^{(N+1)\times D} \\
+z'_l &= MSA(LN(z_{l-1}))+z_{l-1} \quad l=1\cdots L \\
+z_l &= MLP(LN(z'_l))+z'_l \quad l=1\cdots L \\
+y &= LN(z_L^0)
+\end{align}</script><p>其中$C$是通道数，$D$是样本数，$p^2$是分块之后的数量，MSA是multiheaded selfattention，MLP是多层感知机，LN是 Layernorm，并且$z_0^0=x_\text{class}$</p>
+<h1 id="Video-Vision-Transformer-ViViT"><a href="#Video-Vision-Transformer-ViViT" class="headerlink" title="Video Vision Transformer(ViViT)"></a>Video Vision Transformer(ViViT)</h1><p>基于图像，进一步整合时空的Transformer结构。能够对视频进行有效的处理。</p>
+<p><img src="/2024/02/29/ViT_ViViT/ViViT.png" alt="ViViT"></p>
+<p>除了ViT提出的patch embedding，在处理时空信息上本文提出了Tubelet embedding。</p>
+<p><img src="/2024/02/29/ViT_ViViT/tubelet_embedding.png" alt="Tubelet embedding"></p>
+<p>其在时间信息上同样进行编码，组成一个包含部分时间与部分空间信息的embedding。这样就成功让Transformer可以输入时间与空间信息，接下来需要处理的是patch embedding 与 tubelet embedding 两部分信息如何输入进 transformer。虽然其同为编码信息，但是时间和空间的信息如何有效的耦合就是新的问题。这篇文章提出了四种架构。</p>
+<h2 id="Spation-temporal-attendtion"><a href="#Spation-temporal-attendtion" class="headerlink" title="Spation-temporal attendtion"></a>Spation-temporal attendtion</h2><p>直接认为两者地位等价，作为相同的token进行输入。显然则会导致输入的信息过于庞大，这是最吃资源的一种。</p>
+<h2 id="Factorised-encoder"><a href="#Factorised-encoder" class="headerlink" title="Factorised encoder"></a>Factorised encoder</h2><p><img src="/2024/02/29/ViT_ViViT/factorised_encoder.png" alt="Factorised"></p>
+<p>这种方案包含两层encoder，第一层将在同一个tubelet 附近的 patch进行encoder，然后下一步将其在时间上进行encoder。</p>
+<h2 id="Factorised-self-attention"><a href="#Factorised-self-attention" class="headerlink" title="Factorised self-attention"></a>Factorised self-attention</h2><p><img src="/2024/02/29/ViT_ViViT/Factorised_self-attention.png" alt="Factorised self-attention"></p>
+<p>与第一种方案一样，同样认为等价的地位，但只进行self-attention操作。首先先处理空间，然后是时间。</p>
+<h2 id="Factorised-dot-product-attention"><a href="#Factorised-dot-product-attention" class="headerlink" title="Factorised dot-product attention"></a>Factorised dot-product attention</h2><p><img src="/2024/02/29/ViT_ViViT/Factorised%20dot-product%20attention.png" alt="Factorised dot-product attention"></p>
+<p>分别处理时间与空间上的embedding，然后拼接再作为一个整体。</p>
+]]></content>
+      <categories>
+        <category>机器学习</category>
+      </categories>
+      <tags>
+        <tag>ViT</tag>
+        <tag>ViViT</tag>
+        <tag>Transform</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Score matching model</title>
     <url>/2024/01/19/Score_matching_model/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这篇文章主要描述基于得分匹配（Score matching model）的想法，以及之后主要的修改思路。这种思路是生成模型的一种，与GAN、normal-flow等模型具备同样的功能。</p>
@@ -422,6 +466,40 @@ L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
       </tags>
   </entry>
   <entry>
+    <title>Sora原理分析</title>
+    <url>/2024/02/28/sora/</url>
+    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><a href="https://openai.com/research/video-generation-models-as-world-simulators">sora</a>完成了文本生成视频的任务，其中视频的时长与连贯性都有非常惊艳的效果，不仅将视频时长拓展到了60S的水平，而且即使视频中发生物品遮挡，在之后也能成功接上，视频整体非常连贯。</p>
+<p>感谢<a href="https://datawhaler.feishu.cn/wiki/FA8UwCrsNiEO0gkh9Uici8RUn5f">Datawhale开源社区</a>提供相关资源。</p>
+<span id="more"></span>
+<h1 id="Vision-Transformer"><a href="#Vision-Transformer" class="headerlink" title="Vision Transformer"></a>Vision Transformer</h1><p>基于官网的介绍：</p>
+<blockquote>
+<p>We leverage a transformer architecture that operates on spacetime patches of video and image latent codes.</p>
+</blockquote>
+<p>可见sora的基本架构来源于Transform，这里需要先介绍该领域的经典模型<a href="https://arxiv.org/pdf/2010.11929.pdf">Vision Transformer(ViT)</a>。</p>
+<p>Transform 是广泛应用于 NLP 的架构，会将不同的 token 以序列方式进行处理。在 CV 上，也有很多将 Transform 引入的尝试，ViT 基本将原生的架构引入视觉领域。</p>
+<p><img src="/2024/02/28/sora/ViT.png" alt="ViT"></p>
+<p>首先图片不能直接将像素作为一个基本单位作为一个token，这样输入规模将会过大。需要进行分割，将整张图片进行分割，左下角将整张图片分为9个部分，每个部分作为基本的单位，然后将位置信息直接相加，称为 Patch ，接下来将其线性化，输入到Transform Encoder。</p>
+<h1 id="Video-Vision-Transformer"><a href="#Video-Vision-Transformer" class="headerlink" title="Video Vision Transformer"></a>Video Vision Transformer</h1><blockquote>
+<p>At a high level, we turn videos into patches by first compressing videos into a lower-dimensional latent space, and subsequently decomposing the representation into spacetime patches.</p>
+</blockquote>
+<p>将视频同样进行切块的技术，考虑之前的文章<a href="https://arxiv.org/pdf/2103.15691.pdf">ViViT: A Video Vision Transformer(ViViT)</a></p>
+<p><img src="/2024/02/28/sora/fig1.png" alt="Turning visual data into patches"></p>
+<p>针对于时间部分，同样是划分为小部分块，称为 tuplet。然后以一定序列的方式进行编码，一维化输入到 Transform。</p>
+<p><img src="/2024/02/28/sora/tuplet.png" alt="Tuplet"></p>
+<p>训练过程为：</p>
+<p><img src="/2024/02/28/sora/ViViT.png" alt="ViViT"></p>
+<h1 id="Scaling-transformers-for-video-generation"><a href="#Scaling-transformers-for-video-generation" class="headerlink" title="Scaling transformers for video generation"></a>Scaling transformers for video generation</h1><p>整个训练过称为 diffusion model</p>
+<p><img src="/2024/02/28/sora/diffusion_model.png" alt="diffusion_model"></p>
+]]></content>
+      <categories>
+        <category>机器学习</category>
+      </categories>
+      <tags>
+        <tag>Transform</tag>
+        <tag>sora</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git Note</title>
     <url>/2022/09/16/git/</url>
     <content><![CDATA[<h1 id="Git简单教程"><a href="#Git简单教程" class="headerlink" title="Git简单教程"></a>Git简单教程</h1><p>工作逻辑图：<br><img src="/2022/09/16/git/workflow.png" alt="逻辑图"></p>
@@ -463,40 +541,6 @@ L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
 ]]></content>
       <tags>
         <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Sora原理分析</title>
-    <url>/2024/02/28/sora/</url>
-    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><a href="https://openai.com/research/video-generation-models-as-world-simulators">sora</a>完成了文本生成视频的任务，其中视频的时长与连贯性都有非常惊艳的效果，不仅将视频时长拓展到了60S的水平，而且即使视频中发生物品遮挡，在之后也能成功接上，视频整体非常连贯。</p>
-<p>感谢<a href="https://datawhaler.feishu.cn/wiki/FA8UwCrsNiEO0gkh9Uici8RUn5f">Datawhale开源社区</a>提供相关资源。</p>
-<span id="more"></span>
-<h1 id="Vision-Transformer"><a href="#Vision-Transformer" class="headerlink" title="Vision Transformer"></a>Vision Transformer</h1><p>基于官网的介绍：</p>
-<blockquote>
-<p>We leverage a transformer architecture that operates on spacetime patches of video and image latent codes.</p>
-</blockquote>
-<p>可见sora的基本架构来源于Transform，这里需要先介绍该领域的经典模型<a href="https://arxiv.org/pdf/2010.11929.pdf">Vision Transformer(ViT)</a>。</p>
-<p>Transform 是广泛应用于 NLP 的架构，会将不同的 token 以序列方式进行处理。在 CV 上，也有很多将 Transform 引入的尝试，ViT 基本将原生的架构引入视觉领域。</p>
-<p><img src="/2024/02/28/sora/ViT.png" alt="ViT"></p>
-<p>首先图片不能直接将像素作为一个基本单位作为一个token，这样输入规模将会过大。需要进行分割，将整张图片进行分割，左下角将整张图片分为9个部分，每个部分作为基本的单位，然后将位置信息直接相加，称为 Patch ，接下来将其线性化，输入到Transform Encoder。</p>
-<h1 id="Video-Vision-Transformer"><a href="#Video-Vision-Transformer" class="headerlink" title="Video Vision Transformer"></a>Video Vision Transformer</h1><blockquote>
-<p>At a high level, we turn videos into patches by first compressing videos into a lower-dimensional latent space, and subsequently decomposing the representation into spacetime patches.</p>
-</blockquote>
-<p>将视频同样进行切块的技术，考虑之前的文章<a href="https://arxiv.org/pdf/2103.15691.pdf">ViViT: A Video Vision Transformer(ViViT)</a></p>
-<p><img src="/2024/02/28/sora/fig1.png" alt="Turning visual data into patches"></p>
-<p>针对于时间部分，同样是划分为小部分块，称为 tuplet。然后以一定序列的方式进行编码，一维化输入到 Transform。</p>
-<p><img src="/2024/02/28/sora/tuplet.png" alt="Tuplet"></p>
-<p>训练过程为：</p>
-<p><img src="/2024/02/28/sora/ViViT.png" alt="ViViT"></p>
-<h1 id="Scaling-transformers-for-video-generation"><a href="#Scaling-transformers-for-video-generation" class="headerlink" title="Scaling transformers for video generation"></a>Scaling transformers for video generation</h1><p>整个训练过称为 diffusion model</p>
-<p><img src="/2024/02/28/sora/diffusion_model.png" alt="diffusion_model"></p>
-]]></content>
-      <categories>
-        <category>机器学习</category>
-      </categories>
-      <tags>
-        <tag>sora</tag>
-        <tag>Transform</tag>
       </tags>
   </entry>
   <entry>
