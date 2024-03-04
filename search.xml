@@ -206,6 +206,9 @@ x_i&\geq0 \\
 <li>蒙卡的随机性不均匀，随机采样的点在空间中分布是不均匀的，因此导致结果具有一定的偏向性。可以采用低差异序列，虽然随机性降低，但是可以使得采样更加均匀。</li>
 </ul>
 ]]></content>
+      <categories>
+        <category>Math</category>
+      </categories>
       <tags>
         <tag>Markov Chain</tag>
       </tags>
@@ -213,7 +216,31 @@ x_i&\geq0 \\
   <entry>
     <title>Neural Network Diffusion</title>
     <url>/2024/03/04/Neural_Network_Diffusion/</url>
-    <content><![CDATA[<h1 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h1>]]></content>
+    <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>这篇文章的主要任务是，利用Diffusion Model生成具备高表现能力的神经网络参数。</p>
+<p>利用 autoencoder 和 laten diffusion model 两个主要部件，其中autoencoder将网络参数进行提取，diffusion model再进行训练，然后再将训练好的模型进行解码。</p>
+<span id="more"></span>
+<p>将神经网络的训练与扩散逆过程进行对比：</p>
+<ol>
+<li>都是从随机到一个特定的分布。</li>
+<li>高质量的图像与具备很好表现的网络参数，可以退化为一个简单分布。</li>
+</ol>
+<p><img src="/2024/03/04/Neural_Network_Diffusion/fig1.png" alt="diffusion model VS model parameters"></p>
+<p>本文提出parameter generation, 叫做 neural network diffusion (p-diff, p stands for parameter)。</p>
+<p>首先用已经训练好的模型参数，训练自编码器。<br>然后用标准latent diffusion model 从随机噪声中合成编码后的表示。最后，利用训练完的diffusion model，通过已经训练过的自编码器去生成新的参数。</p>
+<h1 id="Nerual-Network-Diffusion"><a href="#Nerual-Network-Diffusion" class="headerlink" title="Nerual Network Diffusion"></a>Nerual Network Diffusion</h1><h2 id="Preliminaries-of-diffusion-models"><a href="#Preliminaries-of-diffusion-models" class="headerlink" title="Preliminaries of diffusion models"></a>Preliminaries of diffusion models</h2><p><img src="/2024/03/04/Neural_Network_Diffusion/NND.png" alt="Train LDM"></p>
+<p>前向过程在不断的增加噪声，后向过程在猜测噪声分布。训练目标是计算分布的KL散度，尽可能的小。</p>
+<p>上图中，LDM表示latent diffusion model，训练编码后的表示。前向过程为：从已经表示的分布增加噪声，逐步成为随机噪声分布；后向过程为，从随机噪声出发逐步预测噪声进行去噪，得到原始的表达。</p>
+<h2 id="Parameter-autoencoder"><a href="#Parameter-autoencoder" class="headerlink" title="Parameter autoencoder"></a>Parameter autoencoder</h2><p><img src="/2024/03/04/Neural_Network_Diffusion/autoencoder.png" alt="AutoEncoder"></p>
+<p>利用训练好的数据，进行编码训练。</p>
+<h2 id="Inference"><a href="#Inference" class="headerlink" title="Inference"></a>Inference</h2><p><img src="/2024/03/04/Neural_Network_Diffusion/inference.png" alt="Inference"></p>
+<p>使用DDPM进行优化。</p>
+<h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="/2024/03/04/Neural_Network_Diffusion/result.png" alt="result"></p>
+<p>从结果来看部分数据集上最优，其它大部分也与最优表现持平。</p>
+<p>该模型是否仅仅记住了训练好的模型参数，而非生成了新的模型参数？从结果来看，生成的模型要高于输入训练的模型，可见其是学习到了一些内容。</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
       <tags>
         <tag>Diffusion Model</tag>
       </tags>
@@ -368,6 +395,9 @@ Data Distribution.
 ## Langevin Dynamics
 -->
 ]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
       <tags>
         <tag>Score matching model</tag>
         <tag>Explicit Score Matching</tag>
@@ -412,7 +442,7 @@ y &= LN(z_L^0)
 <p>分别处理时间与空间上的embedding，然后拼接再作为一个整体。</p>
 ]]></content>
       <categories>
-        <category>机器学习</category>
+        <category>Machine Learning</category>
       </categories>
       <tags>
         <tag>ViT</tag>
@@ -468,9 +498,46 @@ L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
 &=K
 \end{align}</script><p>其中公式（16）定义$H_p (x^{T}) = -\int \mathrm{d}x^{(T)}q(x^{(T)})\ln \pi(x^{(T)})$；公式（20）因为这个过程是马尔科夫过程，只与前一个状态有关；公式（21）为贝叶斯公式。经过以上的变换，成功找到下界，任务目标变为:</p>
 <script type="math/tex; mode=display">\hat p(x^{(t-1)}|x^{(t)})=\text{argmax}_{p(x^{(t-1)}|x^{(t)})}K~</script>]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
       <tags>
         <tag>Nonequilibrium Thermodynamics</tag>
         <tag>Unsupervised Learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Sora原理分析</title>
+    <url>/2024/02/28/sora/</url>
+    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><a href="https://openai.com/research/video-generation-models-as-world-simulators">sora</a>完成了文本生成视频的任务，其中视频的时长与连贯性都有非常惊艳的效果，不仅将视频时长拓展到了60S的水平，而且即使视频中发生物品遮挡，在之后也能成功接上，视频整体非常连贯。</p>
+<p>感谢<a href="https://datawhaler.feishu.cn/wiki/FA8UwCrsNiEO0gkh9Uici8RUn5f">Datawhale开源社区</a>提供相关资源。</p>
+<span id="more"></span>
+<h1 id="Vision-Transformer"><a href="#Vision-Transformer" class="headerlink" title="Vision Transformer"></a>Vision Transformer</h1><p>基于官网的介绍：</p>
+<blockquote>
+<p>We leverage a transformer architecture that operates on spacetime patches of video and image latent codes.</p>
+</blockquote>
+<p>可见sora的基本架构来源于Transform，这里需要先介绍该领域的经典模型<a href="https://arxiv.org/pdf/2010.11929.pdf">Vision Transformer(ViT)</a>。</p>
+<p>Transform 是广泛应用于 NLP 的架构，会将不同的 token 以序列方式进行处理。在 CV 上，也有很多将 Transform 引入的尝试，ViT 基本将原生的架构引入视觉领域。</p>
+<p><img src="/2024/02/28/sora/ViT.png" alt="ViT"></p>
+<p>首先图片不能直接将像素作为一个基本单位作为一个token，这样输入规模将会过大。需要进行分割，将整张图片进行分割，左下角将整张图片分为9个部分，每个部分作为基本的单位，然后将位置信息直接相加，称为 Patch ，接下来将其线性化，输入到Transform Encoder。</p>
+<h1 id="Video-Vision-Transformer"><a href="#Video-Vision-Transformer" class="headerlink" title="Video Vision Transformer"></a>Video Vision Transformer</h1><blockquote>
+<p>At a high level, we turn videos into patches by first compressing videos into a lower-dimensional latent space, and subsequently decomposing the representation into spacetime patches.</p>
+</blockquote>
+<p>将视频同样进行切块的技术，考虑之前的文章<a href="https://arxiv.org/pdf/2103.15691.pdf">ViViT: A Video Vision Transformer(ViViT)</a></p>
+<p><img src="/2024/02/28/sora/fig1.png" alt="Turning visual data into patches"></p>
+<p>针对于时间部分，同样是划分为小部分块，称为 tuplet。然后以一定序列的方式进行编码，一维化输入到 Transform。</p>
+<p><img src="/2024/02/28/sora/tuplet.png" alt="Tuplet"></p>
+<p>训练过程为：</p>
+<p><img src="/2024/02/28/sora/ViViT.png" alt="ViViT"></p>
+<h1 id="Scaling-transformers-for-video-generation"><a href="#Scaling-transformers-for-video-generation" class="headerlink" title="Scaling transformers for video generation"></a>Scaling transformers for video generation</h1><p>整个训练过称为 diffusion model</p>
+<p><img src="/2024/02/28/sora/diffusion_model.png" alt="diffusion_model"></p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Transform</tag>
+        <tag>Sora</tag>
       </tags>
   </entry>
   <entry>
@@ -513,42 +580,11 @@ L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
 <p>创建其它分支方案：<br><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git reset --hard origin/&lt;branch_name&gt;</span><br></pre></td></tr></table></figure></p>
 <h1 id="将远程内容部署到本地"><a href="#将远程内容部署到本地" class="headerlink" title="将远程内容部署到本地"></a>将远程内容部署到本地</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://.....</span><br></pre></td></tr></table></figure>
 ]]></content>
-      <tags>
-        <tag>Git</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Sora原理分析</title>
-    <url>/2024/02/28/sora/</url>
-    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><a href="https://openai.com/research/video-generation-models-as-world-simulators">sora</a>完成了文本生成视频的任务，其中视频的时长与连贯性都有非常惊艳的效果，不仅将视频时长拓展到了60S的水平，而且即使视频中发生物品遮挡，在之后也能成功接上，视频整体非常连贯。</p>
-<p>感谢<a href="https://datawhaler.feishu.cn/wiki/FA8UwCrsNiEO0gkh9Uici8RUn5f">Datawhale开源社区</a>提供相关资源。</p>
-<span id="more"></span>
-<h1 id="Vision-Transformer"><a href="#Vision-Transformer" class="headerlink" title="Vision Transformer"></a>Vision Transformer</h1><p>基于官网的介绍：</p>
-<blockquote>
-<p>We leverage a transformer architecture that operates on spacetime patches of video and image latent codes.</p>
-</blockquote>
-<p>可见sora的基本架构来源于Transform，这里需要先介绍该领域的经典模型<a href="https://arxiv.org/pdf/2010.11929.pdf">Vision Transformer(ViT)</a>。</p>
-<p>Transform 是广泛应用于 NLP 的架构，会将不同的 token 以序列方式进行处理。在 CV 上，也有很多将 Transform 引入的尝试，ViT 基本将原生的架构引入视觉领域。</p>
-<p><img src="/2024/02/28/sora/ViT.png" alt="ViT"></p>
-<p>首先图片不能直接将像素作为一个基本单位作为一个token，这样输入规模将会过大。需要进行分割，将整张图片进行分割，左下角将整张图片分为9个部分，每个部分作为基本的单位，然后将位置信息直接相加，称为 Patch ，接下来将其线性化，输入到Transform Encoder。</p>
-<h1 id="Video-Vision-Transformer"><a href="#Video-Vision-Transformer" class="headerlink" title="Video Vision Transformer"></a>Video Vision Transformer</h1><blockquote>
-<p>At a high level, we turn videos into patches by first compressing videos into a lower-dimensional latent space, and subsequently decomposing the representation into spacetime patches.</p>
-</blockquote>
-<p>将视频同样进行切块的技术，考虑之前的文章<a href="https://arxiv.org/pdf/2103.15691.pdf">ViViT: A Video Vision Transformer(ViViT)</a></p>
-<p><img src="/2024/02/28/sora/fig1.png" alt="Turning visual data into patches"></p>
-<p>针对于时间部分，同样是划分为小部分块，称为 tuplet。然后以一定序列的方式进行编码，一维化输入到 Transform。</p>
-<p><img src="/2024/02/28/sora/tuplet.png" alt="Tuplet"></p>
-<p>训练过程为：</p>
-<p><img src="/2024/02/28/sora/ViViT.png" alt="ViViT"></p>
-<h1 id="Scaling-transformers-for-video-generation"><a href="#Scaling-transformers-for-video-generation" class="headerlink" title="Scaling transformers for video generation"></a>Scaling transformers for video generation</h1><p>整个训练过称为 diffusion model</p>
-<p><img src="/2024/02/28/sora/diffusion_model.png" alt="diffusion_model"></p>
-]]></content>
       <categories>
-        <category>机器学习</category>
+        <category>Note</category>
       </categories>
       <tags>
-        <tag>Transform</tag>
-        <tag>sora</tag>
+        <tag>Git</tag>
       </tags>
   </entry>
   <entry>
@@ -1088,12 +1124,13 @@ p_{zx} & p_{zy} & p_{zz}\\
 <script type="math/tex; mode=display">\sigma_{ij}= C_{ijkl}\epsilon_{lk}</script><h3 id="形变能"><a href="#形变能" class="headerlink" title="形变能"></a>形变能</h3><h3 id="各项同性介质的形变能"><a href="#各项同性介质的形变能" class="headerlink" title="各项同性介质的形变能"></a>各项同性介质的形变能</h3><h3 id="各项同性介质的应力张量"><a href="#各项同性介质的应力张量" class="headerlink" title="各项同性介质的应力张量"></a>各项同性介质的应力张量</h3><h2 id="流体力学"><a href="#流体力学" class="headerlink" title="流体力学"></a>流体力学</h2><p>流体力学就是连续介质力学。Newton粘性公式，剪切应力$\tau\equiv \frac{f}{\delta S}$正比于切向速度：</p>
 <script type="math/tex; mode=display">\tau=\eta \frac{dv}{dy}</script><h3 id="流体的运动方程"><a href="#流体的运动方程" class="headerlink" title="流体的运动方程"></a>流体的运动方程</h3>]]></content>
       <categories>
-        <category>统计物理</category>
+        <category>Statistical physics</category>
       </categories>
       <tags>
+        <tag>Nonequilibrium Thermodynamics</tag>
         <tag>基本概念</tag>
         <tag>系综</tag>
-        <tag>经典动力学</tag>
+        <tag>Clasical dynamics</tag>
       </tags>
   </entry>
 </search>
