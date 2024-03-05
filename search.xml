@@ -507,40 +507,6 @@ L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
       </tags>
   </entry>
   <entry>
-    <title>Sora原理分析</title>
-    <url>/2024/02/28/sora/</url>
-    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><a href="https://openai.com/research/video-generation-models-as-world-simulators">sora</a>完成了文本生成视频的任务，其中视频的时长与连贯性都有非常惊艳的效果，不仅将视频时长拓展到了60S的水平，而且即使视频中发生物品遮挡，在之后也能成功接上，视频整体非常连贯。</p>
-<p>感谢<a href="https://datawhaler.feishu.cn/wiki/FA8UwCrsNiEO0gkh9Uici8RUn5f">Datawhale开源社区</a>提供相关资源。</p>
-<span id="more"></span>
-<h1 id="Vision-Transformer"><a href="#Vision-Transformer" class="headerlink" title="Vision Transformer"></a>Vision Transformer</h1><p>基于官网的介绍：</p>
-<blockquote>
-<p>We leverage a transformer architecture that operates on spacetime patches of video and image latent codes.</p>
-</blockquote>
-<p>可见sora的基本架构来源于Transform，这里需要先介绍该领域的经典模型<a href="https://arxiv.org/pdf/2010.11929.pdf">Vision Transformer(ViT)</a>。</p>
-<p>Transform 是广泛应用于 NLP 的架构，会将不同的 token 以序列方式进行处理。在 CV 上，也有很多将 Transform 引入的尝试，ViT 基本将原生的架构引入视觉领域。</p>
-<p><img src="/2024/02/28/sora/ViT.png" alt="ViT"></p>
-<p>首先图片不能直接将像素作为一个基本单位作为一个token，这样输入规模将会过大。需要进行分割，将整张图片进行分割，左下角将整张图片分为9个部分，每个部分作为基本的单位，然后将位置信息直接相加，称为 Patch ，接下来将其线性化，输入到Transform Encoder。</p>
-<h1 id="Video-Vision-Transformer"><a href="#Video-Vision-Transformer" class="headerlink" title="Video Vision Transformer"></a>Video Vision Transformer</h1><blockquote>
-<p>At a high level, we turn videos into patches by first compressing videos into a lower-dimensional latent space, and subsequently decomposing the representation into spacetime patches.</p>
-</blockquote>
-<p>将视频同样进行切块的技术，考虑之前的文章<a href="https://arxiv.org/pdf/2103.15691.pdf">ViViT: A Video Vision Transformer(ViViT)</a></p>
-<p><img src="/2024/02/28/sora/fig1.png" alt="Turning visual data into patches"></p>
-<p>针对于时间部分，同样是划分为小部分块，称为 tuplet。然后以一定序列的方式进行编码，一维化输入到 Transform。</p>
-<p><img src="/2024/02/28/sora/tuplet.png" alt="Tuplet"></p>
-<p>训练过程为：</p>
-<p><img src="/2024/02/28/sora/ViViT.png" alt="ViViT"></p>
-<h1 id="Scaling-transformers-for-video-generation"><a href="#Scaling-transformers-for-video-generation" class="headerlink" title="Scaling transformers for video generation"></a>Scaling transformers for video generation</h1><p>整个训练过称为 diffusion model</p>
-<p><img src="/2024/02/28/sora/diffusion_model.png" alt="diffusion_model"></p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Transform</tag>
-        <tag>Sora</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Git Note</title>
     <url>/2022/09/16/git/</url>
     <content><![CDATA[<h1 id="Git简单教程"><a href="#Git简单教程" class="headerlink" title="Git简单教程"></a>Git简单教程</h1><p>工作逻辑图：<br><img src="/2022/09/16/git/workflow.png" alt="逻辑图"></p>
@@ -585,6 +551,40 @@ L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
       </categories>
       <tags>
         <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Sora原理分析</title>
+    <url>/2024/02/28/sora/</url>
+    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><a href="https://openai.com/research/video-generation-models-as-world-simulators">sora</a>完成了文本生成视频的任务，其中视频的时长与连贯性都有非常惊艳的效果，不仅将视频时长拓展到了60S的水平，而且即使视频中发生物品遮挡，在之后也能成功接上，视频整体非常连贯。</p>
+<p>感谢<a href="https://datawhaler.feishu.cn/wiki/FA8UwCrsNiEO0gkh9Uici8RUn5f">Datawhale开源社区</a>提供相关资源。</p>
+<span id="more"></span>
+<h1 id="Vision-Transformer"><a href="#Vision-Transformer" class="headerlink" title="Vision Transformer"></a>Vision Transformer</h1><p>基于官网的介绍：</p>
+<blockquote>
+<p>We leverage a transformer architecture that operates on spacetime patches of video and image latent codes.</p>
+</blockquote>
+<p>可见sora的基本架构来源于Transform，这里需要先介绍该领域的经典模型<a href="https://arxiv.org/pdf/2010.11929.pdf">Vision Transformer(ViT)</a>。</p>
+<p>Transform 是广泛应用于 NLP 的架构，会将不同的 token 以序列方式进行处理。在 CV 上，也有很多将 Transform 引入的尝试，ViT 基本将原生的架构引入视觉领域。</p>
+<p><img src="/2024/02/28/sora/ViT.png" alt="ViT"></p>
+<p>首先图片不能直接将像素作为一个基本单位作为一个token，这样输入规模将会过大。需要进行分割，将整张图片进行分割，左下角将整张图片分为9个部分，每个部分作为基本的单位，然后将位置信息直接相加，称为 Patch ，接下来将其线性化，输入到Transform Encoder。</p>
+<h1 id="Video-Vision-Transformer"><a href="#Video-Vision-Transformer" class="headerlink" title="Video Vision Transformer"></a>Video Vision Transformer</h1><blockquote>
+<p>At a high level, we turn videos into patches by first compressing videos into a lower-dimensional latent space, and subsequently decomposing the representation into spacetime patches.</p>
+</blockquote>
+<p>将视频同样进行切块的技术，考虑之前的文章<a href="https://arxiv.org/pdf/2103.15691.pdf">ViViT: A Video Vision Transformer(ViViT)</a></p>
+<p><img src="/2024/02/28/sora/fig1.png" alt="Turning visual data into patches"></p>
+<p>针对于时间部分，同样是划分为小部分块，称为 tuplet。然后以一定序列的方式进行编码，一维化输入到 Transform。</p>
+<p><img src="/2024/02/28/sora/tuplet.png" alt="Tuplet"></p>
+<p>训练过程为：</p>
+<p><img src="/2024/02/28/sora/ViViT.png" alt="ViViT"></p>
+<h1 id="Scaling-transformers-for-video-generation"><a href="#Scaling-transformers-for-video-generation" class="headerlink" title="Scaling transformers for video generation"></a>Scaling transformers for video generation</h1><p>整个训练过称为 diffusion model</p>
+<p><img src="/2024/02/28/sora/diffusion_model.png" alt="diffusion_model"></p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Transform</tag>
+        <tag>Sora</tag>
       </tags>
   </entry>
   <entry>
@@ -1122,7 +1122,15 @@ p_{zx} & p_{zy} & p_{zz}\\
 <script type="math/tex; mode=display">\sigma_{ij}=\left( \frac{\partial \sigma_{ij}}{\partial \epsilon_{kl}}\right)_0\epsilon_{kl}</script><p>其中下标为0表示在应变为0处取值。</p>
 <p>当形变较小的时候，饰演的应力与应变值之间服从Hooke定律，将偏微分关系变为线性关系：</p>
 <script type="math/tex; mode=display">\sigma_{ij}= C_{ijkl}\epsilon_{lk}</script><h3 id="形变能"><a href="#形变能" class="headerlink" title="形变能"></a>形变能</h3><h3 id="各项同性介质的形变能"><a href="#各项同性介质的形变能" class="headerlink" title="各项同性介质的形变能"></a>各项同性介质的形变能</h3><h3 id="各项同性介质的应力张量"><a href="#各项同性介质的应力张量" class="headerlink" title="各项同性介质的应力张量"></a>各项同性介质的应力张量</h3><h2 id="流体力学"><a href="#流体力学" class="headerlink" title="流体力学"></a>流体力学</h2><p>流体力学就是连续介质力学。Newton粘性公式，剪切应力$\tau\equiv \frac{f}{\delta S}$正比于切向速度：</p>
-<script type="math/tex; mode=display">\tau=\eta \frac{dv}{dy}</script><h3 id="流体的运动方程"><a href="#流体的运动方程" class="headerlink" title="流体的运动方程"></a>流体的运动方程</h3>]]></content>
+<script type="math/tex; mode=display">\tau=\eta \frac{dv}{dy}</script><h3 id="流体的运动方程"><a href="#流体的运动方程" class="headerlink" title="流体的运动方程"></a>流体的运动方程</h3><p>流体的连续性方程：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{\partial \rho_m}{\partial t}+\nabla\cdot \bf j &=0 \\
+\bf{j}(r,t) &= \rho_m \bf m \\
+\end{align}</script><p>理想流体的运动方程：</p>
+<script type="math/tex; mode=display">\rho_m \frac{Dv}{Dt}=\rho_m(\frac{v}{t}-v\cdot\nabla v)=-\nabla\cdot P</script><h2 id="连续介质的导热"><a href="#连续介质的导热" class="headerlink" title="连续介质的导热"></a>连续介质的导热</h2><p>Fourier唯象导热定律：</p>
+<script type="math/tex; mode=display">\begin{align}
+q=-\lambda\nabla T
+\end{align}</script><h1 id="非平衡热力学基础"><a href="#非平衡热力学基础" class="headerlink" title="非平衡热力学基础"></a>非平衡热力学基础</h1>]]></content>
       <categories>
         <category>Statistical physics</category>
       </categories>
