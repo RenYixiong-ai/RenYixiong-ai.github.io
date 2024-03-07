@@ -246,6 +246,50 @@ x_i&\geq0 \\
       </tags>
   </entry>
   <entry>
+    <title>ViT and ViViT</title>
+    <url>/2024/02/29/ViT_ViViT/</url>
+    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>将 Transformer 架构加入视觉领域，ViT与ViViT是分别是将该架构加入图片分类与视频分类领域，是该方向的两篇代表作。</p>
+<ul>
+<li>ViT: AN IMAGE IS WORTH 16X16 WORDS: TRANSFORMERS FOR IMAGE RECOGNITION AT SCALE</li>
+<li>ViViT: ViViT: A Video Vision Transformer</li>
+</ul>
+<span id="more"></span>
+<h1 id="Vision-Transformer-ViT"><a href="#Vision-Transformer-ViT" class="headerlink" title="Vision Transformer(ViT)"></a>Vision Transformer(ViT)</h1><p>ViT尽可能的遵循原始<a href="https://arxiv.org/abs/1706.03762">Transformer</a>。</p>
+<p><img src="/2024/02/29/ViT_ViViT/ViT.png" alt="ViT structure"></p>
+<p>标准的 Transformer 的输入是一维序列，因此首先需要将二维的图像整形为一维的序列。将其作为整体，称作patch，输入到Transformer进行 embedding。</p>
+<p>位置编码直接相加进path embedding。</p>
+<p>Trandformer Encoder架构为：</p>
+<p><img src="/2024/02/29/ViT_ViViT/transformer_encoder.png" alt="Trandformer Encoder"></p>
+<p>数学公式总结为：</p>
+<script type="math/tex; mode=display">\begin{align}
+z_0 &= [x_\text{class}; x_p^1 E;x_p^2 E;\cdots ;x_p^N E]+E_\text{pos}\quad E\in \mathcal R^{(p^2\cdot C)\times D},E_{pos}\in \mathcal R^{(N+1)\times D} \\
+z'_l &= MSA(LN(z_{l-1}))+z_{l-1} \quad l=1\cdots L \\
+z_l &= MLP(LN(z'_l))+z'_l \quad l=1\cdots L \\
+y &= LN(z_L^0)
+\end{align}</script><p>其中$C$是通道数，$D$是样本数，$p^2$是分块之后的数量，MSA是multiheaded selfattention，MLP是多层感知机，LN是 Layernorm，并且$z_0^0=x_\text{class}$</p>
+<h1 id="Video-Vision-Transformer-ViViT"><a href="#Video-Vision-Transformer-ViViT" class="headerlink" title="Video Vision Transformer(ViViT)"></a>Video Vision Transformer(ViViT)</h1><p>基于图像，进一步整合时空的Transformer结构。能够对视频进行有效的处理。</p>
+<p><img src="/2024/02/29/ViT_ViViT/ViViT.png" alt="ViViT"></p>
+<p>除了ViT提出的patch embedding，在处理时空信息上本文提出了Tubelet embedding。</p>
+<p><img src="/2024/02/29/ViT_ViViT/tubelet_embedding.png" alt="Tubelet embedding"></p>
+<p>其在时间信息上同样进行编码，组成一个包含部分时间与部分空间信息的embedding。这样就成功让Transformer可以输入时间与空间信息，接下来需要处理的是patch embedding 与 tubelet embedding 两部分信息如何输入进 transformer。虽然其同为编码信息，但是时间和空间的信息如何有效的耦合就是新的问题。这篇文章提出了四种架构。</p>
+<h2 id="Spation-temporal-attendtion"><a href="#Spation-temporal-attendtion" class="headerlink" title="Spation-temporal attendtion"></a>Spation-temporal attendtion</h2><p>直接认为两者地位等价，作为相同的token进行输入。显然则会导致输入的信息过于庞大，这是最吃资源的一种。</p>
+<h2 id="Factorised-encoder"><a href="#Factorised-encoder" class="headerlink" title="Factorised encoder"></a>Factorised encoder</h2><p><img src="/2024/02/29/ViT_ViViT/factorised_encoder.png" alt="Factorised"></p>
+<p>这种方案包含两层encoder，第一层将在同一个tubelet 附近的 patch进行encoder，然后下一步将其在时间上进行encoder。</p>
+<h2 id="Factorised-self-attention"><a href="#Factorised-self-attention" class="headerlink" title="Factorised self-attention"></a>Factorised self-attention</h2><p><img src="/2024/02/29/ViT_ViViT/Factorised_self-attention.png" alt="Factorised self-attention"></p>
+<p>与第一种方案一样，同样认为等价的地位，但只进行self-attention操作。首先先处理空间，然后是时间。</p>
+<h2 id="Factorised-dot-product-attention"><a href="#Factorised-dot-product-attention" class="headerlink" title="Factorised dot-product attention"></a>Factorised dot-product attention</h2><p><img src="/2024/02/29/ViT_ViViT/Factorised%20dot-product%20attention.png" alt="Factorised dot-product attention"></p>
+<p>分别处理时间与空间上的embedding，然后拼接再作为一个整体。</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>ViT</tag>
+        <tag>ViViT</tag>
+        <tag>Transform</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Score matching model</title>
     <url>/2024/01/19/Score_matching_model/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这篇文章主要描述基于得分匹配（Score matching model）的想法，以及之后主要的修改思路。这种思路是生成模型的一种，与GAN、normal-flow等模型具备同样的功能。</p>
@@ -404,50 +448,6 @@ Data Distribution.
         <tag>Implicit Score Matching</tag>
         <tag>Denoising Score Matching</tag>
         <tag>Sliced Score Matching</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ViT and ViViT</title>
-    <url>/2024/02/29/ViT_ViViT/</url>
-    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>将 Transformer 架构加入视觉领域，ViT与ViViT是分别是将该架构加入图片分类与视频分类领域，是该方向的两篇代表作。</p>
-<ul>
-<li>ViT: AN IMAGE IS WORTH 16X16 WORDS: TRANSFORMERS FOR IMAGE RECOGNITION AT SCALE</li>
-<li>ViViT: ViViT: A Video Vision Transformer</li>
-</ul>
-<span id="more"></span>
-<h1 id="Vision-Transformer-ViT"><a href="#Vision-Transformer-ViT" class="headerlink" title="Vision Transformer(ViT)"></a>Vision Transformer(ViT)</h1><p>ViT尽可能的遵循原始<a href="https://arxiv.org/abs/1706.03762">Transformer</a>。</p>
-<p><img src="/2024/02/29/ViT_ViViT/ViT.png" alt="ViT structure"></p>
-<p>标准的 Transformer 的输入是一维序列，因此首先需要将二维的图像整形为一维的序列。将其作为整体，称作patch，输入到Transformer进行 embedding。</p>
-<p>位置编码直接相加进path embedding。</p>
-<p>Trandformer Encoder架构为：</p>
-<p><img src="/2024/02/29/ViT_ViViT/transformer_encoder.png" alt="Trandformer Encoder"></p>
-<p>数学公式总结为：</p>
-<script type="math/tex; mode=display">\begin{align}
-z_0 &= [x_\text{class}; x_p^1 E;x_p^2 E;\cdots ;x_p^N E]+E_\text{pos}\quad E\in \mathcal R^{(p^2\cdot C)\times D},E_{pos}\in \mathcal R^{(N+1)\times D} \\
-z'_l &= MSA(LN(z_{l-1}))+z_{l-1} \quad l=1\cdots L \\
-z_l &= MLP(LN(z'_l))+z'_l \quad l=1\cdots L \\
-y &= LN(z_L^0)
-\end{align}</script><p>其中$C$是通道数，$D$是样本数，$p^2$是分块之后的数量，MSA是multiheaded selfattention，MLP是多层感知机，LN是 Layernorm，并且$z_0^0=x_\text{class}$</p>
-<h1 id="Video-Vision-Transformer-ViViT"><a href="#Video-Vision-Transformer-ViViT" class="headerlink" title="Video Vision Transformer(ViViT)"></a>Video Vision Transformer(ViViT)</h1><p>基于图像，进一步整合时空的Transformer结构。能够对视频进行有效的处理。</p>
-<p><img src="/2024/02/29/ViT_ViViT/ViViT.png" alt="ViViT"></p>
-<p>除了ViT提出的patch embedding，在处理时空信息上本文提出了Tubelet embedding。</p>
-<p><img src="/2024/02/29/ViT_ViViT/tubelet_embedding.png" alt="Tubelet embedding"></p>
-<p>其在时间信息上同样进行编码，组成一个包含部分时间与部分空间信息的embedding。这样就成功让Transformer可以输入时间与空间信息，接下来需要处理的是patch embedding 与 tubelet embedding 两部分信息如何输入进 transformer。虽然其同为编码信息，但是时间和空间的信息如何有效的耦合就是新的问题。这篇文章提出了四种架构。</p>
-<h2 id="Spation-temporal-attendtion"><a href="#Spation-temporal-attendtion" class="headerlink" title="Spation-temporal attendtion"></a>Spation-temporal attendtion</h2><p>直接认为两者地位等价，作为相同的token进行输入。显然则会导致输入的信息过于庞大，这是最吃资源的一种。</p>
-<h2 id="Factorised-encoder"><a href="#Factorised-encoder" class="headerlink" title="Factorised encoder"></a>Factorised encoder</h2><p><img src="/2024/02/29/ViT_ViViT/factorised_encoder.png" alt="Factorised"></p>
-<p>这种方案包含两层encoder，第一层将在同一个tubelet 附近的 patch进行encoder，然后下一步将其在时间上进行encoder。</p>
-<h2 id="Factorised-self-attention"><a href="#Factorised-self-attention" class="headerlink" title="Factorised self-attention"></a>Factorised self-attention</h2><p><img src="/2024/02/29/ViT_ViViT/Factorised_self-attention.png" alt="Factorised self-attention"></p>
-<p>与第一种方案一样，同样认为等价的地位，但只进行self-attention操作。首先先处理空间，然后是时间。</p>
-<h2 id="Factorised-dot-product-attention"><a href="#Factorised-dot-product-attention" class="headerlink" title="Factorised dot-product attention"></a>Factorised dot-product attention</h2><p><img src="/2024/02/29/ViT_ViViT/Factorised%20dot-product%20attention.png" alt="Factorised dot-product attention"></p>
-<p>分别处理时间与空间上的embedding，然后拼接再作为一个整体。</p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>ViT</tag>
-        <tag>ViViT</tag>
-        <tag>Transform</tag>
       </tags>
   </entry>
   <entry>
@@ -1130,7 +1130,29 @@ p_{zx} & p_{zy} & p_{zz}\\
 <script type="math/tex; mode=display">\rho_m \frac{Dv}{Dt}=\rho_m(\frac{v}{t}-v\cdot\nabla v)=-\nabla\cdot P</script><h2 id="连续介质的导热"><a href="#连续介质的导热" class="headerlink" title="连续介质的导热"></a>连续介质的导热</h2><p>Fourier唯象导热定律：</p>
 <script type="math/tex; mode=display">\begin{align}
 q=-\lambda\nabla T
-\end{align}</script><h1 id="非平衡热力学基础"><a href="#非平衡热力学基础" class="headerlink" title="非平衡热力学基础"></a>非平衡热力学基础</h1>]]></content>
+\end{align}</script><h1 id="非平衡热力学基础"><a href="#非平衡热力学基础" class="headerlink" title="非平衡热力学基础"></a>非平衡热力学基础</h1><h2 id="局域平衡近似"><a href="#局域平衡近似" class="headerlink" title="局域平衡近似"></a>局域平衡近似</h2><p>非平衡态的体系有相新的平衡态趋近的趋势，这样的过程称为弛豫过程，弛豫时间记为$\tau_{mac}$。</p>
+<p><strong>局域平衡近似</strong>是将非平衡的体系分为很多的小部分，其中每一个小部分具备宏观小微观大的特点，宏观小足够反省非平衡态在宏观上的不均匀性，微观大包含足够多的粒子。其中每一个小块，可以认为是这一个小块是均匀的，可以用平衡态的状态参量描述。不同小区域与邻近区域之间的相互作用很弱，微区与微区之间不满足平衡条件，记微区的弛豫时间为$\tau_{mic}$。</p>
+<p>局域平衡近似成立有两个条件：</p>
+<ul>
+<li>$\tau_{mic}\ll \tau_{mac}$</li>
+<li>$l_{mic}\ll l_{mac}$，其中$l_{mac}$为局域平衡成立的空间微观程度，$l_{mac}$为外力作用造成体系热力学量的波动宏观尺度。</li>
+</ul>
+<h2 id="不可逆过程中的平衡方程"><a href="#不可逆过程中的平衡方程" class="headerlink" title="不可逆过程中的平衡方程"></a>不可逆过程中的平衡方程</h2><p>使用连续介质力学的方案得到非平衡态热力学的平衡（即衡算）方程。在一定的尺度范围内，可以将任何不平衡体系看成连续介质。</p>
+<p>设有一个宏观体系，体积为$V$，边界为$\Sigma$，讨论体系宏观广延量$F(t)$随时间的演化：</p>
+<script type="math/tex; mode=display">F(t)=\int_{V}\rho_m(r,t)f(r,t)dr</script><p>其中$\rho_{m}(r,t)$为密度质量，$f(r,t)$为单位质量的广延量，因此$\rho_m f$为单位体积的广延量。</p>
+<p><img src="/2024/01/28/statistical_physics_CMB/9-1.png" alt="9-1"></p>
+<p>讨论的体系包含化学反应，因此体系中有源和汇，设$\sigma_F(r)$是体系的源密度（$r$处产生$F$的量/体积/时间），正表示源，负表示汇。有以下的平衡方程：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{dF(t)}{dt} &= P[F] + \phi[F] \\
+P[F] &\equiv \int_V \sigma_f dr \\
+\phi &\equiv -\oint_{\Sigma}j_F \cdot dS \\
+\frac{dF(t)}{dt} &= \frac{d}{dt}\int_V \rho_m (r,t)f(r,t)dr = \int_V\frac{\partial}{\partial t}(\rho_m f)dr \\
+&= \int_V \sigma_F dr - \oint_{\Sigma}j_F\cdot dS \\
+\int_V\frac{\partial}{\partial t}(\rho_m f)dr &= \int_V \sigma_F dr - \int_{V}\nabla \cdot j_F dv \\
+\sigma_F &=  \frac{\partial}{\partial t}(\rho_m f)+\nabla \cdot j_F    \\
+\end{align}</script><p>称为广延量$F$的局域平衡方程。</p>
+<p>以下讨论几个重要的具体广延量的平衡：质量、动量、能量、角动量和熵。</p>
+]]></content>
       <categories>
         <category>Statistical physics</category>
       </categories>
