@@ -1442,9 +1442,37 @@ P[F] &\equiv \int_V \sigma_f dr \\
 &= \int_V \sigma_F dr - \oint_{\Sigma}j_F\cdot dS \\
 \int_V\frac{\partial}{\partial t}(\rho_m f)dr &= \int_V \sigma_F dr - \int_{V}\nabla \cdot j_F dv \\
 \sigma_F &=  \frac{\partial}{\partial t}(\rho_m f)+\nabla \cdot j_F    \\
-\end{align}</script><p>称为广延量$F$的局域平衡方程。</p>
+\end{align}</script><p>称为广延量$F$的局域平衡方程。其中$\rho_m f$是单位体积的广延量$F$（即$F$量/体积），$\sigma_F$广延量$F$的源密度（$F$产生的量/面积/时间），$j_F$是广延量$F$的流密度（$F$的通过量/面积/时间）也称为<strong>流</strong>或者<strong>通量</strong>。</p>
 <p>以下讨论几个重要的具体广延量的平衡：质量、动量、能量、角动量和熵。</p>
-]]></content>
+<h3 id="连续介质中的质量守恒"><a href="#连续介质中的质量守恒" class="headerlink" title="连续介质中的质量守恒"></a>连续介质中的质量守恒</h3><p>从微体积净增的物质的量一定等于从它外部流入到该微体积的物质的量，称为质量平衡或者质量横算。因为无源$\sigma_F=0,f=1,j_F=\rho_m v$。</p>
+<script type="math/tex; mode=display">\begin{align}
+0 &=  \frac{\partial}{\partial t}(\rho_m)+\nabla \cdot (\rho_m v) 
+\end{align}</script><h3 id="连续介质中的动量平衡"><a href="#连续介质中的动量平衡" class="headerlink" title="连续介质中的动量平衡"></a>连续介质中的动量平衡</h3><p>质量流$\rho_m v$可以理解为该处的动量密度，因此$\rho_m vv$为该处流体内的动量流。虽然其与能量密度的量纲相同，但是动量流为张量，能量密度是标量。流体的动量为：</p>
+<script type="math/tex; mode=display">\begin{align}
+G=\int_v \rho_m vd^3 r
+\end{align}</script><p>受到外力后，该体积内流动的动量就增加。单位时间内动量的增值就是该体积$V$所受的外力，即：</p>
+<script type="math/tex; mode=display">\begin{align}
+F\equiv \frac{d G}{d t}=\int_v \frac{\partial \rho_m v}{\partial t} d^3 r
+\end{align}</script><font color="red">接下来还有具体讨论，暂且跳过</font>
+
+<h3 id="连续介质中的能量守恒"><a href="#连续介质中的能量守恒" class="headerlink" title="连续介质中的能量守恒"></a>连续介质中的能量守恒</h3><font color="red">核心为分析功率，总功率分为三个部分：应力、质量、传热</font>
+
+<h3 id="局域熵、不可逆过程的熵产生率"><a href="#局域熵、不可逆过程的熵产生率" class="headerlink" title="局域熵、不可逆过程的熵产生率"></a>局域熵、不可逆过程的熵产生率</h3><p>数学上，散度表示流出</p>
+<font color="red">因为非平衡态的假设是将整个区域分割为小的平衡区域。针对每个小的平衡区域，认为熵的变化分为两部分，分别为平衡体系内熵的变化，以及不同体系内熵的流动。</font>
+
+<p>局域熵的产生率$\sigma_s$均可由局域热力力量$X_i$和由它造成的（称为：与之为共轭的）局域流$J_i$的标积，$X_i$称为广义力，$J_i$称为广义流。局域熵产生率$\sigma_s$可表示为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\sigma_s = \sum_i X_i\cdot X_i
+\end{align}</script><h2 id="Onsager关系"><a href="#Onsager关系" class="headerlink" title="Onsager关系"></a>Onsager关系</h2><p>将局域流$J_i$按局域力$\{X_j\}$展开，取最低的线性近似得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+J_i = \sum_j L_{ij} X_j
+\end{align}</script><p>其中$L_{ij}$就是各种输运系数。</p>
+<p>Onsager关系为：</p>
+<script type="math/tex; mode=display">\begin{align}
+L_{ij} = L_{ji}, L^T = L
+\end{align}</script><p>$L_{ij}$为对称矩阵。</p>
+<h2 id="熵产生极小定理"><a href="#熵产生极小定理" class="headerlink" title="熵产生极小定理"></a>熵产生极小定理</h2><p><strong>熵产生极小定理</strong>：对处于稳态的非平衡体系，其熵产生率处于极小值。</p>
+<h1 id="涨落理论"><a href="#涨落理论" class="headerlink" title="涨落理论"></a>涨落理论</h1>]]></content>
       <categories>
         <category>Statistical physics</category>
       </categories>
@@ -1453,6 +1481,22 @@ P[F] &\equiv \int_V \sigma_f dr \\
         <tag>基本概念</tag>
         <tag>系综</tag>
         <tag>Clasical dynamics</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>A Distributional Perspective on Reinforcement Learning</title>
+    <url>/2024/03/12/Distributional_PerspectiveRL/</url>
+    <content><![CDATA[<h1 id="值分布强化学习"><a href="#值分布强化学习" class="headerlink" title="值分布强化学习"></a>值分布强化学习</h1><p><a href="https://zhuanlan.zhihu.com/p/65116688">知乎文章</a></p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Natural Gradients</tag>
+        <tag>PPO</tag>
+        <tag>TRPO</tag>
+        <tag>Policy Gradients</tag>
+        <tag>Reinforcement Learning</tag>
       </tags>
   </entry>
 </search>
