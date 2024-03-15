@@ -1507,11 +1507,11 @@ r_B &\equiv \frac{\Delta B}{<B>}
 &= \langle B^2\rangle -\langle B\rangle^2
 \end{align}</script><p>其中$\langle B^2\rangle$为物理量$B^2$的均值，或$B$的均方值。同样，相对偏差平方的均值可表为：</p>
 <script type="math/tex; mode=display">\begin{equation}
-\begin{align*}
+\begin{aligned}
 \left\langle r_B^2\right\rangle &\equiv\left\langle\left(\frac{\Delta B}{\langle B\rangle}\right)^2\right\rangle=\frac{\left\langle(\Delta B)^2\right\rangle}{\langle B\rangle^2}=\frac{\left\langle(B-\langle B\rangle)^2\right\rangle}{\langle B\rangle^2} \\
 &= \frac{\langle B^2\rangle}{\langle B\rangle^2}-1
-\end{align*}
-\end{equation}</script><p>称为热力学量$B$的相对涨落，</p>
+\end{aligned}
+\end{equation}</script><p>称为热力学量$B$的相对涨落。</p>
 <font color="red">在连续谱时候的情况</font>
 
 <h2 id="涨落理论-1"><a href="#涨落理论-1" class="headerlink" title="涨落理论"></a>涨落理论</h2><h3 id="正则系综中的涨落"><a href="#正则系综中的涨落" class="headerlink" title="正则系综中的涨落"></a>正则系综中的涨落</h3><p>正则系综存在与环境的热交换，因此$(N,V,T)$恒定，体系存在能量$E$的涨落，能量均值：</p>
