@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>A Distributional Perspective on Reinforcement Learning</title>
+    <url>/2024/03/12/Distributional_PerspectiveRL/</url>
+    <content><![CDATA[<h1 id="值分布强化学习"><a href="#值分布强化学习" class="headerlink" title="值分布强化学习"></a>值分布强化学习</h1><p><a href="https://zhuanlan.zhihu.com/p/65116688">知乎文章</a></p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Natural Gradients</tag>
+        <tag>PPO</tag>
+        <tag>TRPO</tag>
+        <tag>Policy Gradients</tag>
+        <tag>Reinforcement Learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Markov Chain</title>
     <url>/2021/09/16/Markov_Chain/</url>
     <content><![CDATA[<h1 id="基本定义"><a href="#基本定义" class="headerlink" title="基本定义"></a>基本定义</h1><h2 id="随机过程"><a href="#随机过程" class="headerlink" title="随机过程"></a>随机过程</h2><p>状态空间：考虑一个随机变量序列$X=(x_0,x_1…x_t…)$，这里$x_t$表示时刻$t$的变量，$t=0,1,2…$随机变量可以是离散的，也可以是连续的。每个随机变量$x_t$的取值集合相同，称为状态空间，表示为$S$。</p>
@@ -243,167 +259,6 @@ x_i&\geq0 \\
       </categories>
       <tags>
         <tag>Diffusion Model</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Score matching model</title>
-    <url>/2024/01/19/Score_matching_model/</url>
-    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这篇文章主要描述基于得分匹配（Score matching model）的想法，以及之后主要的修改思路。这种思路是生成模型的一种，与GAN、normal-flow等模型具备同样的功能。</p>
-<p>本篇文章大量借鉴<a href="https://bobondemon.github.io/2022/01/08/Estimation-of-Non-Normalized-Statistical-Models-by-Score-Matching/">棒棒生博客</a>，推荐阅读原文博客。本文章在其基础上加入一些作者本人的思考，并且统一符号，增加阅读流畅性。</p>
-<span id="more"></span>
-<h1 id="得分匹配算法（Score-matching-model）"><a href="#得分匹配算法（Score-matching-model）" class="headerlink" title="得分匹配算法（Score matching model）"></a>得分匹配算法（Score matching model）</h1><p>得分匹配这种思想首先发表于论文—Estimation of Non-Normalized Statistical Models<br>by Score Matching。</p>
-<h2 id="拟合目标"><a href="#拟合目标" class="headerlink" title="拟合目标"></a>拟合目标</h2><p>图像、声音、热力学过程等在数学形式上应该是一种概率分布，想要模仿生成相应的事物需要的就是能够得知这种概率分布。但是这种概率分布往往在一个高维空间，难以凭借人类的经验直接获得，因此此时借助神经网络的拟合能力，完成概率密度分布函数的拟合。</p>
-<p>利用 $\bf{x}$ 生成一个随机的目标概率密度分布 $p_{\bf{x}}(\cdot)$，接下来尝试拟合该目标函数，拟合函数的概率密度分布记为$p(\cdot;\theta)$，其中$\theta$是一个m维空间的向量。目标是从$\bf{x}$中估计$\theta$。</p>
-<p>将拟合函数$p(\cdot;\theta)$进一步分解开来：</p>
-<script type="math/tex; mode=display">p(\xi;\theta)=\frac{1}{Z(\theta)}q(\xi;\theta)</script><p>其中：$Z(\theta)=\int_{\xi\in \mathbb{R}^n}q(\xi;\theta)\mathrm{d}\xi$。这样只需要生成函数$q(\cdot;\theta)$，不需要关心归一化的问题。</p>
-<p>通常非归一化采样的方法是马尔科夫链蒙特卡洛模拟。典型的是Ising模型的模拟过程。在得到一系列数据$\{x_1,x_2, x_3…\}$后，使用极大似然估计方法（Maximum Likelihood Estimation, MLE）估计$\theta$：</p>
-<script type="math/tex; mode=display">\theta_{MLE}=\text{argmax}_{\theta}\sum_{t=1}^T \text{ln} p(x_t;\theta)</script><p>然而在实际中这种方案是行不通的，因为配分函数$Z(\theta)$难以计算。计算配分函数是一块难啃的骨头，许多物理学上的困难本质就是来源于如何高效计算配分函数，因此很多方法例如高温展开、信念传播算法等本质就是在解决如何在牺牲一些精确性的条件下，高效计算配分函数。</p>
-<p>直接计算存在困难，并且配分函数作为一个仅仅为$\theta$的函数存在，那就转而计算梯度，试图将配分函数在求梯度的过程中磨消。定义：</p>
-<script type="math/tex; mode=display">
-\psi(\xi;\theta)=
-    \left(
-        \begin{matrix}
-            \frac{\partial ln p(\xi;\theta)}{\partial \xi_1} \\
-            \cdots \\
-            \frac{\partial ln p(\xi;\theta)}{\partial \xi_n}
-        \end{matrix}
-    \right)
-=
-    \left(
-        \begin{matrix}
-            \psi_1 (\xi;\theta) \\
-            \cdots \\
-            \psi_n (\xi;\theta)
-        \end{matrix}
-    \right)
-=\nabla_\xi ln p(\xi;\theta)</script><p>本质上求偏导并不依赖于$Z(\theta)$，可以获得：</p>
-<script type="math/tex; mode=display">\begin{equation} \psi(\xi;\theta)=\nabla_\xi lnq(\xi;\theta) \end{equation}</script><p><img src="/2024/01/19/Score_matching_model/gradient.png" alt="梯度图片" title="考虑一个分布的梯度图像"></p>
-<p>上方是一个分布的梯度图像，可以看出如果梯度方向大小均相同的情况下，两个应该是同一种分布。这里可以通过分析下面的函数得到，如果$J(\theta)=0$,由于$p_x(\xi)\geq0$，必然存在$\psi(\xi;\theta)-\psi_x(\xi)\equiv 0$，则说明$\theta=\theta^*$，成功学习到分布。这也证明了解的存在唯一性。</p>
-<h2 id="直观的目标函数（Explicit-Score-Matching，ESM）"><a href="#直观的目标函数（Explicit-Score-Matching，ESM）" class="headerlink" title="直观的目标函数（Explicit Score Matching，ESM）"></a>直观的目标函数（Explicit Score Matching，ESM）</h2><p>将任务目标函数写为考虑两个函数的梯度的均方误差(MSE)：</p>
-<script type="math/tex; mode=display">\begin{equation} J_{ESM}(\theta)=\frac{1}{2} \int_{\xi\in\mathbb{R}^n}p_x(\xi)||\psi(\xi;\theta)-\psi_x(\xi)||^2\mathrm{d}\xi \end{equation}</script><p>其中$\psi_x(\xi)=\nabla_\xi lnp_x(\xi)$，为目标概率密度分布的梯度分布。优化目标为：</p>
-<script type="math/tex; mode=display">\hat\theta=\text{argmax}_\theta J(\theta)</script><p>可以通过重要性采样得到$T$个数据点$\bf{x}(1), \bf{x}(2) \cdots\bf{x}(T)$，从而计算经验期望值：</p>
-<script type="math/tex; mode=display">\begin{equation} \tilde{J}_{ESM}(\theta)=\frac{1}{T}\sum_{t=1}^T\sum_{i=1}^n[\psi(\xi;\theta)-\psi_x(\xi)]^2 \end{equation}</script><h2 id="隐藏的目标函数（Implicit-Score-Matching，ISM）"><a href="#隐藏的目标函数（Implicit-Score-Matching，ISM）" class="headerlink" title="隐藏的目标函数（Implicit Score Matching，ISM）"></a>隐藏的目标函数（Implicit Score Matching，ISM）</h2><p>在计算均方误差的时候，需要知道$\psi_x(\xi)$，然而知道确切的目标函数形式是不可能的。因此，虽然以上逻辑是合理的，但是本质上是不计算实施的，需要进行一定的调整。</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-J(\theta)&=\frac{1}{2} \int_{\xi\in\mathbb{R}^n}p_x(\xi)||\psi(\xi;\theta)-\psi_x(\xi)||^2\mathrm{d}\xi \\
-&=\int_{\xi\in\mathbb{R}^n}p_x(\xi)[\frac{1}{2} \psi(\xi;\theta)^2+\frac{1}{2} \psi_x(\xi)^2-\psi(\xi;\theta)\psi_x(\xi)]\mathrm{d}\xi \\
-\end{align*}</script><p>针对后一部分结果进行简化，将$\psi$展开为具体的第$i$部分：</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-&\int_{\xi\in\mathbb{R}^n}-p_x(\xi)\psi(\xi;\theta)\psi_x(\xi)\mathrm{d}\xi \\
-&= -\sum_i\int_{\xi\in\mathbb{R}^n}p_x(\xi)\psi_i(\xi;\theta)\psi_{x,i}(\xi)\mathrm{d}\xi \\
-&=-\sum_i\int_{\xi\in\mathbb{R}^n}p_x(\xi)\psi_i(\xi;\theta)\frac{\partial\psi_{x}(\xi)}{\partial \xi_i} \mathrm{d}\xi \\
-&=-\sum_i\int_{\xi\in\mathbb{R}^n}p_x(\xi)\psi_i(\xi;\theta)\frac{\partial ln p_x(\xi)}{\partial \xi_i} \mathrm{d}\xi \\
-&=-\sum_i\int_{\xi\in\mathbb{R}^n}\psi_i(\xi;\theta)\frac{\partial p_x(\xi)}{\partial \xi_i} \mathrm{d}\xi \\
-&=-\sum_i\left[ \psi_i(\xi;\theta)p_x(\xi) |_{\xi_i=-\infty}^{\xi_i=\infty} - \int_{\xi\in\mathbb{R}^n} p_x(\xi)\frac{\partial \psi_i(\xi;\theta)}{\partial \xi_i} \mathrm{d}\xi \right]\\
-\end{align*}</script><p>将其中第一部分进行更详细的展开：</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-\psi_1(\xi;\theta)p_x(\xi) |_{\xi_1=-\infty}^{\xi_1=\infty} &=  \lim\limits_{a\to \infty,b\to\infty}[\psi(a,\xi_2\cdots\xi_n;\theta)p_x(a,\xi_2\cdots\xi_n;\theta)-\psi(b,\xi_2\cdots\xi_n;\theta)p_x(b,\xi_2\cdots\xi_n;\theta)] \\
-&= 0
-\end{align*}</script><p>后面的原因来源于一个简单的假设，当$||\xi||\to\infty$：</p>
-<script type="math/tex; mode=display">p_{x}(\xi)\psi(\xi;\theta)\to0</script><p>可以这样理解该假设，当采样数量巨大或者分布为连续，单一采样所占概率分布很小，可以视为直接为0。因此得到最后的结果：</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-\int_{\xi\in\mathbb{R}^n}-p_x(\xi)\psi(\xi;\theta)\psi_x(\xi)\mathrm{d}\xi &=\sum_i \int_{\xi\in\mathbb{R}^n} p_x(\xi)\frac{\partial \psi_i(\xi;\theta)}{\partial \xi_i} \mathrm{d}\xi\\
-&=\int_{\xi\in\mathbb{R}^n} p_x(\xi)\partial_{i} \psi_i(\xi;\theta) \mathrm{d}\xi\\
-\end{align*}</script><script type="math/tex; mode=display">
-\begin{align*}
-J(\theta)&=\frac{1}{2} \int_{\xi\in\mathbb{R}^n}p_x(\xi)||\psi(\xi;\theta)-\psi_x(\xi)||^2\mathrm{d}\xi \\
-&=\int_{\xi\in\mathbb{R}^n}p_x(\xi)[\frac{1}{2} \psi(\xi;\theta)^2+\frac{1}{2} \psi_x(\xi)^2-\psi(\xi;\theta)\psi_x(\xi)]\mathrm{d}\xi \\
-
-&=\int_{\xi\in\mathbb{R}^n}p_x(\xi)[\frac{1}{2} \psi(\xi;\theta)^2+\frac{1}{2} \psi_x(\xi)^2+\partial_{i} \psi_i(\xi;\theta)]\mathrm{d}\xi \\
-\end{align*}</script><p>其中第二项为目标函数的积分，结果应该为一个常数，对于优化目标函数来说一个常数并没有实际意义，因此可以直接消去：</p>
-<script type="math/tex; mode=display">
-\begin{align}
-J_{ISM}(\theta) &= \int_{\xi\in\mathbb{R}^n}p_x(\xi)[\frac{1}{2} \psi(\xi;\theta)^2+\partial_{i} \psi_i(\xi;\theta)]\mathrm{d}\xi \\
-&= \mathbb{E}_{p_x(\xi)}[\frac{1}{2} \psi(\xi;\theta)^2+\text{tr}(\nabla_{\xi} \psi_{\xi}(\xi;\theta))] \\
-\tilde{J}_{ISM}(\theta) &= \frac{1}{T}\sum_{t=1}^T\sum_{i=1}^n[\frac{1}{2} \psi(x_t;\theta)^2+\partial_{i} \psi_i(x_t;\theta)]
-\end{align}</script><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>首先通过概率密度分布拟合明确了任务目标，通过调节参数$\theta$使得$p_{\bf X}(\cdot)$与$p(\cdot;\theta)$分布尽可能相同。但是直接计算$p(\cdot;\theta)$存在困难，因此将任务目标进行改变，转而寻<strong>求概率分布密度函数的梯度</strong>尽可能相似。然后求解公式中包含目标函数，无法直接求解，通过分布积分的方法转化为只需要拟合函数便可以求解。</p>
-<p>然而在计算ISM的时候存在两点问题：</p>
-<ul>
-<li>需要计算二次导数，这会导致计算图大小升高</li>
-<li>当输入数据维度很大的时候很难处理</li>
-</ul>
-<h1 id="噪声得分匹配（Denoising-Score-Matching，DSM）"><a href="#噪声得分匹配（Denoising-Score-Matching，DSM）" class="headerlink" title="噪声得分匹配（Denoising Score Matching，DSM）"></a>噪声得分匹配（Denoising Score Matching，DSM）</h1><p>本算法的思想来源于A Connection Between Score Matching and Denoising Autoencoders。</p>
-<p>DSM的提出，可以很好的解决ISM存在的两个问题。</p>
-<h2 id="噪声"><a href="#噪声" class="headerlink" title="噪声"></a>噪声</h2><p>将目标函数加入噪声 $p_{ x_\sigma }$，其中$\sigma$表示噪声，那么ESM与ISM可以改写为：</p>
-<script type="math/tex; mode=display">
-\begin{align}
-J_{ESM,p_{\sigma}}(\theta) &=\mathbb{E}_{p_\sigma(\xi)}\left[ \frac{1}{2} ||\psi(\xi;\theta)-\psi_{x_\sigma}(\xi)||^2\right] \\
-&= \mathbb{E}_{p_\sigma(\xi)}\left[ \frac{1}{2} ||\psi(\xi;\theta)-\frac{\partial ln p_{\sigma}(\xi)}{\partial \xi}||^2\right] \\
-J_{ISM,p_\sigma}(\theta) &= \mathbb{E}_{p_\sigma(\xi)}\left[ \frac{1}{2} \psi(\xi;\theta)^2+\text{tr}(\nabla_{\xi} \psi (\xi;\theta))\right] \\
-\end{align}</script><p>这两个式子在变化前后，形式基本一样。区别的地方那个在于学习的目标函数区别，后者学习的目标函数是包含噪音之后的目标函数。而且可以看出，在变化之后，同样计算二阶导数，计算难度依然没有发生改变。</p>
-<p>引入联合概率密度分布$p_\sigma(\tilde{\bf x}, {\bf x})=p_\sigma(\tilde{\bf x}|{\bf x})p_0({\bf x})$，其中$\tilde x$是在准确分布$x$基础上的随机取值，定义噪音得分匹配(DSM)：</p>
-<script type="math/tex; mode=display">
-J_{DSM,p_{\sigma}}(\theta)=\mathbb{E}_{p_\sigma(\tilde x,x)}\left[ \frac{1}{2} ||\psi(\tilde x;\theta)-\frac{\partial ln p_{\sigma}(\tilde x|x)}{\partial \tilde x}||^2\right]</script><p>假设为高斯核函数关系$p_\sigma(\tilde x|x)=e^{-\frac{||x-\tilde x||^2}{2\sigma^2}}$：</p>
-<script type="math/tex; mode=display">
-\frac{\partial p_{\sigma}(\tilde x|x)}{\partial \tilde x} = \frac{x-\tilde x}{\sigma^2}</script><p>因此：</p>
-<script type="math/tex; mode=display">
-\begin{equation}
-J_{DSM,p_{\sigma}}(\theta)=\mathbb{E}_{p_\sigma(\tilde x,x)}\left[ \frac{1}{2} ||\psi(\tilde x;\theta)-\frac{x-\tilde x}{\sigma^2}||^2\right]
-\end{equation}</script><p>可以发现，在通过引入噪声函数之后，成功避免了二次导数的计算。然而DSM的引入是直接定义，并没有证明ESM的等价性。</p>
-<h2 id="等价性证明"><a href="#等价性证明" class="headerlink" title="等价性证明"></a>等价性证明</h2><script type="math/tex; mode=display">
-\begin{align*}
-J_{ESM,p_{\sigma}}(\theta) &= \mathbb{E}_{p_\sigma(\tilde x)}\left[ \frac{1}{2} ||\psi(\tilde x;\theta)-\frac{\partial ln p_{\sigma}(\tilde x)}{\partial \tilde x}||^2\right] \\
-&= \mathbb{E}_{p_\sigma(\tilde x)}\left[ \frac{1}{2} ||\psi(\tilde x;\theta)||^2\right]-S(\theta)+C_2\\
-\end{align*}</script><p>其中$C_2=\mathbb{E}_{p_\sigma(\tilde x)}\left[ \frac{1}{2}||\frac{\partial ln p_{\sigma}(\tilde x)}{\partial \tilde x}||^2 \right]$，并不依赖于参数$\theta$，可以直接忽略。</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-S(\theta) &= \mathbb{E}_{p_\sigma(\tilde x)} \left[ <\psi(\tilde{\bf x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf x})}{\partial \tilde{\bf x}}> \right] \\
-&= \int_{\tilde{\bf x}} p_\sigma(\tilde{\bf x})<\psi(\tilde{\bf x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf x})}{\partial \tilde{\bf x}}> \mathrm{d}\tilde{\bf x} \\
-&= \int_{\tilde{\bf x}} p_\sigma(\tilde{\bf x})<\psi(\tilde{\bf x};\theta),\frac{1}{p_\sigma(\tilde{\bf x})} \frac{\partial p_\sigma(\tilde{\bf x})}{\partial \tilde{\bf x}}> \mathrm{d}\tilde{\bf x} \\
-&= \int_{\tilde{\bf x}} <\psi(\tilde{\bf x};\theta), \frac{\partial p_\sigma(\tilde{\bf x})}{\partial \tilde{\bf x}}> \mathrm{d}\tilde{\bf x} \\
-&= \int_{\tilde{\bf x}} <\psi(\tilde{\bf x};\theta), \frac{\partial \int_{\bf x} p_\sigma(\tilde{\bf x}|{\bf x})p_\sigma({\bf x})\mathrm{d}{\bf x}}{\partial \tilde{\bf x}}> \mathrm{d}\tilde{\bf x} \\
-&= \int_{\tilde{\bf x}} \int_{\bf x} p_\sigma({\bf x})<\psi(\tilde{\bf x};\theta), \frac{\partial p_\sigma(\tilde{\bf x}|{\bf x})}{\partial \tilde{\bf x}}> \mathrm{d}{\bf x} \mathrm{d}\tilde{\bf x} \\
-&= \int_{\tilde{\bf x}} \int_{\bf x} p_\sigma({\bf x})p_\sigma(\tilde{\bf x}|{\bf x})<\psi(\tilde{\bf x};\theta), \frac{\partial ln p_\sigma(\tilde{\bf x}|{\bf x})}{\partial \tilde{\bf x}}> \mathrm{d}{\bf x} \mathrm{d}\tilde{\bf x} \\
-&= \int_{\tilde{\bf x}} \int_{\bf x} p_\sigma(\tilde{\bf x},{\bf x})<\psi(\tilde{\bf x};\theta), \frac{\partial ln p_\sigma(\tilde{\bf x}|{\bf x})}{\partial \tilde{\bf x}}> \mathrm{d}{\bf x} \mathrm{d}\tilde{\bf x} \\
-&= \mathbb{E}_{p_\sigma(\tilde x, x)} \left[ <\psi(\tilde{\bf x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf x}|{\bf x})}{\partial \tilde{\bf x}}> \right] \\
-\end{align*}</script><p>从而得到：</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-J_{ESM,p_{\sigma}}(\theta) &= \mathbb{E}_{p_\sigma(\tilde x)}\left[ \frac{1}{2} ||\psi(\tilde x;\theta)||^2\right]-\mathbb{E}_{p_\sigma(\tilde x, x)} \left[ <\psi(\tilde{\bf x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf x}|{\bf x})}{\partial \tilde{\bf x}}> \right]+C_2\\
-\end{align*}</script><p>另一方面，针对DSM进行分解：</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-J_{DSM,p_{\sigma}}(\theta)&=\mathbb{E}_{p_\sigma(\tilde x,x)}\left[ \frac{1}{2} ||\psi(\tilde x;\theta)-\frac{\partial ln p_{\sigma}(\tilde x|x)}{\partial \tilde x}||^2\right] \\
-&= \mathbb{E}_{p_\sigma(\tilde x)}\left[ \frac{1}{2} ||\psi(\tilde x;\theta)||^2 \right]-\mathbb{E}_{p_\sigma(\tilde x, x)} \left[ <\psi(\tilde{\bf x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf x}|{\bf x})}{\partial \tilde{\bf x}}> \right]+C_3
-\end{align*}</script><p>其中$C_3=\mathbb{E}_{p_\sigma(\tilde x, x)}\left[\frac{1}{2}||\frac{\partial ln p_{\sigma}(\tilde x|x)}{\partial \tilde x}||^2\right]$，同样不依赖于$\theta$参数，可以认为是一个常量。因此可以得到DSM与ESM的关系：</p>
-<script type="math/tex; mode=display">
-\begin{align}
-J_{DSM,p_{\sigma}}(\theta) = J_{ESM,p_{\sigma}}(\theta)-C_3+C_2
-\end{align}</script><p>其中$C_2, C_3$与优化目标$\theta$无关，因此可以直接忽略。因此可以证明两者是等价的。</p>
-<h2 id="总结与分析"><a href="#总结与分析" class="headerlink" title="总结与分析"></a>总结与分析</h2><p>相对于ESM方法，引入噪音简化二阶偏导为一个关于方差$\sigma$的函数。并且成功证明，两者等价。</p>
-<p>然而这个方法存在一些问题：</p>
-<ul>
-<li>学习到的是加上噪音之后的分布，不是原分布</li>
-<li>加入的方差$\sigma$很难控制调整</li>
-</ul>
-<h1 id="切片匹配得分（Sliced-Score-Matching，SSM）"><a href="#切片匹配得分（Sliced-Score-Matching，SSM）" class="headerlink" title="切片匹配得分（Sliced Score Matching，SSM）"></a>切片匹配得分（Sliced Score Matching，SSM）</h1><p>来源于文章——Sliced Score Matching: A Scalable Approach to Density and Score Estimation。</p>
-<h2 id="降维思想"><a href="#降维思想" class="headerlink" title="降维思想"></a>降维思想</h2><p>直接对梯度进行比较，会因为维度较高产生问题，可以尝试通过一个函数$V$，将高维度映射到低纬度上。</p>
-<script type="math/tex; mode=display">
-\begin{align*}
-J_{SSM}(\theta)&=\mathbb{E}_{\xi}\left[\frac{1}{2}||{\bf v}^T \psi(\xi;\theta)- {\bf v}^T\psi_x(\xi)||^2\right]\\
-&= \mathbb{E}_{p_x(\xi)}[\frac{1}{2} {\bf v}^T \psi(\xi;\theta)^2 {\bf v}+\text{tr}({\bf v}^T\nabla_{\xi} \psi_{\xi}(\xi;\theta){\bf v})] \\
-\end{align*}</script><p>要求${\bf v}\sim p_v, \mathbb{E}_{p_v}[{\bf v}{\bf v}^T]&gt;0, \mathbb{E}_{p_v}[||{\bf v}||^2_2]&lt;\infty$，这是因为需要最后出一个与$\theta$无关的常数。这种分布也是容易找到的，例如正态分布、均匀分布等。</p>
-<!--
-# Score Matching model with Langevin Dynamics
-
-The idea from paper -- Generative Modeling by Estimating Gradients of the
-Data Distribution.
-
-## Langevin Dynamics
--->
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Score matching model</tag>
-        <tag>Explicit Score Matching</tag>
-        <tag>Implicit Score Matching</tag>
-        <tag>Denoising Score Matching</tag>
-        <tag>Sliced Score Matching</tag>
       </tags>
   </entry>
   <entry>
@@ -696,6 +551,167 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
         <tag>TRPO</tag>
         <tag>Policy Gradients</tag>
         <tag>Reinforcement Learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Score matching model</title>
+    <url>/2024/01/19/Score_matching_model/</url>
+    <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这篇文章主要描述基于得分匹配（Score matching model）的想法，以及之后主要的修改思路。这种思路是生成模型的一种，与GAN、normal-flow等模型具备同样的功能。</p>
+<p>本篇文章大量借鉴<a href="https://bobondemon.github.io/2022/01/08/Estimation-of-Non-Normalized-Statistical-Models-by-Score-Matching/">棒棒生博客</a>，推荐阅读原文博客。本文章在其基础上加入一些作者本人的思考，并且统一符号，增加阅读流畅性。</p>
+<span id="more"></span>
+<h1 id="得分匹配算法（Score-matching-model）"><a href="#得分匹配算法（Score-matching-model）" class="headerlink" title="得分匹配算法（Score matching model）"></a>得分匹配算法（Score matching model）</h1><p>得分匹配这种思想首先发表于论文—Estimation of Non-Normalized Statistical Models<br>by Score Matching。</p>
+<h2 id="拟合目标"><a href="#拟合目标" class="headerlink" title="拟合目标"></a>拟合目标</h2><p>图像、声音、热力学过程等在数学形式上应该是一种概率分布，想要模仿生成相应的事物需要的就是能够得知这种概率分布。但是这种概率分布往往在一个高维空间，难以凭借人类的经验直接获得，因此此时借助神经网络的拟合能力，完成概率密度分布函数的拟合。</p>
+<p>利用 $\bf{x}$ 生成一个随机的目标概率密度分布 $p_{\bf{x}}(\cdot)$，接下来尝试拟合该目标函数，拟合函数的概率密度分布记为$p(\cdot;\theta)$，其中$\theta$是一个m维空间的向量。目标是从$\bf{x}$中估计$\theta$。</p>
+<p>将拟合函数$p(\cdot;\theta)$进一步分解开来：</p>
+<script type="math/tex; mode=display">p(\xi;\theta)=\frac{1}{Z(\theta)}q(\xi;\theta)</script><p>其中：$Z(\theta)=\int_{\xi\in \mathbb{R}^n}q(\xi;\theta)\mathrm{d}\xi$。这样只需要生成函数$q(\cdot;\theta)$，不需要关心归一化的问题。</p>
+<p>通常非归一化采样的方法是马尔科夫链蒙特卡洛模拟。典型的是Ising模型的模拟过程。在得到一系列数据$\{x_1,x_2, x_3…\}$后，使用极大似然估计方法（Maximum Likelihood Estimation, MLE）估计$\theta$：</p>
+<script type="math/tex; mode=display">\theta_{MLE}=\text{argmax}_{\theta}\sum_{t=1}^T \text{ln} p(x_t;\theta)</script><p>然而在实际中这种方案是行不通的，因为配分函数$Z(\theta)$难以计算。计算配分函数是一块难啃的骨头，许多物理学上的困难本质就是来源于如何高效计算配分函数，因此很多方法例如高温展开、信念传播算法等本质就是在解决如何在牺牲一些精确性的条件下，高效计算配分函数。</p>
+<p>直接计算存在困难，并且配分函数作为一个仅仅为$\theta$的函数存在，那就转而计算梯度，试图将配分函数在求梯度的过程中磨消。定义：</p>
+<script type="math/tex; mode=display">
+\psi(\xi;\theta)=
+    \left(
+        \begin{matrix}
+            \frac{\partial ln p(\xi;\theta)}{\partial \xi_1} \\
+            \cdots \\
+            \frac{\partial ln p(\xi;\theta)}{\partial \xi_n}
+        \end{matrix}
+    \right)
+=
+    \left(
+        \begin{matrix}
+            \psi_1 (\xi;\theta) \\
+            \cdots \\
+            \psi_n (\xi;\theta)
+        \end{matrix}
+    \right)
+=\nabla_\xi ln p(\xi;\theta)</script><p>本质上求偏导并不依赖于$Z(\theta)$，可以获得：</p>
+<script type="math/tex; mode=display">\begin{equation} \psi(\xi;\theta)=\nabla_\xi lnq(\xi;\theta) \end{equation}</script><p><img src="/2024/01/19/Score_matching_model/gradient.png" alt="梯度图片" title="考虑一个分布的梯度图像"></p>
+<p>上方是一个分布的梯度图像，可以看出如果梯度方向大小均相同的情况下，两个应该是同一种分布。这里可以通过分析下面的函数得到，如果$J(\theta)=0$,由于$p_x(\xi)\geq0$，必然存在$\psi(\xi;\theta)-\psi_x(\xi)\equiv 0$，则说明$\theta=\theta^*$，成功学习到分布。这也证明了解的存在唯一性。</p>
+<h2 id="直观的目标函数（Explicit-Score-Matching，ESM）"><a href="#直观的目标函数（Explicit-Score-Matching，ESM）" class="headerlink" title="直观的目标函数（Explicit Score Matching，ESM）"></a>直观的目标函数（Explicit Score Matching，ESM）</h2><p>将任务目标函数写为考虑两个函数的梯度的均方误差(MSE)：</p>
+<script type="math/tex; mode=display">\begin{equation} J_{ESM}(\theta)=\frac{1}{2} \int_{\xi\in\mathbb{R}^n}p_x(\xi)||\psi(\xi;\theta)-\psi_x(\xi)||^2\mathrm{d}\xi \end{equation}</script><p>其中$\psi_x(\xi)=\nabla_\xi lnp_x(\xi)$，为目标概率密度分布的梯度分布。优化目标为：</p>
+<script type="math/tex; mode=display">\hat\theta=\text{argmax}_\theta J(\theta)</script><p>可以通过重要性采样得到$T$个数据点$\bf{x}(1), \bf{x}(2) \cdots\bf{x}(T)$，从而计算经验期望值：</p>
+<script type="math/tex; mode=display">\begin{equation} \tilde{J}_{ESM}(\theta)=\frac{1}{T}\sum_{t=1}^T\sum_{i=1}^n[\psi(\xi;\theta)-\psi_x(\xi)]^2 \end{equation}</script><h2 id="隐藏的目标函数（Implicit-Score-Matching，ISM）"><a href="#隐藏的目标函数（Implicit-Score-Matching，ISM）" class="headerlink" title="隐藏的目标函数（Implicit Score Matching，ISM）"></a>隐藏的目标函数（Implicit Score Matching，ISM）</h2><p>在计算均方误差的时候，需要知道$\psi_x(\xi)$，然而知道确切的目标函数形式是不可能的。因此，虽然以上逻辑是合理的，但是本质上是不计算实施的，需要进行一定的调整。</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+J(\theta)&=\frac{1}{2} \int_{\xi\in\mathbb{R}^n}p_x(\xi)||\psi(\xi;\theta)-\psi_x(\xi)||^2\mathrm{d}\xi \\
+&=\int_{\xi\in\mathbb{R}^n}p_x(\xi)[\frac{1}{2} \psi(\xi;\theta)^2+\frac{1}{2} \psi_x(\xi)^2-\psi(\xi;\theta)\psi_x(\xi)]\mathrm{d}\xi \\
+\end{align*}</script><p>针对后一部分结果进行简化，将$\psi$展开为具体的第$i$部分：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+&\int_{\xi\in\mathbb{R}^n}-p_x(\xi)\psi(\xi;\theta)\psi_x(\xi)\mathrm{d}\xi \\
+&= -\sum_i\int_{\xi\in\mathbb{R}^n}p_x(\xi)\psi_i(\xi;\theta)\psi_{x,i}(\xi)\mathrm{d}\xi \\
+&=-\sum_i\int_{\xi\in\mathbb{R}^n}p_x(\xi)\psi_i(\xi;\theta)\frac{\partial\psi_{x}(\xi)}{\partial \xi_i} \mathrm{d}\xi \\
+&=-\sum_i\int_{\xi\in\mathbb{R}^n}p_x(\xi)\psi_i(\xi;\theta)\frac{\partial ln p_x(\xi)}{\partial \xi_i} \mathrm{d}\xi \\
+&=-\sum_i\int_{\xi\in\mathbb{R}^n}\psi_i(\xi;\theta)\frac{\partial p_x(\xi)}{\partial \xi_i} \mathrm{d}\xi \\
+&=-\sum_i\left[ \psi_i(\xi;\theta)p_x(\xi) |_{\xi_i=-\infty}^{\xi_i=\infty} - \int_{\xi\in\mathbb{R}^n} p_x(\xi)\frac{\partial \psi_i(\xi;\theta)}{\partial \xi_i} \mathrm{d}\xi \right]\\
+\end{align*}</script><p>将其中第一部分进行更详细的展开：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\psi_1(\xi;\theta)p_x(\xi) |_{\xi_1=-\infty}^{\xi_1=\infty} &=  \lim\limits_{a\to \infty,b\to\infty}[\psi(a,\xi_2\cdots\xi_n;\theta)p_x(a,\xi_2\cdots\xi_n;\theta)-\psi(b,\xi_2\cdots\xi_n;\theta)p_x(b,\xi_2\cdots\xi_n;\theta)] \\
+&= 0
+\end{align*}</script><p>后面的原因来源于一个简单的假设，当$||\xi||\to\infty$：</p>
+<script type="math/tex; mode=display">p_{x}(\xi)\psi(\xi;\theta)\to0</script><p>可以这样理解该假设，当采样数量巨大或者分布为连续，单一采样所占概率分布很小，可以视为直接为0。因此得到最后的结果：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+\int_{\xi\in\mathbb{R}^n}-p_x(\xi)\psi(\xi;\theta)\psi_x(\xi)\mathrm{d}\xi &=\sum_i \int_{\xi\in\mathbb{R}^n} p_x(\xi)\frac{\partial \psi_i(\xi;\theta)}{\partial \xi_i} \mathrm{d}\xi\\
+&=\int_{\xi\in\mathbb{R}^n} p_x(\xi)\partial_{i} \psi_i(\xi;\theta) \mathrm{d}\xi\\
+\end{align*}</script><script type="math/tex; mode=display">
+\begin{align*}
+J(\theta)&=\frac{1}{2} \int_{\xi\in\mathbb{R}^n}p_x(\xi)||\psi(\xi;\theta)-\psi_x(\xi)||^2\mathrm{d}\xi \\
+&=\int_{\xi\in\mathbb{R}^n}p_x(\xi)[\frac{1}{2} \psi(\xi;\theta)^2+\frac{1}{2} \psi_x(\xi)^2-\psi(\xi;\theta)\psi_x(\xi)]\mathrm{d}\xi \\
+
+&=\int_{\xi\in\mathbb{R}^n}p_x(\xi)[\frac{1}{2} \psi(\xi;\theta)^2+\frac{1}{2} \psi_x(\xi)^2+\partial_{i} \psi_i(\xi;\theta)]\mathrm{d}\xi \\
+\end{align*}</script><p>其中第二项为目标函数的积分，结果应该为一个常数，对于优化目标函数来说一个常数并没有实际意义，因此可以直接消去：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+J_{ISM}(\theta) &= \int_{\xi\in\mathbb{R}^n}p_x(\xi)[\frac{1}{2} \psi(\xi;\theta)^2+\partial_{i} \psi_i(\xi;\theta)]\mathrm{d}\xi \\
+&= \mathbb{E}_{p_x(\xi)}[\frac{1}{2} \psi(\xi;\theta)^2+\text{tr}(\nabla_{\xi} \psi_{\xi}(\xi;\theta))] \\
+\tilde{J}_{ISM}(\theta) &= \frac{1}{T}\sum_{t=1}^T\sum_{i=1}^n[\frac{1}{2} \psi(x_t;\theta)^2+\partial_{i} \psi_i(x_t;\theta)]
+\end{align}</script><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>首先通过概率密度分布拟合明确了任务目标，通过调节参数$\theta$使得$p_{\bf X}(\cdot)$与$p(\cdot;\theta)$分布尽可能相同。但是直接计算$p(\cdot;\theta)$存在困难，因此将任务目标进行改变，转而寻<strong>求概率分布密度函数的梯度</strong>尽可能相似。然后求解公式中包含目标函数，无法直接求解，通过分布积分的方法转化为只需要拟合函数便可以求解。</p>
+<p>然而在计算ISM的时候存在两点问题：</p>
+<ul>
+<li>需要计算二次导数，这会导致计算图大小升高</li>
+<li>当输入数据维度很大的时候很难处理</li>
+</ul>
+<h1 id="噪声得分匹配（Denoising-Score-Matching，DSM）"><a href="#噪声得分匹配（Denoising-Score-Matching，DSM）" class="headerlink" title="噪声得分匹配（Denoising Score Matching，DSM）"></a>噪声得分匹配（Denoising Score Matching，DSM）</h1><p>本算法的思想来源于A Connection Between Score Matching and Denoising Autoencoders。</p>
+<p>DSM的提出，可以很好的解决ISM存在的两个问题。</p>
+<h2 id="噪声"><a href="#噪声" class="headerlink" title="噪声"></a>噪声</h2><p>将目标函数加入噪声 $p_{ x_\sigma }$，其中$\sigma$表示噪声，那么ESM与ISM可以改写为：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+J_{ESM,p_{\sigma}}(\theta) &=\mathbb{E}_{p_\sigma(\xi)}\left[ \frac{1}{2} ||\psi(\xi;\theta)-\psi_{x_\sigma}(\xi)||^2\right] \\
+&= \mathbb{E}_{p_\sigma(\xi)}\left[ \frac{1}{2} ||\psi(\xi;\theta)-\frac{\partial ln p_{\sigma}(\xi)}{\partial \xi}||^2\right] \\
+J_{ISM,p_\sigma}(\theta) &= \mathbb{E}_{p_\sigma(\xi)}\left[ \frac{1}{2} \psi(\xi;\theta)^2+\text{tr}(\nabla_{\xi} \psi (\xi;\theta))\right] \\
+\end{align}</script><p>这两个式子在变化前后，形式基本一样。区别的地方那个在于学习的目标函数区别，后者学习的目标函数是包含噪音之后的目标函数。而且可以看出，在变化之后，同样计算二阶导数，计算难度依然没有发生改变。</p>
+<p>引入联合概率密度分布$p_\sigma(\tilde{\bf x}, {\bf x})=p_\sigma(\tilde{\bf x}|{\bf x})p_0({\bf x})$，其中$\tilde x$是在准确分布$x$基础上的随机取值，定义噪音得分匹配(DSM)：</p>
+<script type="math/tex; mode=display">
+J_{DSM,p_{\sigma}}(\theta)=\mathbb{E}_{p_\sigma(\tilde x,x)}\left[ \frac{1}{2} ||\psi(\tilde x;\theta)-\frac{\partial ln p_{\sigma}(\tilde x|x)}{\partial \tilde x}||^2\right]</script><p>假设为高斯核函数关系$p_\sigma(\tilde x|x)=e^{-\frac{||x-\tilde x||^2}{2\sigma^2}}$：</p>
+<script type="math/tex; mode=display">
+\frac{\partial p_{\sigma}(\tilde x|x)}{\partial \tilde x} = \frac{x-\tilde x}{\sigma^2}</script><p>因此：</p>
+<script type="math/tex; mode=display">
+\begin{equation}
+J_{DSM,p_{\sigma}}(\theta)=\mathbb{E}_{p_\sigma(\tilde x,x)}\left[ \frac{1}{2} ||\psi(\tilde x;\theta)-\frac{x-\tilde x}{\sigma^2}||^2\right]
+\end{equation}</script><p>可以发现，在通过引入噪声函数之后，成功避免了二次导数的计算。然而DSM的引入是直接定义，并没有证明ESM的等价性。</p>
+<h2 id="等价性证明"><a href="#等价性证明" class="headerlink" title="等价性证明"></a>等价性证明</h2><script type="math/tex; mode=display">
+\begin{align*}
+J_{ESM,p_{\sigma}}(\theta) &= \mathbb{E}_{p_\sigma(\tilde x)}\left[ \frac{1}{2} ||\psi(\tilde x;\theta)-\frac{\partial ln p_{\sigma}(\tilde x)}{\partial \tilde x}||^2\right] \\
+&= \mathbb{E}_{p_\sigma(\tilde x)}\left[ \frac{1}{2} ||\psi(\tilde x;\theta)||^2\right]-S(\theta)+C_2\\
+\end{align*}</script><p>其中$C_2=\mathbb{E}_{p_\sigma(\tilde x)}\left[ \frac{1}{2}||\frac{\partial ln p_{\sigma}(\tilde x)}{\partial \tilde x}||^2 \right]$，并不依赖于参数$\theta$，可以直接忽略。</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+S(\theta) &= \mathbb{E}_{p_\sigma(\tilde x)} \left[ <\psi(\tilde{\bf x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf x})}{\partial \tilde{\bf x}}> \right] \\
+&= \int_{\tilde{\bf x}} p_\sigma(\tilde{\bf x})<\psi(\tilde{\bf x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf x})}{\partial \tilde{\bf x}}> \mathrm{d}\tilde{\bf x} \\
+&= \int_{\tilde{\bf x}} p_\sigma(\tilde{\bf x})<\psi(\tilde{\bf x};\theta),\frac{1}{p_\sigma(\tilde{\bf x})} \frac{\partial p_\sigma(\tilde{\bf x})}{\partial \tilde{\bf x}}> \mathrm{d}\tilde{\bf x} \\
+&= \int_{\tilde{\bf x}} <\psi(\tilde{\bf x};\theta), \frac{\partial p_\sigma(\tilde{\bf x})}{\partial \tilde{\bf x}}> \mathrm{d}\tilde{\bf x} \\
+&= \int_{\tilde{\bf x}} <\psi(\tilde{\bf x};\theta), \frac{\partial \int_{\bf x} p_\sigma(\tilde{\bf x}|{\bf x})p_\sigma({\bf x})\mathrm{d}{\bf x}}{\partial \tilde{\bf x}}> \mathrm{d}\tilde{\bf x} \\
+&= \int_{\tilde{\bf x}} \int_{\bf x} p_\sigma({\bf x})<\psi(\tilde{\bf x};\theta), \frac{\partial p_\sigma(\tilde{\bf x}|{\bf x})}{\partial \tilde{\bf x}}> \mathrm{d}{\bf x} \mathrm{d}\tilde{\bf x} \\
+&= \int_{\tilde{\bf x}} \int_{\bf x} p_\sigma({\bf x})p_\sigma(\tilde{\bf x}|{\bf x})<\psi(\tilde{\bf x};\theta), \frac{\partial ln p_\sigma(\tilde{\bf x}|{\bf x})}{\partial \tilde{\bf x}}> \mathrm{d}{\bf x} \mathrm{d}\tilde{\bf x} \\
+&= \int_{\tilde{\bf x}} \int_{\bf x} p_\sigma(\tilde{\bf x},{\bf x})<\psi(\tilde{\bf x};\theta), \frac{\partial ln p_\sigma(\tilde{\bf x}|{\bf x})}{\partial \tilde{\bf x}}> \mathrm{d}{\bf x} \mathrm{d}\tilde{\bf x} \\
+&= \mathbb{E}_{p_\sigma(\tilde x, x)} \left[ <\psi(\tilde{\bf x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf x}|{\bf x})}{\partial \tilde{\bf x}}> \right] \\
+\end{align*}</script><p>从而得到：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+J_{ESM,p_{\sigma}}(\theta) &= \mathbb{E}_{p_\sigma(\tilde x)}\left[ \frac{1}{2} ||\psi(\tilde x;\theta)||^2\right]-\mathbb{E}_{p_\sigma(\tilde x, x)} \left[ <\psi(\tilde{\bf x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf x}|{\bf x})}{\partial \tilde{\bf x}}> \right]+C_2\\
+\end{align*}</script><p>另一方面，针对DSM进行分解：</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+J_{DSM,p_{\sigma}}(\theta)&=\mathbb{E}_{p_\sigma(\tilde x,x)}\left[ \frac{1}{2} ||\psi(\tilde x;\theta)-\frac{\partial ln p_{\sigma}(\tilde x|x)}{\partial \tilde x}||^2\right] \\
+&= \mathbb{E}_{p_\sigma(\tilde x)}\left[ \frac{1}{2} ||\psi(\tilde x;\theta)||^2 \right]-\mathbb{E}_{p_\sigma(\tilde x, x)} \left[ <\psi(\tilde{\bf x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf x}|{\bf x})}{\partial \tilde{\bf x}}> \right]+C_3
+\end{align*}</script><p>其中$C_3=\mathbb{E}_{p_\sigma(\tilde x, x)}\left[\frac{1}{2}||\frac{\partial ln p_{\sigma}(\tilde x|x)}{\partial \tilde x}||^2\right]$，同样不依赖于$\theta$参数，可以认为是一个常量。因此可以得到DSM与ESM的关系：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+J_{DSM,p_{\sigma}}(\theta) = J_{ESM,p_{\sigma}}(\theta)-C_3+C_2
+\end{align}</script><p>其中$C_2, C_3$与优化目标$\theta$无关，因此可以直接忽略。因此可以证明两者是等价的。</p>
+<h2 id="总结与分析"><a href="#总结与分析" class="headerlink" title="总结与分析"></a>总结与分析</h2><p>相对于ESM方法，引入噪音简化二阶偏导为一个关于方差$\sigma$的函数。并且成功证明，两者等价。</p>
+<p>然而这个方法存在一些问题：</p>
+<ul>
+<li>学习到的是加上噪音之后的分布，不是原分布</li>
+<li>加入的方差$\sigma$很难控制调整</li>
+</ul>
+<h1 id="切片匹配得分（Sliced-Score-Matching，SSM）"><a href="#切片匹配得分（Sliced-Score-Matching，SSM）" class="headerlink" title="切片匹配得分（Sliced Score Matching，SSM）"></a>切片匹配得分（Sliced Score Matching，SSM）</h1><p>来源于文章——Sliced Score Matching: A Scalable Approach to Density and Score Estimation。</p>
+<h2 id="降维思想"><a href="#降维思想" class="headerlink" title="降维思想"></a>降维思想</h2><p>直接对梯度进行比较，会因为维度较高产生问题，可以尝试通过一个函数$V$，将高维度映射到低纬度上。</p>
+<script type="math/tex; mode=display">
+\begin{align*}
+J_{SSM}(\theta)&=\mathbb{E}_{\xi}\left[\frac{1}{2}||{\bf v}^T \psi(\xi;\theta)- {\bf v}^T\psi_x(\xi)||^2\right]\\
+&= \mathbb{E}_{p_x(\xi)}[\frac{1}{2} {\bf v}^T \psi(\xi;\theta)^2 {\bf v}+\text{tr}({\bf v}^T\nabla_{\xi} \psi_{\xi}(\xi;\theta){\bf v})] \\
+\end{align*}</script><p>要求${\bf v}\sim p_v, \mathbb{E}_{p_v}[{\bf v}{\bf v}^T]&gt;0, \mathbb{E}_{p_v}[||{\bf v}||^2_2]&lt;\infty$，这是因为需要最后出一个与$\theta$无关的常数。这种分布也是容易找到的，例如正态分布、均匀分布等。</p>
+<!--
+# Score Matching model with Langevin Dynamics
+
+The idea from paper -- Generative Modeling by Estimating Gradients of the
+Data Distribution.
+
+## Langevin Dynamics
+-->
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Score matching model</tag>
+        <tag>Explicit Score Matching</tag>
+        <tag>Implicit Score Matching</tag>
+        <tag>Denoising Score Matching</tag>
+        <tag>Sliced Score Matching</tag>
       </tags>
   </entry>
   <entry>
@@ -1472,7 +1488,49 @@ J_i = \sum_j L_{ij} X_j
 L_{ij} = L_{ji}, L^T = L
 \end{align}</script><p>$L_{ij}$为对称矩阵。</p>
 <h2 id="熵产生极小定理"><a href="#熵产生极小定理" class="headerlink" title="熵产生极小定理"></a>熵产生极小定理</h2><p><strong>熵产生极小定理</strong>：对处于稳态的非平衡体系，其熵产生率处于极小值。</p>
-<h1 id="涨落理论"><a href="#涨落理论" class="headerlink" title="涨落理论"></a>涨落理论</h1>]]></content>
+<h1 id="涨落理论"><a href="#涨落理论" class="headerlink" title="涨落理论"></a>涨落理论</h1><p>广义涨落有两大类：</p>
+<ul>
+<li>无论在平衡态还是非平衡态，体系宏观量瞬时值在其平均值上下快速变动。为狭义的涨落。</li>
+<li>Brown运动。</li>
+</ul>
+<h2 id="涨落基本概念"><a href="#涨落基本概念" class="headerlink" title="涨落基本概念"></a>涨落基本概念</h2><p>设$B$为热力学平衡态体系的任意宏观物理量。设体系处于第$j$个量子态时，该物理量取值$B_j$，所以物理量$B$的宏观值就是对量子态的平均值：</p>
+<script type="math/tex; mode=display">\begin{equation}
+<B> = \sum_j P_j B_j
+\end{equation}</script><p>其中$P_j$为该量子态出现的概率，为方便在不混淆的情况下，省略$B_j$的下标，记为$B$。于是体系处于某平衡态的偏差与相对偏差为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\Delta B &\equiv B - <B> \\
+r_B &\equiv \frac{\Delta B}{<B>}
+\end{align}</script><p>因为$&lt;\Delta B&gt;=0$恒成立，为了表征涨落的程度，需将偏差的平方对量子态求平均值，称为B在系综中的均方涨落，简称涨落：</p>
+<script type="math/tex; mode=display">\begin{align}
+<(\Delta B)^2> &\equiv \sum_j P_j - (\Delta B)^2 =\left < (B-<\Delta B>)^2\right> \\
+&= \sum_j P_j\left(B_j-\langle B\rangle\right)^2=\sum_j P_j B_j^2-2 \sum_j P_j B_j\langle B\rangle+\sum_j P_j\langle B\rangle^2 \\
+&= \langle B^2\rangle -\langle B\rangle^2
+\end{align}</script><p>其中$\langle B^2\rangle$为物理量$B^2$的均值，或$B$的均方值。同样，相对偏差平方的均值可表为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{align*}
+\left\langle r_B^2\right\rangle &\equiv\left\langle\left(\frac{\Delta B}{\langle B\rangle}\right)^2\right\rangle=\frac{\left\langle(\Delta B)^2\right\rangle}{\langle B\rangle^2}=\frac{\left\langle(B-\langle B\rangle)^2\right\rangle}{\langle B\rangle^2} \\
+&= \frac{\langle B^2\rangle}{\langle B\rangle^2}-1
+\end{align*}
+\end{equation}</script><p>称为热力学量$B$的相对涨落，</p>
+<font color="red">在连续谱时候的情况</font>
+
+<h2 id="涨落理论-1"><a href="#涨落理论-1" class="headerlink" title="涨落理论"></a>涨落理论</h2><h3 id="正则系综中的涨落"><a href="#正则系综中的涨落" class="headerlink" title="正则系综中的涨落"></a>正则系综中的涨落</h3><p>正则系综存在与环境的热交换，因此$(N,V,T)$恒定，体系存在能量$E$的涨落，能量均值：</p>
+<script type="math/tex; mode=display">\begin{align}
+\langle E\rangle &= \sum_j E_j P_j=\frac{1}{Z}\sum_j E_j (\Omega_j e^{\frac{-E_j}{k_B T}}) \\
+\langle E\rangle Z &= \sum_j E_j (\Omega_j e^{\frac{-E_j}{k_B T}}) \\
+\end{align}</script><p>两边被$\left( \frac{\partial}{\partial T}\right)_{V,N}$作用得到：</p>
+<script type="math/tex; mode=display">\begin{equation}
+Z\left(\frac{\partial\langle E\rangle}{\partial T}\right)_{V, N}+\langle E\rangle\left(\frac{\partial Z}{\partial T}\right)_{V, N}=\frac{1}{k_{\mathrm{B}} T^2} \sum_j E_j^2\left(\Omega_j \mathrm{e}^{-E_j /\left(k_{\mathrm{B}} T\right)}\right)=\frac{Z\left\langle E^2\right\rangle}{k_{\mathrm{B}} T^2} 
+\end{equation}</script><p>根据$\langle E\rangle=k_B T^2\left( \frac{\partial \ln Z}{\partial T}\right)_{V, N}$得到$\left( \frac{\partial Z}{\partial T}\right)_{V, N}=\frac{Z}{k_B T^2}\langle E\rangle$，因此：</p>
+<script type="math/tex; mode=display">\begin{align}
+\left(\frac{\partial\langle E\rangle}{\partial T}\right)_{V, N} = \frac{1}{k_B T^2}\left[\langle E^2\rangle-\langle E\rangle^2\right]
+\end{align}</script><p>根据定容热容$C_V = \left(\frac{\partial\langle E\rangle}{\partial T}\right)_{V, N}$，可以得到正则系统的能量涨落和能量的相对涨落分别为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{gathered}
+\left\langle(\Delta E)^2\right\rangle=\left\langle E^2\right\rangle-\langle E\rangle^2=k_{\mathrm{B}} T^2\left(\frac{\partial\langle E\rangle}{\partial T}\right)_{V, N}=k_{\mathrm{B}} T^2 C_V \\
+\left\langle r_E^2\right\rangle=\frac{\left\langle(\Delta E)^2\right\rangle}{\langle E\rangle^2}=\frac{1}{\langle E\rangle^2} k_{\mathrm{B}} T^2\left(\frac{\partial\langle E\rangle}{\partial T}\right)_{V, N}=k_{\mathrm{B}} T^2 \frac{C_V}{\langle E\rangle^2} \propto \frac{1}{N}
+\end{gathered}
+\end{equation}</script><h3 id="巨正则系综中粒子数能能量的涨落"><a href="#巨正则系综中粒子数能能量的涨落" class="headerlink" title="巨正则系综中粒子数能能量的涨落"></a>巨正则系综中粒子数能能量的涨落</h3><h3 id="平衡态开放体系中的自发涨落、Onsager的涨落回归假设"><a href="#平衡态开放体系中的自发涨落、Onsager的涨落回归假设" class="headerlink" title="平衡态开放体系中的自发涨落、Onsager的涨落回归假设"></a>平衡态开放体系中的自发涨落、Onsager的涨落回归假设</h3>]]></content>
       <categories>
         <category>Statistical physics</category>
       </categories>
@@ -1481,22 +1539,6 @@ L_{ij} = L_{ji}, L^T = L
         <tag>基本概念</tag>
         <tag>系综</tag>
         <tag>Clasical dynamics</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>A Distributional Perspective on Reinforcement Learning</title>
-    <url>/2024/03/12/Distributional_PerspectiveRL/</url>
-    <content><![CDATA[<h1 id="值分布强化学习"><a href="#值分布强化学习" class="headerlink" title="值分布强化学习"></a>值分布强化学习</h1><p><a href="https://zhuanlan.zhihu.com/p/65116688">知乎文章</a></p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Natural Gradients</tag>
-        <tag>PPO</tag>
-        <tag>TRPO</tag>
-        <tag>Policy Gradients</tag>
-        <tag>Reinforcement Learning</tag>
       </tags>
   </entry>
 </search>
