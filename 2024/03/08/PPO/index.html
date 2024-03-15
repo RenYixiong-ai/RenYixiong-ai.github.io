@@ -5,36 +5,36 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 7.0.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/~renyixiong/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/~renyixiong/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/~renyixiong/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/~renyixiong/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/~renyixiong/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/~renyixiong/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"home.ustc.edu.cn","root":"/~renyixiong/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":-1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":-1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="文中有一些问题仍未处理，缺失具体代码的解读，对于TRPO算法的认知仍然存在不清楚的地方，高阶梯度怎么算的  Abstract这是一篇关于策略梯度算法的总结。首先给出梯度策略，介绍其基本含义，但是初始方案存在一个问题，可以知道梯度变化的方向，不知道梯度的步长。然后，提出自然梯度算法，通过加入约束的方案计算出梯度的步长。接下来，Trust Region Policy Optimization（TRPO">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Policy Gradients In Reinforcement">
-<meta property="og:url" content="http://home.ustc.edu.cn/~renyixiong/2024/03/08/PPO/index.html">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/03/08/PPO/index.html">
 <meta property="og:site_name" content="Yixiong&#39;s Blog">
 <meta property="og:description" content="文中有一些问题仍未处理，缺失具体代码的解读，对于TRPO算法的认知仍然存在不清楚的地方，高阶梯度怎么算的  Abstract这是一篇关于策略梯度算法的总结。首先给出梯度策略，介绍其基本含义，但是初始方案存在一个问题，可以知道梯度变化的方向，不知道梯度的步长。然后，提出自然梯度算法，通过加入约束的方案计算出梯度的步长。接下来，Trust Region Policy Optimization（TRPO">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://home.ustc.edu.cn/~renyixiong/~renyixiong/2024/03/08/PPO/REINFORCE.png">
-<meta property="og:image" content="http://home.ustc.edu.cn/~renyixiong/~renyixiong/2024/03/08/PPO/figure1.png">
-<meta property="og:image" content="http://home.ustc.edu.cn/~renyixiong/~renyixiong/2024/03/08/PPO/figure2.png">
-<meta property="og:image" content="http://home.ustc.edu.cn/~renyixiong/~renyixiong/2024/03/08/PPO/natural_gradients.png">
-<meta property="og:image" content="http://home.ustc.edu.cn/~renyixiong/~renyixiong/2024/03/08/PPO/TRPO.png">
-<meta property="og:image" content="http://home.ustc.edu.cn/~renyixiong/~renyixiong/2024/03/08/PPO/TRPO2.png">
-<meta property="og:image" content="http://home.ustc.edu.cn/~renyixiong/~renyixiong/2024/03/08/PPO/CLIP.png">
-<meta property="og:image" content="http://home.ustc.edu.cn/~renyixiong/~renyixiong/2024/03/08/PPO/PPO_Clip.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/PPO/REINFORCE.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/PPO/figure1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/PPO/figure2.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/PPO/natural_gradients.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/PPO/TRPO.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/PPO/TRPO2.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/PPO/CLIP.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/PPO/PPO_Clip.png">
 <meta property="article:published_time" content="2024-03-07T16:00:00.000Z">
 <meta property="article:modified_time" content="2024-03-12T04:29:36.464Z">
 <meta property="article:author" content="Ren Yixiong">
@@ -44,9 +44,9 @@
 <meta property="article:tag" content="Policy Gradients">
 <meta property="article:tag" content="Reinforcement Learning">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://home.ustc.edu.cn/~renyixiong/~renyixiong/2024/03/08/PPO/REINFORCE.png">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/03/08/PPO/REINFORCE.png">
 
-<link rel="canonical" href="http://home.ustc.edu.cn/~renyixiong/2024/03/08/PPO/">
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/03/08/PPO/">
 
 
 <script id="page-configurations">
@@ -90,7 +90,7 @@
   </style>
 </noscript>
 
-<link rel="alternate" href="/~renyixiong/atom.xml" title="Yixiong's Blog" type="application/atom+xml">
+<link rel="alternate" href="/atom.xml" title="Yixiong's Blog" type="application/atom+xml">
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
@@ -109,7 +109,7 @@
 
   <div class="site-meta">
 
-    <a href="/~renyixiong/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">Yixiong's Blog</h1>
       <span class="logo-line-after"><i></i></span>
@@ -130,17 +130,17 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/~renyixiong/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/~renyixiong/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/~renyixiong/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
       <li class="menu-item menu-item-search">
@@ -198,10 +198,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://home.ustc.edu.cn/~renyixiong/2024/03/08/PPO/">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/03/08/PPO/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/~renyixiong/images/avatar.gif">
+      <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="Ren Yixiong">
       <meta itemprop="description" content="">
     </span>
@@ -236,7 +236,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/~renyixiong/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
                 </span>
             </span>
 
@@ -353,21 +353,21 @@ P(\tau;\theta)=\left[\prod_{t=0}^T P(s_{t+1}|s_t,a_t)\cdot \pi_{\theta}(a_t|s_t)
 <h2 id="Loss-functions-and-Algorithmic-implementation-REINFORCE"><a href="#Loss-functions-and-Algorithmic-implementation-REINFORCE" class="headerlink" title="Loss functions and Algorithmic implementation (REINFORCE)"></a>Loss functions and Algorithmic implementation (REINFORCE)</h2><p>在实际的计算中不需要计算梯度，只需要设置损失函数，计算机自动求导就行（$r$是reward）：</p>
 <script type="math/tex; mode=display">\begin{align}
 \cal L(a,s,r) = -\ln(\pi_\theta(a|s))r
-\end{align}</script><p><img src="/~renyixiong/~renyixiong/2024/03/08/PPO/REINFORCE.png" alt="REINFORCE"></p>
+\end{align}</script><p><img src="/2024/03/08/PPO/REINFORCE.png" alt="REINFORCE"></p>
 <h1 id="Natural-Gradients"><a href="#Natural-Gradients" class="headerlink" title="Natural Gradients"></a>Natural Gradients</h1><p>尽管自然梯度已被TRPO和PPO等算法超越，但掌握它的基本原理对于理解这些当代RL算法至关重要。</p>
 <h2 id="The-problems-with-first-order-policy-gradients"><a href="#The-problems-with-first-order-policy-gradients" class="headerlink" title="The problems with first-order policy gradients"></a>The problems with first-order policy gradients</h2><p>传统策略梯度算法只是提供了参数的更新方向，没有直接说明更新的步长。下面是众所周知的策略梯度更新方程：</p>
 <script type="math/tex; mode=display">\begin{align}
 \theta \leftarrow \theta + \alpha \nabla_{\theta}J(\theta)
 \end{align}</script><p>传统方法基于目标函数梯度$\nabla_{\theta}J(\theta)$与步长因子$\alpha$。会导致以下两个常见的问题：</p>
 <ul>
-<li>Overshooting:更新直接错过目标。虽然在有监督学习中不成问题，可以通过逐步修改更新率接近目标值。但是在强化学习中，可能会因为新的值导致3梯度消失。<br><img src="/~renyixiong/~renyixiong/2024/03/08/PPO/figure1.png" alt="overshoot"></li>
+<li>Overshooting:更新直接错过目标。虽然在有监督学习中不成问题，可以通过逐步修改更新率接近目标值。但是在强化学习中，可能会因为新的值导致3梯度消失。<br><img src="/2024/03/08/PPO/figure1.png" alt="overshoot"></li>
 <li>Undershooting:步长因子$\alpha$过小，无法收敛到目标位置。</li>
 </ul>
 <p>但是，并不能简单的限制更新步长$||\Delta \theta||$（Euclidian distance），例如：</p>
 <script type="math/tex; mode=display">\begin{align}
 \Delta \theta^* = \arg\max_{||\Delta\theta||<\epsilon}J(\theta+\Delta \theta)
 \end{align}</script><p>因为在不同的参数中，$\theta$对于步长的敏感性不同。</p>
-<p><img src="/~renyixiong/~renyixiong/2024/03/08/PPO/figure2.png" alt="fig2"></p>
+<p><img src="/2024/03/08/PPO/figure2.png" alt="fig2"></p>
 <h2 id="Capping-the-difference-between-policies"><a href="#Capping-the-difference-between-policies" class="headerlink" title="Capping the difference between policies"></a>Capping the difference between policies</h2><p>因为参数对于步长的敏感性不同，因此采用KL散度衡量参数变化前后对分布的影响，将参数$\theta$的变化限制在一定的范围内。</p>
 <script type="math/tex; mode=display">\begin{align}
 D_{KL}(\pi_\theta||\pi_{\theta+\Delta \theta}) = \sum_{x\in \mathcal x}\pi_\theta(x)\ln \left(\frac{\pi_\theta(x)}{\pi_{\theta+\Delta\theta}(x)}\right)
@@ -421,7 +421,7 @@ D_{KL}(p_{\theta_{old}}||p_{\theta}）&\approx \frac{1}{2}(\Delta\theta)^T F(\th
 \Delta \theta &= \alpha \tilde\nabla J(\theta) \\
 \theta &= \theta_{old}+\alpha \tilde\nabla J(\theta)
 \end{align}</script><p>该方案的核心思想在于通过引入KL散度，对不同参数的步长进行限制，缓解了Overshoot与Undershoot问题。</p>
-<h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><p><img src="/~renyixiong/~renyixiong/2024/03/08/PPO/natural_gradients.png" alt="Algorithm"></p>
+<h2 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h2><p><img src="/2024/03/08/PPO/natural_gradients.png" alt="Algorithm"></p>
 <p>自然梯度方法在两个方面不同于传统的策略梯度算法：</p>
 <ul>
 <li>考虑到策略对局部变化的敏感性，策略梯度由逆Fisher矩阵校正，而传统的梯度方法假定更新为欧几里得距离。</li>
@@ -493,7 +493,7 @@ C&=\frac{4 \epsilon \gamma}{(1-\gamma)^2}
 <script type="math/tex; mode=display">
 \eta\left(\pi_{i+1}\right)-\eta\left(\pi_i\right) \geq M_i\left(\pi_{i+1}\right)-M\left(\pi_i\right)</script><p>如果新策略$\pi_{i+1}$能使得$M_i$最大，就有$M_i\left(\pi_{i+1}\right)-M\left(\pi_i\right)\geq 0$，从而就保证了策略必然稳步提升。</p>
 <p>这样通过优化下界便可以使得策略得到稳定的提升。</p>
-<p>算法流程如下：<br><img src="/~renyixiong/~renyixiong/2024/03/08/PPO/TRPO.png" alt="TRPO"></p>
+<p>算法流程如下：<br><img src="/2024/03/08/PPO/TRPO.png" alt="TRPO"></p>
 <h2 id="Optimization-of-Parameterized-Policies"><a href="#Optimization-of-Parameterized-Policies" class="headerlink" title="Optimization of Parameterized Policies"></a>Optimization of Parameterized Policies</h2><p>下面将要基于以上的理论基础，在有限的空间以及任意参数下，给出具体的算法。首先更改符号注记，用$\theta$表示重要的参数，而非策略$\pi_\theta$。$\eta(\theta):=\eta(\pi_\theta),L_\theta(\tilde{\theta}):=L_{\pi_{\theta}}(\pi_{\tilde{\theta}}),D_{KL}(\theta|\tilde{\theta}):=D_{KL}(\pi_\theta|\pi_{\tilde{\theta}})$</p>
 <p>可以将：</p>
 <script type="math/tex; mode=display">\begin{equation}
@@ -526,7 +526,7 @@ C&=\frac{4 \epsilon \gamma}{(1-\gamma)^2}
 \end{equation}</script><p>其中参数更新为$\theta_{\text {new }}=\theta_{\text {old }}+\left.\frac{1}{\lambda} A\left(\theta_{\text {old }}\right)^{-1} \nabla_\theta L(\theta)\right|_{\theta=\theta_{\text {old }}}$，利用TRPO算法，可以限制惩罚项$\frac{1}{\lambda}$，虽然这只是一个很小的算法参数，但是在大问题上显著提升了算法表现能力。</p>
 <font color="red">缺失共轭梯度法，与算法简化的实现</font>
 
-<p><img src="/~renyixiong/~renyixiong/2024/03/08/PPO/TRPO2.png" alt="TRPO structure"></p>
+<p><img src="/2024/03/08/PPO/TRPO2.png" alt="TRPO structure"></p>
 <h1 id="Proximal-Policy-Optimization-Algorithms"><a href="#Proximal-Policy-Optimization-Algorithms" class="headerlink" title="Proximal Policy Optimization Algorithms"></a>Proximal Policy Optimization Algorithms</h1><p>TRPO算法保证了稳定提升，但是由于计算二阶梯度，运算量十分巨大。为了解决运算量大的问题，提出了一种近似方法，通过对惩罚因子进行限制，大幅减少运算量。</p>
 <h2 id="Clipped-Surrogate-Objective"><a href="#Clipped-Surrogate-Objective" class="headerlink" title="Clipped Surrogate Objective"></a>Clipped Surrogate Objective</h2><p>在TRPO中优化的目标为：</p>
 <script type="math/tex; mode=display">\begin{equation}
@@ -536,9 +536,9 @@ L^{C P I}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t\rig
 <script type="math/tex; mode=display">\begin{equation}
 L^{C L I P}(\theta)=\hat{\mathbb{E}}_t\left[\min \left(r_t(\theta) \hat{A}_t, \operatorname{clip}\left(r_t(\theta), 1-\epsilon, 1+\epsilon\right) \hat{A}_t\right)\right]
 \end{equation}</script><p>其中$\epsilon$为超参。该式的第一项表示$L^{CPI}$，第二项利用剪切权重调整了优势函数，将$r_t$限制在一个范围内。最后返回剪切与非剪切之后的较小值，这样将会返回一个下界。</p>
-<p><img src="/~renyixiong/~renyixiong/2024/03/08/PPO/CLIP.png" alt="clip"></p>
+<p><img src="/2024/03/08/PPO/CLIP.png" alt="clip"></p>
 <p>算法框架如下：</p>
-<p><img src="/~renyixiong/~renyixiong/2024/03/08/PPO/PPO_Clip.png" alt="PPO Clip"></p>
+<p><img src="/2024/03/08/PPO/PPO_Clip.png" alt="PPO Clip"></p>
 <h2 id="Adaptive-KL-Penalty-Coefficient"><a href="#Adaptive-KL-Penalty-Coefficient" class="headerlink" title="Adaptive KL Penalty Coefficient"></a>Adaptive KL Penalty Coefficient</h2><p>另一种优化方案是针对惩罚项：</p>
 <script type="math/tex; mode=display">\begin{equation}
 L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t\right)}{\pi_{\theta_{\text {old }}}\left(a_t \mid s_t\right)} \hat{A}_t-\beta \operatorname{KL}\left[\pi_{\theta_{\text {old }}}\left(\cdot \mid s_t\right), \pi_\theta\left(\cdot \mid s_t\right)\right]\right]
@@ -558,11 +558,11 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/~renyixiong/tags/Natural-Gradients/" rel="tag"># Natural Gradients</a>
-              <a href="/~renyixiong/tags/PPO/" rel="tag"># PPO</a>
-              <a href="/~renyixiong/tags/TRPO/" rel="tag"># TRPO</a>
-              <a href="/~renyixiong/tags/Policy-Gradients/" rel="tag"># Policy Gradients</a>
-              <a href="/~renyixiong/tags/Reinforcement-Learning/" rel="tag"># Reinforcement Learning</a>
+              <a href="/tags/Natural-Gradients/" rel="tag"># Natural Gradients</a>
+              <a href="/tags/PPO/" rel="tag"># PPO</a>
+              <a href="/tags/TRPO/" rel="tag"># TRPO</a>
+              <a href="/tags/Policy-Gradients/" rel="tag"># Policy Gradients</a>
+              <a href="/tags/Reinforcement-Learning/" rel="tag"># Reinforcement Learning</a>
           </div>
 
         
@@ -571,11 +571,11 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/~renyixiong/2024/03/04/Neural_Network_Diffusion/" rel="prev" title="Neural Network Diffusion">
+    <a href="/2024/03/04/Neural_Network_Diffusion/" rel="prev" title="Neural Network Diffusion">
       <i class="fa fa-chevron-left"></i> Neural Network Diffusion
     </a></div>
       <div class="post-nav-item">
-    <a href="/~renyixiong/2024/03/12/Distributional_PerspectiveRL/" rel="next" title="A Distributional Perspective on Reinforcement Learning">
+    <a href="/2024/03/12/Distributional_PerspectiveRL/" rel="next" title="A Distributional Perspective on Reinforcement Learning">
       A Distributional Perspective on Reinforcement Learning <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -648,7 +648,7 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/~renyixiong/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">10</span>
           <span class="site-state-item-name">日志</span>
@@ -659,7 +659,7 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-            <a href="/~renyixiong/tags/">
+            <a href="/tags/">
           
         <span class="site-state-item-count">22</span>
         <span class="site-state-item-name">标签</span></a>
@@ -746,30 +746,30 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
   </div>
 
   
-  <script src="/~renyixiong/lib/anime.min.js"></script>
-  <script src="/~renyixiong/lib/velocity/velocity.min.js"></script>
-  <script src="/~renyixiong/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/~renyixiong/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/~renyixiong/js/motion.js"></script>
-
-
-<script src="/~renyixiong/js/schemes/muse.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/~renyixiong/js/next-boot.js"></script>
+<script src="/js/schemes/muse.js"></script>
 
 
-
-
-  
+<script src="/js/next-boot.js"></script>
 
 
 
 
   
-<script src="/~renyixiong/js/local-search.js"></script>
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
 
 
 
