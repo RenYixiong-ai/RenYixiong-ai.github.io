@@ -1591,7 +1591,31 @@ Z\left(\frac{\partial\langle E\rangle}{\partial T}\right)_{V, N}+\langle E\rangl
 \left\langle(\Delta E)^2\right\rangle=\left\langle E^2\right\rangle-\langle E\rangle^2=k_{\mathrm{B}} T^2\left(\frac{\partial\langle E\rangle}{\partial T}\right)_{V, N}=k_{\mathrm{B}} T^2 C_V \\
 \left\langle r_E^2\right\rangle=\frac{\left\langle(\Delta E)^2\right\rangle}{\langle E\rangle^2}=\frac{1}{\langle E\rangle^2} k_{\mathrm{B}} T^2\left(\frac{\partial\langle E\rangle}{\partial T}\right)_{V, N}=k_{\mathrm{B}} T^2 \frac{C_V}{\langle E\rangle^2} \propto \frac{1}{N}
 \end{gathered}
-\end{equation}</script><h3 id="巨正则系综中粒子数能能量的涨落"><a href="#巨正则系综中粒子数能能量的涨落" class="headerlink" title="巨正则系综中粒子数能能量的涨落"></a>巨正则系综中粒子数能能量的涨落</h3><h3 id="平衡态开放体系中的自发涨落、Onsager的涨落回归假设"><a href="#平衡态开放体系中的自发涨落、Onsager的涨落回归假设" class="headerlink" title="平衡态开放体系中的自发涨落、Onsager的涨落回归假设"></a>平衡态开放体系中的自发涨落、Onsager的涨落回归假设</h3>]]></content>
+\end{equation}</script><h3 id="巨正则系综中粒子数能能量的涨落"><a href="#巨正则系综中粒子数能能量的涨落" class="headerlink" title="巨正则系综中粒子数能能量的涨落"></a>巨正则系综中粒子数能能量的涨落</h3><h3 id="平衡态开放体系中的自发涨落、Onsager的涨落回归假设"><a href="#平衡态开放体系中的自发涨落、Onsager的涨落回归假设" class="headerlink" title="平衡态开放体系中的自发涨落、Onsager的涨落回归假设"></a>平衡态开放体系中的自发涨落、Onsager的涨落回归假设</h3><p>讨论平衡态开放体系的中的任意动力学量出现的自发涨落是自然的，但是更重要的一层意义是它的讨论有助于理解非平衡态。</p>
+<p>Onsager注意到有两种弛豫过程：</p>
+<ul>
+<li>平衡态在没有外场干预的条件下，内部分子的热运动引起动力学量的自发涨落：不断偏离均值再回归均值。（微观弛豫）</li>
+<li>当体系受到某种外场作用，使之成为一个宏观的非平衡状态，若突然终止该外场，则体系将通过弛豫过程趋于平衡态。（宏观弛豫）<br>Onsager假设这两种弛豫过程服从相同的规律，称为涨落回归假设。后来人们意识到，Onsager的假设在力学上有深刻的原因，即1951年Callen和Welton证明涨落耗散定理。</li>
+</ul>
+<p>以下先用经典理论讨论平衡体系中的自发涨落问题。</p>
+<h4 id="非平衡态的系综平均"><a href="#非平衡态的系综平均" class="headerlink" title="非平衡态的系综平均"></a>非平衡态的系综平均</h4><p>上述Onsager假设联系两种驰豫，前者是平衡态的自发涨落弛豫，其系综平均记为$\langle\cdot\rangle$；后者是非平衡态的宏观弛豫，其系综平均记为$\overline{\left(\cdot\right)}$，在时刻$t$的瞬时系综平均值记为$\overline{A}(t)$。</p>
+<p>考虑一个纯态，初始时刻是一个相点，将$t$时刻体系的任意动力学量$A$记为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+A(t)=A\left[r^N(t), \boldsymbol{p}^N(t)\right] \equiv A\left(t ; \boldsymbol{r}^N(0), \boldsymbol{p}^N(0)\right) \triangleq A\left(t ; \boldsymbol{r}^N, \boldsymbol{p}^N\right)
+\end{equation}</script><p>其中$r^N,p^N$特指初始条件$r^N(0),r^N(0)$。</p>
+<p>更普世的情况，考虑一个混合态，初始时刻是一个分布，故任意时刻$A(t)$的均值要用系综平均求。设$\phi(r^N,p^N)$为非平衡态体系在相空间的分布函数，因此$A(t)$的系综平均值为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+\bar{A}(t)&=\int \mathrm{d} \boldsymbol{r}^N \mathrm{~d} \boldsymbol{p}^N \phi\left(\boldsymbol{r}^N, \boldsymbol{p}^N\right) A\left(t ; \boldsymbol{r}^N, \boldsymbol{p}^N\right) \\
+1 &= \int \mathrm{d} \boldsymbol{r}^N \mathrm{~d} \boldsymbol{p}^N \phi\left(\boldsymbol{r}^N, \boldsymbol{p}^N\right) 
+\end{aligned}
+\end{equation}</script><p>这里采用Heisenber绘景思想，将时间的俄影响归于力学量，而非分布函数。</p>
+<p>任意动力学量$A的瞬时微观值$A(t)$偏离平衡的量可定义为：</p>
+<script type="math/tex; mode=display">\delta A(t)\equiv A(t)-\langle A\rangle</script><p>$A(t)$的非平衡均值$\bar A(t)$偏离平衡的量为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\Delta \bar{A}(t)=\int \mathrm{d} \boldsymbol{r}^N \mathrm{~d} \boldsymbol{p}^N \phi\left(\boldsymbol{r}^N, \boldsymbol{p}^N\right)\left[A\left(t ; \boldsymbol{r}^N, \boldsymbol{p}^N\right)-\langle A\rangle\right]=\overline{\delta A(t)}
+\end{equation}</script><h4 id="平衡态的自发涨落"><a href="#平衡态的自发涨落" class="headerlink" title="平衡态的自发涨落"></a>平衡态的自发涨落</h4><p>在平衡态下，$\delta A(t)$的平均值有：</p>
+<script type="math/tex; mode=display">\langle \delta A(t)\rangle=0</script>]]></content>
       <categories>
         <category>Statistical physics</category>
       </categories>
