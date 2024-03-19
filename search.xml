@@ -1615,7 +1615,50 @@ A(t)=A\left[r^N(t), \boldsymbol{p}^N(t)\right] \equiv A\left(t ; \boldsymbol{r}^
 <script type="math/tex; mode=display">\begin{equation}
 \Delta \bar{A}(t)=\int \mathrm{d} \boldsymbol{r}^N \mathrm{~d} \boldsymbol{p}^N \phi\left(\boldsymbol{r}^N, \boldsymbol{p}^N\right)\left[A\left(t ; \boldsymbol{r}^N, \boldsymbol{p}^N\right)-\langle A\rangle\right]=\overline{\delta A(t)}
 \end{equation}</script><h4 id="平衡态的自发涨落"><a href="#平衡态的自发涨落" class="headerlink" title="平衡态的自发涨落"></a>平衡态的自发涨落</h4><p>在平衡态下，$\delta A(t)$的平均值有：</p>
-<script type="math/tex; mode=display">\langle \delta A(t)\rangle=0</script>]]></content>
+<script type="math/tex; mode=display">\langle \delta A(t)\rangle=0</script><p>但是有意义的是平衡时不同不同偏离量之间的相关，例如$\delta A(t)$与$\delta A(0)$之间的相关可表示为涨落的时间自相关函数：</p>
+<script type="math/tex; mode=display">\begin{equation}
+C(t)\equiv \langle\delta A(t)\delta A(0)\rangle
+\end{equation}</script><p>对于经典体系：</p>
+<script type="math/tex; mode=display">\begin{equation}
+C(t)=\int \mathrm{d} \boldsymbol{r}^N \mathrm{~d} \boldsymbol{p}^N f\left(\boldsymbol{r}^N, \boldsymbol{p}^N\right) \delta A\left(0 ; \boldsymbol{r}^N, \boldsymbol{p}^N\right) \delta A\left(t ; \boldsymbol{r}^N, \boldsymbol{p}^N\right)
+\end{equation}</script><p>其中$f\left(\boldsymbol{r}^N, \boldsymbol{p}^N\right)$是相空间中平衡时的分布函数。<br>$C(t)$的性质如下：</p>
+<ol>
+<li>$C(t)\equiv \langle\delta A(t)\delta A(0)\rangle =\langle A(t) A(0)\rangle-\langle A\rangle^2$</li>
+<li>平衡体系的时间相关函数具有时间平移不变性，即与时间原点的选取无关。</li>
+<li>若$A(-t)$与$A(0)$两个量可以对易，则交换两者的次序得到：<script type="math/tex; mode=display">C(t)=\langle\delta A(-t)\delta A(0)\rangle=\langle\delta A(0)\delta A(-t)\rangle=C(-t)</script>对于经典体系这样的对易衡成立，对于量子体系则不一定。</li>
+<li>$C(0)=\langle\delta A(0)\delta A(0)\rangle=\langle(\delta A(0))^2\rangle$<br>当两个时间间隔极大时，$\delta A(t)$与$\delta A(0)$之间的相关会趋于零。可见任意力学量$A$在平衡态涨落的时间自相关函数总是呈现衰减到零的趋势，Onsager称之为涨落的“回归”。</li>
+</ol>
+<h4 id="Onsager涨落回归假设的数学描述"><a href="#Onsager涨落回归假设的数学描述" class="headerlink" title="Onsager涨落回归假设的数学描述"></a>Onsager涨落回归假设的数学描述</h4><p>基于上述对于平衡涨落的时间自相关函数，现在考虑非平衡体系开始相平衡的弛豫。设$t=0$时撤区外场让制备得到的非平衡体系开始相平衡态作自由弛豫。Onsager涨落回归假设是指在线性范围内，可以假设弛豫服从如下方程：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{\Delta \bar A(t)}{\Delta\bar A(0)}=\frac{C(t)}{C(0)}
+\end{align}</script><p>左边表示非平衡体系向平衡态作宏观弛豫的衰减程度，右边表示平衡涨落的自相关行为或微观弛豫。假设这两种弛豫规律相等，这就是Onsager的涨落回归假设。换言之，对于一个近平衡体系，无法区分是自发涨落还是偏离平衡后的弛豫，那么自发涨落自相关的行为实际上应该与$t$瞬间非平衡均值偏离平衡的量衰减到平衡的行为是相同的。</p>
+<h4 id="非平衡分布函数-phi-r-N-p-N"><a href="#非平衡分布函数-phi-r-N-p-N" class="headerlink" title="非平衡分布函数$\phi(r^N, p^N)$"></a>非平衡分布函数$\phi(r^N, p^N)$</h4><p>平衡态分布$f$与非平衡态分布$\phi$在<strong>近平衡</strong>的范围内应当有：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\frac{\phi\left(\boldsymbol{r}^N, \boldsymbol{p}^N\right)}{f\left(\boldsymbol{r}^N, \boldsymbol{p}^N\right)}=\frac{A\left(t=0 ; \boldsymbol{r}^N, \boldsymbol{p}^N\right)}{\langle A\rangle}
+\end{equation}</script><p>即：</p>
+<script type="math/tex; mode=display">\begin{align}
+\phi\left(\boldsymbol{r}^N, \boldsymbol{p}^N\right)=\frac{A\left(t=0 ; \boldsymbol{r}^N, \boldsymbol{p}^N\right)}{\langle A\rangle}f\left(\boldsymbol{r}^N, \boldsymbol{p}^N\right)
+\end{align}</script><p>得到：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+\bar{A}(t) & =\int \mathrm{d} \boldsymbol{r}^N \mathrm{~d} \boldsymbol{p}^N \phi\left(\boldsymbol{r}^N, \boldsymbol{p}^N\right) A\left(t ; \boldsymbol{r}^N, \boldsymbol{p}^N\right) \\
+& =\langle A\rangle^{-1} \int \mathrm{d} \boldsymbol{r}^N \mathrm{~d} \boldsymbol{p}^N f\left(\boldsymbol{r}^N, \boldsymbol{p}^N\right) A\left(0 ; \boldsymbol{r}^N, \boldsymbol{p}^N\right) A\left(t ; \boldsymbol{r}^N, \boldsymbol{p}^N\right)
+\end{aligned}
+\end{equation}</script><p>即：</p>
+<script type="math/tex; mode=display">\begin{aligned}
+\bar{A}(t) =\langle A\rangle^{-1}\langle A(0)A(t)\rangle
+\end{aligned}</script><p>得到瞬时非平衡均值偏离平衡的量：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+\Delta \bar{A}(t) &\equiv \bar{A}(t)-\langle A\rangle=\langle A\rangle^{-1}\langle A(0) A(t)\rangle-\langle A\rangle \\
+&=\langle A\rangle^{-1}\left\{\langle A(0) A(t)\rangle-\langle A\rangle^2\right\} \\
+&=\langle A\rangle^{-1}\langle \delta A(0) \delta A(t)\rangle \\
+&= \langle A\rangle^{-1}C(t) \\
+C(t) &= \Delta \bar{A}(t)\langle A\rangle
+\end{aligned}
+\end{equation}</script><p>左边是平衡态力学量$A$的自发涨落，右边是非平衡不可逆过程的弛豫。</p>
+<h2 id="涨落的准热力学理论"><a href="#涨落的准热力学理论" class="headerlink" title="涨落的准热力学理论"></a>涨落的准热力学理论</h2><p>涨落的准热力学理论（quasi-thermodynamic theory）是计算宏观热力学量涨落的普遍理论。其思路是先求出各种略微偏移平衡态的宏观态出现的概率，然后通过统计平均求出各种热力学量的均方偏差、相对涨落。</p>
+]]></content>
       <categories>
         <category>Statistical physics</category>
       </categories>
