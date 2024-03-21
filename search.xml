@@ -876,6 +876,20 @@ L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
       </tags>
   </entry>
   <entry>
+    <title>Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model</title>
+    <url>/2024/03/20/five_state_Pottes_Model/</url>
+    <content><![CDATA[<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>共形对称发生在临界点，，但是在重整化群的相变点相撞的时候，这种对称性会消失。认为这种实平面的固定点将会变到复平面中。这篇工作，利用非厄米量子5态Potts模型，成功提取到了复平面的高度。</p>
+<h1 id="Append"><a href="#Append" class="headerlink" title="Append"></a>Append</h1><p>共形对称（Conformal symmetry）是一种特殊类型的全局对称性，它指的是一个理论或系统在共形变换下保持不变的性质。</p>
+<p>共形变换是一类特殊的坐标变换，它们不仅包括了普通的平移和旋转，还包括了尺度变换（即缩放）和特殊的非线性变换。共形对称在物理学中尤其重要，因为它通常与系统的尺度不变性相关联，这意味着物理规律在不同的长度尺度上都是相同的。</p>
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Potts Model</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Git Note</title>
     <url>/2022/09/16/git/</url>
     <content><![CDATA[<h1 id="Git简单教程"><a href="#Git简单教程" class="headerlink" title="Git简单教程"></a>Git简单教程</h1><p>工作逻辑图：<br><img src="/2022/09/16/git/workflow.png" alt="逻辑图"></p>
@@ -1658,9 +1672,36 @@ C(t) &= \Delta \bar{A}(t)\langle A\rangle
 \end{aligned}
 \end{equation}</script><p>左边是平衡态力学量$A$的自发涨落，右边是非平衡不可逆过程的弛豫。</p>
 <h2 id="涨落的准热力学理论"><a href="#涨落的准热力学理论" class="headerlink" title="涨落的准热力学理论"></a>涨落的准热力学理论</h2><p>涨落的准热力学理论（quasi-thermodynamic theory）是计算宏观热力学量涨落的普遍理论。其思路是先求出各种略微偏移平衡态的宏观态出现的概率，然后通过统计平均求出各种热力学量的均方偏差、相对涨落。</p>
-]]></content>
+<p>设体系的能量、体积和粒子数分别为$E,V,N$，体系的熵为$S=k_B\ln \Omega$，$\Omega$为微观状态数，无论系统处于平衡还是偏离平衡均适用。若该体系孤立，则当体系处于平衡时体系熵和微观状态数均达到最大。</p>
+<script type="math/tex; mode=display">\bar S=k_B\ln\Omega_{\text{max}}</script><p>出现熵极大的概率为$W_{\text{max}}$，其应该与$\Omega_{\text{max}}$成正比：</p>
+<script type="math/tex; mode=display">\begin{equation}
+W_{\max } \propto \Omega_{\max }=\mathrm{e}^{\bar{S} / k_{\mathrm{B}}}
+\end{equation}</script><p>由于涨落，熵可以偏离其极大值，体系熵为$S$的概率为$W$依然与为微观状态数成正比：</p>
+<script type="math/tex; mode=display">\begin{equation}
+W \propto \Omega=\mathrm{e}^{S / k_{\mathrm{B}}}
+\end{equation}</script><p>熵的偏离值$\Delta S\equiv S-\bar S$，得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+W = W_{\max}\mathrm{e}^{\Delta S / k_{\mathrm{B}}}
+\end{align}</script><p>称为Smoluchowski-Einstain公式。</p>
+<p>将该孤立系统的分析拓展到与环境有接触的非孤立系统。把系统与环境看成是一个拓展体系，将拓展体系视为一个孤立的个体：</p>
+<script type="math/tex; mode=display">E_{ex}=E+E_b, V_{ex}=V+V_b</script><p>其中下标”ex”指拓展体系，”b”指环境，无下标指体系。显然存在以下关系：</p>
+<script type="math/tex; mode=display">\Delta E = -\Delta E_b, \Delta V= -\Delta V_b, \Delta N=-\Delta N_b</script><p>由于拓展体系是孤立体系，因此熵偏差值为：</p>
+<script type="math/tex; mode=display">\Delta S_{ex} = \Delta S+\Delta S_b</script><p>有：</p>
+<script type="math/tex; mode=display">W(\Delta S_{ex})=W_{\max} \mathrm{e}^{(\Delta S+\Delta S_b) / k_{\mathrm{B}}}</script><p>假设环境足够大，有确定的温度$T$和压强$p$，则有：</p>
+<script type="math/tex; mode=display">\begin{align}
+\Delta S_{\mathrm{b}}&=\frac{1}{T}\left(\Delta E_{\mathrm{b}}+p \Delta V_{\mathrm{b}}\right)=-\frac{1}{T}(\Delta E+p \Delta V) \\
+W\left(\Delta S_{\mathrm{ex}}\right) &\equiv W(\Delta S, \Delta E, \Delta V)=W_{\max } \mathrm{e}^{\left(\Delta S+\Delta S_b\right) / k_{\mathrm{B}}}=W_{\max } \mathrm{e}^{(T \Delta S-\Delta E-p \Delta V) /\left(k_{\mathrm{B}} T\right)}\\
+W &= W_{\max } \mathrm{e}^{-(\Delta F+p \Delta V) /\left(k_{\mathrm{B}} T\right)}
+\end{align}</script><p>这是封闭体系的Smoluchowski公式。</p>
+<font color="red">单组分封闭体系的涨落、开放体系涨落</font>
+
+<p>Smoluchowski-Einstein理论从另一个角度把计算涨落问题与热力学量在理论上结合起来。该理论一方面，不是从体系的微观状态的概率分布为基础，因此属于唯象理论；另一方面，它能导出涨落，而涨落是纯热力学无法涉及的。因此它被称为准热力学理论</p>
+<p>下面将介绍，如何利用该公式导出体系各宏观物理量的涨落以及涨落之间的关系</p>
+<font color="red">待补全</font>
+
+<h3 id="封闭体系热力学量的涨落"><a href="#封闭体系热力学量的涨落" class="headerlink" title="封闭体系热力学量的涨落"></a>封闭体系热力学量的涨落</h3><h3 id="开放体系热力学量的涨落"><a href="#开放体系热力学量的涨落" class="headerlink" title="开放体系热力学量的涨落"></a>开放体系热力学量的涨落</h3><h3 id="临界点附近的涨落"><a href="#临界点附近的涨落" class="headerlink" title="临界点附近的涨落"></a>临界点附近的涨落</h3><h3 id="多变量涨落的准热力学理论"><a href="#多变量涨落的准热力学理论" class="headerlink" title="多变量涨落的准热力学理论"></a>多变量涨落的准热力学理论</h3>]]></content>
       <categories>
-        <category>Statistical physics</category>
+        <category>Statistical Physics</category>
       </categories>
       <tags>
         <tag>Nonequilibrium Thermodynamics</tag>
