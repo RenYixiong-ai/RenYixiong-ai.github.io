@@ -974,6 +974,7 @@ L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
     <title>统计物理读书笔记</title>
     <url>/2024/01/28/statistical_physics_CMB/</url>
     <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本笔记为阅读陈敏伯《统计物理》的读书笔记，包含大量基本概念与公式推导。按照本书前言所著，这本书大量使用变分原理进行推理基本公式。</p>
+<p><img src="/2024/01/28/statistical_physics_CMB/0-1.png" alt="脉络体系"></p>
 <span id="more"></span>
 <h1 id="第一章：引言"><a href="#第一章：引言" class="headerlink" title="第一章：引言"></a>第一章：引言</h1><p>量子力学用以构建原子分子的微观性质，统计力学根据此微观性质进行解释从而得到理解体系的宏观性质，这就死统计力学的任务所在。</p>
 <h2 id="宏观量的统计性质"><a href="#宏观量的统计性质" class="headerlink" title="宏观量的统计性质"></a>宏观量的统计性质</h2><p>体系的宏观量（可直接或者间接观测的物理量）：</p>
@@ -1699,7 +1700,156 @@ W &= W_{\max } \mathrm{e}^{-(\Delta F+p \Delta V) /\left(k_{\mathrm{B}} T\right)
 <p>下面将介绍，如何利用该公式导出体系各宏观物理量的涨落以及涨落之间的关系</p>
 <font color="red">待补全</font>
 
-<h3 id="封闭体系热力学量的涨落"><a href="#封闭体系热力学量的涨落" class="headerlink" title="封闭体系热力学量的涨落"></a>封闭体系热力学量的涨落</h3><h3 id="开放体系热力学量的涨落"><a href="#开放体系热力学量的涨落" class="headerlink" title="开放体系热力学量的涨落"></a>开放体系热力学量的涨落</h3><h3 id="临界点附近的涨落"><a href="#临界点附近的涨落" class="headerlink" title="临界点附近的涨落"></a>临界点附近的涨落</h3><h3 id="多变量涨落的准热力学理论"><a href="#多变量涨落的准热力学理论" class="headerlink" title="多变量涨落的准热力学理论"></a>多变量涨落的准热力学理论</h3>]]></content>
+<h3 id="封闭体系热力学量的涨落"><a href="#封闭体系热力学量的涨落" class="headerlink" title="封闭体系热力学量的涨落"></a>封闭体系热力学量的涨落</h3><h3 id="开放体系热力学量的涨落"><a href="#开放体系热力学量的涨落" class="headerlink" title="开放体系热力学量的涨落"></a>开放体系热力学量的涨落</h3><h3 id="临界点附近的涨落"><a href="#临界点附近的涨落" class="headerlink" title="临界点附近的涨落"></a>临界点附近的涨落</h3><h3 id="多变量涨落的准热力学理论"><a href="#多变量涨落的准热力学理论" class="headerlink" title="多变量涨落的准热力学理论"></a>多变量涨落的准热力学理论</h3><h1 id="动理学描述与Boltzmann方程"><a href="#动理学描述与Boltzmann方程" class="headerlink" title="动理学描述与Boltzmann方程"></a>动理学描述与Boltzmann方程</h1><p>近平衡态体系发生的典型过程有热传导、扩散、黏滞现象、电导等，总称为输运过程。当体系处于非平衡态时，其体系性质随时间变化而变化。本篇介绍非平衡态处于近平衡态的体系，解释这些不可逆过程的方向，求出不可逆过程中的输运系数。与平衡态类似，非平衡态问题的关键仍然是求得体系的分布函数，但是由于非平衡态的原因，分布函数是时间的函数。因此，关键问题是求得分布函数随时间变化所需满足的方程，Boltzmann方程，是求算许多输运系数的依据，奠定了非平衡统计力学的基础。</p>
+<h2 id="Boltzmann方程"><a href="#Boltzmann方程" class="headerlink" title="Boltzmann方程"></a>Boltzmann方程</h2><h3 id="混合稀薄气体"><a href="#混合稀薄气体" class="headerlink" title="混合稀薄气体"></a>混合稀薄气体</h3><p>假定在混合稀薄气体中间，气体分子之间的相互作用只是二体碰撞，不存在三体碰撞，将第$j$种的物种的单粒子分布记为$f_j^{(1)}(q_1,p_1,t)$，混合稀薄气体体系的宏观性质只取决于$\{f_j^{(1)}(r,v_1,t)\}$（动量改用速度），于是$f_j^{(1)}(r,v_1,t)dv_j$代表$t$时刻在$r$处单位体积内第$j$种物种粒子速度处于$v_j\to v_j+dv_j$的粒子数；或者$f_j^{(1)}(r,v_1,t)dv_jdr$代表$t$时刻在$r$处单位体积内第$j$种物种粒子速度处于$v_j\to v_j+dv_j$、位置处于$r\to r+dr$的粒子数，其中$v_j\to v_j+dv_j$的粒子数，其中$f_j^{(1)}(r,v_1,t)$为第$j$种物种粒子$\mu$空间的数密度。对$v$积分得到粒子数密度：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\rho_j(\boldsymbol{r}, t)=\int f_j^{(1)}\left(\boldsymbol{r}, \boldsymbol{v}_j, t\right) \mathrm{d} \boldsymbol{v}_j
+\end{equation}</script><p>再对位置空间积分，得到第$j$种物种的粒子数为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\iint f_j^{(1)}\left(\boldsymbol{r}, \boldsymbol{v}_j, t\right) \mathrm{d} \boldsymbol{r} \mathrm{d} \boldsymbol{v}_j=\int \rho_j(\boldsymbol{r}, t) \mathrm{d} \boldsymbol{r}=N_j
+\end{equation}</script><h3 id="几种平均速度的定义"><a href="#几种平均速度的定义" class="headerlink" title="几种平均速度的定义"></a>几种平均速度的定义</h3><ol>
+<li>在$t$时刻$r$处第$j$种物种粒子的平均速度为：<script type="math/tex; mode=display">\begin{equation}
+ \left\langle\boldsymbol{v}_j(\boldsymbol{r}, t)\right\rangle=\frac{1}{\rho_j(\boldsymbol{r}, t)} \int \boldsymbol{v}_j f_j^{(1)}\left(\boldsymbol{r}, \boldsymbol{v}_j, t\right) \mathrm{d} \boldsymbol{v}_j
+ \end{equation}</script> 其中对所有不同速度的第$j$种物种粒子求平均，它代表第$j$种物种粒子的宏观流向。设$m_j$为第$j$种物种粒子的质量，于是$j$的质量密度为：<script type="math/tex; mode=display">(\rho_m)_j\equiv m_j \rho_j</script> 该混合稀薄气体体系的总质量密度为：<script type="math/tex; mode=display">\rho_m = \sum_{j}(\rho_m)_j=\sum_j m_j \rho_j</script></li>
+<li>在$t$时刻$r$处所有物种粒子总质量平均速度为：<script type="math/tex; mode=display">\begin{equation}
+ \boldsymbol{v}_0(\boldsymbol{r}, t) \equiv \frac{\sum_j\left\langle\boldsymbol{v}_j\right\rangle\left(\rho_m\right)_j}{\sum_j\left(\rho_m\right)_j}=\frac{\sum_j\left\langle\boldsymbol{v}_j\right\rangle m_j \rho_j}{\sum_j m_j \rho_j}=\frac{1}{\rho_m} \sum_j\left\langle\boldsymbol{v}_j\right\rangle\left(\rho_m\right)_j
+ \end{equation}</script></li>
+<li>第$j$种物种中的某一粒子相对于整个流体质心的相对速度为：<script type="math/tex; mode=display">V_j\equiv v_j-v_0</script></li>
+<li>用相对速度的局域瞬时的系综平均称为第$j$种物种的扩散速度：<script type="math/tex; mode=display">\begin{equation}
+ \left\langle\boldsymbol{V}_j\right\rangle \equiv \frac{1}{\rho_j(\boldsymbol{r}, t)} \int\left(\boldsymbol{v}_j-\boldsymbol{v}_0\right) f_j^{(1)}\left(\boldsymbol{r}, \boldsymbol{v}_j, t\right) \mathrm{d} \boldsymbol{v}_j
+ \end{equation}</script> 乘以其质量密度后，再对所有物种加和，则：<script type="math/tex; mode=display">\sum_j\langle V_j\rangle(\rho m)_j=0</script></li>
+</ol>
+<h3 id="流向量"><a href="#流向量" class="headerlink" title="流向量"></a>流向量</h3><p>设$\psi$为第$j$种物种分子的某一性质（物理量），$\psi_j$的流是指单位时间内通过单位截面的$\psi_j$的量，即$\psi_j$的通量。</p>
+<p><img src="/2024/01/28/statistical_physics_CMB/11-1.png" alt="11-1"></p>
+<p>单位时间，以相对速度并且有密度分布，穿过单位面积的粒子数为:</p>
+<script type="math/tex; mode=display">\begin{equation}
+\left(\mathrm{d} \boldsymbol{s} \cdot \boldsymbol{V}_j \mathrm{~d} t\right)\left(f_j \mathrm{~d} \boldsymbol{v}_j\right)=\mathrm{d} s\left(\boldsymbol{n} \cdot \boldsymbol{V}_j f_j \mathrm{~d} \boldsymbol{v}_j\right) \mathrm{d} t
+\end{equation}</script><p>因此流等于：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\int\psi_j\left(\boldsymbol{n} \cdot \boldsymbol{V}_j f_j \mathrm{~d} \boldsymbol{v}_j\right) =\boldsymbol{n} \cdot \int\psi_j\boldsymbol{V}_j f_j \mathrm{~d} \boldsymbol{v}_j
+\end{equation}</script><p>因此定义流向量：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\boldsymbol{\Psi_j}=\int\psi_j\boldsymbol{V}_j f_j \mathrm{~d} \boldsymbol{v}_j
+\end{equation}</script><font color="red">质量流向量、动量流向量、能量流向量（热流向量）</font>
+
+<h3 id="Boltzmann方程-1"><a href="#Boltzmann方程-1" class="headerlink" title="Boltzmann方程"></a>Boltzmann方程</h3><p>讨论单粒子分布函数需要遵守的方程，即Boltzmann方程，这是稀薄气体严格的动理论的基本方程。由该方程出发，从分子质量、分子间相互作用，可得到指定温度下的扩散系数、导热系数、黏滞系数等输运性质。</p>
+<p>继续讨论多组分混合稀薄气体。仅考虑两体的弹性碰撞。将单粒子分布函数$f_j^(1)$省略上标，简记为$f_j$。</p>
+<ol>
+<li>二体弹性碰撞</li>
+<li><p>碰撞分析<br>任意时刻、任意位置碰撞前后第$j$种组分粒子数一定守恒，故有：</p>
+<script type="math/tex; mode=display">\begin{equation}
+ \begin{aligned}
+ & f_j\left(\boldsymbol{r}+\boldsymbol{v}_j \mathrm{~d} t, \boldsymbol{v}_j+\frac{\boldsymbol{X}_j}{m_j} \mathrm{~d} t, t+\mathrm{d} t\right) \mathrm{d} \boldsymbol{r} \mathrm{d} \boldsymbol{v}_j \\
+ = & f_j\left(\boldsymbol{r}, \boldsymbol{v}_j, t\right) \mathrm{d} \boldsymbol{r} \mathrm{d} \boldsymbol{v}_j+\sum_i\left(\Gamma_{j i}^{(+)}-\Gamma_{j i}^{(-)}\right) \mathrm{d} \boldsymbol{r} \mathrm{d} \boldsymbol{v}_j \mathrm{~d} t \\
+ \end{aligned}
+ \end{equation}</script><p> 其中$\Gamma_{j i}^{(+)}\mathrm{d} \boldsymbol{r} \mathrm{d} \boldsymbol{v}_j \mathrm{~d} t,\Gamma_{j i}^{(-)}\mathrm{d} \boldsymbol{r} \mathrm{d} \boldsymbol{v}_j \mathrm{~d} t$分别代表流入的与流出相空间的粒子数。</p>
+<script type="math/tex; mode=display">\begin{equation}
+ \begin{aligned}
+ f_j\left(\boldsymbol{r}+\boldsymbol{v}_j \mathrm{~d} t, \boldsymbol{v}_j+\frac{\boldsymbol{X}_j}{m_j} \mathrm{~d} t, t+\mathrm{d} t\right)=&f_j\left(\boldsymbol{r}, \boldsymbol{v}_j, t\right)+\frac{\partial f_j}{\partial t} \mathrm{~d} t+\nabla_{\boldsymbol{r}} f_j \cdot \boldsymbol{v}_j \mathrm{~d} t+\nabla_{\boldsymbol{v}_j} f_j \cdot \frac{\boldsymbol{X}_j}{m_j} \mathrm{~d} t \\
+ \frac{\partial f_j}{\partial t}+\boldsymbol{v}_j \cdot \nabla_{\boldsymbol{r}} f_j+\frac{\boldsymbol{X}_j}{m_j} \cdot \nabla_{\boldsymbol{v}_j} f_j=&\sum_i\left(\Gamma_{j i}^{(+)}-\Gamma_{j i}^{(-)}\right), \quad \forall j
+ \end{aligned}
+ \end{equation}</script><p> 上面便是Boltzmann方程，代表第$j$种组分粒子$\mu$空间的数密度时间演化规律。左边是非碰撞流动对数密度的贡献，称为漂移项；右边代表碰撞对数密度变化的贡献，称为碰撞项。</p>
+<p> 当体系处于定态的时候$\frac{\partial f_j}{\partial t}=0$，故Boltzmann方程为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+ \boldsymbol{v}_j \cdot \nabla_{\boldsymbol{r}} f_j+\frac{\boldsymbol{X}_j}{m_j} \cdot \nabla_{\boldsymbol{v}_j} f_j=\sum\left(\Gamma_{j i}^{(+)}-\Gamma_{j i}^{(-)}\right), \quad \forall j .
+ \end{equation}</script></li>
+<li>碰撞项分析<br>具体分析$\Gamma_{j i}^{(+)}, \Gamma_{j i}^{(-)}$的计算方法，针对组分$j$计算其碰撞$i$组分之后脱离$j$组分，记为$\Gamma_{j i}^{(-)}$:<script type="math/tex; mode=display">\begin{equation}
+ \Gamma_{j i}^{(-)}=2 \pi \iint f_j\left(\boldsymbol{r}, \boldsymbol{v}_j, t\right) f_i\left(\boldsymbol{r}, \boldsymbol{v}_i, t\right)\left|\boldsymbol{v}_i-\boldsymbol{v}_j\right| b \mathrm{~d} b \mathrm{~d} \boldsymbol{v}_i 
+ \end{equation}</script> 这个表达式假定了粒子速度与位置无关，称为分子<strong>混沌假设</strong>。这是证明过程中薄弱的地方。<br> 同理，考虑由$i$组分碰撞成$j$组分的贡献。最后得到：<script type="math/tex; mode=display">\begin{equation}
+ \frac{\partial f_j}{\partial t}+\boldsymbol{v}_j \cdot \nabla_{\boldsymbol{r}} f_j+\frac{\boldsymbol{X}_j}{m_j} \cdot \nabla_{\boldsymbol{v}_j} f_j=2 \pi \sum_i \int_b \int_{\boldsymbol{v}_i} b \mathrm{~d} b \mathrm{~d} \boldsymbol{v}_i\left|\boldsymbol{v}_i-\boldsymbol{v}_j\right|\left\{f_j^{\prime} f_i^{\prime}-f_j f_i\right\}, \quad \forall j
+ \end{equation}</script> 其中：<script type="math/tex; mode=display">\begin{equation}
+ \left\{\begin{aligned}
+ f_i^{\prime} & \equiv f_i\left(\boldsymbol{r}, \boldsymbol{v}_i^{\prime}\left(\boldsymbol{v}_i, \boldsymbol{v}_j\right), t\right) \\
+ f_j^{\prime} & \equiv f_j\left(\boldsymbol{r}, \boldsymbol{v}_j^{\prime}\left(\boldsymbol{v}_i, \boldsymbol{v}_j\right), t\right) \\
+ f_i & \equiv f_i\left(\boldsymbol{r}, \boldsymbol{v}_i, t\right) \\
+ f_j & \equiv f_j\left(\boldsymbol{r}, \boldsymbol{v}_j, t\right)
+ \end{aligned}\right.
+ \end{equation}</script></li>
+</ol>
+<h2 id="Enskog方程"><a href="#Enskog方程" class="headerlink" title="Enskog方程"></a>Enskog方程</h2><p>接下来从Boltamann输运方程出发，求混合稀薄气体中的各种输运过程中粒子$\psi$的时间演化，这便是Enskog方程。</p>
+<h3 id="性质的时间演化"><a href="#性质的时间演化" class="headerlink" title="性质的时间演化"></a>性质的时间演化</h3><p>考虑$j$组分粒子的性质$\psi$，将Boltzmann方程两边作用$\int \mathrm{d} \boldsymbol{v}_j \psi_j(\cdot)$得到：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+& \int \mathrm{d} \boldsymbol{v}_j \psi_j\left[\frac{\partial f_j}{\partial t}+\boldsymbol{v}_j \cdot \nabla_r f_j+\frac{\boldsymbol{X}_j}{m_j} \cdot \nabla_{\boldsymbol{v}_j} f_j\right] \\
+= & 2 \pi \sum_i \iiint \psi_j\left(f_j^{\prime} f_i^{\prime}-f_j f_i\right)\left|\boldsymbol{v}_i-\boldsymbol{v}_j\right| b \mathrm{~d} b \mathrm{~d} \boldsymbol{v}_i \mathrm{~d} \boldsymbol{v}_j, \quad \forall j 
+\end{aligned}
+\end{equation}</script><p>左边第一项写为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\frac{\partial}{\partial t} \int \mathrm{d} \boldsymbol{v}_j \psi_j f_j-\int \mathrm{d} \boldsymbol{v}_j\left(\frac{\partial \psi_j}{\partial t}\right) f_j=\frac{\partial}{\partial t}\left(\rho_j\left\langle\psi_j\right\rangle\right)-\rho_j\left\langle\frac{\partial \psi_j}{\partial t}\right\rangle
+\end{equation}</script><p>左边第二项写为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+\int \mathrm{d} \boldsymbol{v}_j \psi_j \boldsymbol{v}_j \cdot \nabla_{\boldsymbol{r}} f_j & =\nabla_{\boldsymbol{r}} \cdot \int \mathrm{d} \boldsymbol{v}_j \psi_j \boldsymbol{v}_j f_j-\int \mathrm{d} \boldsymbol{v}_j\left(\nabla_{\boldsymbol{r}} \psi_j\right) \cdot \boldsymbol{v}_j f_j-\int \mathrm{d} \boldsymbol{v}_j \psi_j\left(\nabla_{\boldsymbol{r}} \cdot \boldsymbol{v}_j\right) f_j \\
+& =\nabla_{\boldsymbol{r}} \cdot\left(\rho_j\left\langle\psi_j \boldsymbol{v}_j\right\rangle\right)-\rho_j\left\langle\boldsymbol{v}_j \cdot \nabla_{\boldsymbol{r}} \psi_j\right\rangle
+\end{aligned}
+\end{equation}</script><p>左边第三项：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+\int \mathrm{d} \boldsymbol{v}_j \psi_j \frac{\boldsymbol{X}_j}{m_j} \cdot \nabla_{\boldsymbol{v}_j} f_j & =\frac{1}{m_j} \boldsymbol{X}_j \cdot \int \mathrm{d} \boldsymbol{v}_j \psi_j \nabla_{\boldsymbol{v}_j} f_j \\
+& =\frac{1}{m_j} \boldsymbol{X}_j \cdot\left[\int \mathrm{d} \boldsymbol{v}_j \nabla_{\boldsymbol{v}_j}\left(\psi_j f_j\right)-\int \mathrm{d} \boldsymbol{v}_j\left(\nabla_{\boldsymbol{v}_j} \psi_j\right) f_j\right]
+\end{aligned}
+\end{equation}</script><p>结合Gauss定律：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\iiint_V \mathrm{~d} \boldsymbol{v} \nabla\left(\begin{array}{c}
+f \\
+\cdot \boldsymbol{A} \\
+\times \boldsymbol{A}
+\end{array}\right)=\oint_S \mathrm{~d} \boldsymbol{s}\left(\begin{array}{c}
+f \\
+\cdot \boldsymbol{A} \\
+\times \boldsymbol{A}
+\end{array}\right)
+\end{equation}</script><p>得到：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\int \mathrm{d} \boldsymbol{v}_j \nabla_{\boldsymbol{v}_j}\left(\psi_j f_j\right)=\oint_{\text {edge}} \mathrm{d} \boldsymbol{s}\left(\psi_j f_j\right)=0 \text {. }
+\end{equation}</script><p>结合以上三项得到关于$j$组分的Enskog方程：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+& \frac{\partial}{\partial t}\left(\rho_j\left\langle\psi_j\right\rangle\right)+\nabla_{\boldsymbol{r}} \cdot\left(\rho_j\left\langle\psi_j \boldsymbol{v}_j\right\rangle\right)-\rho_j\left[\left\langle\frac{\partial \psi_j}{\partial t}\right\rangle+\left\langle\boldsymbol{v}_j \cdot \nabla_{\boldsymbol{r}} \psi_j\right\rangle+\frac{\boldsymbol{X}_j}{m_j} \cdot\left\langle\nabla_{\boldsymbol{v}_j} \psi_j\right\rangle\right] \\
+= & 2 \pi \sum_i \iiint \psi_j\left(f_j^{\prime} f_i^{\prime}-f_j f_i\right)\left|\boldsymbol{v}_{\boldsymbol{i}}-\boldsymbol{v}_j\right| b \mathrm{~d} b \mathrm{~d} \boldsymbol{v}_i \mathrm{~d} \boldsymbol{v}_j, \quad \forall j 
+\end{aligned}
+\end{equation}</script><h3 id="不变量性质-psi-的Enskog方程"><a href="#不变量性质-psi-的Enskog方程" class="headerlink" title="不变量性质$\psi$的Enskog方程"></a>不变量性质$\psi$的Enskog方程</h3><p>部分性质在碰撞前后不变，即满足：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\psi_i\left(\boldsymbol{v}_i\right)+\psi_j\left(\boldsymbol{v}_j\right)=\psi_i^{\prime}\left(\boldsymbol{v}_i^{\prime}\right)+\psi_j^{\prime}\left(\boldsymbol{v}_j^{\prime}\right), \quad \forall i, j
+\end{equation}</script><p>可以得到不变量的定理：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\sum_{i, i} \iiint \psi_j\left(f_i^{\prime} f_j^{\prime}-f_i f_j\right)\left|\boldsymbol{v}_i-\boldsymbol{v}_j\right| b \mathrm{~d} b \mathrm{~d} \boldsymbol{v}_i \mathrm{~d} \boldsymbol{v}_j=0
+\end{equation}</script><p>可以得到不变量$\psi$的方程：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\frac{\partial}{\partial t} \sum_j \rho_j\left\langle\psi_j\right\rangle+\nabla_{\boldsymbol{r}} \cdot \sum_j \rho_j\left\langle\psi_j \boldsymbol{v}_j\right\rangle-\sum_j \rho_j\left[\left\langle\frac{\partial \psi_j}{\partial t}\right\rangle+\left\langle\boldsymbol{v}_j \cdot \nabla_{\boldsymbol{r}} \psi_j\right\rangle+\frac{\boldsymbol{X}_j}{m_j} \cdot\left\langle\nabla_{\boldsymbol{v}_j} \psi_j\right\rangle\right]=0
+\end{equation}</script><h2 id="Boltzmann的H定理"><a href="#Boltzmann的H定理" class="headerlink" title="Boltzmann的H定理"></a>Boltzmann的H定理</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">以下是基于LLM的回答：</span><br><span class="line">1. 什么是H定理？</span><br><span class="line"></span><br><span class="line">H定理是描述一个系统随时间演变向着熵增的方向发展的统计物理原理，由玻尔兹曼在1872年提出。</span><br><span class="line"></span><br><span class="line">H定理的核心内容在于它提供了一个概率性的框架来理解热力学第二定律，即在一个孤立系统中，总熵不会减少。玻尔兹曼通过引入一个特殊的物理量“H”，证明了在理想气体系统中，这个量随时间单调递减，表明系统趋向于最大熵状态，也就是热力学平衡状态。</span><br><span class="line"></span><br><span class="line">具体来说，H定理指出，系统的状态函数H(t)，定义为粒子分布函数f的对数乘以f在整个相空间的积分，会随时间单调递减，即dH/dt ≤ 0。等号成立的情况对应于系统达到了平衡态分布（例如麦克斯韦-玻尔兹曼分布）。</span><br><span class="line"></span><br><span class="line">此外，H定理对于理解热力学和统计力学之间的桥梁具有重要意义。它不仅揭示了单个分子动力学行为与宏观热力学变量之间的关系，也为后续关于系统远离平衡态的研究奠定了基础。</span><br><span class="line"></span><br><span class="line">2. H定理对于理解热力学和统计力学之间的桥梁有何重要意义？</span><br><span class="line">H定理在连接热力学和统计力学之间扮演了桥梁的角色，其重要意义体现在以下几个方面：</span><br><span class="line"></span><br><span class="line">从微观到宏观：H定理通过玻尔兹曼方程展示了如何从微观的粒子动力学行为出发，推导出宏观的热力学第二定律。这一过程体现了统计力学的一个核心思想，即宏观的不可逆现象（如熵增）可以由微观的可逆机制得出。</span><br><span class="line">定义热力学熵：H定理提供了一个可能的途径来定义热力学熵。它探讨了在何种条件下物理量H可以等同于热力学熵，并尝试将两者关联起来。</span><br><span class="line">探讨非平衡态：H定理与非平衡态统计物理有着密切的联系。在现代物理学中，对于非平衡系统的理解和描述仍然是一个重要的研究领域，H定理及其相关讨论为这一领域的研究提供了理论基础。</span><br><span class="line">引发深入讨论：H定理衍伸出许多关于其真实含意的讨论，这些讨论有助于深化我们对热力学和统计力学概念的理解，例如熵的本质以及它在物理学中的多种表述。</span><br><span class="line">总的来说，H定理不仅是理解热力学和统计力学关系的关键，也是推动物理学深入发展的一个动力源泉。</span><br></pre></td></tr></table></figure>
+<p>考虑单组分体系。Boltxmann定义H函数为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+H(t) \equiv \iint \mathrm{d} \boldsymbol{r} \mathrm{d} \boldsymbol{v} f(\boldsymbol{r}, \boldsymbol{v}, t) \ln f(\boldsymbol{r}, \boldsymbol{v}, t)
+\end{equation}</script><p>H函数本质上就是“负熵”，以下从本章第一节的Boltamann积分微分方程出发，分析H定理的物理含义。<br>H函数对时间求导：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+\frac{\mathrm{d} H}{\mathrm{~d} t}=&\iint \mathrm{d} r \mathrm{~d} \boldsymbol{v}\left(\frac{\partial f}{\partial t}\right)(1+\ln f) \\
+=& -\iint \mathrm{d} \boldsymbol{r} \mathrm{d} \boldsymbol{v}(1+\ln f) \boldsymbol{v} \cdot \nabla_{\boldsymbol{r}} f-\iint \mathrm{d} \boldsymbol{r} \mathrm{d} \boldsymbol{v}(1+\ln f) \frac{\boldsymbol{X}}{m} \cdot \nabla_{\boldsymbol{v}} f \\
+& +2 \pi \iiint \int \mathrm{d} b \mathrm{~d} \boldsymbol{v}_1 \mathrm{~d} \boldsymbol{r} \mathrm{d} \boldsymbol{v} b(1+\ln f)\left|\boldsymbol{v}_1-\boldsymbol{v}\right|\left(f^{\prime} f_1^{\prime}-f f_1\right) \\
+=& 2 \pi \iiint \int \mathrm{d} b \mathrm{~d} \boldsymbol{v}_1 \mathrm{~d} \boldsymbol{r} \mathrm{d} \boldsymbol{v} b(1+\ln f)\left|\boldsymbol{v}_1-\boldsymbol{v}\right|\left(f^{\prime} f_1^{\prime}-f f_1\right) \\
+=& 2 \pi \iiint \int \mathrm{d} b \mathrm{~d} \boldsymbol{v}_1 \mathrm{~d} \boldsymbol{r} \mathrm{d} \boldsymbol{v} b(1+\ln f)\left|\boldsymbol{v}-\boldsymbol{v}_1\right|\left(f_1^{\prime} f^{\prime}-f_1 f\right) \\
+=&\frac{1}{2}[(\cdot)+(\cdot \cdot)] \\
+=&2 \pi \iiint b \mathrm{~d} b \mathrm{~d} \boldsymbol{v}_1 \mathrm{~d} \boldsymbol{r} \mathrm{d} \boldsymbol{v}\left|\boldsymbol{v}_1-\boldsymbol{v}\right| \frac{1}{2}\left(\left(f^{\prime} f_1^{\prime}-f f_1\right)(1+\ln f)+\left(f_1^{\prime} f^{\prime}-f_1 f\right)\left(1+\ln f_1\right)\right) \\
+=&\pi \iiint b \mathrm{d} b \mathrm{~d} \boldsymbol{v}_1 \mathrm{~d} \boldsymbol{r} \mathrm{d} \boldsymbol{v}\left|\boldsymbol{v}_1-\boldsymbol{v}\right|\left(f^{\prime} f_1^{\prime}-f f_1\right)\left(2+\ln \left(f f_1\right)\right) \\ 
+=&\pi \iiint \int b \mathrm{~d} b \mathrm{~d} v_1 \mathrm{~d} r \mathrm{~d} v\left|\boldsymbol{v}_1-\boldsymbol{v}\right|\left(f\left(\boldsymbol{v}^{\prime}\right) f\left(\boldsymbol{v}_1^{\prime}\right)-f(\boldsymbol{v}) f\left(\boldsymbol{v}_1\right)\right)\left[2+\ln \left(f(\boldsymbol{v}) f\left(\boldsymbol{v}_1\right)\right)\right] \\
+=&\pi \iiint \int b^{\prime} \mathrm{d} b^{\prime} \mathrm{d} \boldsymbol{v}_1^{\prime} \mathrm{d} \boldsymbol{r} \mathrm{d} \boldsymbol{v}^{\prime}\left|\boldsymbol{v}_1^{\prime}-\boldsymbol{v}\right|\left(f(\boldsymbol{v}) f\left(\boldsymbol{v}_1\right)-f\left(\boldsymbol{v}^{\prime}\right) f\left(\boldsymbol{v}_1^{\prime}\right)\right)\left[2+\ln \left(f\left(\boldsymbol{v}^{\prime}\right) f\left(\boldsymbol{v}_1^{\prime}\right)\right)\right] \\
+=& \pi \iiint \int b \mathrm{~d} b \mathrm{~d} \boldsymbol{v}_1 \mathrm{~d} \boldsymbol{r} \mathrm{d} \boldsymbol{v}\left|\boldsymbol{v}_1-\boldsymbol{v}\right|\left(f f_1-f^{\prime} f_1^{\prime}\right)\left(2+\ln \left(f^{\prime} f_1^{\prime}\right)\right) \\
+=& \pi \iiint \int b \mathrm{~d} b \mathrm{~d} \boldsymbol{v}_1 \mathrm{~d} r \mathrm{~d} v\left|\boldsymbol{v}_1-\boldsymbol{v}\right| \frac{1}{2}\left(f^{\prime} f_1^{\prime}-f f_1\right)\left[\ln \left(f f_1\right)-\ln \left(f^{\prime} f_1^{\prime}\right)\right] \\
+=& \frac{\pi}{2} \iiint \int b \mathrm{~d} b \mathrm{~d} \boldsymbol{v}_1 \mathrm{~d} \boldsymbol{r} \mathrm{d} \boldsymbol{v}\left|\boldsymbol{v}_1-\boldsymbol{v}\right|(x-y) \ln \left(\frac{y}{x}\right)
+\end{aligned}
+\end{equation}</script><p>通过分析$x,y$的大小，可知$\frac{\mathrm{~d} H}{\mathrm{~d} t}\leq 0$，称之为H定理。</p>
+<p>H定理受到“可逆性佯谬”与“重现性佯谬”的诘难，为了解释这个问题，需要先讨论“微观上可逆性”与“宏观上不可逆性”的概念。</p>
+<h2 id="微观变化的可逆性与宏观变化的不可逆性"><a href="#微观变化的可逆性与宏观变化的不可逆性" class="headerlink" title="微观变化的可逆性与宏观变化的不可逆性"></a>微观变化的可逆性与宏观变化的不可逆性</h2><h3 id="Lagrange方程的时间反演可逆性"><a href="#Lagrange方程的时间反演可逆性" class="headerlink" title="Lagrange方程的时间反演可逆性"></a>Lagrange方程的时间反演可逆性</h3><h3 id="Schrodinger方程的时间反演可逆性"><a href="#Schrodinger方程的时间反演可逆性" class="headerlink" title="Schrodinger方程的时间反演可逆性"></a>Schrodinger方程的时间反演可逆性</h3><h3 id="Loschmidt佯谬"><a href="#Loschmidt佯谬" class="headerlink" title="Loschmidt佯谬"></a>Loschmidt佯谬</h3><p>”Loschmidt佯谬“即“可逆性佯谬”，认为如果在某一时刻，令体系所有分子速度方向反转，$v\to -v$，按照微观运动的可逆性，每个分子将沿原来的轨迹回溯，整体表现出的宏观过程也就逆转了。这与H定理所表现出的宏观不可逆性是矛盾的。</p>
+<p>这里对H定理进行修改，指出并不是严格的下降，在平衡态度也存在涨落，只是涨落很小，涨落很大的概率很小。</p>
+<p>以下使用分子动力学模拟方法，对100个小球进行研究。其中分别在碰撞50次与100次的时候，将速度进行翻转，较大的点表示为速度没有翻转情况，较小的点表示对速度进行翻转。可以看出，在速度未翻转的情况下，H是逐渐下降的，符合H定理的预言。abc三幅图分别表示在不同随机性下的模型，可以发现在随机性较小的情况下，确实H增大到初始状态，但是随着随机涨落变大，可逆性性基本消失。</p>
+<p><img src="/2024/01/28/statistical_physics_CMB/11-2.png" alt="Loschmidt佯谬"></p>
+<h3 id="Zermelo佯谬"><a href="#Zermelo佯谬" class="headerlink" title="Zermelo佯谬"></a>Zermelo佯谬</h3><p>根据动力学理论，孤立有限大保守的动力学体系，在其演化的过程中，经过有限长的时间，总是能回复到任意接近它原来起始的状态。“Zermelo佯谬”也称“重现性佯谬”认为，既然能够接近原来的状态，那么如何认为H定理总是下降？</p>
+<p>调和方案依旧是利用涨落概念，重现初始状态是利用涨落，重现时间相当长。</p>
+<font color="red">这本书并没有更细致的讲解。</font>
+
+
+]]></content>
       <categories>
         <category>Statistical Physics</category>
       </categories>
