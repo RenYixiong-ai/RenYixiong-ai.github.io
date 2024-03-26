@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>A Distributional Perspective on Reinforcement Learning</title>
+    <url>/2024/03/12/Distributional_PerspectiveRL/</url>
+    <content><![CDATA[<h1 id="值分布强化学习"><a href="#值分布强化学习" class="headerlink" title="值分布强化学习"></a>值分布强化学习</h1><p><a href="https://zhuanlan.zhihu.com/p/65116688">知乎文章</a></p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Natural Gradients</tag>
+        <tag>PPO</tag>
+        <tag>TRPO</tag>
+        <tag>Policy Gradients</tag>
+        <tag>Reinforcement Learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Deconstructing Denoising Diffusion Models for Self-Supervised Learning</title>
     <url>/2024/03/15/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/</url>
     <content><![CDATA[<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。</p>
@@ -59,22 +75,6 @@
         <tag>Diffusion Models</tag>
         <tag>Denoising Diffusion Models</tag>
         <tag>Self-Supervised Learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>A Distributional Perspective on Reinforcement Learning</title>
-    <url>/2024/03/12/Distributional_PerspectiveRL/</url>
-    <content><![CDATA[<h1 id="值分布强化学习"><a href="#值分布强化学习" class="headerlink" title="值分布强化学习"></a>值分布强化学习</h1><p><a href="https://zhuanlan.zhihu.com/p/65116688">知乎文章</a></p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Natural Gradients</tag>
-        <tag>PPO</tag>
-        <tag>TRPO</tag>
-        <tag>Policy Gradients</tag>
-        <tag>Reinforcement Learning</tag>
       </tags>
   </entry>
   <entry>
@@ -1848,8 +1848,53 @@ H(t) \equiv \iint \mathrm{d} \boldsymbol{r} \mathrm{d} \boldsymbol{v} f(\boldsym
 <p>调和方案依旧是利用涨落概念，重现初始状态是利用涨落，重现时间相当长。</p>
 <font color="red">这本书并没有更细致的讲解。</font>
 
-
-]]></content>
+<h1 id="概率论方法"><a href="#概率论方法" class="headerlink" title="概率论方法"></a>概率论方法</h1><h2 id="随机过程"><a href="#随机过程" class="headerlink" title="随机过程"></a>随机过程</h2><p>Markov过程的时间演化方程称为Fokker-Planck方程。</p>
+<h2 id="联合概率、条件概率、联合条件概率"><a href="#联合概率、条件概率、联合条件概率" class="headerlink" title="联合概率、条件概率、联合条件概率"></a>联合概率、条件概率、联合条件概率</h2><h2 id="Markov过程、Chapman-Kolmogorov方程"><a href="#Markov过程、Chapman-Kolmogorov方程" class="headerlink" title="Markov过程、Chapman-Kolmogorov方程"></a>Markov过程、Chapman-Kolmogorov方程</h2><p><a href="https://renyixiong-ai.github.io/2021/09/16/Markov_Chain/">Markov过程详细介绍。</a></p>
+<p>Chapman-Kolmogorov方程（简称C-K方程），或称为 Smoluchowski 方程，描述马尔可夫过程中转移概率之间的联系：</p>
+<script type="math/tex; mode=display">\begin{equation}
+P_{1 \mid 1}\left(y_3, t_3 \mid y_1, t_1\right)=\int \mathrm{d} y_2 P_{1 \mid 1}\left(y_3, t_3 \mid y_2, t_2\right) P_{1 \mid 1}\left(y_2, t_2 \mid y_1, t_1\right)
+\end{equation}</script><h2 id="主方程"><a href="#主方程" class="headerlink" title="主方程"></a>主方程</h2><p>单位时间内体系$y_1$转移到$y_2$的条件概率密度，概率密度跃迁速度$W_t(y_1,y_2)$：</p>
+<script type="math/tex; mode=display">\begin{equation}
+W_t\left(y_1, y_2\right) \equiv \lim _{\tau \rightarrow 0}\left\{\frac{P_{1 \mid 1}\left(y_2, t_1+\tau \mid y_1, t_1\right)}{\tau}\right\}_{y_1 \neq y_2}
+\end{equation}</script><p>Pauli主方程（Master equation）：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\frac{\partial P_1\left(y_2, t\right)}{\partial t}=\int_{\text {all } y_1} \mathrm{~d} y_1\left\{W_t\left(y_1, y_2\right) P_1\left(y_1, t\right)-W_t\left(y_2, y_1\right) P_1\left(y_2, t\right)\right\}
+\end{equation}</script><p>右边第一项表示从其它态到$y_2$，第二项表示从$y_2$变化到其它态的项。主方程就是Markov过程概率分布的时间演化。</p>
+<h2 id="Fokker-Planck方程"><a href="#Fokker-Planck方程" class="headerlink" title="Fokker-Planck方程"></a>Fokker-Planck方程</h2><p>略去跃迁速度的下标，认为跃迁速度取决于初态及其跃迁幅度$\xi\equiv y-y’$。</p>
+<script type="math/tex; mode=display">\begin{equation}
+W\left(y^{\prime}, y\right) \equiv W\left(y^{\prime} ; y-y^{\prime}\right)=W\left(y^{\prime} ; \xi\right)
+\end{equation}</script><p>利用变化与Taylor展开，可将主方程改写为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+\frac{\partial P_1(y, t)}{\partial t}= & \int \mathrm{d} \xi P_1(y, t) W(y ; \xi)+\sum_{n=1}^{\infty} \frac{(-1)^n}{n !} \frac{\partial^n}{\partial y^n}\left[P_1(y, t) \int \mathrm{d} \xi \xi^n W(y ; \xi)\right] \\
+& -P_1(y, t) \int \mathrm{d} \xi W(y ;-\xi)
+\end{aligned}
+\end{equation}</script><p>可以假定，当$|\xi|$变大时，跃迁速度$W$会很快变小。<br><img src="/2024/01/28/statistical_physics_CMB/12-1.png" alt="跃迁速度与跃迁幅度"></p>
+<script type="math/tex; mode=display">\begin{equation}
+P_1(y+\Delta y, t) \simeq P_1(y, t), \quad \forall|\Delta y|<\delta,
+\end{equation}</script><p>得到$W\left(y ; \xi\right) =W\left(y ; -\xi\right)$，同时令</p>
+<script type="math/tex; mode=display">\begin{equation}
+\alpha_n(y) \equiv \int \mathrm{d} \xi \xi^n W(y ; \xi)
+\end{equation}</script><p>得到：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\frac{\partial P_1(y, t)}{\partial t}=\sum_{n=1}^{\infty} \frac{(-1)^n}{n !} \frac{\partial^n}{\partial y^n}\left[\alpha_n(y) P_1(y, t)\right]
+\end{equation}</script><p>如果只取到二次统计矩，忽略高阶统计矩，得到但变的Fokker-Planck方程：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\frac{\partial P_1(y, t)}{\partial t} \simeq-\frac{\partial}{\partial y}\left[\alpha_1(y) P_1(y, t)\right]+\frac{1}{2} \frac{\partial^2}{\partial y^2}\left[\alpha_2(y) P_1(y, t)\right]
+\end{equation}</script><p>当有两个变量时，对应Chapman-Kolmogorov方程：</p>
+<script type="math/tex; mode=display">
+P_{1 \mid 1}\left(x_3, y_3, t_3 \mid x_1, y_1, t_1\right)=\int \mathrm{d} x_2 \mathrm{~d} y_2 P_{1 \mid 1}\left(x_3, y_3, t_3 \mid x_2, y_2, t_2\right) P_{1 \mid 1}\left(x_2, y_2, t_2 \mid x_1, y_1, t_1\right)</script><p>同理, 可以得到对应的 Fokker-Planck 方程</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\frac{\partial P_1(x, y, t)}{\partial t}= & -\frac{\partial}{\partial x}\left[\alpha_1 P_1(x, y, t)\right]-\frac{\partial}{\partial y}\left[\beta_1 P_1(x, y, t)\right] \\
+& +\frac{1}{2} \frac{\partial^2}{\partial x^2}\left[\alpha_2 P_1(x, y, t)\right]+\frac{1}{2} \frac{\partial^2}{\partial y^2}\left[\beta_2 P_1(x, y, t)\right]+\frac{\partial^2}{\partial x \partial y}\left[\gamma P_1(x, y, t)\right]
+\end{aligned}</script><p>其中</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\alpha_n(x, y) & \equiv \iint \mathrm{d} \xi \mathrm{d} \zeta \xi^n W(x, y ; \xi, \zeta) \\
+\beta_n(x, y) & \equiv \iint \mathrm{d} \xi \mathrm{d} \zeta \zeta^n W(x, y ; \xi, \zeta) \\
+\gamma(x, y) & \equiv \iint \mathrm{d} \xi \mathrm{d} \zeta \xi \zeta W(x, y ; \xi, \zeta) 
+\end{aligned}</script><h2 id="从Fokker-Planck方程到Fick定律"><a href="#从Fokker-Planck方程到Fick定律" class="headerlink" title="从Fokker-Planck方程到Fick定律"></a>从Fokker-Planck方程到Fick定律</h2>]]></content>
       <categories>
         <category>Statistical Physics</category>
       </categories>
