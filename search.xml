@@ -323,6 +323,11 @@ x_i&\geq0 \\
       </tags>
   </entry>
   <entry>
+    <title></title>
+    <url>/2024/03/28/PART/</url>
+    <content><![CDATA[]]></content>
+  </entry>
+  <entry>
     <title>Policy Gradients In Reinforcement</title>
     <url>/2024/03/08/PPO/</url>
     <content><![CDATA[<font color="red">文中有一些问题仍未处理，缺失具体代码的解读，对于TRPO算法的认知仍然存在不清楚的地方，高阶梯度怎么算的</font>
@@ -1976,7 +1981,155 @@ P_{1 \mid 1}\left(x_3, y_3, t_3 \mid x_1, y_1, t_1\right)=\int \mathrm{d} x_2 \m
 \alpha_n(x, y) & \equiv \iint \mathrm{d} \xi \mathrm{d} \zeta \xi^n W(x, y ; \xi, \zeta) \\
 \beta_n(x, y) & \equiv \iint \mathrm{d} \xi \mathrm{d} \zeta \zeta^n W(x, y ; \xi, \zeta) \\
 \gamma(x, y) & \equiv \iint \mathrm{d} \xi \mathrm{d} \zeta \xi \zeta W(x, y ; \xi, \zeta) 
-\end{aligned}</script><h2 id="从Fokker-Planck方程到Fick定律"><a href="#从Fokker-Planck方程到Fick定律" class="headerlink" title="从Fokker-Planck方程到Fick定律"></a>从Fokker-Planck方程到Fick定律</h2>]]></content>
+\end{aligned}</script><h2 id="从Fokker-Planck方程到Fick定律"><a href="#从Fokker-Planck方程到Fick定律" class="headerlink" title="从Fokker-Planck方程到Fick定律"></a>从Fokker-Planck方程到Fick定律</h2><h1 id="Brown运动、Langevin方程及Fokker-Planck方程"><a href="#Brown运动、Langevin方程及Fokker-Planck方程" class="headerlink" title="Brown运动、Langevin方程及Fokker-Planck方程"></a>Brown运动、Langevin方程及Fokker-Planck方程</h1><h2 id="Brown-运动和Langevin方程"><a href="#Brown-运动和Langevin方程" class="headerlink" title="Brown 运动和Langevin方程"></a>Brown 运动和Langevin方程</h2><p>Brown运动理论的基本方程称为Langevin方程，含有随机力与摩擦力。涨落耗散定理把这些力联系起来。这样一类引入随机过程用来处理复杂体系，或对同一体系相宏观方向提高描述的层次，从而达到粗粒化目的的方法，就是推广意义上的Brown运动。</p>
+<h3 id="无外场Langevin方程"><a href="#无外场Langevin方程" class="headerlink" title="无外场Langevin方程"></a>无外场Langevin方程</h3><script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+&m \dot{\boldsymbol{v}}=-m \zeta \boldsymbol{v}+\boldsymbol{f}(t)\\
+&\dot{\boldsymbol{v}}=-\zeta \boldsymbol{v}+\frac{\boldsymbol{f}(t)}{m}
+\end{aligned}
+\end{equation}</script><p>其中$f(t)$是随机力，$-m\zeta v$是粘滞力（摩擦力），该方程称为无外场Langevin方程。</p>
+<p>利用Laplace变换：</p>
+<script type="math/tex; mode=display">
+\begin{gathered}
+s \tilde{\boldsymbol{v}}(s)-\boldsymbol{v}(0)=-\zeta \tilde{\boldsymbol{v}}(s)+\mathcal{L}\left(\frac{\boldsymbol{f}(t)}{m}\right) \\
+\tilde{\boldsymbol{v}}(s)=(s+\zeta)^{-1} \tilde{\boldsymbol{v}}(0)+(s+\zeta)^{-1} \mathcal{L}\left(\frac{\boldsymbol{f}(t)}{m}\right)
+\end{gathered}</script><p>再利用反变换得到：</p>
+<script type="math/tex; mode=display">
+\boldsymbol{v}(t)=\mathrm{e}^{-\zeta t} \boldsymbol{v}(0)+\mathrm{e}^{-\zeta t} * \mathcal{L}\left(\frac{\boldsymbol{f}(t)}{m}\right)</script><script type="math/tex; mode=display">
+\boldsymbol{v}(t)=\mathrm{e}^{-\zeta t} \boldsymbol{v}(0)+\int_0^t \mathrm{~d} \tau \mathrm{e}^{-\zeta(t-\tau)} \frac{\boldsymbol{f}(\tau)}{m}</script><p>右边第一项给出了初始速度的衰减，第二项给出了随机力造成的速度。</p>
+<p>假设随机力的平均值和它的自时间相关函数服从以下关系：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\langle\boldsymbol{f}(t)\rangle=0 \text { and }\left\langle\boldsymbol{f}(t) \cdot \boldsymbol{f}\left(t^{\prime}\right)\right\rangle=\phi\left(t-t^{\prime}\right),
+\end{equation}</script><h3 id="速度的自时间相关函数"><a href="#速度的自时间相关函数" class="headerlink" title="速度的自时间相关函数"></a>速度的自时间相关函数</h3><p>接下来考虑Brown运动体系处于稳态时长时间的速度的自时间相关函数。</p>
+<p>当$t\to \infty$时，第二项进行变量替换$u\equiv t-\tau$：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+\lim _{t \rightarrow \infty} \boldsymbol{v}(t) &\simeq \lim _{t \rightarrow \infty} \int_t^0(-\mathrm{d} u) \mathrm{e}^{-\zeta u} \frac{\boldsymbol{f}(t-u)}{m}\\
+&=\frac{1}{m} \int_0^{\infty} \mathrm{d} u \mathrm{e}^{-\zeta u} f(t-u)
+\end{aligned}
+\end{equation}</script><p>速度的自时间相关函数，用时间平均可表示为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+\left\langle\boldsymbol{v}(t) \cdot \boldsymbol{v}\left(t^{\prime}\right)\right\rangle &= \lim _{\tau \rightarrow \infty} \frac{1}{\tau} \int_0^\tau \mathrm{d} s \boldsymbol{v}(t+s) \cdot \boldsymbol{v}\left(t^{\prime}+s\right) \\
+&=\lim _{\tau \rightarrow \infty} \int_0^{\infty} \mathrm{d} u_1 \int_0^{\infty} \mathrm{d} u_2 \mathrm{e}^{-\zeta\left(u_1+u_2\right)} \frac{1}{\tau} \int_0^\tau \mathrm{d} s \frac{1}{m^2} \boldsymbol{f}\left(t+s-u_1\right) \cdot \boldsymbol{f}\left(t^{\prime}+s-u_2\right)
+\end{aligned}
+\end{equation}</script><p>考虑随机力的性质：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\left\langle\boldsymbol{f}(t) \cdot \boldsymbol{f}\left(t^{\prime}\right)\right\rangle=\phi\left(t-t^{\prime}\right) \simeq \lambda \delta\left(t-t^{\prime}\right)
+\end{equation}</script><p>进一步得到</p>
+<script type="math/tex; mode=display">
+\left\langle\boldsymbol{v}(t) \cdot \boldsymbol{v}\left(t^{\prime}\right)\right\rangle=\int_0^{\infty} \mathrm{d} u_1 \int_0^{\infty} \mathrm{d} u_2 \mathrm{e}^{-\zeta\left(u_1+u_2\right)} \lim _{\tau \rightarrow \infty} \frac{1}{\tau} \int_0^\tau \mathrm{d} s \frac{1}{m^2} \lambda \delta\left[\left(t-u_1\right)-\left(t^{\prime}-u_2\right)\right],</script><p>其中对 $s$ 的积分为</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\lim _{\tau \rightarrow \infty} \frac{1}{\tau} \int_0^\tau \mathrm{d} s \frac{1}{m^2} \lambda \delta\left[\left(t-u_1\right)-\left(t^{\prime}-u_2\right)\right] & =\frac{\lambda}{m^2} \delta\left[\left(t-t^{\prime}\right)-\left(u_1-u_2\right)\right] \lim _{\tau \rightarrow \infty} \frac{1}{\tau} \int_0^\tau \mathrm{d} s \\
+& =\frac{\lambda}{m^2} \delta\left[u_2-\left(u_1-t+t^{\prime}\right)\right],
+\end{aligned}</script><p>进而</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\left\langle\boldsymbol{v}(t) \cdot \boldsymbol{v}\left(t^{\prime}\right)\right\rangle & =\int_0^{\infty} \mathrm{d} u_1 \int_0^{\infty} \mathrm{d} u_2 \mathrm{e}^{-\zeta\left(u_1+u_2\right)} \frac{\lambda}{m^2} \delta\left[u_2-\left(u_1-t+t^{\prime}\right)\right] \\
+& =\frac{\lambda}{m^2} \mathrm{e}^{-\zeta\left(t^{\prime}-t\right)} \int_0^{\infty} \mathrm{d} u_1 \mathrm{e}^{-2 \zeta u_1} .
+\end{aligned}</script><p>最右边的积分等于 $1 /(2 \zeta)$, 于是得到</p>
+<script type="math/tex; mode=display">
+\left\langle\boldsymbol{v}(t) \cdot \boldsymbol{v}\left(t^{\prime}\right)\right\rangle=\frac{\lambda}{2 \zeta m^2} \mathrm{e}^{-\zeta\left(t^{\prime}-t\right)} .</script><p>又因为必有 $\left\langle\boldsymbol{v}(t) \cdot \boldsymbol{v}\left(t^{\prime}\right)\right\rangle=\left\langle\boldsymbol{v}\left(t^{\prime}\right) \cdot \boldsymbol{v}(t)\right\rangle$, 故得到</p>
+<script type="math/tex; mode=display">
+\left\langle\boldsymbol{v}(t) \cdot \boldsymbol{v}\left(t^{\prime}\right)\right\rangle=\frac{\lambda}{2 \zeta m^2} \mathrm{e}^{-\zeta\left|t^{\prime}-t\right|},</script><p>即时间相关函数取决于时间间隔的绝对值 $\left|t-t^{\prime}\right|$. 现在, 再根据 Brown 运动中的涨落耗散定理, 可以得到稳态时 Brown 粒子速度的自时间相关函数为</p>
+<script type="math/tex; mode=display">
+\left\langle\boldsymbol{v}(t) \cdot \boldsymbol{v}\left(t^{\prime}\right)\right\rangle=\frac{3 k_{\mathrm{B}} T}{m} \mathrm{e}^{-\zeta\left|t^{\prime}-t\right|} .</script><p>根据Doob定理，若Gauss过程的自相关函数是指数形的。则该过程一定是一个Markov过程。</p>
+<h3 id="Brown粒子的均方位移"><a href="#Brown粒子的均方位移" class="headerlink" title="Brown粒子的均方位移"></a>Brown粒子的均方位移</h3><p>得到了稳态时 Brown 粒子速度的自时间相关函数之后, 就可以求解 Brown 运动中粒子位移平方的系综平均值, 简称均方位移(MSD).<br>因为速度是位置的一阶导数, 即</p>
+<script type="math/tex; mode=display">
+\left\langle\dot{\boldsymbol{r}}(t) \cdot \dot{\boldsymbol{r}}\left(t^{\prime}\right)\right\rangle=\left\langle\boldsymbol{v}(t) \cdot \boldsymbol{v}\left(t^{\prime}\right)\right\rangle \quad \text { 和 } \quad \boldsymbol{r}(t)=\int_0^t \mathrm{~d} \tau \boldsymbol{v}(\tau),</script><p>于是求解稳态 (即 $t \gg \zeta^{-1}$ ) 时 Brown 粒子的均方位移 $\left\langle r(t)^2\right\rangle$, 只需对速度自相关积分两次, 即</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\left\langle r(t)^2\right\rangle=\lim _{t \rightarrow t^{\prime}}\left\langle\boldsymbol{r}(t) \cdot \boldsymbol{r}\left(t^{\prime}\right)\right\rangle & =\lim _{t \rightarrow t^{\prime}} \int_0^{t^{\prime}} \mathrm{d} \tau^{\prime} \int_0^t \mathrm{~d} \tau\left\langle\boldsymbol{v}(\tau) \cdot \boldsymbol{v}\left(\tau^{\prime}\right)\right\rangle \\
+& =\lim _{t \rightarrow t^{\prime}} \int_0^{t^{\prime}} \mathrm{d} \tau^{\prime} \int_0^t \mathrm{~d} \tau \frac{\lambda}{2 \zeta m^2} \mathrm{e}^{-\zeta\left|\tau-\tau^{\prime}\right|},
+\end{aligned}</script><p>即</p>
+<script type="math/tex; mode=display">
+\left\langle r(t)^2\right\rangle=\int_0^t \mathrm{~d} \tau^{\prime} \int_0^t \mathrm{~d} \tau \frac{\lambda}{2 \zeta m^2} \mathrm{e}^{-\zeta \mid \tau-\tau^{\prime}} .</script><p>式 (13.1.3-1) 中的积分属于 $I=\int_0^t \mathrm{~d} \tau \int_0^t \mathrm{~d} \tau^{\prime} f\left(\tau-\tau^{\prime}\right)$ 类型, 可以证明, 此类积分有如下性质:</p>
+<script type="math/tex; mode=display">
+\int_0^t \mathrm{~d} \tau \int_0^t \mathrm{~d} \tau^{\prime} f\left(\tau-\tau^{\prime}\right)=\int_0^t \mathrm{~d} u(t-u)[f(u)+f(-u)]</script><p>得到：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\left\langle r(t)^2\right\rangle & =\int_0^t \mathrm{~d} \tau^{\prime} \int_0^t \mathrm{~d} \tau \frac{\lambda}{2 \zeta m^2} \mathrm{e}^{-\zeta\left|\tau-\tau^{\prime}\right|}=\int_0^t \mathrm{~d} u(t-u)\left[\frac{\lambda}{2 \zeta m^2} \mathrm{e}^{-\zeta|u|}+\frac{\lambda}{2 \zeta m^2} \mathrm{e}^{-\zeta|-u|}\right] \\
+& =\frac{\lambda}{\zeta m^2} \int_0^t \mathrm{~d} u(t-u) \mathrm{e}^{-\zeta|u|}=\frac{\lambda}{\zeta m^2} \int_0^t \mathrm{~d} u(t-u) \mathrm{e}^{-\zeta u} .
+\end{aligned}</script><p>可以直接积分得到其中的</p>
+<script type="math/tex; mode=display">
+\int_0^t \mathrm{~d} u(t-u) \mathrm{e}^{-\zeta u}=\frac{t}{\zeta}+\frac{1}{\zeta^2}\left(\mathrm{e}^{-\zeta t}-1\right) .</script><p>于是</p>
+<script type="math/tex; mode=display">
+\left\langle r(t)^2\right\rangle=\frac{\lambda}{\zeta m^2}\left[\frac{t}{\zeta}+\frac{1}{\zeta^2}\left(\mathrm{e}^{-\zeta t}-1\right)\right] .</script><p>在时间较长的情况下有</p>
+<script type="math/tex; mode=display">
+\lim _{t \rightarrow \infty}\left\langle r^2(t)\right\rangle \simeq \frac{\lambda}{\zeta^2 m^2} t .</script><p>至此, 理论把 Langevin 方程中的摩擦系数 $\zeta m$, 随机力强度 $\lambda$ 与均方位移联系起来了, 还没有联系到扩散系数 $D$.</p>
+<h3 id="唯象规律中的扩散系数"><a href="#唯象规律中的扩散系数" class="headerlink" title="唯象规律中的扩散系数"></a>唯象规律中的扩散系数</h3><p>扩散系数$D$的概念是从实验中引入。</p>
+<script type="math/tex; mode=display">\begin{equation}
+\rho \boldsymbol{v} = -D\nabla\rho
+\end{equation}</script><p>其中$\rho(r, t)$表示$t$时刻$r$处单位溶液体积内溶质的粒子数，即数密度；$v$为溶质粒子的速度；$D$为扩散系数，准确点为平动扩散系数。上式称为Fick第一定律。</p>
+<p>另一方面，从粒子数守恒方程出发：</p>
+<script type="math/tex; mode=display">\begin{align}
+0=&\frac{\partial \rho}{\partial t}+ \nabla\cdot(\rho \boldsymbol{v}) \\
+=&  \frac{\partial \rho}{\partial t}+ \nabla\cdot(-D\nabla\rho) \\
+=& \frac{\partial \rho}{\partial t}-D \nabla\cdot\nabla\rho \\
+\frac{\partial \rho}{\partial t}=&D \nabla^2\rho
+\end{align}</script><p>称为Fick第二定律，表示溶液中任意一处溶质数密度随时间的增速正比于$\nabla^2\rho$，比例系数为平动扩散系数。</p>
+<p>以下假设初始情况（$t=0$）$N$个粒子再$r_0$处：</p>
+<script type="math/tex; mode=display">\rho(r, 0)=N\delta(r-r_0)</script><p>再设$G(r, t)dr$为$t$时刻在微体积$dr$中出现溶质粒子的概率，于是：</p>
+<script type="math/tex; mode=display">\begin{equation}
+G(r, t) = \frac{\rho(r, t)}{N}
+\end{equation}</script><p>因此：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{\partial G(r, t)}{\partial t}=&D \nabla^2G(r, t) \\
+G(r, 0) =& \delta(r-r_0)
+\end{align}</script><p>利用傅里叶变换解得：</p>
+<script type="math/tex; mode=display">\begin{equation}
+G(r, t)=\left(\frac{1}{2 \pi}\right)^3\left(\frac{\pi}{D t}\right)^{3 / 2} \mathrm{e}^{-\frac{\left|r-r_0\right|^2}{4 D t}}
+\end{equation}</script><p>任意物理量$A(r)$的系综平均为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\langle A\rangle = \int_\Omega dr A(r)G(r, t)
+\end{align}</script><h2 id="从Langevin方程到Fokker-Planck方程"><a href="#从Langevin方程到Fokker-Planck方程" class="headerlink" title="从Langevin方程到Fokker-Planck方程"></a>从Langevin方程到Fokker-Planck方程</h2><h3 id="无外场Langevin方程的Fokker-Planck方程"><a href="#无外场Langevin方程的Fokker-Planck方程" class="headerlink" title="无外场Langevin方程的Fokker-Planck方程"></a>无外场Langevin方程的Fokker-Planck方程</h3><p>设Brown粒子的速度平均为$\xi$，在$t$时刻粒子速度处于$|\xi,\xi+d\xi|$的概率为$P(\xi,t)$，概率密度的定义为：</p>
+<script type="math/tex; mode=display">\begin{align}
+P(\xi, t)\equiv \langle\delta(\xi-v(t))\rangle
+\end{align}</script><p>密度与概率密度之间的对应关系为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{array}{ccccc}
+\hline \rho(\boldsymbol{r})=\sum_{i=1}^N \delta\left(\boldsymbol{r}-\boldsymbol{r}_{\boldsymbol{i}}\right) & \rho(\boldsymbol{r}) & \boldsymbol{r} & \boldsymbol{r}_i & \sum_{i=1}^N(\cdot) \\
+\hline P(\boldsymbol{\xi}, t) \equiv\langle\delta(\boldsymbol{\xi}-\boldsymbol{v}(t))\rangle & P(\boldsymbol{\xi}, t) & \boldsymbol{\xi} & \boldsymbol{v}(t) & \langle\cdot\rangle \\
+\hline
+\end{array}
+\end{equation}</script><p>求某物理量的运动方程就是求$P$的时间偏导数。</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+\frac{\partial}{\partial t} P(\boldsymbol{\xi}, t)&=-\frac{\partial}{\partial \boldsymbol{\xi}}\langle\delta(\boldsymbol{\xi}-\boldsymbol{v}(t)) \dot{\boldsymbol{v}}(t)\rangle \\
+& =\frac{\partial\langle\delta(\boldsymbol{\xi}-\boldsymbol{v}(t))\rangle}{\partial(\boldsymbol{\xi}-\boldsymbol{v}(t))} \frac{\partial(\boldsymbol{\xi}-\boldsymbol{v}(t))}{\partial t}=\frac{\partial\langle\delta(\boldsymbol{\xi}-\boldsymbol{v}(t))\rangle}{\partial \boldsymbol{\xi}}[-\dot{\boldsymbol{v}}(t)] \\
+& =-\frac{\partial}{\partial \boldsymbol{\xi}}\langle\delta(\boldsymbol{\xi}-\boldsymbol{v}(t)) \dot{\boldsymbol{v}}(t)\rangle \\
+& =-\frac{\partial}{\partial \boldsymbol{\xi}}\left\langle\delta(\boldsymbol{\xi}-\boldsymbol{v}(t))\left(-\zeta \boldsymbol{\xi}+\frac{\boldsymbol{f}(t)}{m}\right)\right\rangle \\
+& =\frac{\partial}{\partial \boldsymbol{\xi}}\{\zeta \boldsymbol{\xi}\langle\delta(\boldsymbol{\xi}-\boldsymbol{v}(t))\rangle\}-\frac{1}{m} \frac{\partial}{\partial \boldsymbol{\xi}}\langle\delta(\boldsymbol{\xi}-\boldsymbol{v}(t)) \boldsymbol{f}(t)\rangle \\
+& =\frac{\partial}{\partial \boldsymbol{\xi}}[\zeta P(\boldsymbol{\xi}, t) \boldsymbol{\xi}]-\frac{1}{m} \frac{\partial}{\partial \boldsymbol{\xi}}\langle\delta(\boldsymbol{\xi}-\boldsymbol{v}(t)) \boldsymbol{f}(t)\rangle 
+\end{aligned}
+\end{equation}</script><p>假设随机力的概率密度为Gauss分布：</p>
+<script type="math/tex; mode=display">\begin{equation}
+P[\boldsymbol{f}(t)]=\exp \left\{-\int_{t_0}^{t_f} \mathrm{~d} t \frac{f^2(t)}{4 \zeta m k_{\mathrm{B}} T}\right\}
+\end{equation}</script><p>其中 $t_0, t_f$ 分别为 $\boldsymbol{f}(t)$ 的初始时间和结束时间. 为了理解泛函型的概率密度, 要对 Gauss 分布多作些解释: 因为这里整个范围内的随机力函数 $\boldsymbol{f}(t)$ 都与一个标量 $P$ 对应, 所以这样的概率密度是一个泛函 $P[f(t)]$, 而不是复合函数 $P(f(t))$ 。 相应地, 概率密度的归一化是泛函积分。</p>
+<ol>
+<li><p>对于一个随机变量归一化的 Gauss 分布 $N\left(\mu, \sigma^2\right)$, 其概率密度 (函数) 为</p>
+<script type="math/tex; mode=display">
+ f(x)=\frac{1}{\sqrt{2 \pi \sigma^2}} \mathrm{e}^{-\frac{(z-\mu)^2}{2 \sigma^2}}</script><p> 它满足 $\int_{-\infty}^{\infty} \mathrm{d} x f(x)=1$。</p>
+</li>
+<li><p>推广到 $n$ 个随机变量 $x_1, x_2, \cdots, x_n$ (令列阵 $\boldsymbol{x} \equiv\left[x_1, x_2, \cdots, x_n\right]^{\mathrm{T}}$ ) 归一化的 Gauss 分布 $N(\boldsymbol{\mu}, \boldsymbol{S})$, 其概率密度 (函数) 为</p>
+<script type="math/tex; mode=display">
+ f(\boldsymbol{x})=\frac{1}{(2 \pi|\boldsymbol{S}|)^{n / 2}} \mathrm{e}^{-\frac{1}{2}(\boldsymbol{x}-\boldsymbol{\mu})^{\mathrm{T}} S^{-1}(\boldsymbol{x}-\boldsymbol{\mu})}</script><p> 其中 $\boldsymbol{\mu} \equiv\left[\mu_1, \mu_2, \cdots, \mu_n\right]^{\mathrm{T}}$ 为所有平均值排成的列阵, 协方差阵 $\boldsymbol{S} \equiv \frac{1}{n-1}(\boldsymbol{x}-$ $\mu)(\boldsymbol{x}-\boldsymbol{\mu})^{\mathrm{T}}$。</p>
+<p> 在现在的情况 (见式 (13.2.1-4)) 下, 随机变量不是离散型的, 而是一个连续型的函数 $f(t)$, 相当于无穷多个互为独立的随机自变量. 与此对应, 对于 $n$ 个独立的随机自变量, 并且均值 $\boldsymbol{\mu}=\mathbf{0}$ 和 $\boldsymbol{S}=2 \Gamma k_{\mathrm{B}} T 1$ 的情况, 式 (13.2.1-6) 应该推广、改写为</p>
+<script type="math/tex; mode=display">
+ f(\boldsymbol{x})=\frac{1}{\left(4 \pi \Gamma k_{\mathrm{B}} T\right)^{n / 2}} \mathrm{e}^{-\frac{1}{4 \Gamma k_{\mathrm{B}} T} \sum_{i=1}^n x_i^2} .</script></li>
+<li><p>再从离散型推广到连续型随机变量 $x(t)$ 就得到泛函型的概率密度为</p>
+<script type="math/tex; mode=display">
+ f[x(t)]=C \exp \left\{-\int_{t_0}^{t_f} \mathrm{~d} t \frac{x^2(t)}{4 \Gamma k_{\mathrm{B}} T}\right\},</script><p> 其中 $C$ 为归一化常数, $t_0, t_f$ 分别为 $x(t)$ 的初始时间和结束时间。</p>
+</li>
+</ol>
+<font color="red">此处省略很多化简步骤</font>
+
+<p>最终得到：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\frac{\partial}{\partial t} P(\boldsymbol{v}, t)=\zeta \frac{\partial}{\partial \boldsymbol{v}}[P(\boldsymbol{v}, t) \boldsymbol{v}]+\zeta \frac{k_{\mathrm{B}} T}{m} \frac{\partial^2}{\partial v^2} P(\boldsymbol{v}, t)
+\end{equation}</script><p>称为Fokker-Planck方程。</p>
+<h3 id="过阻尼Langevin方程的Smoluchowski方程"><a href="#过阻尼Langevin方程的Smoluchowski方程" class="headerlink" title="过阻尼Langevin方程的Smoluchowski方程"></a>过阻尼Langevin方程的Smoluchowski方程</h3><h3 id="有外场Langevin方程的Fokker-Plank方程"><a href="#有外场Langevin方程的Fokker-Plank方程" class="headerlink" title="有外场Langevin方程的Fokker-Plank方程"></a>有外场Langevin方程的Fokker-Plank方程</h3><h2 id="自由Brown运动的Fokker-Planck方程的严格解"><a href="#自由Brown运动的Fokker-Planck方程的严格解" class="headerlink" title="自由Brown运动的Fokker-Planck方程的严格解"></a>自由Brown运动的Fokker-Planck方程的严格解</h2>]]></content>
       <categories>
         <category>Statistical Physics</category>
       </categories>
