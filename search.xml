@@ -323,11 +323,6 @@ x_i&\geq0 \\
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2024/03/28/PART/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>Policy Gradients In Reinforcement</title>
     <url>/2024/03/08/PPO/</url>
     <content><![CDATA[<font color="red">文中有一些问题仍未处理，缺失具体代码的解读，对于TRPO算法的认知仍然存在不清楚的地方，高阶梯度怎么算的</font>
@@ -2129,7 +2124,90 @@ P[\boldsymbol{f}(t)]=\exp \left\{-\int_{t_0}^{t_f} \mathrm{~d} t \frac{f^2(t)}{4
 <script type="math/tex; mode=display">\begin{equation}
 \frac{\partial}{\partial t} P(\boldsymbol{v}, t)=\zeta \frac{\partial}{\partial \boldsymbol{v}}[P(\boldsymbol{v}, t) \boldsymbol{v}]+\zeta \frac{k_{\mathrm{B}} T}{m} \frac{\partial^2}{\partial v^2} P(\boldsymbol{v}, t)
 \end{equation}</script><p>称为Fokker-Planck方程。</p>
-<h3 id="过阻尼Langevin方程的Smoluchowski方程"><a href="#过阻尼Langevin方程的Smoluchowski方程" class="headerlink" title="过阻尼Langevin方程的Smoluchowski方程"></a>过阻尼Langevin方程的Smoluchowski方程</h3><h3 id="有外场Langevin方程的Fokker-Plank方程"><a href="#有外场Langevin方程的Fokker-Plank方程" class="headerlink" title="有外场Langevin方程的Fokker-Plank方程"></a>有外场Langevin方程的Fokker-Plank方程</h3><h2 id="自由Brown运动的Fokker-Planck方程的严格解"><a href="#自由Brown运动的Fokker-Planck方程的严格解" class="headerlink" title="自由Brown运动的Fokker-Planck方程的严格解"></a>自由Brown运动的Fokker-Planck方程的严格解</h2>]]></content>
+<h3 id="过阻尼Langevin方程的Smoluchowski方程"><a href="#过阻尼Langevin方程的Smoluchowski方程" class="headerlink" title="过阻尼Langevin方程的Smoluchowski方程"></a>过阻尼Langevin方程的Smoluchowski方程</h3><h3 id="有外场Langevin方程的Fokker-Plank方程"><a href="#有外场Langevin方程的Fokker-Plank方程" class="headerlink" title="有外场Langevin方程的Fokker-Plank方程"></a>有外场Langevin方程的Fokker-Plank方程</h3><h2 id="自由Brown运动的Fokker-Planck方程的严格解"><a href="#自由Brown运动的Fokker-Planck方程的严格解" class="headerlink" title="自由Brown运动的Fokker-Planck方程的严格解"></a>自由Brown运动的Fokker-Planck方程的严格解</h2><h1 id="线性响应理论"><a href="#线性响应理论" class="headerlink" title="线性响应理论"></a>线性响应理论</h1><p><strong>静态响应</strong>：外场不随时间变化，则体系会在该恒定外场之下达到新的平衡态，求这样响应的平衡统计力学问题。</p>
+<p><strong>动态响应</strong>：求体系对外场的瞬时响应，或者周期性外场。</p>
+<p>以下先讨论体系对静态外场的响应，然后讨论对含时外场响应的Green-Kubo线性响应理论。</p>
+<h2 id="静态线性响应"><a href="#静态线性响应" class="headerlink" title="静态线性响应"></a>静态线性响应</h2><p>讨论如何求平衡的线性响应。</p>
+<p>设体系在未受扰动时的 Hamilton 量为 $H_0(x)$,其中 $x \equiv\{q, p\}, q \equiv\left\{q_1, q_2, \cdots, q_{3 N}\right\}, p \equiv\left\{p_2, p_2, \cdots, p_{3 N}\right\}$, 记恒定外场为 $E$. 体系受扰动后的能量增量, 即体系与外场耦合的能量, 设为 $H^{\prime}=-A(x) E$, 其中 $A(x)$为体系状态的某个与 $E$ 共轭的已知函数. “共轭” 是指若 $E$ 是外电场的电场强度 $\boldsymbol{E}$, 则 $A$ 就是体系总的电偶极矩 $\boldsymbol{\mu}$. 与外磁场强度 $\boldsymbol{H}$ 共轭的是体系的总磁矩 $\boldsymbol{M}$.对应的扰动能量为 $H^{\prime}=-\boldsymbol{\mu} \cdot \boldsymbol{E}$ 和 $H^{\prime}=-\boldsymbol{M} \cdot \boldsymbol{H}$. 实际上, 在以下讨论中, $E$ 和 $A$的具体形式并不重要. 扰动时体系的 Hamilton 量为</p>
+<script type="math/tex; mode=display">
+H(x, E)=H_0+H^{\prime}=H_0(x)-A(x) E</script><h3 id="经典力学中的静态线性响应"><a href="#经典力学中的静态线性响应" class="headerlink" title="经典力学中的静态线性响应"></a>经典力学中的静态线性响应</h3><p>设未扰动的分布函数$f(x)$为：</p>
+<script type="math/tex; mode=display">\begin{align}
+f(x) = \frac{1}{Q}\mathbb{e}^{-\beta H_0(x)}
+\end{align}</script><p>其中$Q=\int dx e^{-\beta H_0(x)}$为未扰动时体系的配分函数，$x\equiv (q,p)$表示$\Gamma$相空间变量。未扰动时，若体系在该外场之下达到平衡，则扰动时的分布函数为：</p>
+<script type="math/tex; mode=display">\begin{align}
+f(x, E)=&\frac{1}{Q(E)} \mathrm{e}^{-\beta H(x, E)}=\frac{1}{Q(E)} \mathrm{e}^{-\beta\left[H_0(x)-A(x) E\right]} \\
+Q(E)=&\int \mathrm{d} x \mathrm{e}^{-\beta\left[H_0(x)-A(x) E\right]}
+\end{align}</script><p>通常做法，把扰动体系的物理量在未扰动体系处展开。将未受扰动的平衡态的系综<strong>均值</strong>$\langle\cdot\rangle_{eq}$。若外场是弱场，则可作近似展开：</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathrm{e}^{-\beta\left[H_0(x)-A(x) E\right]}=[1+\beta AE+O(E^2)]\mathbb{e}^{-\beta H_0}
+\end{align}</script><p>于是体系配分函数展开为：</p>
+<script type="math/tex; mode=display">\begin{align}
+Q(E)=&\int \mathrm{d} x \mathrm{e}^{-\beta\left[H_0(x)-A(x) E\right]} \\
+=& \int \mathrm{d} x [1+\beta AE+O(E^2)]\mathbb{e}^{-\beta H_0} \\
+=& Q[1+\beta\langle A\rangle_{eq}E+O(E^2)]
+\end{align}</script><p>可以得到扰动时分布函数的展开为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+f(x, E)=\frac{\left[1+\beta A E+O\left(E^2\right)\right] \mathrm{e}^{-\beta H_0}}{\left[1+\beta\langle A\rangle_{\mathrm{eq}} E+O\left(E^2\right)\right] Q}=\frac{1+\beta A E+O\left(E^2\right)}{1+\beta\langle A\rangle_{\mathrm{eq}} E+O\left(E^2\right)} f(x)
+\end{equation}</script><p>根据$|x|&lt;1$时$\frac{1}{1+x}$的级数展开：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{1+\beta A E+O\left(E^2\right)}{1+\beta \langle A\rangle_{\mathrm{eq}} E+O\left(E^2\right)}= 1+\beta[A-\langle A\rangle_{eq}]E+O(E^2)
+\end{align}</script><p>得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+f(x, E)=\left \{ 1+\beta[A-\langle A\rangle_{eq}]E\right\}f(x)+O(E^2)
+\end{align}</script><p>其中$\langle A\rangle_{eq}$为未扰动时平衡态$A$的均值，不失普遍性的可令$\langle A\rangle_{eq}=0$，因为$A$是扰动项的共轭物理量，在平衡没有扰动的情况下，可以认为该物理量是不存在的。</p>
+<p>设$B(x)$为体系的任意力学量，扰动时其均值为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\langle B(E) \rangle =& \int dx f(x, E)B(x) \\
+=&\int dx f(x)\left [ 1+\beta A(x) E\right]B(x)+O(E^2) \\
+=& \langle B\rangle_{eq} +\beta\langle AB\rangle_{eq}E+O(E^2) \\
+\langle \Delta B(E) \rangle \equiv& \langle B(E) \rangle -\langle B \rangle_{eq} \\
+=& \chi_{BA}E+O(E^2) \\
+\chi_{BA}=& \beta\langle AB\rangle_{eq}
+\end{align}</script><p>其中$\chi_{BA}$称为广义极化率，第二个下标$A$为外场$E$共轭的那个体系的力学量，即外因$E$是通过内因$A$对体系的任意力学量$B$起作用的，那个作用就是响应，也就是第一个下标$B$。若取力学量$B$为体系总的电偶极矩$M$，则$\chi_{BA}$就是电极化率。当高次项可以忽略的时候，可以得到线性响应为：</p>
+<script type="math/tex; mode=display">\langle \Delta B(E) \rangle = \chi_{BA}E</script><p>上式表示在施加弱外场$E$时，外场$E$通过与体系种共轭力学量$A$的相互作用，造成任意力学量$B$产生响应的增量。广义极化率$\chi_{BA}$表示单位外场$E$通过$A$造成力学量$B$的响应增量。</p>
+<h3 id="量子力学中的静态线性响应"><a href="#量子力学中的静态线性响应" class="headerlink" title="量子力学中的静态线性响应"></a>量子力学中的静态线性响应</h3><h2 id="动态线性响应"><a href="#动态线性响应" class="headerlink" title="动态线性响应"></a>动态线性响应</h2><h3 id="经典力学中的动态线性响应"><a href="#经典力学中的动态线性响应" class="headerlink" title="经典力学中的动态线性响应"></a>经典力学中的动态线性响应</h3><h3 id="Kubo变换"><a href="#Kubo变换" class="headerlink" title="Kubo变换"></a>Kubo变换</h3><h3 id="复数方法、响应的频率关系"><a href="#复数方法、响应的频率关系" class="headerlink" title="复数方法、响应的频率关系"></a>复数方法、响应的频率关系</h3><h3 id="响应函数的客观属性"><a href="#响应函数的客观属性" class="headerlink" title="响应函数的客观属性"></a>响应函数的客观属性</h3><h3 id="Kramers-Kronig关系式"><a href="#Kramers-Kronig关系式" class="headerlink" title="Kramers-Kronig关系式"></a>Kramers-Kronig关系式</h3><h2 id="线性响应理论的应用"><a href="#线性响应理论的应用" class="headerlink" title="线性响应理论的应用"></a>线性响应理论的应用</h2><h1 id="Zwanzig-Mori投影算符理论"><a href="#Zwanzig-Mori投影算符理论" class="headerlink" title="Zwanzig-Mori投影算符理论"></a>Zwanzig-Mori投影算符理论</h1><p>近平衡体系时有两种方法：</p>
+<ol>
+<li>概率论方法<br>在适当假设的基础上求出概率密度服从的方程，如Fokker-Planck方程、主方程</li>
+<li>基于Langevin方程或广义Langevin方程<br>直接求目标随机变量的均值，如求Brown运动粒子其速度服从的方程。</li>
+</ol>
+<p>以上两种方法在一定程度上需要借助唯象规律，即根据经验规律将随机变量假定成某种特定的形式。</p>
+<p>许多人设法给Fokker-Planck方程、Langevin方程一个微观基础，重要进展是R.Zwanzig的投影算符方法。他个呢局第一性原理从Liouville方程出发，严格推导出广义Kokker-Planck方程。几年后，Hazime Mori用投影算符方法得到广义Langevin方程。</p>
+<p>Zwanzig-Mori理论统一了各种非平衡态的问题经验方程，提供了一普适性更强的方法，给线性响应理论提供严格的理论基础，给出计算相关函数的新方法。</p>
+<h1 id="密度泛函理论"><a href="#密度泛函理论" class="headerlink" title="密度泛函理论"></a>密度泛函理论</h1><p>多电子体系的基态能量是电子密度的唯一泛函，在真实的基态电子密度时，体系能量泛函必定达到极小；在介观层次液体理论中，经典的Helmholtz自由能、巨势也是体系数密度的唯一泛函。</p>
+<h2 id="多电子体系的密度泛函理论"><a href="#多电子体系的密度泛函理论" class="headerlink" title="多电子体系的密度泛函理论"></a>多电子体系的密度泛函理论</h2><p>Hohenberg-Kohn第一第二定理为电子密度泛函的基石，将基于波函数基础上的多电子体系量子理论经过统计粗粒化，改造成以电子数密度为基础的理论。</p>
+<h3 id="Hohenberg-Kohn第一定理"><a href="#Hohenberg-Kohn第一定理" class="headerlink" title="Hohenberg-Kohn第一定理"></a>Hohenberg-Kohn第一定理</h3><p><strong>Hohenberg-Kohn第一定理</strong>：多电子体系的基态是无论是非简并的或是简并的，则该基态体系中核与电子的相互作用势能$v(r)$唯一地取决于体系的电子密度$\rho(r)$（只差一个无关紧要的常数）。</p>
+<h3 id="Hohenberg-Kohn第二定理"><a href="#Hohenberg-Kohn第二定理" class="headerlink" title="Hohenberg-Kohn第二定理"></a>Hohenberg-Kohn第二定理</h3><p>Hohenberg-Kohn第二定理给出了电子密度泛函理论的能量变分原理。</p>
+<p>用Rayleigh-Ritz变分原理导出量子力学的定态Schrodinger方程$H|\Psi\rangle=E|\Psi\rangle$，体系能量的均值为$\langle\Psi|H|\Psi\rangle$，同时体系波函数必须归一化$\langle\Psi|\Psi\rangle=1$，把这个当成约束同时利用改变波函数求能量均值的最小值。利用Lagrange乘子法，变为一个无约束的变分问题：</p>
+<script type="math/tex; mode=display">
+\Omega \equiv\langle\Psi|H| \Psi\rangle-\varepsilon(\langle\Psi \mid \Psi\rangle-1)</script><p>其中 $\varepsilon$ 为待定常数, 即所谓 Lagrange 待定乘子. 于是达到极值时必有</p>
+<script type="math/tex; mode=display">
+0=\frac{\partial \Omega}{\partial|\Psi\rangle}=\frac{\partial}{\partial|\Psi\rangle}\{\langle\Psi|H| \Psi\rangle-\varepsilon(\langle\Psi \mid \Psi\rangle-1)\}=H|\Psi\rangle+\left[\left\langle H^{\dagger} \Psi\right|\right]^{\dagger}-\varepsilon|\Psi\rangle-\varepsilon[\langle\Psi|]^{\dagger},</script><p>于是得到</p>
+<script type="math/tex; mode=display">
+H|\Psi\rangle=\varepsilon|\Psi\rangle</script><p>接下来考虑电子密度泛函理论的数密度$\rho(r)$的变分原理。将能量泛函的外场项记为$E_v[\rho]$。体系电子总能量应为三相之和：电子总动能$T$，核与电子的相互作用$V_{ne}$，电子间相互作用$V_{ee}$：</p>
+<script type="math/tex; mode=display">
+E_v[\rho]=T[\rho]+V_{\mathrm{ne}}[\rho]+V_{\mathrm{ee}}[\rho]=F_{\mathrm{HK}}[\rho]+\int v(\boldsymbol{r}) \rho(\boldsymbol{r}) \mathrm{d} \boldsymbol{r}</script><p>其中定义</p>
+<script type="math/tex; mode=display">
+\begin{gathered}
+F_{\mathrm{HK}}[\rho] \equiv T[\rho]+V_{\mathrm{ee}}[\rho]=\left\langle\Psi\left|T+V_{\mathrm{ee}}\right| \Psi\right\rangle, \\
+V_{\mathrm{ee}}[\rho] \equiv J[\rho]+(\text { not classical }) \simeq J[\rho]+E_{\mathrm{xc}}[\rho],
+\end{gathered}</script><p>$J[\rho]$为根据经典电动力学计算该体系的电子间作用势能（静电势能or 库伦势能）：</p>
+<script type="math/tex; mode=display">\begin{align}
+J[\rho]=\frac{1}{2}\iint\frac{\rho(r_1)\rho(r_2)}{|r_1-r_2|}dr_1dr_2
+\end{align}</script><p>在电子间作用势能$V_{ee}[\rho]$种扣除$J[\rho]$之后得到的非经典项的主要部分$E_{xc}[\rho]$，称为<strong>交换相关能</strong>。</p>
+<p>另一方面电子密度$\rho(r)$在全空间积分为$N$：</p>
+<script type="math/tex; mode=display">\int dr \rho(r)=N</script><p><strong>Hohenberg-Kohn第二定理</strong>：设$\tilde \rho(r)$为“试探密度“，同时满足条件$0\leq\tilde\rho(r)$和$\int dr \tilde\rho(r)=N$。将$\tilde\rho(r)$代入体系的能量表达式，有：</p>
+<script type="math/tex; mode=display">\begin{align}
+E_0\leq E_v[\tilde \rho]
+\end{align}</script><p>其中$E_0$为基态能量。</p>
+<p>$v$ 可表示性 ( $v$-representable): 设多电子体系的 Hamilton 量为</p>
+<script type="math/tex; mode=display">
+H=\sum_{i=1}^N\left(-\frac{1}{2} \nabla_i^2\right)+\sum_{i=1}^N v\left(\boldsymbol{r}_i\right)+\sum_{i<j}^N \frac{1}{r_{i j}} .</script><p>若电子密度 $\rho(\boldsymbol{r})$ 具有与 $H$ 对应的反对称性基态波函数, 则该密度称为可表达外势 $v(\boldsymbol{r})$ 的, 即所谓具有 $v$ 可表示性.</p>
+<p>由此, 可以把 Hohenberg-Kohn 第一定理重新表述如下: 多电子体系的基态波函数与 $v$ 可表示的密度 $\rho(\boldsymbol{r})$ 是一一对应的, 所以从这样的密度 $\rho(\boldsymbol{r})$ 出发就可以得到该基态的一切性质.</p>
+<p>Hohenberg-Kohn 第二定理可重新表述如下: 对于所有的 $v$ 可表示的密度 $\rho(\boldsymbol{r})$,存在</p>
+<script type="math/tex; mode=display">
+E_v[\rho]=F_{\mathrm{HK}}[\rho]+\int \mathrm{d} \boldsymbol{r} \rho(\boldsymbol{r}) v(\boldsymbol{r}) \geqslant E_v\left[\rho_0\right],</script><p>其中 $E_v\left[\rho_0\right]$ 为含外场 $v(\boldsymbol{r})$ 的 Hamilton 量体系的基态能量, $\rho_0$ 为基态密度.</p>
+<h3 id="Levy约束搜索法"><a href="#Levy约束搜索法" class="headerlink" title="Levy约束搜索法"></a>Levy约束搜索法</h3><p>根据Hohenberg-Kohn第一定理，基态的电子密度$\rho_0(r)$与基态波函数$\Psi_0$之间是一一对应的，因此接下来需要知道如何从给定的$\rho_0$中求出$\Psi_0$。</p>
+<h3 id="基于第一性原理的电负性、绝对硬度、Fukui函数"><a href="#基于第一性原理的电负性、绝对硬度、Fukui函数" class="headerlink" title="基于第一性原理的电负性、绝对硬度、Fukui函数"></a>基于第一性原理的电负性、绝对硬度、Fukui函数</h3><h3 id="最大硬度原理"><a href="#最大硬度原理" class="headerlink" title="最大硬度原理"></a>最大硬度原理</h3><h2 id="介观体系的密度泛函理论"><a href="#介观体系的密度泛函理论" class="headerlink" title="介观体系的密度泛函理论"></a>介观体系的密度泛函理论</h2>]]></content>
       <categories>
         <category>Statistical Physics</category>
       </categories>
