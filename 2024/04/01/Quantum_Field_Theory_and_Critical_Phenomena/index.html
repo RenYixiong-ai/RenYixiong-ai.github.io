@@ -20,26 +20,22 @@
     var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":-1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Introduction这篇文章的主要任务是，利用Diffusion Model生成具备高表现能力的神经网络参数。 利用 autoencoder 和 laten diffusion model 两个主要部件，其中autoencoder将网络参数进行提取，diffusion model再进行训练，然后再将训练好的模型进行解码。">
+  <meta name="description" content="这本书的核心内容在于讨论重整化以及重整化群，对于散射部分讨论较少。 假设$\hbar&#x3D;c&#x3D;1$，因此能量与动量、子量和距离倒数成正比。 系统的宏观性质不再依赖于微观动力学的多数细节。对这些性质的初步探索基于一种传统的理念：仅考虑与相关长度尺度相匹配的宏观自由度的描述。这种描述通常在诸如平均场理论的简易近似中自然出现，并且它符合一般的概率理论，即大量独立随机变量的均值遵循高斯分布。这些基本思想被概括">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Neural Network Diffusion">
-<meta property="og:url" content="https://renyixiong-ai.github.io/2024/03/04/Neural_Network_Diffusion/index.html">
+<meta property="og:title" content="Note of Quantum Field Theory and Critical Phenomena">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/04/01/Quantum_Field_Theory_and_Critical_Phenomena/index.html">
 <meta property="og:site_name" content="Yixiong&#39;s Blog">
-<meta property="og:description" content="Introduction这篇文章的主要任务是，利用Diffusion Model生成具备高表现能力的神经网络参数。 利用 autoencoder 和 laten diffusion model 两个主要部件，其中autoencoder将网络参数进行提取，diffusion model再进行训练，然后再将训练好的模型进行解码。">
+<meta property="og:description" content="这本书的核心内容在于讨论重整化以及重整化群，对于散射部分讨论较少。 假设$\hbar&#x3D;c&#x3D;1$，因此能量与动量、子量和距离倒数成正比。 系统的宏观性质不再依赖于微观动力学的多数细节。对这些性质的初步探索基于一种传统的理念：仅考虑与相关长度尺度相匹配的宏观自由度的描述。这种描述通常在诸如平均场理论的简易近似中自然出现，并且它符合一般的概率理论，即大量独立随机变量的均值遵循高斯分布。这些基本思想被概括">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/04/Neural_Network_Diffusion/fig1.png">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/04/Neural_Network_Diffusion/NND.png">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/04/Neural_Network_Diffusion/autoencoder.png">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/04/Neural_Network_Diffusion/inference.png">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/04/Neural_Network_Diffusion/result.png">
-<meta property="article:published_time" content="2024-03-03T16:00:00.000Z">
-<meta property="article:modified_time" content="2024-03-04T14:42:39.567Z">
+<meta property="article:published_time" content="2024-04-01T02:00:00.000Z">
+<meta property="article:modified_time" content="2024-04-01T03:44:09.964Z">
 <meta property="article:author" content="Ren Yixiong">
-<meta property="article:tag" content="Diffusion Model">
+<meta property="article:tag" content="Quantum Field Theory">
+<meta property="article:tag" content="Quantum Electrodynamics">
+<meta property="article:tag" content="Critical Phenomena">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/03/04/Neural_Network_Diffusion/fig1.png">
 
-<link rel="canonical" href="https://renyixiong-ai.github.io/2024/03/04/Neural_Network_Diffusion/">
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/04/01/Quantum_Field_Theory_and_Critical_Phenomena/">
 
 
 <script id="page-configurations">
@@ -52,7 +48,7 @@
   };
 </script>
 
-  <title>Neural Network Diffusion | Yixiong's Blog</title>
+  <title>Note of Quantum Field Theory and Critical Phenomena | Yixiong's Blog</title>
   
 
 
@@ -195,7 +191,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/03/04/Neural_Network_Diffusion/">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/04/01/Quantum_Field_Theory_and_Critical_Phenomena/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -208,7 +204,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Neural Network Diffusion
+          Note of Quantum Field Theory and Critical Phenomena
         </h1>
 
         <div class="post-meta">
@@ -219,7 +215,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2024-03-04 00:00:00 / 修改时间：22:42:39" itemprop="dateCreated datePublished" datetime="2024-03-04T00:00:00+08:00">2024-03-04</time>
+              <time title="创建时间：2024-04-01 10:00:00 / 修改时间：11:44:09" itemprop="dateCreated datePublished" datetime="2024-04-01T10:00:00+08:00">2024-04-01</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -227,7 +223,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                  <a href="/categories/Statistical-Physics/" itemprop="url" rel="index"><span itemprop="name">Statistical Physics</span></a>
                 </span>
             </span>
 
@@ -244,14 +240,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>755</span>
+              <span>2.6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>5 分钟</span>
             </span>
 
         </div>
@@ -263,28 +259,24 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>这篇文章的主要任务是，利用Diffusion Model生成具备高表现能力的神经网络参数。</p>
-<p>利用 autoencoder 和 laten diffusion model 两个主要部件，其中autoencoder将网络参数进行提取，diffusion model再进行训练，然后再将训练好的模型进行解码。</p>
+        <p>这本书的核心内容在于讨论重整化以及重整化群，对于散射部分讨论较少。</p>
+<p>假设$\hbar=c=1$，因此能量与动量、子量和距离倒数成正比。</p>
+<p>系统的宏观性质不再依赖于微观动力学的多数细节。对这些性质的初步探索基于一种传统的理念：仅考虑与相关长度尺度相匹配的宏观自由度的描述。这种描述通常在诸如平均场理论的简易近似中自然出现，并且它符合一般的概率理论，即大量独立随机变量的均值遵循高斯分布。这些基本思想被概括在Landau的临界现象理论中。然而，逐渐明显的是，这类理论的预测过于泛化，与临界指数的数值模拟、实验结果以及二维系统中的精确解存在不符。这些发现支持了更为局限的普适性观点：尽管不同系统的大尺度特性相似，但它们似乎还依赖于几个关键的定性特点，例如空间维数、序参量的组分数目、对称性等。实际上，对于平均场或高斯近似的首要修正分析表明，特别是在低维空间中，短程作用并未实现完全解耦，这是一种非同寻常的现象。</p>
+<p>同时还具有一种显著的现象：对于大尺度下的二级相变，对短程微扰并不敏感。在临界领域的主导阶，固定点哈密顿的物理可以通过可重整化（或超可重整化）的量子场论重现。</p>
 <span id="more"></span>
-<p>将神经网络的训练与扩散逆过程进行对比：</p>
-<ol>
-<li>都是从随机到一个特定的分布。</li>
-<li>高质量的图像与具备很好表现的网络参数，可以退化为一个简单分布。</li>
-</ol>
-<p><img src="/2024/03/04/Neural_Network_Diffusion/fig1.png" alt="diffusion model VS model parameters"></p>
-<p>本文提出parameter generation, 叫做 neural network diffusion (p-diff, p stands for parameter)。</p>
-<p>首先用已经训练好的模型参数，训练自编码器。<br>然后用标准latent diffusion model 从随机噪声中合成编码后的表示。最后，利用训练完的diffusion model，通过已经训练过的自编码器去生成新的参数。</p>
-<h1 id="Nerual-Network-Diffusion"><a href="#Nerual-Network-Diffusion" class="headerlink" title="Nerual Network Diffusion"></a>Nerual Network Diffusion</h1><h2 id="Preliminaries-of-diffusion-models"><a href="#Preliminaries-of-diffusion-models" class="headerlink" title="Preliminaries of diffusion models"></a>Preliminaries of diffusion models</h2><p><img src="/2024/03/04/Neural_Network_Diffusion/NND.png" alt="Train LDM"></p>
-<p>前向过程在不断的增加噪声，后向过程在猜测噪声分布。训练目标是计算分布的KL散度，尽可能的小。</p>
-<p>上图中，LDM表示latent diffusion model，训练编码后的表示。前向过程为：从已经表示的分布增加噪声，逐步成为随机噪声分布；后向过程为，从随机噪声出发逐步预测噪声进行去噪，得到原始的表达。</p>
-<h2 id="Parameter-autoencoder"><a href="#Parameter-autoencoder" class="headerlink" title="Parameter autoencoder"></a>Parameter autoencoder</h2><p><img src="/2024/03/04/Neural_Network_Diffusion/autoencoder.png" alt="AutoEncoder"></p>
-<p>利用训练好的数据，进行编码训练。</p>
-<h2 id="Inference"><a href="#Inference" class="headerlink" title="Inference"></a>Inference</h2><p><img src="/2024/03/04/Neural_Network_Diffusion/inference.png" alt="Inference"></p>
-<p>使用DDPM进行优化。</p>
-<h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="/2024/03/04/Neural_Network_Diffusion/result.png" alt="result"></p>
-<p>从结果来看部分数据集上最优，其它大部分也与最优表现持平。</p>
-<p>该模型是否仅仅记住了训练好的模型参数，而非生成了新的模型参数？从结果来看，生成的模型要高于输入训练的模型，可见其是学习到了一些内容。</p>
-
+<p>名词缩写：</p>
+<ul>
+<li>Renormalization and renormalization group (RG)</li>
+<li>quantum electrodynamics (QED)</li>
+<li>quantum field theory (QFT)</li>
+<li>Standard Model (SM)</li>
+</ul>
+<p>Chapters 1-7 deal with functional integrals, perturbation theory, functional methods and discuss general properties of scalar boson QFTs. Chapters 8-13 provide an introduction to renormalization theory with the simple example of the $\phi^4$ QFT in four dimensions, and RG equations are derived. Composite operators and the short-distance expansion are discussed. Relativistic fermions are described. Renormalization properties of theories with symmetries are studied, and specific applications to particle physics are emphasized.</p>
+<p>Chapters 14-19 are devoted to critical phenomena in macroscopic phase transitions: general properties, mean-field approximation, and mainly applications of QFT methods and RG, with the calculation of universal quantities, in particular, with Wilson-Fisher $\varepsilon$ expansion, large $N$ techniques and non-linear $\sigma$-model for $O(N)$-symmetric models.</p>
+<p>With Chapters $20-26$, we return to particle physics. Chapter 20 deals with spontaneous fermion mass generation. We then discuss gauge theories, Abelian and non-Abelian. In particular, Chapter 22 briefly describes the SM of particle physics. Chapter 26 introduces Becchi-Rouet-Stora-Tyutin (BRST) symmetry, the Zinn-Justin (ZJ) equation and the proof of the renormalizablity of gauge theories. Chapter 27 contains a short introduction to supersymmetry. Chapter 28 gathers the few elements of classical and quantum gravity needed in the work.</p>
+<p>In Chapters 29-31, we focus on two-dimensional field theories, of relevance both for particle and statistical physics. Chapter 29 is devoted to QFTs defined on homogeneous spaces, and Chapters 30 and 31 describe exactly-solvable two-dimensional QFTs.</p>
+<p>Chapter 32 provides an introduction to finite-size effects, and Chapter 33 to finite temperature relativistic QFT. Chapters 34-36 deal with stochastic evolution equations, and their application to critical dynamics in phase transitions. Chapters $37-42$ describe the role of instantons in QM and QFT, the application of instanton calculus to the analysis of large-order behaviour of perturbation theory, and the problem of summation of the perturbative expansion. In particular, Chapter 41 applies this information to the evaluation of critical exponents and several other universal quantities.</p>
+<h1 id="Gaussian-integrals-Algebraic-preliminaries"><a href="#Gaussian-integrals-Algebraic-preliminaries" class="headerlink" title="Gaussian integrals. Algebraic preliminaries"></a>Gaussian integrals. Algebraic preliminaries</h1><h2 id="Gaussian-integrals-Wick’s-theorem"><a href="#Gaussian-integrals-Wick’s-theorem" class="headerlink" title="Gaussian integrals: Wick’s theorem"></a>Gaussian integrals: Wick’s theorem</h2>
     </div>
 
     
@@ -293,7 +285,9 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Diffusion-Model/" rel="tag"># Diffusion Model</a>
+              <a href="/tags/Quantum-Field-Theory/" rel="tag"># Quantum Field Theory</a>
+              <a href="/tags/Quantum-Electrodynamics/" rel="tag"># Quantum Electrodynamics</a>
+              <a href="/tags/Critical-Phenomena/" rel="tag"># Critical Phenomena</a>
           </div>
 
         
@@ -302,13 +296,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/02/29/ViT_ViViT/" rel="prev" title="ViT and ViViT">
-      <i class="fa fa-chevron-left"></i> ViT and ViViT
+    <a href="/2024/03/20/five_state_Pottes_Model/" rel="prev" title="Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model">
+      <i class="fa fa-chevron-left"></i> Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2024/03/08/PPO/" rel="next" title="Policy Gradients In Reinforcement">
-      Policy Gradients In Reinforcement <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -367,7 +358,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Nerual-Network-Diffusion"><span class="nav-number">2.</span> <span class="nav-text">Nerual Network Diffusion</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Preliminaries-of-diffusion-models"><span class="nav-number">2.1.</span> <span class="nav-text">Preliminaries of diffusion models</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Parameter-autoencoder"><span class="nav-number">2.2.</span> <span class="nav-text">Parameter autoencoder</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Inference"><span class="nav-number">2.3.</span> <span class="nav-text">Inference</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Result"><span class="nav-number">3.</span> <span class="nav-text">Result</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Gaussian-integrals-Algebraic-preliminaries"><span class="nav-number">1.</span> <span class="nav-text">Gaussian integrals. Algebraic preliminaries</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Gaussian-integrals-Wick%E2%80%99s-theorem"><span class="nav-number">1.1.</span> <span class="nav-text">Gaussian integrals: Wick’s theorem</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 

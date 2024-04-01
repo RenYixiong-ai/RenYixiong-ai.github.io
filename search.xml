@@ -615,6 +615,36 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
       </tags>
   </entry>
   <entry>
+    <title>Note of Quantum Field Theory and Critical Phenomena</title>
+    <url>/2024/04/01/Quantum_Field_Theory_and_Critical_Phenomena/</url>
+    <content><![CDATA[<p>这本书的核心内容在于讨论重整化以及重整化群，对于散射部分讨论较少。</p>
+<p>假设$\hbar=c=1$，因此能量与动量、子量和距离倒数成正比。</p>
+<p>系统的宏观性质不再依赖于微观动力学的多数细节。对这些性质的初步探索基于一种传统的理念：仅考虑与相关长度尺度相匹配的宏观自由度的描述。这种描述通常在诸如平均场理论的简易近似中自然出现，并且它符合一般的概率理论，即大量独立随机变量的均值遵循高斯分布。这些基本思想被概括在Landau的临界现象理论中。然而，逐渐明显的是，这类理论的预测过于泛化，与临界指数的数值模拟、实验结果以及二维系统中的精确解存在不符。这些发现支持了更为局限的普适性观点：尽管不同系统的大尺度特性相似，但它们似乎还依赖于几个关键的定性特点，例如空间维数、序参量的组分数目、对称性等。实际上，对于平均场或高斯近似的首要修正分析表明，特别是在低维空间中，短程作用并未实现完全解耦，这是一种非同寻常的现象。</p>
+<p>同时还具有一种显著的现象：对于大尺度下的二级相变，对短程微扰并不敏感。在临界领域的主导阶，固定点哈密顿的物理可以通过可重整化（或超可重整化）的量子场论重现。</p>
+<span id="more"></span>
+<p>名词缩写：</p>
+<ul>
+<li>Renormalization and renormalization group (RG)</li>
+<li>quantum electrodynamics (QED)</li>
+<li>quantum field theory (QFT)</li>
+<li>Standard Model (SM)</li>
+</ul>
+<p>Chapters 1-7 deal with functional integrals, perturbation theory, functional methods and discuss general properties of scalar boson QFTs. Chapters 8-13 provide an introduction to renormalization theory with the simple example of the $\phi^4$ QFT in four dimensions, and RG equations are derived. Composite operators and the short-distance expansion are discussed. Relativistic fermions are described. Renormalization properties of theories with symmetries are studied, and specific applications to particle physics are emphasized.</p>
+<p>Chapters 14-19 are devoted to critical phenomena in macroscopic phase transitions: general properties, mean-field approximation, and mainly applications of QFT methods and RG, with the calculation of universal quantities, in particular, with Wilson-Fisher $\varepsilon$ expansion, large $N$ techniques and non-linear $\sigma$-model for $O(N)$-symmetric models.</p>
+<p>With Chapters $20-26$, we return to particle physics. Chapter 20 deals with spontaneous fermion mass generation. We then discuss gauge theories, Abelian and non-Abelian. In particular, Chapter 22 briefly describes the SM of particle physics. Chapter 26 introduces Becchi-Rouet-Stora-Tyutin (BRST) symmetry, the Zinn-Justin (ZJ) equation and the proof of the renormalizablity of gauge theories. Chapter 27 contains a short introduction to supersymmetry. Chapter 28 gathers the few elements of classical and quantum gravity needed in the work.</p>
+<p>In Chapters 29-31, we focus on two-dimensional field theories, of relevance both for particle and statistical physics. Chapter 29 is devoted to QFTs defined on homogeneous spaces, and Chapters 30 and 31 describe exactly-solvable two-dimensional QFTs.</p>
+<p>Chapter 32 provides an introduction to finite-size effects, and Chapter 33 to finite temperature relativistic QFT. Chapters 34-36 deal with stochastic evolution equations, and their application to critical dynamics in phase transitions. Chapters $37-42$ describe the role of instantons in QM and QFT, the application of instanton calculus to the analysis of large-order behaviour of perturbation theory, and the problem of summation of the perturbative expansion. In particular, Chapter 41 applies this information to the evaluation of critical exponents and several other universal quantities.</p>
+<h1 id="Gaussian-integrals-Algebraic-preliminaries"><a href="#Gaussian-integrals-Algebraic-preliminaries" class="headerlink" title="Gaussian integrals. Algebraic preliminaries"></a>Gaussian integrals. Algebraic preliminaries</h1><h2 id="Gaussian-integrals-Wick’s-theorem"><a href="#Gaussian-integrals-Wick’s-theorem" class="headerlink" title="Gaussian integrals: Wick’s theorem"></a>Gaussian integrals: Wick’s theorem</h2>]]></content>
+      <categories>
+        <category>Statistical Physics</category>
+      </categories>
+      <tags>
+        <tag>Quantum Field Theory</tag>
+        <tag>Quantum Electrodynamics</tag>
+        <tag>Critical Phenomena</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Score matching model</title>
     <url>/2024/01/19/Score_matching_model/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这篇文章主要描述基于得分匹配（Score matching model）的想法，以及之后主要的修改思路。这种思路是生成模型的一种，与GAN、normal-flow等模型具备同样的功能。</p>
@@ -1055,7 +1085,7 @@ K_c & =\frac{\ln (1+\sqrt{2})}{2} \approx 0.4407
   <entry>
     <title>统计物理读书笔记</title>
     <url>/2024/01/28/statistical_physics_CMB/</url>
-    <content><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本笔记为阅读陈敏伯《统计物理》的读书笔记，包含大量基本概念与公式推导。按照本书前言所著，这本书大量使用变分原理进行推理基本公式。</p>
+    <content><![CDATA[<p>本笔记为阅读陈敏伯《统计物理》的读书笔记，包含大量基本概念与公式推导。按照本书前言所著，这本书大量使用变分原理进行推理基本公式。</p>
 <p><img src="/2024/01/28/statistical_physics_CMB/0-1.png" alt="脉络体系"></p>
 <span id="more"></span>
 <h1 id="第一章：引言"><a href="#第一章：引言" class="headerlink" title="第一章：引言"></a>第一章：引言</h1><p>量子力学用以构建原子分子的微观性质，统计力学根据此微观性质进行解释从而得到理解体系的宏观性质，这就死统计力学的任务所在。</p>
