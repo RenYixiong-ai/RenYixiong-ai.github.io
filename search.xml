@@ -1,6 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>A field-theoretic approach to non-equilibrium work identities</title>
+    <url>/2024/04/01/A_field-theoretic_approach_to_non-equilibrium_work_identities/</url>
+    <content><![CDATA[<span id="more"></span>
+]]></content>
+      <categories>
+        <category>Statistical Physics</category>
+      </categories>
+      <tags>
+        <tag>Quantum Field Theory</tag>
+        <tag>non-equilibrium</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>A Distributional Perspective on Reinforcement Learning</title>
+    <url>/2024/03/12/Distributional_PerspectiveRL/</url>
+    <content><![CDATA[<h1 id="值分布强化学习"><a href="#值分布强化学习" class="headerlink" title="值分布强化学习"></a>值分布强化学习</h1><p><a href="https://zhuanlan.zhihu.com/p/65116688">知乎文章</a></p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Natural Gradients</tag>
+        <tag>PPO</tag>
+        <tag>TRPO</tag>
+        <tag>Policy Gradients</tag>
+        <tag>Reinforcement Learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Deconstructing Denoising Diffusion Models for Self-Supervised Learning</title>
     <url>/2024/03/15/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/</url>
     <content><![CDATA[<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。</p>
@@ -59,22 +88,6 @@
         <tag>Diffusion Models</tag>
         <tag>Denoising Diffusion Models</tag>
         <tag>Self-Supervised Learning</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>A Distributional Perspective on Reinforcement Learning</title>
-    <url>/2024/03/12/Distributional_PerspectiveRL/</url>
-    <content><![CDATA[<h1 id="值分布强化学习"><a href="#值分布强化学习" class="headerlink" title="值分布强化学习"></a>值分布强化学习</h1><p><a href="https://zhuanlan.zhihu.com/p/65116688">知乎文章</a></p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Natural Gradients</tag>
-        <tag>PPO</tag>
-        <tag>TRPO</tag>
-        <tag>Policy Gradients</tag>
-        <tag>Reinforcement Learning</tag>
       </tags>
   </entry>
   <entry>
@@ -629,12 +642,68 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
 <li>quantum field theory (QFT)</li>
 <li>Standard Model (SM)</li>
 </ul>
-<p>Chapters 1-7 deal with functional integrals, perturbation theory, functional methods and discuss general properties of scalar boson QFTs. Chapters 8-13 provide an introduction to renormalization theory with the simple example of the $\phi^4$ QFT in four dimensions, and RG equations are derived. Composite operators and the short-distance expansion are discussed. Relativistic fermions are described. Renormalization properties of theories with symmetries are studied, and specific applications to particle physics are emphasized.</p>
+<p>Chapters 1-7 deal with functional integrals, perturbation theory, functional methods and discuss general properties of scalar boson QFTs. </p>
+<p>Chapters 8-13 provide an introduction to renormalization theory with the simple example of the $\phi^4$ QFT in four dimensions, and RG equations are derived. Composite operators and the short-distance expansion are discussed. Relativistic fermions are described. Renormalization properties of theories with symmetries are studied, and specific applications to particle physics are emphasized.</p>
 <p>Chapters 14-19 are devoted to critical phenomena in macroscopic phase transitions: general properties, mean-field approximation, and mainly applications of QFT methods and RG, with the calculation of universal quantities, in particular, with Wilson-Fisher $\varepsilon$ expansion, large $N$ techniques and non-linear $\sigma$-model for $O(N)$-symmetric models.</p>
 <p>With Chapters $20-26$, we return to particle physics. Chapter 20 deals with spontaneous fermion mass generation. We then discuss gauge theories, Abelian and non-Abelian. In particular, Chapter 22 briefly describes the SM of particle physics. Chapter 26 introduces Becchi-Rouet-Stora-Tyutin (BRST) symmetry, the Zinn-Justin (ZJ) equation and the proof of the renormalizablity of gauge theories. Chapter 27 contains a short introduction to supersymmetry. Chapter 28 gathers the few elements of classical and quantum gravity needed in the work.</p>
 <p>In Chapters 29-31, we focus on two-dimensional field theories, of relevance both for particle and statistical physics. Chapter 29 is devoted to QFTs defined on homogeneous spaces, and Chapters 30 and 31 describe exactly-solvable two-dimensional QFTs.</p>
 <p>Chapter 32 provides an introduction to finite-size effects, and Chapter 33 to finite temperature relativistic QFT. Chapters 34-36 deal with stochastic evolution equations, and their application to critical dynamics in phase transitions. Chapters $37-42$ describe the role of instantons in QM and QFT, the application of instanton calculus to the analysis of large-order behaviour of perturbation theory, and the problem of summation of the perturbative expansion. In particular, Chapter 41 applies this information to the evaluation of critical exponents and several other universal quantities.</p>
-<h1 id="Gaussian-integrals-Algebraic-preliminaries"><a href="#Gaussian-integrals-Algebraic-preliminaries" class="headerlink" title="Gaussian integrals. Algebraic preliminaries"></a>Gaussian integrals. Algebraic preliminaries</h1><h2 id="Gaussian-integrals-Wick’s-theorem"><a href="#Gaussian-integrals-Wick’s-theorem" class="headerlink" title="Gaussian integrals: Wick’s theorem"></a>Gaussian integrals: Wick’s theorem</h2>]]></content>
+<h1 id="Gaussian-integrals-Algebraic-preliminaries"><a href="#Gaussian-integrals-Algebraic-preliminaries" class="headerlink" title="Gaussian integrals. Algebraic preliminaries"></a>Gaussian integrals. Algebraic preliminaries</h1><p>The interesting physics is hidden in essentions deviations from Gaussian distributions.</p>
+<figure class="highlight plaintext"><figcaption><span>integrals</span></figcaption><table><tr><td class="code"><pre><span class="line">Gaussian integrals（高斯积分）是一类涉及高斯函数（Gaussian function）的积分问题。高斯函数是一种在统计学、物理学和工程学等领域广泛应用的函数，其形式为：</span><br><span class="line"></span><br><span class="line">f(x) = a * exp(-b * (x - c)^2)</span><br><span class="line"></span><br><span class="line">其中，a、b 和 c 是实数参数，exp 是指数函数。高斯积分通常涉及到对这类函数的积分计算，例如求解定积分或者不定积分。</span><br><span class="line"></span><br><span class="line">在概率论和统计学中，高斯函数常用来描述正态分布（Normal distribution），其中 a 是标准差（Standard deviation）的平方，b 是 1/(2 * 标准差^2)，c 是均值（Mean）。正态分布的概率密度函数（Probability density function, PDF）就是一个高斯函数。</span><br><span class="line"></span><br><span class="line">高斯积分在数学分析、量子力学、信号处理等领域有广泛的应用。对于高斯函数的积分，可以通过一些特殊技巧和方法进行求解，例如使用高斯-埃尔米特积分（Gauss-Hermite quadrature）等数值方法。</span><br></pre></td></tr></table></figure>
+<h2 id="Gaussian-integrals-Wick’s-theorem"><a href="#Gaussian-integrals-Wick’s-theorem" class="headerlink" title="Gaussian integrals: Wick’s theorem"></a>Gaussian integrals: Wick’s theorem</h2><p>For n-dimensional Gaussian integral over real variables $x_i$, we have form:</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{Z}(\mathbf{S})=\int_{\mathbb{R}^n} \mathrm{~d}^n x \mathrm{e}^{-S_2(\mathbf{x})}
+\end{align}</script><p>where $S_2$is the real positive quadratic form:</p>
+<script type="math/tex; mode=display">\begin{align}
+S_2(\mathbf{x}) \equiv& \frac{1}{2} \sum_{i, j=1}^n x_i S_{i j} x_j \\
+S_{i j}=&S_{j i} \\
+\mathbf{S}>&0
+\end{align}</script><p>and diagonaliz matrix $\mathbf{S}$ by an orthogonal transformation matrix $\mathbf{O}$.</p>
+<p>Changing variables $x_i\to x’_i$ with</p>
+<script type="math/tex; mode=display">
+\sum_j O_{i j} x_j=x_i^{\prime}, \quad|\operatorname{det} \mathbf{O}|=1,</script><p>a transformation of Jacobian unity.</p>
+<p>Each integral yields a factor $\sqrt{2\pi/s_i}$. The result thus involves the product of all eigenvalues, that is, the determinant. The result is </p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{Z}(\mathbf{S})=(2\pi)^{n/2}(\det \mathbf{S})^{-1/2}
+\end{align}</script><p>Then consider more general integral</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{Z}(\mathbf{S}, \mathbf{b})=\int \mathrm{d}^n x \mathrm{e}^{-S_2(\mathbf{x})+\mathbf{b} \cdot \mathbf{x}}, \quad \text { where } \mathbf{b} \cdot \mathbf{x} \equiv \sum_{i=1}^n b_i x_i
+\end{align}</script><p>To calculate $\mathcal{Z}(\mathbf{S}, \mathbf{b})$, first look minimum of the quadratic form, by</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{\partial}{\partial x_i}\left(S_2(\mathbf{x})-\mathbf{b} \cdot \mathbf{x}\right)=0 \Rightarrow \sum_j S_{i j} x_j=b_i \\
+x_i=\sum_j \Delta_{i j} b_j, \quad \text { with } \quad \boldsymbol{\Delta} \mathbf{S}=\mathbf{1} .
+\end{align}</script><p>Then changs variables $\mathbf{x} \mapsto \mathbf{y}$, setting</p>
+<script type="math/tex; mode=display">\begin{align}
+x_i=&\sum_j \Delta_{i j} b_j+y_i \Rightarrow-S_2(\mathbf{x})+\mathbf{b} \cdot \mathbf{x}=w_2(\mathbf{b})-S_2(\mathbf{y}) \\
+w_2(\mathbf{b})=&\frac{1}{2} \sum_{i, j=1}^n b_i \Delta_{i j} b_j \\
+\mathcal{Z}(\mathbf{S}, \mathbf{b})=&\mathrm{e}^{w_2(\mathbf{b})} \int \mathrm{d}^n y \mathrm{e}^{-S_2(\mathbf{y})}=(2 \pi)^{n / 2}(\operatorname{det} \mathbf{S})^{-1 / 2} \mathrm{e}^{w_2(\mathbf{b})} .
+\end{align}</script><p>For Gaussian expectationvalues,</p>
+<script type="math/tex; mode=display">\begin{align}
+\left\langle x_{k_1} x_{k_2} \cdots x_{k_{\ell}}\right\rangle \equiv& \frac{\int \mathrm{d}^n x x_{k_1} x_{k_2} \cdots x_{k_{\ell}} \mathrm{e}^{-S_2(\mathbf{x})}}{\mathcal{Z}(\mathbf{S}, 0)}\\
+\frac{\partial}{\partial b_k} \mathcal{Z}(\mathbf{S}, \mathbf{b})=&\int \mathrm{d}^n x x_k \mathrm{e}^{-S_2(\mathbf{x})+\mathbf{b} \cdot \mathbf{x}}\\
+\left\langle x_{k_1} x_{k_2} \cdots x_{k_{\ell}}\right\rangle=&\left.(2 \pi)^{-n / 2}(\operatorname{det} \mathbf{S})^{1 / 2}\left[\frac{\partial}{\partial b_{k_1}} \frac{\partial}{\partial b_{k_2}} \cdots \frac{\partial}{\partial b_{k_{\ell}}} \mathcal{Z}(\mathbf{S}, \mathbf{b})\right]\right|_{\mathbf{b}=0}\\
+=&\left.\left\{\frac{\partial}{\partial b_{k_1}} \cdots \frac{\partial}{\partial b_{k_{\ell}}} \mathrm{e}^{w_2(\mathbf{b})}\right\}\right|_{\mathbf{b}=0} 
+\end{align}</script><p>More generally, if $F(x)$ is a power series in the variables $x_i$, then</p>
+<script type="math/tex; mode=display">\begin{align}
+\langle F(x)\rangle=\left.\left[F(\partial / \partial b) \mathrm{e}^{w_2(\mathbf{b})}\right]\right|_{\mathbf{b}=0} 
+\end{align}</script><p>Each time $\partial / \partial b$ acts on the exponential in the right-hand side, it generates a factor $b$. A second differential operator has to act on the same factor, otherwise the corresponding contribution vanishes when one sets $\mathbf{b}=0$ (because $b$ is added to simply calculate).</p>
+<p>For example,</p>
+<script type="math/tex; mode=display">\begin{aligned}
+w_2(\mathbf{b})=&\frac{1}{2} \sum_{i, j=1}^n b_i \Delta_{i j} b_j \\
+\frac{\partial w_2(\mathbf{b})}{\partial b_{k}} =& \sum_{i=1}^n b_i \Delta_{i k} \\
+\frac{\partial}{\partial b_l}\frac{\partial w_2(\mathbf{b})}{\partial b_{k}} =& \Delta_{l k} \\
+\end{aligned}</script><p><strong>Wick’s theorem</strong>: one considers all possible pairings of the indices $k_1, \ldots, k_{\ell}$ ( $\ell$ must thus be even); to each pair $k_p, k_q$, one associates the element $\Delta_{k_p k_q}$ of the matrix $\Delta$. Then</p>
+<script type="math/tex; mode=display">
+\begin{align}
+\left\langle x_{k_1} \cdots x_{k_{\ell}}\right\rangle & =\sum_{\substack{\text { all possible pairings } \\
+P \text { of }\left\{k_1, \ldots, k_{\ell}\right\}}} \Delta_{k_{P_1} k_{P_2}} \cdots \Delta_{k_{P_{\ell-1}} k_{P_{\ell}}}, \\
+& =\sum_{\substack{\text { all possible pairings } \\
+P \text { of }\left\{k_1, \ldots, k_{\ell}\right\}}}\left\langle x_{k_{P_1}} x_{k_{P_2}}\right\rangle \cdots\left\langle x_{k_{P_{\ell-1}}} x_{k_{P_{\ell}}}\right\rangle .
+\end{align}</script><p>Above is Wick’s theorem express.</p>
+<font color="red">stop</font>
+
+
+]]></content>
       <categories>
         <category>Statistical Physics</category>
       </categories>
@@ -1116,8 +1185,8 @@ K_c & =\frac{\ln (1+\sqrt{2})}{2} \approx 0.4407
 <p><strong>力学量</strong>：体系中任意可观测量（记为$B$）在体系的每个微观状态下都有确定的数值。</p>
 <p><strong>体系的宏观量</strong>：描述体系的平衡态实际上只要用少数宏观量即可。体积、压强、温度、能量、外磁场、外电场、电极化强度、磁极化强度等。</p>
 <p><strong>涨落</strong>：由于微观状态在剧烈变化，宏观会在平均值附近随机变动，这种变动称为涨落。</p>
-<p><strong>非平衡定态</strong>：经验表明，体系处于环境不变的情况下，经过一段时间后，体系必将达到一个宏观上不随时间变化的状态，尽管不一定是平衡态，但体系将长久的保持这种状态，这种状态称为非平衡定态（定态、稳态、定常态stationary state），描述为：$\frac{\partial <B>}{\partial t}= 0$（注意，只是时间的偏导，而不是全导），例如：在两个具有稳定温差中形成的热流，是定态。</B></p>
-<p><strong>平衡态</strong>：处于定态体系，并且其环境的宏观状态宏观状态也不变，则这个体系称为处于平衡态。体系的所有宏观性质随时间不变化：$\frac{\partial <B>}{\partial t}=0$。处于平衡态的体系，内部允许出现某种微观不均匀，但是不允许出现流（热流、粒子流等）。</B></p>
+<p><strong>非平衡定态</strong>：经验表明，体系处于环境不变的情况下，经过一段时间后，体系必将达到一个宏观上不随时间变化的状态，尽管不一定是平衡态，但体系将长久的保持这种状态，这种状态称为非平衡定态（定态、稳态、定常态stationary state），描述为：$\frac{\partial \langle B\rangle}{\partial t}= 0$（注意，只是时间的偏导，而不是全导），例如：在两个具有稳定温差中形成的热流，是定态。</p>
+<p><strong>平衡态</strong>：处于定态体系，并且其环境的宏观状态宏观状态也不变，则这个体系称为处于平衡态。体系的所有宏观性质随时间不变化：$\frac{\partial \langle B\rangle}{\partial t}=0$。处于平衡态的体系，内部允许出现某种微观不均匀，但是不允许出现流（热流、粒子流等）。</p>
 <p><strong>非平衡态</strong>：体系所处的宏观状态，非上述的平衡态，均处于非平衡态。</p>
 <p><strong>弛豫过程</strong>：处于非平衡态的体系有自发趋向平衡态的趋势，这种从非平衡态到平衡态的过程称为弛豫过程。</p>
 <p><strong>广延量与强度量</strong>：描述体系所需的所有宏观参量。与体系质量有关的称为广延量，与体系质量无关的称为强度量。</p>
