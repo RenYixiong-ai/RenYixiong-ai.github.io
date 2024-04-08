@@ -91,6 +91,59 @@
       </tags>
   </entry>
   <entry>
+    <title>KL散度在VAE中的代码实现</title>
+    <url>/2024/04/08/KL_divergence_in_code/</url>
+    <content><![CDATA[<font color="red">
+能否使用除Gauss分布外的其他分布？为什么一定要选取Gauss分布呢？
+</font>
+
+
+<p>这篇笔记用于记录在VAE计算过程中，KL散度计算的实现方式，以及背后的原理分析。</p>
+<p>参考资料：</p>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/345095899#">KL散度的推导过程</a></li>
+</ul>
+<span id="more"></span>
+<p>在VAE中，为了解决随机采样无法求梯度的问题，假设潜变量空间的参数满足Gauss分布（一维情况）：</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{N}(\mu, \sigma)=\frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(x-\mu)^2}{2 \sigma^2}}
+\end{align}</script><p>然后利用均值和方差进行抽样。这种技巧称为重参数化（reparameterization）。</p>
+<p>在应用重参数化技巧后，需要计算两个分布的差距，因此引入KL散度计算：</p>
+<script type="math/tex; mode=display">\begin{align}
+\text{KL}\left(p_1(x) \| p_2(x)\right)=\int_x p_1(x) \ln \frac{p_1(x)}{p_2(x)} d x
+\end{align}</script><p>针对两个一维高斯分布: $p_1=\mathcal{N}_1\left(\mu_1, \sigma_1\right), p_2=\mathcal{N}_2\left(\mu_2, \sigma_2\right)$, 可以计算他们的KL散度如下:</p>
+<script type="math/tex; mode=display">
+\begin{align}
+\text{KL}\left(p_1 \| p_2\right) & =\int_x p_1(x) \ln \frac{p_1(x)}{q_1(x)} d x \\
+& =\int_x p_1(x) \left[\ln p_1(x) - \ln q_1(x)\right] d x \\
+& =\int_x p_1(x) \left[\ln\left( \frac{1}{\sqrt{2 \pi \sigma_1^2}} e^{-\frac{(x-\mu_1)^2}{2 \sigma_1^2}}\right) - \ln\left( \frac{1}{\sqrt{2 \pi \sigma_2^2}} e^{-\frac{(x-\mu_2)^2}{2 \sigma_2^2}}\right)\right] d x \\
+& =\int_x p_1(x) \left[-\ln \sigma_1 -\frac{(x-\mu_1)^2}{2 \sigma_1^2} + \ln\sigma_2 +\frac{(x-\mu_2)^2}{2 \sigma_2^2}\right] d x \\
+& =\int_x p_1(x) \left[\ln \frac{\sigma_2}{\sigma_1} -\frac{(x-\mu_1)^2}{2 \sigma_1^2} +\frac{(x-\mu_2)^2}{2 \sigma_2^2}\right] d x \\
+& =\log \frac{\sigma_2}{\sigma_1}+\underbrace{\int_x p_1(x) \frac{\left(x-\mu_2\right)^2}{2 \sigma_2^2} d x}_{\mathrm{B}}-\frac{1}{2}\\
+\end{align}</script><p>关注较为复杂的第二项, 即下标 $\mathrm{B}$ 这一项。接下来要用的并不是带入 $p_1(x)$, 而是较为巧妙的使用 $x-\mu_2=\left(x-\mu_1\right)+\left(\mu_1-\mu_2\right)$, 重新使用常数、方差等性质。</p>
+<script type="math/tex; mode=display">
+\begin{align}
+B & =\frac{1}{2 \sigma_2^2}\int_x p_1(x)\left(x-\mu_2\right)^2 d x \\
+& =\frac{1}{2 \sigma_2^2}\int_x p_1(x)\left[\left(x-\mu_1\right)+\left(\mu_1-\mu_2\right)\right]^2 d x \\
+& =\frac{1}{2 \sigma_2^2}\int_x p_1(x)\left(x-\mu_1\right)^2 d x+\frac{2\left(\mu_1-\mu_2\right) }{2 \sigma_2^2}\int_x p_1(x)\left(x-\mu_1\right) d x+\left(\mu_1-\mu_2\right)^2 \\
+& =\frac{1}{2 \sigma_2^2}\left[\sigma_1^2+0+\left(\mu_1-\mu_2\right)^2\right] \\
+& =\frac{1}{2 \sigma_2^2}\left[\sigma_1^2+\left(\mu_1-\mu_2\right)^2\right]
+\end{align}</script><p>综合以上结果, 我们有:</p>
+<script type="math/tex; mode=display">
+\text{KL}\left(p_1 \| p_2\right)=\log \frac{\sigma_2}{\sigma_1}+\frac{1}{2 \sigma_2^2}\left(\sigma_1^2+\left(\mu_1-\mu_2\right)^2\right)-\frac{1}{2}</script><p>接下来, 回到VAE中, 由于我们将自由变量从标准正态分布中采样, 即 $p_2=\mathcal{N}_2(0,1)$;</p>
+<script type="math/tex; mode=display">
+\text{KL}\left(p_1|| p_2\right)=-\frac{1}{2} \times\left[2 \log \sigma_1+1-\sigma_1^2-\mu_1^2\right]</script><p>大多数的VAE代码中间学习并不是 $\mu$ 与 $\sigma$, 而是 $\mu$ 与$logvar =\log \sigma^2$，因此在代码中需要进行变换 。</p>
+<p>代码如下：<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">KL = -<span class="number">0.5</span>*torch.<span class="built_in">sum</span>(logvar + <span class="number">1</span> - mu.<span class="built_in">pow</span>() - logvar.exp())</span><br></pre></td></tr></table></figure></p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Kullback Leibler Divergence</tag>
+        <tag>KL Divergence</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Markov Chain</title>
     <url>/2021/09/16/Markov_Chain/</url>
     <content><![CDATA[<h1 id="基本定义"><a href="#基本定义" class="headerlink" title="基本定义"></a>基本定义</h1><h2 id="随机过程"><a href="#随机过程" class="headerlink" title="随机过程"></a>随机过程</h2><p>状态空间：考虑一个随机变量序列$X=(x_0,x_1…x_t…)$，这里$x_t$表示时刻$t$的变量，$t=0,1,2…$随机变量可以是离散的，也可以是连续的。每个随机变量$x_t$的取值集合相同，称为状态空间，表示为$S$。</p>
@@ -648,7 +701,7 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
 <p>With Chapters $20-26$, we return to particle physics. Chapter 20 deals with spontaneous fermion mass generation. We then discuss gauge theories, Abelian and non-Abelian. In particular, Chapter 22 briefly describes the SM of particle physics. Chapter 26 introduces Becchi-Rouet-Stora-Tyutin (BRST) symmetry, the Zinn-Justin (ZJ) equation and the proof of the renormalizablity of gauge theories. Chapter 27 contains a short introduction to supersymmetry. Chapter 28 gathers the few elements of classical and quantum gravity needed in the work.</p>
 <p>In Chapters 29-31, we focus on two-dimensional field theories, of relevance both for particle and statistical physics. Chapter 29 is devoted to QFTs defined on homogeneous spaces, and Chapters 30 and 31 describe exactly-solvable two-dimensional QFTs.</p>
 <p>Chapter 32 provides an introduction to finite-size effects, and Chapter 33 to finite temperature relativistic QFT. Chapters 34-36 deal with stochastic evolution equations, and their application to critical dynamics in phase transitions. Chapters $37-42$ describe the role of instantons in QM and QFT, the application of instanton calculus to the analysis of large-order behaviour of perturbation theory, and the problem of summation of the perturbative expansion. In particular, Chapter 41 applies this information to the evaluation of critical exponents and several other universal quantities.</p>
-<h1 id="Gaussian-integrals-Algebraic-preliminaries"><a href="#Gaussian-integrals-Algebraic-preliminaries" class="headerlink" title="Gaussian integrals. Algebraic preliminaries"></a>Gaussian integrals. Algebraic preliminaries</h1><p>The interesting physics is hidden in essentions deviations from Gaussian distributions.</p>
+<h1 id="Gaussian-integrals-Algebraic-preliminaries"><a href="#Gaussian-integrals-Algebraic-preliminaries" class="headerlink" title="Gaussian integrals. Algebraic preliminaries"></a>Gaussian integrals. Algebraic preliminaries</h1><p>The interesting physics is hidden in essential deviations from Gaussian distributions.</p>
 <figure class="highlight plaintext"><figcaption><span>integrals</span></figcaption><table><tr><td class="code"><pre><span class="line">Gaussian integrals（高斯积分）是一类涉及高斯函数（Gaussian function）的积分问题。高斯函数是一种在统计学、物理学和工程学等领域广泛应用的函数，其形式为：</span><br><span class="line"></span><br><span class="line">f(x) = a * exp(-b * (x - c)^2)</span><br><span class="line"></span><br><span class="line">其中，a、b 和 c 是实数参数，exp 是指数函数。高斯积分通常涉及到对这类函数的积分计算，例如求解定积分或者不定积分。</span><br><span class="line"></span><br><span class="line">在概率论和统计学中，高斯函数常用来描述正态分布（Normal distribution），其中 a 是标准差（Standard deviation）的平方，b 是 1/(2 * 标准差^2)，c 是均值（Mean）。正态分布的概率密度函数（Probability density function, PDF）就是一个高斯函数。</span><br><span class="line"></span><br><span class="line">高斯积分在数学分析、量子力学、信号处理等领域有广泛的应用。对于高斯函数的积分，可以通过一些特殊技巧和方法进行求解，例如使用高斯-埃尔米特积分（Gauss-Hermite quadrature）等数值方法。</span><br></pre></td></tr></table></figure>
 <h2 id="Gaussian-integrals-Wick’s-theorem"><a href="#Gaussian-integrals-Wick’s-theorem" class="headerlink" title="Gaussian integrals: Wick’s theorem"></a>Gaussian integrals: Wick’s theorem</h2><p>For n-dimensional Gaussian integral over real variables $x_i$, we have form:</p>
 <script type="math/tex; mode=display">\begin{align}
@@ -700,7 +753,32 @@ P \text { of }\left\{k_1, \ldots, k_{\ell}\right\}}} \Delta_{k_{P_1} k_{P_2}} \c
 & =\sum_{\substack{\text { all possible pairings } \\
 P \text { of }\left\{k_1, \ldots, k_{\ell}\right\}}}\left\langle x_{k_{P_1}} x_{k_{P_2}}\right\rangle \cdots\left\langle x_{k_{P_{\ell-1}}} x_{k_{P_{\ell}}}\right\rangle .
 \end{align}</script><p>Above is Wick’s theorem express.</p>
+<h2 id="Perturbative-expansion-Connected-contributions"><a href="#Perturbative-expansion-Connected-contributions" class="headerlink" title="Perturbative expansion. Connected contributions."></a>Perturbative expansion. Connected contributions.</h2><h3 id="Perturbation-theory"><a href="#Perturbation-theory" class="headerlink" title="Perturbation theory"></a>Perturbation theory</h3><p>We consider the more general integral:</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{Z}(\lambda)=\int \mathrm{d}^n x \exp \left(-S_2(\mathbf{x})-\lambda V(x)\right)
+\end{align}</script><p>in which $S_2(\mathbf{x}) \equiv \frac{1}{2} \sum_{i, j=1}^n x_i S_{i j} x_j$,$V(x)$a polynomial in the variables $x_i$ and $\lambda$ a parameter. Then expand the integrand in power of $\lambda$. Formally,</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{Z}(\lambda)=\sum_{k=0}^{\infty} \frac{(-\lambda)^k}{k !} \int \mathrm{d}^n x \mathrm{e}^{-S_2(\mathbf{x})} V^k(x) .
+\end{align}</script><p>Using Wick’s theorem:</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{Z}(\lambda)=\mathcal{Z}(0) \sum_{k=0}^{\infty} \frac{(-\lambda)^k}{k !}\left\langle V^k(x)\right\rangle,
+\end{align}</script><p>where $\langle\bullet\rangle$ means Gaussian expectation value. Since the function $e^{-\lambda V}$has a power series expansion in $x$, we could get a formal expression of the integral by applying the identity $\langle F(x)\rangle=\left.\left[F(\partial / \partial b) \mathrm{e}^{w_2(\mathbf{b})}\right]\right|_{\mathbf{b}=0}$ with $F=e^{-\lambda V}$:</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{Z}(\lambda)=\left.\mathcal{Z}(0)\left\{\exp \left[-\lambda V\left(\frac{\partial}{\partial b}\right)\right] \mathrm{e}^{w_2(\mathbf{b})}\right\}\right|_{\mathbf{b}=0} .
+\end{align}</script><h3 id="Connected-contributions-or-cumulants"><a href="#Connected-contributions-or-cumulants" class="headerlink" title="Connected contributions or cumulants"></a>Connected contributions or cumulants</h3><p>We call connected the genuine remaining contributions and use the notation $\langle\bullet\rangle_c$ :</p>
+<script type="math/tex; mode=display">\begin{align}
+\left\langle V^2(x)\right\rangle=&\left(\langle V(x)\rangle_c\right)^2+\left\langle V^2(x)\right\rangle_c \\
+\langle V(x)\rangle_c=& \langle V(x)\rangle
+\end{align}</script><p>At order $k$, we find a set of disconnected contributions, corresponding to all possible decompositions of $k$ into a sum of positive integers $k=k_1+k_2+\cdots+k_p$. The corresponding contribution</p>
+<script type="math/tex; mode=display">
+\left\langle V^{k_1}(x)\right\rangle_c\left\langle V^{k_2}(x)\right\rangle_c \cdots\left\langle V^{k_p}(x)\right\rangle_c,</script><p>has, when all $k_i$ are different, a coefficient $1 / k!$ from perturbation theory, multiplied by a combinatorial factor associated with all possible ways of gathering $k$ objects into clusters of $k_1+k_2 \cdots$,</p>
+<script type="math/tex; mode=display">
+\frac{(-\lambda)^k}{k !} \times \frac{k !}{k_{1} ! k_{2} ! \cdots k_{p} !}\left\langle V^{k_1}(x)\right\rangle_c\left\langle V^{k_2}(x)\right\rangle_c \cdots\left\langle V^{k_p}(x)\right\rangle_c .</script><p>Instead, if $k_i$ appears $m$ times in the decomposition, one finds the same contribution $m!$ times and, therefore, one has to divide by $m!$. Summing all the contributions, one obtains</p>
+<script type="math/tex; mode=display">
+\mathcal{W}(\lambda) \equiv \ln \mathcal{Z}(\lambda)=\ln \mathcal{Z}(0)+\sum_{k=1} \frac{(-\lambda)^k}{k !}\left\langle V^k(x)\right\rangle_c .</script><p>The new function $\mathcal{W}(\lambda)$, which is the sum of all connected expectation values, plays an important role in statistical physics and QFT.</p>
 <font color="red">stop</font>
+
+
 
 
 ]]></content>
