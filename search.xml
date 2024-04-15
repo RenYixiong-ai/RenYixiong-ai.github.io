@@ -119,7 +119,7 @@ c\neq& b \label{test2} \\
 <h1 id="回到从前"><a href="#回到从前" class="headerlink" title="回到从前"></a>回到从前</h1><h2 id="查看历史版本"><a href="#查看历史版本" class="headerlink" title="查看历史版本"></a>查看历史版本</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git lod --oneline</span><br></pre></td></tr></table></figure>
 <h2 id="回到过去的版本"><a href="#回到过去的版本" class="headerlink" title="回到过去的版本"></a>回到过去的版本</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># 不管我们之前有没有做了一些 add 工作, 这一步让我们回到 上一次的 commit</span><br><span class="line">$ git reset --hard HEAD    </span><br><span class="line"># 输出</span><br><span class="line">HEAD is now at 904e1ba change 2</span><br><span class="line">-----------------------</span><br><span class="line"># 看看所有的log</span><br><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br><span class="line">-----------------------</span><br><span class="line"># 回到 c6762a1 change 1</span><br><span class="line"># 方式1: &quot;HEAD^&quot;</span><br><span class="line">$ git reset --hard HEAD^  </span><br><span class="line"></span><br><span class="line"># 方式2: &quot;commit id&quot;</span><br><span class="line">$ git reset --hard c6762a1</span><br><span class="line">-----------------------</span><br><span class="line"># 看看现在的 log</span><br><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br></pre></td></tr></table></figure>
 <h2 id="在回到历史版本之后再回来"><a href="#在回到历史版本之后再回来" class="headerlink" title="在回到历史版本之后再回来"></a>在回到历史版本之后再回来</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#第一步</span><br><span class="line">$ git reflog</span><br><span class="line"># 输出</span><br><span class="line">c6762a1 HEAD@&#123;0&#125;: reset: moving to c6762a1</span><br><span class="line">904e1ba HEAD@&#123;1&#125;: commit (amend): change 2</span><br><span class="line">0107760 HEAD@&#123;2&#125;: commit: change 2</span><br><span class="line">c6762a1 HEAD@&#123;3&#125;: commit: change 1</span><br><span class="line">13be9a7 HEAD@&#123;4&#125;: commit (initial): create 1.py</span><br><span class="line"></span><br><span class="line">#第二步</span><br><span class="line">$ git reset --hard 904e1ba</span><br><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br></pre></td></tr></table></figure>
-<h2 id="单个文件回到过去"><a href="#单个文件回到过去" class="headerlink" title="单个文件回到过去"></a>单个文件回到过去</h2><p><span id="git_how_to_check_before">利用 <code>checkout</code> 将过去版本的文件覆盖现在同名文件，然后作为当前版本的一个新的更新，更新进版本库。</span></p>
+<h2 id="单个文件回到过去"><a href="#单个文件回到过去" class="headerlink" title="单个文件回到过去"></a>单个文件回到过去</h2><p>利用 <code>checkout</code> 将过去版本的文件覆盖现在同名文件，然后作为当前版本的一个新的更新，更新进版本库。</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br><span class="line">---------------------</span><br><span class="line">$ git checkout c6762a1 -- 1.py  #checkout + id + -- + 文件名字</span><br></pre></td></tr></table></figure>
 <p>然后增加进版本库并提交改变</p>
 <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">$ git add 1.py</span><br><span class="line">$ git commit -m &quot;back to change 1 and add comment for 1.py&quot;</span><br><span class="line">$ git log --oneline</span><br><span class="line"></span><br><span class="line"># 输出</span><br><span class="line">47f167e back to change 1 and add comment for 1.py</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br></pre></td></tr></table></figure>
@@ -535,7 +535,7 @@ L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
   </entry>
   <entry>
     <title>Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model</title>
-    <url>/2024/03/20/Phy/five_state_Pottes_Model/five_state_Pottes_Model/</url>
+    <url>/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/</url>
     <content><![CDATA[ <font color="red">这篇文章并未读完，更多的内容在于知识上的补充</font>
 
 <h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>共形对称发生在临界点，，但是在重整化群的相变点相撞的时候，这种对称性会消失。认为这种实平面的固定点将会变到复平面中。这篇工作，利用非厄米量子5态Potts模型，成功提取到了复平面的高度。</p>
@@ -603,11 +603,11 @@ Z= & \sum_{\left\{s_i\right\}} \prod_{<i, j>} \exp \left(K s_i s_j\right) \\
  +(\tanh K)^2 \sum_{\left\{s_i\right\}} \sum_{<i, j>} \sum_i s_j s_n s_m+\cdots \right ]\\
 =& (\cosh K)^{2 N} 2^N\left[1+N(\tanh K)^4+2 N(\tanh K)^6 +(4 N+N(N-5))(\tanh K)^8 \cdots\right]
 \end{aligned}
-\end{equation}</script><p><img src="/2024/03/20/Phy/five_state_Pottes_Model/five_state_Pottes_Model/ap2-1.png" alt="高温展开"></p>
+\end{equation}</script><p><img src="/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap2-1.png" alt="高温展开"></p>
 <p>低温展开，即$K\to +\infty$，零温极限：</p>
 <script type="math/tex; mode=display">\begin{equation}
 Z=2 e^{2 K N}\left[1+N \exp (-2 K)^4+2 N \exp (-2 K)^6+(4 N+(N-5) N) \exp (-2 K)^8 \cdots\right]
-\end{equation}</script><p><img src="/2024/03/20/Phy/five_state_Pottes_Model/five_state_Pottes_Model/ap2-2.png" alt="低温展开"></p>
+\end{equation}</script><p><img src="/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap2-2.png" alt="低温展开"></p>
 <h3 id="对偶"><a href="#对偶" class="headerlink" title="对偶"></a>对偶</h3><p>至此我们已经发现对于正方格点上的二维Ising模型, 高温理论的形式与低温理论一致。我们可以在热力学极限下计算自由能</p>
 <script type="math/tex; mode=display">
 F=-\frac{\ln Z}{N}=-\ln 2-2 \ln \cosh K-g(\tanh K)=-2 K-g(\exp (-2 K))</script><p>后面两项分别是高温展开的自由能与低温展开的自由能。其中 $g(x)=\ln \left(1+N x^4+2 N x^6 \cdots\right) / N$. 我们知道 2 维Ising模型只有两相, 也就是自由能有且只有一个奇异点。也就是 $\mathrm{g}(\mathrm{x})$ 有且只有一个奇异点。对于上面两个表达式, 奇异点对应的 $K_c$ 一定相同.那就意味着</p>
@@ -616,10 +616,10 @@ F=-\frac{\ln Z}{N}=-\ln 2-2 \ln \cosh K-g(\tanh K)=-2 K-g(\exp (-2 K))</script><
 \tanh K_c & =\exp \left(-2 K_c\right) \\
 \exp \left(4 K_c\right)-2 \exp \left(2 K_c\right)-1 & =0 \\
 K_c & =\frac{\ln (1+\sqrt{2})}{2} \approx 0.4407
-\end{aligned}</script><h2 id="dual-lattice"><a href="#dual-lattice" class="headerlink" title="dual lattice"></a>dual lattice</h2><p><img src="/2024/03/20/Phy/five_state_Pottes_Model/five_state_Pottes_Model/ap3-1.png" alt="dual lattice"></p>
+\end{aligned}</script><h2 id="dual-lattice"><a href="#dual-lattice" class="headerlink" title="dual lattice"></a>dual lattice</h2><p><img src="/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap3-1.png" alt="dual lattice"></p>
 <p>上图实心格点表示原晶格，然后在原格点围城的最小面积上，构造一个新的格点，用空心原点表示，代表对偶晶格。</p>
 <p>在几何上将原晶格和对偶晶格联系起来，如下图所示，其中格点内的正负代表原晶格，如果反平行边线用实线条连接，平行则不连接。这样便可以把格点转化为图进行研究。</p>
-<p><img src="/2024/03/20/Phy/five_state_Pottes_Model/five_state_Pottes_Model/ap3-2.png" alt="dual lattice"></p>
+<p><img src="/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap3-2.png" alt="dual lattice"></p>
 <h2 id="Self-duality"><a href="#Self-duality" class="headerlink" title="Self-duality"></a>Self-duality</h2><p>高温展开与低温展开在无限项的情况下是严格的，因此其对应的相应该有相同的关系。利用自对偶的性质求解相变温度。</p>
 ]]></content>
       <categories>
@@ -919,6 +919,57 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
         <tag>TRPO</tag>
         <tag>Policy Gradients</tag>
         <tag>Reinforcement Learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Machine Learning with Graphs</title>
+    <url>/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/</url>
+    <content><![CDATA[<p>图论（Graphs）是数学的一个分支，它研究的是图这种数学结构。图论中的图是由点（也称为顶点）和连接这些点的线（也称为边）组成的。点通常用来代表事物，而边则表示事物之间的关系。图可以是有向的，也可以是无向的，这取决于边是否有方向。</p>
+<p>图论的研究内容包括图的各种性质，如度（一个点连接的边的数量）、连通性（图中的点是否都通过边相互可达）、路径（点与点之间的连线序列）等。图论不仅在数学领域内有广泛的应用，还在计算机科学、工程学、经济学等多个领域发挥着重要作用。</p>
+<p>因多次发现与图论相关的内容，故在这里记录学习图论的笔记与想法。</p>
+<p>参考文献：</p>
+<ul>
+<li><a href="https://datawhalechina.github.io/grape-book/#/">图深度学习（葡萄书）</a></li>
+<li><a href="https://jingboyang.github.io/stanford-cs224w-graph-ml/stanford_cs224w_graph_ml.pdf">The Healthy Birds Trio, Jure Leskovec, Notes for Stanford CS224W Machine Learning with Graphs, 2020</a></li>
+</ul>
+<p>感谢<a href="https://github.com/datawhalechina/grape-book">Datawhale开源社区</a>提供学习平台与相关资源。</p>
+<span id="more"></span>
+<h1 id="Why-Graphs"><a href="#Why-Graphs" class="headerlink" title="Why Graphs"></a>Why Graphs</h1><p>最近频繁的看到图网络的相关内容，产生了好奇：图网络究竟有哪些优越性？</p>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>在拓扑结构上图明显具备更高的普适性质。语言可以理解为一维数据，图像可以理解为二维数据，这两种类型显然是图的一种特殊结构。对于复杂网络，如果使用NLP、CV等模型，则必须进行“近似”，而图网络就能囊括数据的信息。</p>
+<p>这种“近似”因为要确定顺序，造成不同数据之间不等价，会破坏数据中的对称性。例如“茶也可以吃”，写成首尾相接的形式，无论从哪里开始读到结束，均保持语言上的合理性，并且意思一致。在这句话中重要的不同字之间的相对位置，而不是绝对位置。图在处理这类问题上具有优越性。</p>
+<p>这种“近似”影响，在图像上更为明显。一张图像往往不会因其旋转、镜像变换而造成含义上的变化，而CNN等等网络不能理解这种对称。一般在进行训练的时候，都会使用数据增强的方法，尽可能让网络理解这种对称。</p>
+<p>因此处理这种相对位置关键，绝对位置不关键的数据，图网络具备其先天的优势。</p>
+<h2 id="物理"><a href="#物理" class="headerlink" title="物理"></a>物理</h2><p>求解模型的配分函数，可以通过扭结的形式表现。求解的过程则转化为扭结的展开。这与图的表现形式不谋而合。</p>
+<p>另一方面，图的形式与张量网络也极为相似，两者之间是否存在相关性。</p>
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p>有很多很现实的优化问题，本身存在的形式就是图结构，型如SK model，典型的为旅行商问题。</p>
+<font color="red">unend</font>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Graphs</tag>
       </tags>
   </entry>
   <entry>

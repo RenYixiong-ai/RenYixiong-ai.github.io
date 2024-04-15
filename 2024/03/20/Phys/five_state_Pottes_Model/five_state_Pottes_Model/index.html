@@ -20,29 +20,25 @@
     var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":-1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Abstract这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。 这点和全连接神经网络十分相似，当层数过多的时候，只有输入层附近的几层与输出层附近的几层是关键的，中间几层处于液化状态（可以随意选取，不会影响最终的结">
+  <meta name="description" content="这篇文章并未读完，更多的内容在于知识上的补充  Abstract共形对称发生在临界点，，但是在重整化群的相变点相撞的时候，这种对称性会消失。认为这种实平面的固定点将会变到复平面中。这篇工作，利用非厄米量子5态Potts模型，成功提取到了复平面的高度。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Deconstructing Denoising Diffusion Models for Self-Supervised Learning">
-<meta property="og:url" content="https://renyixiong-ai.github.io/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/index.html">
+<meta property="og:title" content="Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/index.html">
 <meta property="og:site_name" content="Yixiong&#39;s Blog">
-<meta property="og:description" content="Abstract这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。 这点和全连接神经网络十分相似，当层数过多的时候，只有输入层附近的几层与输出层附近的几层是关键的，中间几层处于液化状态（可以随意选取，不会影响最终的结">
+<meta property="og:description" content="这篇文章并未读完，更多的内容在于知识上的补充  Abstract共形对称发生在临界点，，但是在重整化群的相变点相撞的时候，这种对称性会消失。认为这种实平面的固定点将会变到复平面中。这篇工作，利用非厄米量子5态Potts模型，成功提取到了复平面的高度。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig1.png">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig2.png">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig3.png">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig4.png">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig5.png">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig6.png">
-<meta property="article:published_time" content="2024-03-15T04:00:00.000Z">
-<meta property="article:modified_time" content="2024-04-15T03:39:14.989Z">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap2-1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap2-2.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap3-1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap3-2.png">
+<meta property="article:published_time" content="2024-03-20T04:00:00.000Z">
+<meta property="article:modified_time" content="2024-04-15T03:42:32.713Z">
 <meta property="article:author" content="Ren Yixiong">
-<meta property="article:tag" content="Diffusion Models">
-<meta property="article:tag" content="Denoising Diffusion Models">
-<meta property="article:tag" content="Self-Supervised Learning">
+<meta property="article:tag" content="Potts Model">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig1.png">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap2-1.png">
 
-<link rel="canonical" href="https://renyixiong-ai.github.io/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/">
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/">
 
 
 <script id="page-configurations">
@@ -55,7 +51,7 @@
   };
 </script>
 
-  <title>Deconstructing Denoising Diffusion Models for Self-Supervised Learning | Yixiong's Blog</title>
+  <title>Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model | Yixiong's Blog</title>
   
 
 
@@ -198,7 +194,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -211,7 +207,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Deconstructing Denoising Diffusion Models for Self-Supervised Learning
+          Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model
         </h1>
 
         <div class="post-meta">
@@ -221,14 +217,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2024-03-15 12:00:00" itemprop="dateCreated datePublished" datetime="2024-03-15T12:00:00+08:00">2024-03-15</time>
+              <time title="创建时间：2024-03-20 12:00:00" itemprop="dateCreated datePublished" datetime="2024-03-20T12:00:00+08:00">2024-03-20</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-04-15 11:39:14" itemprop="dateModified" datetime="2024-04-15T11:39:14+08:00">2024-04-15</time>
+                <time title="修改时间：2024-04-15 11:42:32" itemprop="dateModified" datetime="2024-04-15T11:42:32+08:00">2024-04-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -236,7 +232,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
                 </span>
             </span>
 
@@ -253,14 +249,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.6k</span>
+              <span>3.1k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>6 分钟</span>
             </span>
 
         </div>
@@ -272,55 +268,92 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。</p>
-<p>这点和全连接神经网络十分相似，当层数过多的时候，只有输入层附近的几层与输出层附近的几层是关键的，中间几层处于液化状态（可以随意选取，不会影响最终的结果）。</p>
+         <font color="red">这篇文章并未读完，更多的内容在于知识上的补充</font>
+
+<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>共形对称发生在临界点，，但是在重整化群的相变点相撞的时候，这种对称性会消失。认为这种实平面的固定点将会变到复平面中。这篇工作，利用非厄米量子5态Potts模型，成功提取到了复平面的高度。</p>
 <span id="more"></span>
-<p>现有的预训练DDM在生成任务上表现十分优异，然而留下一个开放问题：这些用于生成任务的预训练模型，其是否同样获得表征能力。</p>
-<h1 id="Deconstructing-Denoising-Diffusion-Models"><a href="#Deconstructing-Denoising-Diffusion-Models" class="headerlink" title="Deconstructing Denoising Diffusion Models"></a>Deconstructing Denoising Diffusion Models</h1><p>作者发现主要的关键因素是tokenizer，其表现了低维的潜空间。但是不难发现，潜变量并不是tokenizer独有的，standard VAE, a patch-wise VAE, a patch-wise AE, and a patch-wise PCA encoder 均有潜变量。</p>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig1.png" alt="fig1"></p>
-<p>解构的路线分为三个步骤：</p>
-<ul>
-<li>首先将Diffusion Transformer(DiT)架构，变为自监督模型</li>
-<li>逐步拆解toenizer</li>
-<li>尽可能尝试还原模型，将其变为一个经典的Denoising Autoencoder(DAE)</li>
-</ul>
-<h2 id="Reorienting-DDM-for-Self-supervised-Learning"><a href="#Reorienting-DDM-for-Self-supervised-Learning" class="headerlink" title="Reorienting DDM for Self-supervised Learning"></a>Reorienting DDM for Self-supervised Learning</h2><p>DDM的概念本质上是从DAE的概念上生成的，依旧是用于图像生成，一些设计并不适合自监督学习，一些是并不必要的（例如提升图像生成质量）。</p>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig2.png" alt="fig2"></p>
+<h1 id="The-Potts-Model"><a href="#The-Potts-Model" class="headerlink" title="The Potts Model"></a>The Potts Model</h1><script type="math/tex; mode=display">\begin{align}
+H = -\sum_{<ij>}J(\theta_{ij})
+\end{align}</script><p>planar Potts model:</p>
+<script type="math/tex; mode=display">\begin{align}
+\theta_{ij}=&\theta_{n_i}-\theta_{n_j} \\
+J(\theta) =& -\epsilon_1\cos \theta_{ij}
+\end{align}</script><p>standard Potts model (simply the Potts model):</p>
+<script type="math/tex; mode=display">\begin{align}
+J(\theta_{ij}) =& \epsilon_2\delta(n_i, n_j)
+\end{align}</script><p>以下讨论针对标准的Potts模型。分别用转移矩阵、乘积展开、染色多项式三种方法，得到配分函数。</p>
 <ol>
-<li><p>Remove class-conditioning<br>标签在图像生成上很重要，但是不符合自监督学习的要求，因此移除标签。此举使得准确性提升，但是图像质量（FID）下降。</p>
+<li><p>转移矩阵法</p>
+<script type="math/tex; mode=display">
+ Z_N=\operatorname{Tr} V^N</script><p> 其中</p>
+<script type="math/tex; mode=display">\begin{align}
+ V=&\left(\begin{array}{cccccc}
+ e^{\beta J} & 1 & 1 & \cdots & 1 & 1 \\
+ 1 & e^{\beta J} & 1 & \cdots & 1 & 1 \\
+ 1 & 1 & e^{\beta J} & \cdots & 1 & 1 \\
+ \cdots & \cdots & \cdots & e^{\beta J} & \cdots & 1 \\
+ 1 & 1 & \cdots & \cdots & e^{\beta J} & 1 \\
+ 1 & 1 & \cdots & \cdots & 1 & e^{\beta J}
+ \end{array}\right) \\
+
+ =&\left( \begin{array}{llllll}
+ e^{\beta J}-\lambda & 0 & 0 & \cdots & 0 & 1 \\
+ 0 & e^{\beta J}-\lambda & 0 & \cdots & 0 & 2 \\
+ 0 & 0 & e^{\beta J}-\lambda & 0 & \cdots & 3 \\
+ 0 & \cdots & 0 & e^{\beta J}-\lambda & \cdots & 4 \\
+ 0 & 0 & \cdots & \cdots & e^{\beta J}-\lambda & q-1 \\
+ 0 & 0 & 0 & \cdots & 0 & e^{\beta J}-\lambda+q
+ \end{array}\right )
+ \end{align}</script><p> 于是配分函数也就是</p>
+<script type="math/tex; mode=display">
+ Z_N=\left(e^{\beta J}+q-1\right)^N+(q-1)\left(e^{\beta J}-1\right)^N</script></li>
+<li><p>乘积展开</p>
+<script type="math/tex; mode=display">
+ \begin{aligned}
+ Z_N & =\sum_{\{\sigma\}} \exp \left[\beta J \sum_{\langle i j\rangle} \delta\left(\sigma_i, \sigma_j\right)\right] \\
+ & =\sum_{\{\sigma\}} \prod_{\langle i j\rangle}\left[1+v \delta\left(\sigma_i, \sigma_j\right)\right]
+ \end{aligned}</script><p> 其中 $v=e^{\beta J}-1$ 。</p>
 </li>
-<li><p>Deconstruct <font color="red">VQGAN</font></p>
-</li>
-<li>Replace noise schedule<br>不需要逐步添加噪声，可以一步直接加入噪声</li>
 </ol>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig3.png" alt="fig3"></p>
-<h2 id="Deconstructing-the-Tokenizer"><a href="#Deconstructing-the-Tokenizer" class="headerlink" title="Deconstructing the Tokenizer"></a>Deconstructing the Tokenizer</h2><p>接下来解构tokenizer，将会用到下面四种自编码器，每一种自编码器都是前面一种的简化。</p>
-<ul>
-<li><p>Convolutional VAE \<br>损失函数如下：</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/101045691">关于Pottes Model相变精确解，与纽结理论的联系</a></p>
+<h1 id="Append"><a href="#Append" class="headerlink" title="Append"></a>Append</h1><h2 id="共形对称"><a href="#共形对称" class="headerlink" title="共形对称"></a>共形对称</h2><p>共形对称（Conformal symmetry）是一种特殊类型的全局对称性，它指的是一个理论或系统在共形变换下保持不变的性质。</p>
+<p>共形变换是一类特殊的坐标变换，它们不仅包括了普通的平移和旋转，还包括了尺度变换（即缩放）和特殊的非线性变换。共形对称在物理学中尤其重要，因为它通常与系统的尺度不变性相关联，这意味着物理规律在不同的长度尺度上都是相同的。</p>
+<h2 id="高低温展开"><a href="#高低温展开" class="headerlink" title="高低温展开"></a>高低温展开</h2><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/409549219">Ising模型与Duality——相变温度</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/409603668">Ising模型与Duality——特殊的相变</a></p>
+<p><a target="_blank" rel="noopener" href="https://ocw.mit.edu/courses/8-334-statistical-mechanics-ii-statistical-physics-of-fields-spring-2014/pages/lecture-notes/">MIT notes</a></p>
+<p>以2-D Ising 模型为例，配分函数写为：</p>
 <script type="math/tex; mode=display">\begin{equation}
-\|x-g(f(x))\|^2+\mathbb{K} \mathbb{L}[f(x) \mid \mathcal{N}]
-\end{equation}</script><p>其中$f(\cdot)$是编码函数$g(\cdot)$是解码函数，$x$是输入值，VAE是深度卷积神经网络。</p>
-</li>
-<li><p>Patch-wise VAE \<br>选用线性的函数作为编码解码器（全连接网络），损失函数设置如下：</p>
+Z=\sum_{\left\{s_i\right\}} \exp (-\beta H)=\sum_{\left\{s_i\right\}} \exp \left(K \sum_{<i, j>} s_i s_j\right)
+\end{equation}</script><p>其中$K=\beta J$。</p>
+<p>高温展开，即$K\to 0$为：</p>
 <script type="math/tex; mode=display">\begin{equation}
-\left\|x-U^T V x\right\|^2+\mathbb{K} \mathbb{L}[V x \mid \mathcal{N}]
-\end{equation}</script><p>$U,V$是矩阵。</p>
-</li>
-<li><p>Patch-wise AE \<br>进一步简化，删除正则化项：</p>
+\begin{aligned}
+Z= & \sum_{\left\{s_i\right\}} \prod_{<i, j>} \exp \left(K s_i s_j\right) \\
+= & \sum_{\left\{s_i\right\}} \prod_{<i, j>}\left[\sinh \left(K s_i s_j\right)+\cosh \left(K s_i s_j\right)\right] \\
+= & (\cosh K)^{2 N} \sum_{\left\{s_i\right\}} \prod_{<i, j>}\left[1+s_i s_j \tanh K\right] \\
+= & (\cosh K)^{2 N}\left[\sum_{\left\{s_i\right\}} 1+\tanh K \sum_{\left\{s_i\right\}<i, j>} s_i s_j
+ +(\tanh K)^2 \sum_{\left\{s_i\right\}} \sum_{<i, j>} \sum_i s_j s_n s_m+\cdots \right ]\\
+=& (\cosh K)^{2 N} 2^N\left[1+N(\tanh K)^4+2 N(\tanh K)^6 +(4 N+N(N-5))(\tanh K)^8 \cdots\right]
+\end{aligned}
+\end{equation}</script><p><img src="/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap2-1.png" alt="高温展开"></p>
+<p>低温展开，即$K\to +\infty$，零温极限：</p>
 <script type="math/tex; mode=display">\begin{equation}
-\left\|x-U^T V x\right\|^2
-\end{equation}</script></li>
-<li><p>Patch-wise PCA \<br>PCA 可以看成是一种特殊的 AE，损失函数为：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\left\|x-V^T V x\right\|^2
-\end{equation}</script></li>
-</ul>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig4.png" alt="fig4"></p>
-<p>可以从上表中看出，表现性能都差不多，并且计算KL散度也不是很重要。甚至PCA工作的更好</p>
-<h2 id="Toward-Classical-Denoising-Autoencoders"><a href="#Toward-Classical-Denoising-Autoencoders" class="headerlink" title="Toward Classical Denoising Autoencoders"></a>Toward Classical Denoising Autoencoders</h2><p>逐步减去 PCA-based DDM 与经典DAE之间的差距。<br><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig5.png" alt="fig5"></p>
-<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig6.png" alt="fig6"></p>
-<p>从最后的实验结果看出，对潜变量空间加入噪音对结果的影响更大。因此说明对模型训练起关键作用的是少数几个参数。</p>
-<font color="red">应该是我没有读懂该文章的实验思路，在我的理解下，潜变量应该是浓缩了更多信息的空间，对其加噪音本来就会比对原像素空间其更大的影响。另一方面，这种论证方法，我并不认为十分研究，应该有更多的理论分析保证。</font>
+Z=2 e^{2 K N}\left[1+N \exp (-2 K)^4+2 N \exp (-2 K)^6+(4 N+(N-5) N) \exp (-2 K)^8 \cdots\right]
+\end{equation}</script><p><img src="/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap2-2.png" alt="低温展开"></p>
+<h3 id="对偶"><a href="#对偶" class="headerlink" title="对偶"></a>对偶</h3><p>至此我们已经发现对于正方格点上的二维Ising模型, 高温理论的形式与低温理论一致。我们可以在热力学极限下计算自由能</p>
+<script type="math/tex; mode=display">
+F=-\frac{\ln Z}{N}=-\ln 2-2 \ln \cosh K-g(\tanh K)=-2 K-g(\exp (-2 K))</script><p>后面两项分别是高温展开的自由能与低温展开的自由能。其中 $g(x)=\ln \left(1+N x^4+2 N x^6 \cdots\right) / N$. 我们知道 2 维Ising模型只有两相, 也就是自由能有且只有一个奇异点。也就是 $\mathrm{g}(\mathrm{x})$ 有且只有一个奇异点。对于上面两个表达式, 奇异点对应的 $K_c$ 一定相同.那就意味着</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\tanh K_c & =\exp \left(-2 K_c\right) \\
+\exp \left(4 K_c\right)-2 \exp \left(2 K_c\right)-1 & =0 \\
+K_c & =\frac{\ln (1+\sqrt{2})}{2} \approx 0.4407
+\end{aligned}</script><h2 id="dual-lattice"><a href="#dual-lattice" class="headerlink" title="dual lattice"></a>dual lattice</h2><p><img src="/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap3-1.png" alt="dual lattice"></p>
+<p>上图实心格点表示原晶格，然后在原格点围城的最小面积上，构造一个新的格点，用空心原点表示，代表对偶晶格。</p>
+<p>在几何上将原晶格和对偶晶格联系起来，如下图所示，其中格点内的正负代表原晶格，如果反平行边线用实线条连接，平行则不连接。这样便可以把格点转化为图进行研究。</p>
+<p><img src="/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap3-2.png" alt="dual lattice"></p>
+<h2 id="Self-duality"><a href="#Self-duality" class="headerlink" title="Self-duality"></a>Self-duality</h2><p>高温展开与低温展开在无限项的情况下是严格的，因此其对应的相应该有相同的关系。利用自对偶的性质求解相变温度。</p>
+
     </div>
 
     
@@ -329,9 +362,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Diffusion-Models/" rel="tag"># Diffusion Models</a>
-              <a href="/tags/Denoising-Diffusion-Models/" rel="tag"># Denoising Diffusion Models</a>
-              <a href="/tags/Self-Supervised-Learning/" rel="tag"># Self-Supervised Learning</a>
+              <a href="/tags/Potts-Model/" rel="tag"># Potts Model</a>
           </div>
 
         
@@ -340,12 +371,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/03/08/RL/PPO/PPO/" rel="prev" title="Policy Gradients In Reinforcement">
-      <i class="fa fa-chevron-left"></i> Policy Gradients In Reinforcement
+    <a href="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/" rel="prev" title="Deconstructing Denoising Diffusion Models for Self-Supervised Learning">
+      <i class="fa fa-chevron-left"></i> Deconstructing Denoising Diffusion Models for Self-Supervised Learning
     </a></div>
       <div class="post-nav-item">
-    <a href="/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/" rel="next" title="Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model">
-      Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model <i class="fa fa-chevron-right"></i>
+    <a href="/2024/04/08/Math/KL_divergence_in_code/" rel="next" title="KL散度在VAE中的代码实现">
+      KL散度在VAE中的代码实现 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -405,7 +436,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Abstract"><span class="nav-number">1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Deconstructing-Denoising-Diffusion-Models"><span class="nav-number">2.</span> <span class="nav-text">Deconstructing Denoising Diffusion Models</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Reorienting-DDM-for-Self-supervised-Learning"><span class="nav-number">2.1.</span> <span class="nav-text">Reorienting DDM for Self-supervised Learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Deconstructing-the-Tokenizer"><span class="nav-number">2.2.</span> <span class="nav-text">Deconstructing the Tokenizer</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Toward-Classical-Denoising-Autoencoders"><span class="nav-number">2.3.</span> <span class="nav-text">Toward Classical Denoising Autoencoders</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Conclusion"><span class="nav-number">3.</span> <span class="nav-text">Conclusion</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Abstract"><span class="nav-number">1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#The-Potts-Model"><span class="nav-number">2.</span> <span class="nav-text">The Potts Model</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Append"><span class="nav-number">3.</span> <span class="nav-text">Append</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B1%E5%BD%A2%E5%AF%B9%E7%A7%B0"><span class="nav-number">3.1.</span> <span class="nav-text">共形对称</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E4%BD%8E%E6%B8%A9%E5%B1%95%E5%BC%80"><span class="nav-number">3.2.</span> <span class="nav-text">高低温展开</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E5%81%B6"><span class="nav-number">3.2.1.</span> <span class="nav-text">对偶</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dual-lattice"><span class="nav-number">3.3.</span> <span class="nav-text">dual lattice</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Self-duality"><span class="nav-number">3.4.</span> <span class="nav-text">Self-duality</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
