@@ -1023,10 +1023,15 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
 <h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p>有很多很现实的优化问题，本身存在的形式就是图结构，型如SK model，典型的为旅行商问题。</p>
 <font color="red">其中有两部分需要加入，图的等变性内容，图的embeding内容</font>
 
+<h1 id="Graphs"><a href="#Graphs" class="headerlink" title="Graphs"></a>Graphs</h1><ul>
+<li><a href="https://distill.pub/2021/gnn-intro/">优秀的可视化网站</a></li>
+<li>python中关于图的包<a href="https://networkx.github.io/">Networkx</a></li>
+</ul>
+<h2 id="图的定义"><a href="#图的定义" class="headerlink" title="图的定义"></a>图的定义</h2><h2 id="图的性质"><a href="#图的性质" class="headerlink" title="图的性质"></a>图的性质</h2><h3 id="邻接节点（neighbors）"><a href="#邻接节点（neighbors）" class="headerlink" title="邻接节点（neighbors）"></a>邻接节点（neighbors）</h3><h3 id="图的度（degree）"><a href="#图的度（degree）" class="headerlink" title="图的度（degree）"></a>图的度（degree）</h3><h3 id="行走（walk）和路径（path）"><a href="#行走（walk）和路径（path）" class="headerlink" title="行走（walk）和路径（path）"></a>行走（walk）和路径（path）</h3><h3 id="距离（distance）和直径（diameter）"><a href="#距离（distance）和直径（diameter）" class="headerlink" title="距离（distance）和直径（diameter）"></a>距离（distance）和直径（diameter）</h3><h3 id="子图（subgraph）、连通分量（connected-component）、连通图（conected-graph）"><a href="#子图（subgraph）、连通分量（connected-component）、连通图（conected-graph）" class="headerlink" title="子图（subgraph）、连通分量（connected component）、连通图（conected graph）"></a>子图（subgraph）、连通分量（connected component）、连通图（conected graph）</h3><h3 id="聚类系数（Clustering-Coefficient）"><a href="#聚类系数（Clustering-Coefficient）" class="headerlink" title="聚类系数（Clustering Coefficient）"></a>聚类系数（Clustering Coefficient）</h3><h3 id="接近中心度（closeness-centrality）"><a href="#接近中心度（closeness-centrality）" class="headerlink" title="接近中心度（closeness centrality）"></a>接近中心度（closeness centrality）</h3><h2 id="图的连接表示"><a href="#图的连接表示" class="headerlink" title="图的连接表示"></a>图的连接表示</h2><h3 id="邻接矩阵（adjacency-matrix）"><a href="#邻接矩阵（adjacency-matrix）" class="headerlink" title="邻接矩阵（adjacency matrix）"></a>邻接矩阵（adjacency matrix）</h3><p>刻画点和点之间的关系</p>
+<h3 id="关联矩阵（incidence-matrix）"><a href="#关联矩阵（incidence-matrix）" class="headerlink" title="关联矩阵（incidence matrix）"></a>关联矩阵（incidence matrix）</h3><p>描述定点和边的关系</p>
+<h3 id="拉普拉斯矩阵（Laplacian-matrix）"><a href="#拉普拉斯矩阵（Laplacian-matrix）" class="headerlink" title="拉普拉斯矩阵（Laplacian matrix）"></a>拉普拉斯矩阵（Laplacian matrix）</h3><font color="red">这个需要拓展说一下，为什么需要Laplace Matrix</font>
 
-
-
-<font color="red">unend</font>
+<h2 id="图的类型"><a href="#图的类型" class="headerlink" title="图的类型"></a>图的类型</h2><h3 id="图的拓扑结构"><a href="#图的拓扑结构" class="headerlink" title="图的拓扑结构"></a>图的拓扑结构</h3><h3 id="同质图（Homogeneous-Graph）和异质图（Heterogeneous-Graph）"><a href="#同质图（Homogeneous-Graph）和异质图（Heterogeneous-Graph）" class="headerlink" title="同质图（Homogeneous Graph）和异质图（Heterogeneous Graph）"></a>同质图（Homogeneous Graph）和异质图（Heterogeneous Graph）</h3><h3 id="二分图-（bipartite-graph）"><a href="#二分图-（bipartite-graph）" class="headerlink" title="二分图 （bipartite graph）"></a>二分图 （bipartite graph）</h3><font color="red">unend</font>
 
 
 
