@@ -1,59 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>KL散度在VAE中的代码实现</title>
-    <url>/2024/04/08/Math/KL_divergence_in_code/</url>
-    <content><![CDATA[<font color="red">
-能否使用除Gauss分布外的其他分布？为什么一定要选取Gauss分布呢？
-</font>
-
-
-<p>这篇笔记用于记录在VAE计算过程中，KL散度计算的实现方式，以及背后的原理分析。</p>
-<p>参考资料：</p>
-<ul>
-<li><a href="https://zhuanlan.zhihu.com/p/345095899#">KL散度的推导过程</a></li>
-</ul>
-<span id="more"></span>
-<p>在VAE中，为了解决随机采样无法求梯度的问题，假设潜变量空间的参数满足Gauss分布（一维情况）：</p>
-<script type="math/tex; mode=display">\begin{align}
-\mathcal{N}(\mu, \sigma)=\frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(x-\mu)^2}{2 \sigma^2}}
-\end{align}</script><p>然后利用均值和方差进行抽样。这种技巧称为重参数化（reparameterization）。</p>
-<p>在应用重参数化技巧后，需要计算两个分布的差距，因此引入KL散度计算：</p>
-<script type="math/tex; mode=display">\begin{align}
-\text{KL}\left(p_1(x) \| p_2(x)\right)=\int_x p_1(x) \ln \frac{p_1(x)}{p_2(x)} d x
-\end{align}</script><p>针对两个一维高斯分布: $p_1=\mathcal{N}_1\left(\mu_1, \sigma_1\right), p_2=\mathcal{N}_2\left(\mu_2, \sigma_2\right)$, 可以计算他们的KL散度如下:</p>
-<script type="math/tex; mode=display">
-\begin{align}
-\text{KL}\left(p_1 \| p_2\right) & =\int_x p_1(x) \ln \frac{p_1(x)}{q_1(x)} d x \\
-& =\int_x p_1(x) \left[\ln p_1(x) - \ln q_1(x)\right] d x \\
-& =\int_x p_1(x) \left[\ln\left( \frac{1}{\sqrt{2 \pi \sigma_1^2}} e^{-\frac{(x-\mu_1)^2}{2 \sigma_1^2}}\right) - \ln\left( \frac{1}{\sqrt{2 \pi \sigma_2^2}} e^{-\frac{(x-\mu_2)^2}{2 \sigma_2^2}}\right)\right] d x \\
-& =\int_x p_1(x) \left[-\ln \sigma_1 -\frac{(x-\mu_1)^2}{2 \sigma_1^2} + \ln\sigma_2 +\frac{(x-\mu_2)^2}{2 \sigma_2^2}\right] d x \\
-& =\int_x p_1(x) \left[\ln \frac{\sigma_2}{\sigma_1} -\frac{(x-\mu_1)^2}{2 \sigma_1^2} +\frac{(x-\mu_2)^2}{2 \sigma_2^2}\right] d x \\
-& =\log \frac{\sigma_2}{\sigma_1}+\underbrace{\int_x p_1(x) \frac{\left(x-\mu_2\right)^2}{2 \sigma_2^2} d x}_{\mathrm{B}}-\frac{1}{2}\\
-\end{align}</script><p>关注较为复杂的第二项, 即下标 $\mathrm{B}$ 这一项。接下来要用的并不是带入 $p_1(x)$, 而是较为巧妙的使用 $x-\mu_2=\left(x-\mu_1\right)+\left(\mu_1-\mu_2\right)$, 重新使用常数、方差等性质。</p>
-<script type="math/tex; mode=display">
-\begin{align}
-B & =\frac{1}{2 \sigma_2^2}\int_x p_1(x)\left(x-\mu_2\right)^2 d x \\
-& =\frac{1}{2 \sigma_2^2}\int_x p_1(x)\left[\left(x-\mu_1\right)+\left(\mu_1-\mu_2\right)\right]^2 d x \\
-& =\frac{1}{2 \sigma_2^2}\int_x p_1(x)\left(x-\mu_1\right)^2 d x+\frac{2\left(\mu_1-\mu_2\right) }{2 \sigma_2^2}\int_x p_1(x)\left(x-\mu_1\right) d x+\left(\mu_1-\mu_2\right)^2 \\
-& =\frac{1}{2 \sigma_2^2}\left[\sigma_1^2+0+\left(\mu_1-\mu_2\right)^2\right] \\
-& =\frac{1}{2 \sigma_2^2}\left[\sigma_1^2+\left(\mu_1-\mu_2\right)^2\right]
-\end{align}</script><p>综合以上结果, 我们有:</p>
-<script type="math/tex; mode=display">
-\text{KL}\left(p_1 \| p_2\right)=\log \frac{\sigma_2}{\sigma_1}+\frac{1}{2 \sigma_2^2}\left(\sigma_1^2+\left(\mu_1-\mu_2\right)^2\right)-\frac{1}{2}</script><p>接下来, 回到VAE中, 由于我们将自由变量从标准正态分布中采样, 即 $p_2=\mathcal{N}_2(0,1)$;</p>
-<script type="math/tex; mode=display">
-\text{KL}\left(p_1|| p_2\right)=-\frac{1}{2} \times\left[2 \log \sigma_1+1-\sigma_1^2-\mu_1^2\right]</script><p>大多数的VAE代码中间学习并不是 $\mu$ 与 $\sigma$, 而是 $\mu$ 与$logvar =\log \sigma^2$，因此在代码中需要进行变换 。</p>
-<p>代码如下：<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">KL = -<span class="number">0.5</span>*torch.<span class="built_in">sum</span>(logvar + <span class="number">1</span> - mu.<span class="built_in">pow</span>() - logvar.exp())</span><br></pre></td></tr></table></figure></p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Kullback Leibler Divergence</tag>
-        <tag>KL Divergence</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Markdown 文章中的交叉引用（利用锚点）</title>
     <url>/2024/04/15/CS/anchor_point/anchor_point/</url>
     <content><![CDATA[<p>参考文章<a href="https://retzzz.github.io/55e045cb/#HTML-anchor">在带有数学公式的markdown文档里的交叉引用</a>实现。</p>
@@ -534,6 +481,138 @@ L &= \int \mathrm{d}x^{(0)}q(x^{(0)})\ln p(x^{(0)}) \\
       </tags>
   </entry>
   <entry>
+    <title>Ising formulations of many NP problems</title>
+    <url>/2024/04/15/Math/Ising_formulations_of_many_NP_problems/Ising_formulations_of_many_NP_problems/</url>
+    <content><![CDATA[<p>为许多NP-complete和NP-hard问题提供了Ising形式，包括<a href="https://www.semanticscholar.org/topic/Karp%27s-21-NP-complete-problems/1887346">Karp的21个NP完全问题</a>中的所有问题。这收集并扩展了从分区、覆盖和可满足性到Ising模型的映射。在每种情况下，所需的自旋数最多是问题大小的三次方。这项工作可能对设计绝热量子优化算法有用。<font color="gree">别的优化算法同样有用。</font></p>
+<p>文献：</p>
+<ul>
+<li>本文<a href="https://arxiv.org/abs/1302.5843v3">Ising formulations of many NP problems</a></li>
+<li><a href="https://iopscience.iop.org/article/10.1088/0305-4470/15/10/028">On the computational complexity of Ising spin glass models</a></li>
+<li><a href="https://www.sciencedirect.com/science/article/pii/S0166218X01003419">E. Boros and P.L. Hammer. “Pseudo-Boolean optimization”, Discrete Applied Mathematics 123 155 (2002).</a></li>
+<li><a href="https://link.springer.com/chapter/10.1007/978-1-4684-2001-2_9">Reducibility among Combinatorial Problems</a></li>
+<li><a href="https://academic.oup.com/book/6337?login=true">M. Me  ́zard and A. Montanari. Information, Physics and Computation (2009)</a></li>
+<li><a href="https://iopscience.iop.org/article/10.1088/0305-4470/19/9/033/meta">Y. Fu and P.W. Anderson. “Application of statistical mechanics to NP-complete problems in combinatorial optimisation”, Journal of Physics A19 1605 (1986).</a></li>
+</ul>
+<span id="more"></span>
+<p>名词解释：</p>
+<ul>
+<li>adiabatic quantum optimization (AQO)</li>
+<li>NP problem (Nondeterministic Polynomial)<br>NP问题是指可以在多项式时间内验证一个解的问题。换句话说，如果给定一个问题的解，存在一个多项式时间的算法来验证这个解是否正确。NP问题是决定性问题的复杂度类，它包含所有那些解可以在多项式时间内被验证的问题。</li>
+<li>NP-hard problem<br>NP-hard问题是指至少和NP中的最困难问题一样困难的问题。更严格地说，NP-hard问题是指不可能在多项式时间内解决的所有问题，除非P=NP（目前还未知是否成立）。所有的NP-hard问题也属于NP问题，因为你可以在多项式时间内验证一个假想的解（尽管找到解本身非常困难）。</li>
+<li>NP-complete<br>NP-complete问题既是NP问题又是NP-hard问题。这意味着NP-complete问题在NP中是“最难”的问题，并且很难找到这些问题的确切解，但是如果给出了解，可以在多项式时间内验证它。NP-complete问题在计算复杂性理论中非常重要，因为它们可能是P问题（能够在多项式时间内解决的问题）之外的最难问题类别。</li>
+<li>NP-complete decision problem<br>NP-complete decision problem是一类特殊的NP-complete问题，它们只要求回答“是”或“否”。也就是说，这类问题是决策问题，其解答为真或假，而不是提供一个具体的解。例如，在一个图中寻找哈密顿路径是一个NP-complete问题，但判断一个图是否含有哈密顿路径就是一个NP-complete decision problem。</li>
+<li>Chimera graph<br>Chimera graph是量子计算中一个非常重要的概念，它通常与二次无约束二值优化问题（QUBOs）和量子退火算法相关联。在Chimera图中，节点代表目标函数的变量，边则表示变量之间的相互作用。这种图结构允许我们将问题的解映射到量子处理器上，其中节点映射为量子位，边映射为耦合器。通过这样的映射，可以解决如旅行商优化问题等复杂的组合优化问题。</li>
+<li>Complete graph<br>完全图</li>
+</ul>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>众所周知<a href="https://iopscience.iop.org/article/10.1088/0305-4470/15/10/028">Ising自旋模型是NP-hard模型</a>，因此自然相让其余的NP问题映射到Ising自旋模型上。从数学上讲，如果一个问题是NP完全的，意味着总是能在多项式时间内将其映射到一个Ising问题上。这个映射过程被重新定义为<a href="https://www.sciencedirect.com/science/article/pii/S0166218X01003419">pseudo-Boolean optimization problem</a>。</p>
+<p>这篇文章主要目的是展示Ising模型Hamilton的一些精巧构造，这些构造如何帮助映射其它的NP问题。同时还将回顾一下，之前如何将覆盖、满足问题映射到Ising自旋模型上，特别是包括如何将所有的NP问题转化为Ising问题，但Ising模型的自旋数目将会是问题的多项式，并且不低于$N^3$。</p>
+<p>在量子计算中利用模拟退火算法的求解优化问题，是通过嵌合图（chimera graph）完成，然而将完全图（complete graph）转化为嵌合图是低效的，参考文献<a href="https://arxiv.org/abs/0804.4884">1</a>和<a href="https://arxiv.org/abs/1001.3116">2</a>。</p>
+<h1 id="Partitioning-Problems"><a href="#Partitioning-Problems" class="headerlink" title="Partitioning Problems"></a>Partitioning Problems</h1><p>分割问题是将一个集合分为两个或者多个子集。这里回顾了分割问题到自旋玻璃的映射，并提出了一个新的基于类似思想（团问题）的映射。</p>
+<h2 id="Number-Partitioning"><a href="#Number-Partitioning" class="headerlink" title="Number Partitioning"></a>Number Partitioning</h2><p>Number partitioning 问题描述如下：</p>
+<p>在一个包含$N$个正数的集合$S=\left\{n_1, \ldots, n_N\right\}$，将该集合分为两个不互相包含的集合 $R$ 和 $S-R$。是否能够使得两子集元素之和相等？</p>
+<p>该问题已经知道是一个<a href="https://link.springer.com/chapter/10.1007/978-1-4684-2001-2_9">NP-complete问题</a>，将该问题转化为一个Ising模型：</p>
+<p>令$n_i(i=1, \ldots, N=|S|)$ 描述集合$S$中的元素，然后定义Hamilton：</p>
+<script type="math/tex; mode=display">\begin{align}
+H=A\left(\sum_{i=1}^N n_i s_i\right)^2
+\end{align}</script><p>其中$s_i= \pm 1$ 是自旋取值，其中$A&gt;0$是正约束条件，通常会被取为1,但是保留这个参数可以区分不同能量尺度，<a href="https://academic.oup.com/book/6337?login=true">参考文献</a>。</p>
+<p>该Hamilton的描述是显然的，$s$用于区分两类，$n$表示值，如果两类值相等，那么$H=0$。同时也说明，$H$越低划分越好。</p>
+<h2 id="Graph-Partitioning"><a href="#Graph-Partitioning" class="headerlink" title="Graph Partitioning"></a>Graph Partitioning</h2><p><a href="https://iopscience.iop.org/article/10.1088/0305-4470/19/9/033/meta">图分割</a>是最初进行统计物理与NP问题关联的例子。问题描述如下：</p>
+<p>考虑图$G=(V,E)$，有偶数个节点$N=|V|$，需要解决如何将集合$V$分割成大小相等的两个子集，每个子集的大小为$N/2$，同时使得连接这两个子集的边数最小化？</p>
+<p>将这个问题转化为Ising模型，放置自旋$s_v= \pm 1$在节点$v\in V$，并且$\pm 1$表示两类。设计Hamilton为：</p>
+<script type="math/tex; mode=display">\begin{align}
+H=&H_A+H_B \\
+H_A=&A\left(\sum_{n=1}^N s_i\right)^2 \\
+H_B=&B \sum_{(u v) \in E} \frac{1-s_u s_v}{2}
+\end{align}</script><p>当$A&gt;0$时候，$H_A$是对两个集合数量不相等惩罚项目，相差越大$H_A$越大；当$B&gt;0$时候，$H_B$是对边数量的惩罚，连接数量越多$H_B$越大。</p>
+<h2 id="Cliques"><a href="#Cliques" class="headerlink" title="Cliques"></a>Cliques</h2><p>Cliques 问题描述如下：</p>
+<p>在无向图$G = (V, E)$中，大小为$K$的团簇（clique）是一个顶点子集$W \subseteq V$，其大小为$|W| = K$，使得子图$(W, E_W)$（其中$E_W$是将边集$E$限制在$W$中节点之间的边上）是一个完全图。即图中所有可能的$\frac{K(K - 1)}{2}$条边都存在，因为团簇中的每个顶点都与其他每个顶点相连。简单描述为给定图$G$和顶点数$K$，能否从$G$中选取$K$个顶点构成完全图。</p>
+<p>将这个问题转化为Ising模型，放置自旋$s_v= \pm 1$在节点$v\in V$。通常将$s_\alpha$修改取值范围为$x_\alpha$：</p>
+<script type="math/tex; mode=display">
+x_\alpha \equiv \frac{s_\alpha+1}{2}</script><p>将Hamliton写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+H=A\left(K-\sum_v x_v\right)^2+B\left[\frac{K(K-1)}{2}-\sum_{(u v) \in E} x_u x_v\right]
+\end{align}</script><p>其中$A, B&gt;0$，在基态的时候$H=0$。第一项要求满足节点数量为$K$，第二项要求这些节点构成完全图。</p>
+<p>对于$H\neq0$的其他情况，该问题可以转化为：</p>
+<script type="math/tex; mode=display">\begin{align}
+H_{\min }(n)=&A(n-K)^2+B \frac{K(K-1)-n(n-1)}{2} \\
+=&(n-K)\left[A(n-K)-B \frac{n+K-1}{2}\right] 
+\end{align}</script><p>另一方面，需要寻找最大的 Cliques。同时原文中也提出了将该问题规模从$N$ 减少到 $\log N$的方案。</p>
+<h1 id="Binary-Integer-Linear-Programming"><a href="#Binary-Integer-Linear-Programming" class="headerlink" title="Binary Integer Linear Programming"></a>Binary Integer Linear Programming</h1><p>令$x_1, \ldots, x_N$ 是 $N$ 个二值变量，表示为$\mathbf{x}$。The binary integer linear programming (ILP) 问题定义为：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+& \max _x \sum_{j=1}^n c_j x_j \\
+& \text { s.t. } \sum_{j=1}^n a_j x_j = b \\
+& x \in\{0,1\}^n \\
+&
+\end{aligned}</script><p>Ising Hamiltonian $H=H_A+H_B$，可写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+H_A=&A \sum_{j=1}^m\left[b_j-\sum_{i=1}^N S_{j i} x_i\right]^2 \\
+H_B=&-B \sum_{i=1}^N c_i x_i
+\end{align}</script><p>其中 $A&gt;0$，$H_A$将约束转化为惩项； $0&lt;B \ll A$，为优化目标。</p>
+<h1 id="Covering-and-Packing-Problems"><a href="#Covering-and-Packing-Problems" class="headerlink" title="Covering and Packing Problems"></a>Covering and Packing Problems</h1><h1 id="Problems-with-Inequalities"><a href="#Problems-with-Inequalities" class="headerlink" title="Problems with Inequalities"></a>Problems with Inequalities</h1><h1 id="Coloring-Problems"><a href="#Coloring-Problems" class="headerlink" title="Coloring Problems"></a>Coloring Problems</h1><h1 id="Hamiltonian-Cycles"><a href="#Hamiltonian-Cycles" class="headerlink" title="Hamiltonian Cycles"></a>Hamiltonian Cycles</h1><h1 id="Tree-Problems"><a href="#Tree-Problems" class="headerlink" title="Tree Problems"></a>Tree Problems</h1><h1 id="Graph-Isomorphisms"><a href="#Graph-Isomorphisms" class="headerlink" title="Graph Isomorphisms"></a>Graph Isomorphisms</h1><h1 id="Conclusions"><a href="#Conclusions" class="headerlink" title="Conclusions"></a>Conclusions</h1><p>这篇文章聚焦于如何将 NP-complete/hard problems 转化为可以利用Ising类型Hamilton可表示的形式。</p>
+]]></content>
+      <categories>
+        <category>Math</category>
+      </categories>
+      <tags>
+        <tag>NP problems</tag>
+        <tag>Ising</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>KL散度在VAE中的代码实现</title>
+    <url>/2024/04/08/Math/KL_divergence_in_code/KL_divergence_in_code/</url>
+    <content><![CDATA[<font color="red">
+能否使用除Gauss分布外的其他分布？为什么一定要选取Gauss分布呢？
+</font>
+
+
+<p>这篇笔记用于记录在VAE计算过程中，KL散度计算的实现方式，以及背后的原理分析。</p>
+<p>参考资料：</p>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/345095899#">KL散度的推导过程</a></li>
+</ul>
+<span id="more"></span>
+<p>在VAE中，为了解决随机采样无法求梯度的问题，假设潜变量空间的参数满足Gauss分布（一维情况）：</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{N}(\mu, \sigma)=\frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(x-\mu)^2}{2 \sigma^2}}
+\end{align}</script><p>然后利用均值和方差进行抽样。这种技巧称为重参数化（reparameterization）。</p>
+<p>在应用重参数化技巧后，需要计算两个分布的差距，因此引入KL散度计算：</p>
+<script type="math/tex; mode=display">\begin{align}
+\text{KL}\left(p_1(x) \| p_2(x)\right)=\int_x p_1(x) \ln \frac{p_1(x)}{p_2(x)} d x
+\end{align}</script><p>针对两个一维高斯分布: $p_1=\mathcal{N}_1\left(\mu_1, \sigma_1\right), p_2=\mathcal{N}_2\left(\mu_2, \sigma_2\right)$, 可以计算他们的KL散度如下:</p>
+<script type="math/tex; mode=display">
+\begin{align}
+\text{KL}\left(p_1 \| p_2\right) & =\int_x p_1(x) \ln \frac{p_1(x)}{q_1(x)} d x \\
+& =\int_x p_1(x) \left[\ln p_1(x) - \ln q_1(x)\right] d x \\
+& =\int_x p_1(x) \left[\ln\left( \frac{1}{\sqrt{2 \pi \sigma_1^2}} e^{-\frac{(x-\mu_1)^2}{2 \sigma_1^2}}\right) - \ln\left( \frac{1}{\sqrt{2 \pi \sigma_2^2}} e^{-\frac{(x-\mu_2)^2}{2 \sigma_2^2}}\right)\right] d x \\
+& =\int_x p_1(x) \left[-\ln \sigma_1 -\frac{(x-\mu_1)^2}{2 \sigma_1^2} + \ln\sigma_2 +\frac{(x-\mu_2)^2}{2 \sigma_2^2}\right] d x \\
+& =\int_x p_1(x) \left[\ln \frac{\sigma_2}{\sigma_1} -\frac{(x-\mu_1)^2}{2 \sigma_1^2} +\frac{(x-\mu_2)^2}{2 \sigma_2^2}\right] d x \\
+& =\log \frac{\sigma_2}{\sigma_1}+\underbrace{\int_x p_1(x) \frac{\left(x-\mu_2\right)^2}{2 \sigma_2^2} d x}_{\mathrm{B}}-\frac{1}{2}\\
+\end{align}</script><p>关注较为复杂的第二项, 即下标 $\mathrm{B}$ 这一项。接下来要用的并不是带入 $p_1(x)$, 而是较为巧妙的使用 $x-\mu_2=\left(x-\mu_1\right)+\left(\mu_1-\mu_2\right)$, 重新使用常数、方差等性质。</p>
+<script type="math/tex; mode=display">
+\begin{align}
+B & =\frac{1}{2 \sigma_2^2}\int_x p_1(x)\left(x-\mu_2\right)^2 d x \\
+& =\frac{1}{2 \sigma_2^2}\int_x p_1(x)\left[\left(x-\mu_1\right)+\left(\mu_1-\mu_2\right)\right]^2 d x \\
+& =\frac{1}{2 \sigma_2^2}\int_x p_1(x)\left(x-\mu_1\right)^2 d x+\frac{2\left(\mu_1-\mu_2\right) }{2 \sigma_2^2}\int_x p_1(x)\left(x-\mu_1\right) d x+\left(\mu_1-\mu_2\right)^2 \\
+& =\frac{1}{2 \sigma_2^2}\left[\sigma_1^2+0+\left(\mu_1-\mu_2\right)^2\right] \\
+& =\frac{1}{2 \sigma_2^2}\left[\sigma_1^2+\left(\mu_1-\mu_2\right)^2\right]
+\end{align}</script><p>综合以上结果, 我们有:</p>
+<script type="math/tex; mode=display">
+\text{KL}\left(p_1 \| p_2\right)=\log \frac{\sigma_2}{\sigma_1}+\frac{1}{2 \sigma_2^2}\left(\sigma_1^2+\left(\mu_1-\mu_2\right)^2\right)-\frac{1}{2}</script><p>接下来, 回到VAE中, 由于我们将自由变量从标准正态分布中采样, 即 $p_2=\mathcal{N}_2(0,1)$;</p>
+<script type="math/tex; mode=display">
+\text{KL}\left(p_1|| p_2\right)=-\frac{1}{2} \times\left[2 \log \sigma_1+1-\sigma_1^2-\mu_1^2\right]</script><p>大多数的VAE代码中间学习并不是 $\mu$ 与 $\sigma$, 而是 $\mu$ 与$logvar =\log \sigma^2$，因此在代码中需要进行变换 。</p>
+<p>代码如下：<br><figure class="highlight python"><table><tr><td class="code"><pre><span class="line">KL = -<span class="number">0.5</span>*torch.<span class="built_in">sum</span>(logvar + <span class="number">1</span> - mu.<span class="built_in">pow</span>() - logvar.exp())</span><br></pre></td></tr></table></figure></p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Kullback Leibler Divergence</tag>
+        <tag>KL Divergence</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model</title>
     <url>/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/</url>
     <content><![CDATA[ <font color="red">这篇文章并未读完，更多的内容在于知识上的补充</font>
@@ -942,6 +1021,11 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
 <h2 id="物理"><a href="#物理" class="headerlink" title="物理"></a>物理</h2><p>求解模型的配分函数，可以通过扭结的形式表现。求解的过程则转化为扭结的展开。这与图的表现形式不谋而合。</p>
 <p>另一方面，图的形式与张量网络也极为相似，两者之间是否存在相关性。</p>
 <h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p>有很多很现实的优化问题，本身存在的形式就是图结构，型如SK model，典型的为旅行商问题。</p>
+<font color="red">其中有两部分需要加入，图的等变性内容，图的embeding内容</font>
+
+
+
+
 <font color="red">unend</font>
 
 

@@ -23,7 +23,7 @@
   <meta name="description" content="能否使用除Gauss分布外的其他分布？为什么一定要选取Gauss分布呢？    这篇笔记用于记录在VAE计算过程中，KL散度计算的实现方式，以及背后的原理分析。 参考资料：  KL散度的推导过程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="KL散度在VAE中的代码实现">
-<meta property="og:url" content="https://renyixiong-ai.github.io/2024/04/08/Math/KL_divergence_in_code/index.html">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/04/08/Math/KL_divergence_in_code/KL_divergence_in_code/index.html">
 <meta property="og:site_name" content="Yixiong&#39;s Blog">
 <meta property="og:description" content="能否使用除Gauss分布外的其他分布？为什么一定要选取Gauss分布呢？    这篇笔记用于记录在VAE计算过程中，KL散度计算的实现方式，以及背后的原理分析。 参考资料：  KL散度的推导过程">
 <meta property="og:locale" content="zh_CN">
@@ -34,7 +34,7 @@
 <meta property="article:tag" content="KL Divergence">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://renyixiong-ai.github.io/2024/04/08/Math/KL_divergence_in_code/">
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/04/08/Math/KL_divergence_in_code/KL_divergence_in_code/">
 
 
 <script id="page-configurations">
@@ -190,7 +190,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/04/08/Math/KL_divergence_in_code/">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/04/08/Math/KL_divergence_in_code/KL_divergence_in_code/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -396,18 +396,18 @@ B & =\frac{1}{2 \sigma_2^2}\int_x p_1(x)\left(x-\mu_2\right)^2 d x \\
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">13</span>
+          <span class="site-state-item-count">14</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">29</span>
+        <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -462,12 +462,12 @@ B & =\frac{1}{2 \sigma_2^2}\int_x p_1(x)\left(x-\mu_2\right)^2 d x \\
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">45k</span>
+    <span title="站点总字数">49k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:22</span>
+    <span title="站点阅读时长">1:29</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
