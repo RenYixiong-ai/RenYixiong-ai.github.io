@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":-1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="图论（Graphs）是数学的一个分支，它研究的是图这种数学结构。图论中的图是由点（也称为顶点）和连接这些点的线（也称为边）组成的。点通常用来代表事物，而边则表示事物之间的关系。图可以是有向的，也可以是无向的，这取决于边是否有方向。 图论的研究内容包括图的各种性质，如度（一个点连接的边的数量）、连通性（图中的点是否都通过边相互可达）、路径（点与点之间的连线序列）等。图论不仅在数学领域内有广泛的应用，">
+  <meta name="description" content="其中有两部分需要加入，图的等变性内容，图的embeding内容  图论（Graphs）是数学的一个分支，它研究的是图这种数学结构。图论中的图是由点（也称为顶点）和连接这些点的线（也称为边）组成的。点通常用来代表事物，而边则表示事物之间的关系。图可以是有向的，也可以是无向的，这取决于边是否有方向。 图论的研究内容包括图的各种性质，如度（一个点连接的边的数量）、连通性（图中的点是否都通过边相互可达）、">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Machine Learning with Graphs">
 <meta property="og:url" content="https://renyixiong-ai.github.io/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/index.html">
 <meta property="og:site_name" content="Yixiong&#39;s Blog">
-<meta property="og:description" content="图论（Graphs）是数学的一个分支，它研究的是图这种数学结构。图论中的图是由点（也称为顶点）和连接这些点的线（也称为边）组成的。点通常用来代表事物，而边则表示事物之间的关系。图可以是有向的，也可以是无向的，这取决于边是否有方向。 图论的研究内容包括图的各种性质，如度（一个点连接的边的数量）、连通性（图中的点是否都通过边相互可达）、路径（点与点之间的连线序列）等。图论不仅在数学领域内有广泛的应用，">
+<meta property="og:description" content="其中有两部分需要加入，图的等变性内容，图的embeding内容  图论（Graphs）是数学的一个分支，它研究的是图这种数学结构。图论中的图是由点（也称为顶点）和连接这些点的线（也称为边）组成的。点通常用来代表事物，而边则表示事物之间的关系。图可以是有向的，也可以是无向的，这取决于边是否有方向。 图论的研究内容包括图的各种性质，如度（一个点连接的边的数量）、连通性（图中的点是否都通过边相互可达）、">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2024-04-15T12:39:00.000Z">
-<meta property="article:modified_time" content="2024-04-17T16:04:29.670Z">
+<meta property="article:modified_time" content="2024-04-18T03:11:28.174Z">
 <meta property="article:author" content="Ren Yixiong">
 <meta property="article:tag" content="Graphs">
 <meta name="twitter:card" content="summary">
@@ -219,7 +219,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-04-18 00:04:29" itemprop="dateModified" datetime="2024-04-18T00:04:29+08:00">2024-04-18</time>
+                <time title="修改时间：2024-04-18 11:11:28" itemprop="dateModified" datetime="2024-04-18T11:11:28+08:00">2024-04-18</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -244,7 +244,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.4k</span>
+              <span>1.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -263,7 +263,9 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>图论（Graphs）是数学的一个分支，它研究的是图这种数学结构。图论中的图是由点（也称为顶点）和连接这些点的线（也称为边）组成的。点通常用来代表事物，而边则表示事物之间的关系。图可以是有向的，也可以是无向的，这取决于边是否有方向。</p>
+        <font color="red">其中有两部分需要加入，图的等变性内容，图的embeding内容</font>
+
+<p>图论（Graphs）是数学的一个分支，它研究的是图这种数学结构。图论中的图是由点（也称为顶点）和连接这些点的线（也称为边）组成的。点通常用来代表事物，而边则表示事物之间的关系。图可以是有向的，也可以是无向的，这取决于边是否有方向。</p>
 <p>图论的研究内容包括图的各种性质，如度（一个点连接的边的数量）、连通性（图中的点是否都通过边相互可达）、路径（点与点之间的连线序列）等。图论不仅在数学领域内有广泛的应用，还在计算机科学、工程学、经济学等多个领域发挥着重要作用。</p>
 <p>因多次发现与图论相关的内容，故在这里记录学习图论的笔记与想法。</p>
 <p>参考文献：</p>
@@ -274,15 +276,18 @@
 <p>感谢<a target="_blank" rel="noopener" href="https://github.com/datawhalechina/grape-book">Datawhale开源社区</a>提供学习平台与相关资源。</p>
 <span id="more"></span>
 <h1 id="Why-Graphs"><a href="#Why-Graphs" class="headerlink" title="Why Graphs"></a>Why Graphs</h1><p>最近频繁的看到图网络的相关内容，产生了好奇：图网络究竟有哪些优越性？</p>
-<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>在拓扑结构上图明显具备更高的普适性质。语言可以理解为一维数据，图像可以理解为二维数据，这两种类型显然是图的一种特殊结构。对于复杂网络，如果使用NLP、CV等模型，则必须进行“近似”，而图网络就能囊括数据的信息。</p>
+<h2 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h2><p>在拓扑结构上图明显具备更高的普适性质。语言可以理解为一维数据，图像可以理解为二维数据，这两种类型显然是图的一种特殊结构。对于复杂网络，如果使用NLP、CV等模型，则必须进行“近似”，而图网络就能囊括数据的信息。</p>
 <p>这种“近似”因为要确定顺序，造成不同数据之间不等价，会破坏数据中的对称性。例如“茶也可以吃”，写成首尾相接的形式，无论从哪里开始读到结束，均保持语言上的合理性，并且意思一致。在这句话中重要的不同字之间的相对位置，而不是绝对位置。图在处理这类问题上具有优越性。</p>
 <p>这种“近似”影响，在图像上更为明显。一张图像往往不会因其旋转、镜像变换而造成含义上的变化，而CNN等等网络不能理解这种对称。一般在进行训练的时候，都会使用数据增强的方法，尽可能让网络理解这种对称。</p>
 <p>因此处理这种相对位置关键，绝对位置不关键的数据，图网络具备其先天的优势。</p>
-<h2 id="物理"><a href="#物理" class="headerlink" title="物理"></a>物理</h2><p>求解模型的配分函数，可以通过扭结的形式表现。求解的过程则转化为扭结的展开。这与图的表现形式不谋而合。</p>
-<p>另一方面，图的形式与张量网络也极为相似，两者之间是否存在相关性。</p>
-<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><p>有很多很现实的优化问题，本身存在的形式就是图结构，型如SK model，典型的为旅行商问题。</p>
-<font color="red">其中有两部分需要加入，图的等变性内容，图的embeding内容</font>
-
+<p>同时具备图这种拓扑结构，与许多问题等价。可以将其它问题转化为图上进行求解。例如对于物理中求解模型的配分函数：将配分函数转化为扭结展开，而扭结就是一种图；除此之外，图的形式与张量网络也极为相似，两者之间可能存在相关性。</p>
+<p>许多优化问题，本身就是通过图结构描述，旅行商问题、最大割问题；其它优化问题虽然不是用图显式表达，但是也可以<a href="https://renyixiong-ai.github.io/2024/04/15/Math/Ising_formulations_of_many_NP_problems/Ising_formulations_of_many_NP_problems/">转化为图结构</a>。</p>
+<h2 id="What-types-of-problems-have-graph-structured-data"><a href="#What-types-of-problems-have-graph-structured-data" class="headerlink" title="What types of problems have graph structured data?"></a>What types of problems have graph structured data?</h2><p>通常有三种类型的图任务：</p>
+<ul>
+<li>graph-level<br>In a graph-level task, our goal is to predict the property of an entire graph.</li>
+<li>node-level<br>Node-level tasks are concerned with predicting the identity or role of each node within a graph.</li>
+<li>edge-level<br>Edge-level task get the relationship between the nodes.</li>
+</ul>
 <h1 id="Graphs"><a href="#Graphs" class="headerlink" title="Graphs"></a>Graphs</h1><ul>
 <li><a target="_blank" rel="noopener" href="https://distill.pub/2021/gnn-intro/">优秀的可视化网站</a></li>
 <li>python中关于图的包<a target="_blank" rel="noopener" href="https://networkx.github.io/">Networkx</a></li>
@@ -393,7 +398,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Why-Graphs"><span class="nav-number">1.</span> <span class="nav-text">Why Graphs</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%A9%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">物理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E5%8C%96"><span class="nav-number">1.3.</span> <span class="nav-text">优化</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Graphs"><span class="nav-number">2.</span> <span class="nav-text">Graphs</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">图的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="nav-number">2.2.</span> <span class="nav-text">图的性质</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E8%8A%82%E7%82%B9%EF%BC%88neighbors%EF%BC%89"><span class="nav-number">2.2.1.</span> <span class="nav-text">邻接节点（neighbors）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E5%BA%A6%EF%BC%88degree%EF%BC%89"><span class="nav-number">2.2.2.</span> <span class="nav-text">图的度（degree）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%8C%E8%B5%B0%EF%BC%88walk%EF%BC%89%E5%92%8C%E8%B7%AF%E5%BE%84%EF%BC%88path%EF%BC%89"><span class="nav-number">2.2.3.</span> <span class="nav-text">行走（walk）和路径（path）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%9D%E7%A6%BB%EF%BC%88distance%EF%BC%89%E5%92%8C%E7%9B%B4%E5%BE%84%EF%BC%88diameter%EF%BC%89"><span class="nav-number">2.2.4.</span> <span class="nav-text">距离（distance）和直径（diameter）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%90%E5%9B%BE%EF%BC%88subgraph%EF%BC%89%E3%80%81%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%EF%BC%88connected-component%EF%BC%89%E3%80%81%E8%BF%9E%E9%80%9A%E5%9B%BE%EF%BC%88conected-graph%EF%BC%89"><span class="nav-number">2.2.5.</span> <span class="nav-text">子图（subgraph）、连通分量（connected component）、连通图（conected graph）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%9A%E7%B1%BB%E7%B3%BB%E6%95%B0%EF%BC%88Clustering-Coefficient%EF%BC%89"><span class="nav-number">2.2.6.</span> <span class="nav-text">聚类系数（Clustering Coefficient）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E8%BF%91%E4%B8%AD%E5%BF%83%E5%BA%A6%EF%BC%88closeness-centrality%EF%BC%89"><span class="nav-number">2.2.7.</span> <span class="nav-text">接近中心度（closeness centrality）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E8%BF%9E%E6%8E%A5%E8%A1%A8%E7%A4%BA"><span class="nav-number">2.3.</span> <span class="nav-text">图的连接表示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5%EF%BC%88adjacency-matrix%EF%BC%89"><span class="nav-number">2.3.1.</span> <span class="nav-text">邻接矩阵（adjacency matrix）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E8%81%94%E7%9F%A9%E9%98%B5%EF%BC%88incidence-matrix%EF%BC%89"><span class="nav-number">2.3.2.</span> <span class="nav-text">关联矩阵（incidence matrix）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%89%E6%99%AE%E6%8B%89%E6%96%AF%E7%9F%A9%E9%98%B5%EF%BC%88Laplacian-matrix%EF%BC%89"><span class="nav-number">2.3.3.</span> <span class="nav-text">拉普拉斯矩阵（Laplacian matrix）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.4.</span> <span class="nav-text">图的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84"><span class="nav-number">2.4.1.</span> <span class="nav-text">图的拓扑结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E8%B4%A8%E5%9B%BE%EF%BC%88Homogeneous-Graph%EF%BC%89%E5%92%8C%E5%BC%82%E8%B4%A8%E5%9B%BE%EF%BC%88Heterogeneous-Graph%EF%BC%89"><span class="nav-number">2.4.2.</span> <span class="nav-text">同质图（Homogeneous Graph）和异质图（Heterogeneous Graph）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E5%9B%BE-%EF%BC%88bipartite-graph%EF%BC%89"><span class="nav-number">2.4.3.</span> <span class="nav-text">二分图 （bipartite graph）</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Why-Graphs"><span class="nav-number">1.</span> <span class="nav-text">Why Graphs</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-types-of-problems-have-graph-structured-data"><span class="nav-number">1.2.</span> <span class="nav-text">What types of problems have graph structured data?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Graphs"><span class="nav-number">2.</span> <span class="nav-text">Graphs</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">图的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="nav-number">2.2.</span> <span class="nav-text">图的性质</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E8%8A%82%E7%82%B9%EF%BC%88neighbors%EF%BC%89"><span class="nav-number">2.2.1.</span> <span class="nav-text">邻接节点（neighbors）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E5%BA%A6%EF%BC%88degree%EF%BC%89"><span class="nav-number">2.2.2.</span> <span class="nav-text">图的度（degree）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%8C%E8%B5%B0%EF%BC%88walk%EF%BC%89%E5%92%8C%E8%B7%AF%E5%BE%84%EF%BC%88path%EF%BC%89"><span class="nav-number">2.2.3.</span> <span class="nav-text">行走（walk）和路径（path）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%9D%E7%A6%BB%EF%BC%88distance%EF%BC%89%E5%92%8C%E7%9B%B4%E5%BE%84%EF%BC%88diameter%EF%BC%89"><span class="nav-number">2.2.4.</span> <span class="nav-text">距离（distance）和直径（diameter）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%90%E5%9B%BE%EF%BC%88subgraph%EF%BC%89%E3%80%81%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%EF%BC%88connected-component%EF%BC%89%E3%80%81%E8%BF%9E%E9%80%9A%E5%9B%BE%EF%BC%88conected-graph%EF%BC%89"><span class="nav-number">2.2.5.</span> <span class="nav-text">子图（subgraph）、连通分量（connected component）、连通图（conected graph）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%9A%E7%B1%BB%E7%B3%BB%E6%95%B0%EF%BC%88Clustering-Coefficient%EF%BC%89"><span class="nav-number">2.2.6.</span> <span class="nav-text">聚类系数（Clustering Coefficient）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E8%BF%91%E4%B8%AD%E5%BF%83%E5%BA%A6%EF%BC%88closeness-centrality%EF%BC%89"><span class="nav-number">2.2.7.</span> <span class="nav-text">接近中心度（closeness centrality）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E8%BF%9E%E6%8E%A5%E8%A1%A8%E7%A4%BA"><span class="nav-number">2.3.</span> <span class="nav-text">图的连接表示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5%EF%BC%88adjacency-matrix%EF%BC%89"><span class="nav-number">2.3.1.</span> <span class="nav-text">邻接矩阵（adjacency matrix）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E8%81%94%E7%9F%A9%E9%98%B5%EF%BC%88incidence-matrix%EF%BC%89"><span class="nav-number">2.3.2.</span> <span class="nav-text">关联矩阵（incidence matrix）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%89%E6%99%AE%E6%8B%89%E6%96%AF%E7%9F%A9%E9%98%B5%EF%BC%88Laplacian-matrix%EF%BC%89"><span class="nav-number">2.3.3.</span> <span class="nav-text">拉普拉斯矩阵（Laplacian matrix）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.4.</span> <span class="nav-text">图的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84"><span class="nav-number">2.4.1.</span> <span class="nav-text">图的拓扑结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E8%B4%A8%E5%9B%BE%EF%BC%88Homogeneous-Graph%EF%BC%89%E5%92%8C%E5%BC%82%E8%B4%A8%E5%9B%BE%EF%BC%88Heterogeneous-Graph%EF%BC%89"><span class="nav-number">2.4.2.</span> <span class="nav-text">同质图（Homogeneous Graph）和异质图（Heterogeneous Graph）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E5%9B%BE-%EF%BC%88bipartite-graph%EF%BC%89"><span class="nav-number">2.4.3.</span> <span class="nav-text">二分图 （bipartite graph）</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -478,7 +483,7 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:30</span>
+    <span title="站点阅读时长">1:31</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
