@@ -6,7 +6,7 @@
   <link href="https://renyixiong-ai.github.io/atom.xml" rel="self"/>
   
   <link href="https://renyixiong-ai.github.io/"/>
-  <updated>2024-04-18T03:11:28.174Z</updated>
+  <updated>2024-04-22T02:16:17.458Z</updated>
   <id>https://renyixiong-ai.github.io/</id>
   
   <author>
@@ -15,6 +15,40 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Machine-learning-assisted Monte Carlo fails at sampling computationally hard problems</title>
+    <link href="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/"/>
+    <id>https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/</id>
+    <published>2024-04-19T08:00:00.000Z</published>
+    <updated>2024-04-22T02:16:17.458Z</updated>
+    
+    <content type="html"><![CDATA[<p>展示利用机器学习提升的MC在一些模型中的失败：</p><ul><li>为什么说失败？哪些指标说明失败？</li><li>在怎样的模型中？这种模型具有什么样的特点？</li><li>实验条件是什么？</li></ul><p>参考文献：</p><ul><li><a href="https://doi.org/10.1088/2632-2153/acbe91">Machine-learning-assisted Monte Carlo   fails at sampling computationally hard problems</a><br>配套代码<a href="https://zenodo.org/records/7567683">10.5281/zenodo.7567683</a></li><li><a href="https://doi.org/10.3390/condmat7020038">Neural Annealing and Visualization of Autoregressive Neural Networks in the Newman–Moore Model</a></li><li><a href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.60.5068">Glassy dynamics and aging in an exactly solvable spin model</a></li><li><a href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.108.174107">Boundary conditions dependence of the phase transition in the quantum Newman-Moore mode</a></li><li><a href="https://arxiv.org/abs/1712.09913">Visualizing the Loss Landscape of Neural Nets</a></li></ul><span id="more"></span><h1 id="Background"><a href="#Background" class="headerlink" title="Background"></a>Background</h1><p>经典MC的问题在于使用细致平衡条件进行局部更新，无法处理临界慢化、关联长度长问题；一些改进的措施是将局部更新改为全局更新，但是这种方案与模型的结构直接相关。</p><p>最近利用机器学习诞生了一些高效的方案，通过近似分布$P(\sigma)$来获得目标分布，并且进行高效采样。</p><p>现在面临的困境本质与90年代修改MC方案是一样的，两种都是在进行采样。在当时已经提出了一些benchmark对不同方案进行检验。但是现在机器学习策略大多聚焦于解决MC之前的困境，并没有测试之前的benchmark。</p><p>接下来考虑一些难以采样的随机问题。</p><h1 id="Fails-at-sampling-computationally-hard-problems"><a href="#Fails-at-sampling-computationally-hard-problems" class="headerlink" title="Fails at sampling computationally hard problems"></a>Fails at sampling computationally hard problems</h1><p>在采样问题中通常会遇到mode-collapse in learning the auxiliary model，这是由于在多峰分布情况下模型只学习到其中的一个峰分布。</p><p>模型是否准确学到分布，作者提出了三个重要的判断指标：</p><ul><li>其采样的接受概率是否足够高<script type="math/tex; mode=display">\operatorname{Acc}\left[\sigma_{\text {old }} \rightarrow \sigma_{\text {new }}\right]=\min \left[1, \frac{\mathrm{e}^{-(\beta+\delta \beta) H\left(\sigma_{\text {new }}\right)} P_{\mathrm{AR}}\left(\sigma_{\text {old }}\right)}{\mathrm{e}^{-(\beta+\delta \beta) H\left(\sigma_{\text {old }}\right) }P_{\mathrm{AR}}\left(\sigma_{\text {new }}\right)}\right]</script></li><li>全局MCMC动态初始化于由AR模型生成的配置接近静止状态（即，像能量这样的单时间数量在时间上是恒定的，而像相关性这样的双时间数量只依赖于时间差）。<font color="red">不一定吧？</font></li><li>时间依赖的关联项消失。</li></ul><font color="red">这个作者提出的benchmark主要针对VAN这种直接生成下一步分布的模型，但是如果模型只是估计分布概率，这个benchmark并不有效。</font><h2 id="Coloring"><a href="#Coloring" class="headerlink" title="Coloring"></a>Coloring</h2><font color="yellow">该模型本质就是随机图上的Potts Model。</font>The hard-to-sample coloring problem:$N$个变量$\sigma_i \in\{0, \ldots, q-1\}$，每一个有$q$概率染色，节点位于Erdős-Rényi随机图$\mathcal{G}$上，每条边以相同的概率进行采样，连通概率为$c$。将模型的Hamiltonian 写为：$$\begin{align}H(\sigma)=\sum_{\langle i, j\rangle \in \mathcal{G}} \delta_{\sigma_i, \sigma_j}\end{align}$$对于一个$q$态的Potts模型，这是一反铁磁模型，在这样的随机图的基态下如何选取使得能量最低，等价于随机图着色问题。![Coloring—Phase diagram of the coloring of Erdös-Rényi random graphs](./BoostMC_fail/A_4.png)$T_d$线是玻璃相转变，在其之下关联时间随尺寸变大指数增加，$T_k$是凝聚线，在其之下不存在平坦的基态。其中小图表示在$c=40$的情况，利用MCMC模拟不同体系尺寸的关联时间，横坐标为$T-T_d$.关联函数为$C(t, \tau)=\frac{1}{N} \sum_{i=1}^N \delta_{\sigma_i(t), \sigma_i(t+\tau)}$.<font color="red">关于这个模型有一些参考资料：* [random first order transition universality class](https://iopscience.iop.org/article/10.1209/0295-5075/81/57005)* [Statistical physics of inference: thresholds and algorithms Adv. Phys](https://www.tandfonline.com/doi/full/10.1080/00018732.2016.1211393)</font><p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/A_5.png" alt="模型实验结果，用于选取最好的模型进行下一步测试"></p><p>每幅图中两条水平的线表示MCMC采样的值（橙色），或者空腔采样的值（蓝色）。横坐标表示不同的模型。可以看到能量和熵在均值附近，考虑涨落影响是正常的。考虑到温度较高，不在基态也合理。接下来再看，随着模型的表现能力增强（网络复杂、regularization、dropout），能量下降熵也下降，作者认为这里发生这种因素的原因是过拟合<font color="red">（非常主观的猜测，但这个猜测却是文章的重要转折点）</font>。接下来作者认为评判的参数维度是更低的能量于更高的熵，最好的模型是shallow MADE (ColoredMADE)。</p><p>接下来将用表现最好的网络进行测试，演示其为什么失败。</p><p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/A_6.png" alt="模型实验结果"><br>其中 variational 和 maximum likelihood 代表模型训练的两种方式，前者是wu等提出的方案，后者是基于前者方案加入极大似然估计（即进一步使用细致平衡挑选样本）。</p><p>a、b表明在高温下利用AR与传统算法没有区别<font color="red">高温本来关联就弱</font>；在低温情况下利用AR系统转变的更快<font color="red">这个算法能解决关联问题，不是很好么？</font>综上，AR失败的，因为不能在低温情况下采到能量更低的样本。以上讨论在$T&gt;0.3$的情况下，更低传统方法也会失效。</p><p>在d图中可以看出 maximum likelihood 策略在低温情况下能量较高，温度升高逐渐接近MCMC采样值。从e图中能够发现，熵的值接近。但是从f图看熵-能量关系，可以立刻看出与传统方案的区别。</p><p>从e图中看 variational 方案，可以发现，熵在低温情况下很低，这是由于发生了mode-collapsed，模型聚集在其中的一个峰上。</p><p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/A_7.png" alt="模型实验结果2"><br>其中the Boltzmann ratio $P_B\left(\sigma_{\text {new }}\right) / P_B\left(\sigma_{\text {old }}\right)$ and the model ratio $P_{A R}\left(\sigma_{\text {old }}\right) / P_{\text {AR }}\left(\sigma_{\text {new }}\right)$.<br>通过实验发现，接受率随着步数（与旧模型的相差程度）的增多，在剧烈下降，这意味着 maximum likelihood 方案在低温情况基本不能探索，能量无法下降。</p><p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/A_9.png" alt="模型实验结果3"><br>上图想要说明，因为在低温情况，传统采样关联性很强，而AR模型关联性下降很快，因此认为能量依旧很高。<font color="red">为什么不直接放能量图呢？我怀疑是因为AR模型在几个能量相近局域最小值之间跳，传统方法陷在一个局域最小值点中了。</font></p><h1 id="Neural-Annealing-and-Visualization-in-the-Newman–Moore-Model"><a href="#Neural-Annealing-and-Visualization-in-the-Newman–Moore-Model" class="headerlink" title="Neural Annealing and Visualization in the Newman–Moore Model"></a>Neural Annealing and Visualization in the Newman–Moore Model</h1><p>The classical triangular plaquette model<br>(TPM), introduced by Newman and Moore, also named <a href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.60.5068">Newman–Moore Model.</a></p><p>The classical triangular plaquette model 是一个用于描述磁性系统中的自旋冰态（spin ice state）的简化模型。在这个模型中，磁性离子位于三角形stop的顶点上，形成一个由三角形组成的格子（plaquette）。每个三角形代表一个“空位”，其中的磁性离子可以有向上或向下的磁矩。在自旋冰态中，由于几何限制和磁相互作用的特定规则，每个三角形内部的磁矩配置必须是两个向上，一个向下，或者两个向下，一个向上。这种配置被称为“two-in, one-out”规则。</p><font color="red">这篇文章有一个问题，其使用了RNN进行训练。而且并没有说明该网络在非阻措问题上的表现能力。</font><p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/B_2.png" alt="模型实验结果4"></p><p>在Newman–Moore Model上，可以观察到在小尺寸下符合的很好，但是随着晶格尺寸的变大，基态自由能突然发生改变<font color="red">（我更怀疑是由于计算失误）</font>，有一个突然的上升，这可能由于陷入到了一种局域解中。</p><p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/B_5.png" alt="模型实验结果6"></p><p>除了变分自由能的最小值现在已接近T0 = 10时的确切值。随着温度的降低，景观形状变得更加崎岖，出现了相当大的高能量平台和快速变化的障碍，最终导致局部最小值消失，退火结束时变成了完全混乱的景观。因此，从这个角度来看，很明显这里存在训练问题，阻碍了变分神经退火的成功应用。</p><font color="red">这篇文章需要更多的实验</font>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;展示利用机器学习提升的MC在一些模型中的失败：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;为什么说失败？哪些指标说明失败？&lt;/li&gt;
+&lt;li&gt;在怎样的模型中？这种模型具有什么样的特点？&lt;/li&gt;
+&lt;li&gt;实验条件是什么？&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;参考文献：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://doi.org/10.1088/2632-2153/acbe91&quot;&gt;Machine-learning-assisted Monte Carlo   fails at sampling computationally hard problems&lt;/a&gt;&lt;br&gt;配套代码&lt;a href=&quot;https://zenodo.org/records/7567683&quot;&gt;10.5281/zenodo.7567683&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://doi.org/10.3390/condmat7020038&quot;&gt;Neural Annealing and Visualization of Autoregressive Neural Networks in the Newman–Moore Model&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://journals.aps.org/pre/abstract/10.1103/PhysRevE.60.5068&quot;&gt;Glassy dynamics and aging in an exactly solvable spin model&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://journals.aps.org/prb/abstract/10.1103/PhysRevB.108.174107&quot;&gt;Boundary conditions dependence of the phase transition in the quantum Newman-Moore mode&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/1712.09913&quot;&gt;Visualizing the Loss Landscape of Neural Nets&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="Machine Learning" scheme="https://renyixiong-ai.github.io/categories/Machine-Learning/"/>
+    
+    
+    <category term="Physics" scheme="https://renyixiong-ai.github.io/tags/Physics/"/>
+    
+  </entry>
   
   <entry>
     <title>Machine Learning with Graphs</title>
