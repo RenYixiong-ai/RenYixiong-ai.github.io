@@ -93,67 +93,6 @@ c\neq& b \label{test2} \\
       </tags>
   </entry>
   <entry>
-    <title>Deconstructing Denoising Diffusion Models for Self-Supervised Learning</title>
-    <url>/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/</url>
-    <content><![CDATA[<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。</p>
-<p>这点和全连接神经网络十分相似，当层数过多的时候，只有输入层附近的几层与输出层附近的几层是关键的，中间几层处于液化状态（可以随意选取，不会影响最终的结果）。</p>
-<span id="more"></span>
-<p>现有的预训练DDM在生成任务上表现十分优异，然而留下一个开放问题：这些用于生成任务的预训练模型，其是否同样获得表征能力。</p>
-<h1 id="Deconstructing-Denoising-Diffusion-Models"><a href="#Deconstructing-Denoising-Diffusion-Models" class="headerlink" title="Deconstructing Denoising Diffusion Models"></a>Deconstructing Denoising Diffusion Models</h1><p>作者发现主要的关键因素是tokenizer，其表现了低维的潜空间。但是不难发现，潜变量并不是tokenizer独有的，standard VAE, a patch-wise VAE, a patch-wise AE, and a patch-wise PCA encoder 均有潜变量。</p>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig1.png" alt="fig1"></p>
-<p>解构的路线分为三个步骤：</p>
-<ul>
-<li>首先将Diffusion Transformer(DiT)架构，变为自监督模型</li>
-<li>逐步拆解toenizer</li>
-<li>尽可能尝试还原模型，将其变为一个经典的Denoising Autoencoder(DAE)</li>
-</ul>
-<h2 id="Reorienting-DDM-for-Self-supervised-Learning"><a href="#Reorienting-DDM-for-Self-supervised-Learning" class="headerlink" title="Reorienting DDM for Self-supervised Learning"></a>Reorienting DDM for Self-supervised Learning</h2><p>DDM的概念本质上是从DAE的概念上生成的，依旧是用于图像生成，一些设计并不适合自监督学习，一些是并不必要的（例如提升图像生成质量）。</p>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig2.png" alt="fig2"></p>
-<ol>
-<li><p>Remove class-conditioning<br>标签在图像生成上很重要，但是不符合自监督学习的要求，因此移除标签。此举使得准确性提升，但是图像质量（FID）下降。</p>
-</li>
-<li><p>Deconstruct <font color="red">VQGAN</font></p>
-</li>
-<li>Replace noise schedule<br>不需要逐步添加噪声，可以一步直接加入噪声</li>
-</ol>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig3.png" alt="fig3"></p>
-<h2 id="Deconstructing-the-Tokenizer"><a href="#Deconstructing-the-Tokenizer" class="headerlink" title="Deconstructing the Tokenizer"></a>Deconstructing the Tokenizer</h2><p>接下来解构tokenizer，将会用到下面四种自编码器，每一种自编码器都是前面一种的简化。</p>
-<ul>
-<li><p>Convolutional VAE \<br>损失函数如下：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\|x-g(f(x))\|^2+\mathbb{K} \mathbb{L}[f(x) \mid \mathcal{N}]
-\end{equation}</script><p>其中$f(\cdot)$是编码函数$g(\cdot)$是解码函数，$x$是输入值，VAE是深度卷积神经网络。</p>
-</li>
-<li><p>Patch-wise VAE \<br>选用线性的函数作为编码解码器（全连接网络），损失函数设置如下：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\left\|x-U^T V x\right\|^2+\mathbb{K} \mathbb{L}[V x \mid \mathcal{N}]
-\end{equation}</script><p>$U,V$是矩阵。</p>
-</li>
-<li><p>Patch-wise AE \<br>进一步简化，删除正则化项：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\left\|x-U^T V x\right\|^2
-\end{equation}</script></li>
-<li><p>Patch-wise PCA \<br>PCA 可以看成是一种特殊的 AE，损失函数为：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\left\|x-V^T V x\right\|^2
-\end{equation}</script></li>
-</ul>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig4.png" alt="fig4"></p>
-<p>可以从上表中看出，表现性能都差不多，并且计算KL散度也不是很重要。甚至PCA工作的更好</p>
-<h2 id="Toward-Classical-Denoising-Autoencoders"><a href="#Toward-Classical-Denoising-Autoencoders" class="headerlink" title="Toward Classical Denoising Autoencoders"></a>Toward Classical Denoising Autoencoders</h2><p>逐步减去 PCA-based DDM 与经典DAE之间的差距。<br><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig5.png" alt="fig5"></p>
-<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig6.png" alt="fig6"></p>
-<p>从最后的实验结果看出，对潜变量空间加入噪音对结果的影响更大。因此说明对模型训练起关键作用的是少数几个参数。</p>
-<font color="red">应该是我没有读懂该文章的实验思路，在我的理解下，潜变量应该是浓缩了更多信息的空间，对其加噪音本来就会比对原像素空间其更大的影响。另一方面，这种论证方法，我并不认为十分研究，应该有更多的理论分析保证。</font>]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Diffusion Models</tag>
-        <tag>Denoising Diffusion Models</tag>
-        <tag>Self-Supervised Learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Neural Network Diffusion</title>
     <url>/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/</url>
     <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>这篇文章的主要任务是，利用Diffusion Model生成具备高表现能力的神经网络参数。</p>
@@ -344,6 +283,67 @@ Data Distribution.
         <tag>Implicit Score Matching</tag>
         <tag>Denoising Score Matching</tag>
         <tag>Sliced Score Matching</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Deconstructing Denoising Diffusion Models for Self-Supervised Learning</title>
+    <url>/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/</url>
+    <content><![CDATA[<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。</p>
+<p>这点和全连接神经网络十分相似，当层数过多的时候，只有输入层附近的几层与输出层附近的几层是关键的，中间几层处于液化状态（可以随意选取，不会影响最终的结果）。</p>
+<span id="more"></span>
+<p>现有的预训练DDM在生成任务上表现十分优异，然而留下一个开放问题：这些用于生成任务的预训练模型，其是否同样获得表征能力。</p>
+<h1 id="Deconstructing-Denoising-Diffusion-Models"><a href="#Deconstructing-Denoising-Diffusion-Models" class="headerlink" title="Deconstructing Denoising Diffusion Models"></a>Deconstructing Denoising Diffusion Models</h1><p>作者发现主要的关键因素是tokenizer，其表现了低维的潜空间。但是不难发现，潜变量并不是tokenizer独有的，standard VAE, a patch-wise VAE, a patch-wise AE, and a patch-wise PCA encoder 均有潜变量。</p>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig1.png" alt="fig1"></p>
+<p>解构的路线分为三个步骤：</p>
+<ul>
+<li>首先将Diffusion Transformer(DiT)架构，变为自监督模型</li>
+<li>逐步拆解toenizer</li>
+<li>尽可能尝试还原模型，将其变为一个经典的Denoising Autoencoder(DAE)</li>
+</ul>
+<h2 id="Reorienting-DDM-for-Self-supervised-Learning"><a href="#Reorienting-DDM-for-Self-supervised-Learning" class="headerlink" title="Reorienting DDM for Self-supervised Learning"></a>Reorienting DDM for Self-supervised Learning</h2><p>DDM的概念本质上是从DAE的概念上生成的，依旧是用于图像生成，一些设计并不适合自监督学习，一些是并不必要的（例如提升图像生成质量）。</p>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig2.png" alt="fig2"></p>
+<ol>
+<li><p>Remove class-conditioning<br>标签在图像生成上很重要，但是不符合自监督学习的要求，因此移除标签。此举使得准确性提升，但是图像质量（FID）下降。</p>
+</li>
+<li><p>Deconstruct <font color="red">VQGAN</font></p>
+</li>
+<li>Replace noise schedule<br>不需要逐步添加噪声，可以一步直接加入噪声</li>
+</ol>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig3.png" alt="fig3"></p>
+<h2 id="Deconstructing-the-Tokenizer"><a href="#Deconstructing-the-Tokenizer" class="headerlink" title="Deconstructing the Tokenizer"></a>Deconstructing the Tokenizer</h2><p>接下来解构tokenizer，将会用到下面四种自编码器，每一种自编码器都是前面一种的简化。</p>
+<ul>
+<li><p>Convolutional VAE \<br>损失函数如下：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\|x-g(f(x))\|^2+\mathbb{K} \mathbb{L}[f(x) \mid \mathcal{N}]
+\end{equation}</script><p>其中$f(\cdot)$是编码函数$g(\cdot)$是解码函数，$x$是输入值，VAE是深度卷积神经网络。</p>
+</li>
+<li><p>Patch-wise VAE \<br>选用线性的函数作为编码解码器（全连接网络），损失函数设置如下：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\left\|x-U^T V x\right\|^2+\mathbb{K} \mathbb{L}[V x \mid \mathcal{N}]
+\end{equation}</script><p>$U,V$是矩阵。</p>
+</li>
+<li><p>Patch-wise AE \<br>进一步简化，删除正则化项：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\left\|x-U^T V x\right\|^2
+\end{equation}</script></li>
+<li><p>Patch-wise PCA \<br>PCA 可以看成是一种特殊的 AE，损失函数为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\left\|x-V^T V x\right\|^2
+\end{equation}</script></li>
+</ul>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig4.png" alt="fig4"></p>
+<p>可以从上表中看出，表现性能都差不多，并且计算KL散度也不是很重要。甚至PCA工作的更好</p>
+<h2 id="Toward-Classical-Denoising-Autoencoders"><a href="#Toward-Classical-Denoising-Autoencoders" class="headerlink" title="Toward Classical Denoising Autoencoders"></a>Toward Classical Denoising Autoencoders</h2><p>逐步减去 PCA-based DDM 与经典DAE之间的差距。<br><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig5.png" alt="fig5"></p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig6.png" alt="fig6"></p>
+<p>从最后的实验结果看出，对潜变量空间加入噪音对结果的影响更大。因此说明对模型训练起关键作用的是少数几个参数。</p>
+<font color="red">应该是我没有读懂该文章的实验思路，在我的理解下，潜变量应该是浓缩了更多信息的空间，对其加噪音本来就会比对原像素空间其更大的影响。另一方面，这种论证方法，我并不认为十分研究，应该有更多的理论分析保证。</font>]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Diffusion Models</tag>
+        <tag>Denoising Diffusion Models</tag>
+        <tag>Self-Supervised Learning</tag>
       </tags>
   </entry>
   <entry>
@@ -645,24 +645,18 @@ B & =\frac{1}{2 \sigma_2^2}\int_x p_1(x)\left(x-\mu_2\right)^2 d x \\
 <font color="red">这个作者提出的benchmark主要针对VAN这种直接生成下一步分布的模型，但是如果模型只是估计分布概率，这个benchmark并不有效。</font>
 
 <h2 id="Coloring"><a href="#Coloring" class="headerlink" title="Coloring"></a>Coloring</h2><font color="yellow">该模型本质就是随机图上的Potts Model。</font>
-The hard-to-sample coloring problem:
-$N$个变量$\sigma_i \in\{0, \ldots, q-1\}$，每一个有$q$概率染色，节点位于Erdős-Rényi随机图$\mathcal{G}$上，每条边以相同的概率进行采样，连通概率为$c$。将模型的Hamiltonian 写为：
-$$\begin{align}
+
+
+<p>关于这个模型有一些参考资料：</p>
+<ul>
+<li><a href="https://iopscience.iop.org/article/10.1209/0295-5075/81/57005">random first order transition universality class</a></li>
+<li><a href="https://www.tandfonline.com/doi/full/10.1080/00018732.2016.1211393">Statistical physics of inference: thresholds and algorithms Adv. Phys</a></li>
+</ul>
+<p>The hard-to-sample coloring problem:<br>$N$个变量$\sigma_i \in\{0, \ldots, q-1\}$，每一个有$q$概率染色，节点位于Erdős-Rényi随机图$\mathcal{G}$上，每条边以相同的概率进行采样，连通概率为$c$。将模型的Hamiltonian 写为：</p>
+<script type="math/tex; mode=display">\begin{align}
 H(\sigma)=\sum_{\langle i, j\rangle \in \mathcal{G}} \delta_{\sigma_i, \sigma_j}
-\end{align}$$
-对于一个$q$态的Potts模型，这是一反铁磁模型，在这样的随机图的基态下如何选取使得能量最低，等价于随机图着色问题。
-
-![Coloring—Phase diagram of the coloring of Erdös-Rényi random graphs](./BoostMC_fail/A_4.png)
-$T_d$线是玻璃相转变，在其之下关联时间随尺寸变大指数增加，$T_k$是凝聚线，在其之下不存在平坦的基态。其中小图表示在$c=40$的情况，利用MCMC模拟不同体系尺寸的关联时间，横坐标为$T-T_d$.关联函数为$C(t, \tau)=\frac{1}{N} \sum_{i=1}^N \delta_{\sigma_i(t), \sigma_i(t+\tau)}$.
-
-<font color="red">
-
-关于这个模型有一些参考资料：
-* [random first order transition universality class](https://iopscience.iop.org/article/10.1209/0295-5075/81/57005)
-* [Statistical physics of inference: thresholds and algorithms Adv. Phys](https://www.tandfonline.com/doi/full/10.1080/00018732.2016.1211393)
-
-</font>
-
+\end{align}</script><p>对于一个$q$态的Potts模型，这是一反铁磁模型，在这样的随机图的基态下如何选取使得能量最低，等价于随机图着色问题。</p>
+<p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/A_4.png" alt="Coloring—Phase diagram of the coloring of Erdös-Rényi random graphs"><br>$T_d$线是玻璃相转变，在其之下关联时间随尺寸变大指数增加，$T_k$是凝聚线，在其之下不存在平坦的基态。其中小图表示在$c=40$的情况，利用MCMC模拟不同体系尺寸的关联时间，横坐标为$T-T_d$.关联函数为$C(t, \tau)=\frac{1}{N} \sum_{i=1}^N \delta_{\sigma_i(t), \sigma_i(t+\tau)}$.</p>
 <p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/A_5.png" alt="模型实验结果，用于选取最好的模型进行下一步测试"></p>
 <p>每幅图中两条水平的线表示MCMC采样的值（橙色），或者空腔采样的值（蓝色）。横坐标表示不同的模型。可以看到能量和熵在均值附近，考虑涨落影响是正常的。考虑到温度较高，不在基态也合理。接下来再看，随着模型的表现能力增强（网络复杂、regularization、dropout），能量下降熵也下降，作者认为这里发生这种因素的原因是过拟合<font color="red">（非常主观的猜测，但这个猜测却是文章的重要转折点）</font>。接下来作者认为评判的参数维度是更低的能量于更高的熵，最好的模型是shallow MADE (ColoredMADE)。</p>
 <p>接下来将用表现最好的网络进行测试，演示其为什么失败。</p>
@@ -683,6 +677,47 @@ $T_d$线是玻璃相转变，在其之下关联时间随尺寸变大指数增加
 <font color="red">这篇文章需要更多的实验</font>
 
 
+<h1 id="A-method-for-quantifying-the-generalization-capabilities-of-generative-models-for-solving-Ising-models"><a href="#A-method-for-quantifying-the-generalization-capabilities-of-generative-models-for-solving-Ising-models" class="headerlink" title="A method for quantifying the generalization capabilities of generative models for solving Ising models"></a>A method for quantifying the generalization capabilities of generative models for solving Ising models</h1><ul>
+<li><a href="https://www.cs.toronto.edu/~norouzi/research/papers/hdml.pdf">Hamming Distance Metric Learning</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/458114525">漫谈-Distance Metric Learning那些事儿</a></li>
+</ul>
+<p>Here we design a Hamming distance (一种用于衡量字符串之间差距的距离判定方法，将字符编码为二进制，通过记数差异位数，得到距离) regularizer in the framework of a class of generative models, variational autoregressive networks (VANs), to quantify the generalization capabilities of various network architectures combined with VAN.</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{L}=&F_q+R_h \\
+F_q=&\sum_{\mathbf{s}} q_\theta(\mathbf{s})\left[E(\mathbf{s})+\frac{1}{\beta} \ln q_\theta(\mathbf{s})\right] \\
+R_h=&\sum_{\mathbf{s}}\left|h m_{\mathbf{g}}(\mathbf{s})-z\right| \\
+\nabla_\theta \mathcal{L}=&\mathbb{E}_{\mathbf{s} \sim q_\theta(\mathbf{s})}\left\{\left[E(\mathbf{s})+\frac{1}{\beta} \ln q_\theta(\mathbf{s})\right] \nabla_\theta \ln q_\theta(\mathbf{s})\right\} \\
+\end{align}</script><p>其中$hm_g(s)$衡量与基态的距离。</p>
+<font color="red">最后一项目有问题，因为$R_h$采样方式是通过$q_\theta$。不过不会对训练产生影响，毕竟反向传播是准确的。</font>
+
+<p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/C_1.png" alt="模型实验结果6"></p>
+<p>上图演示了收敛到正确基态的过程。</p>
+<p>该模型有效的原因就是因为加入了Hamming distance，但是需要知道正确的基态，这个正确基态是这样来的：</p>
+<blockquote>
+<p>The previous researches have illustrated that only by containing the configurations in the training datasets that are close to the ground state, measured by Hamming distance, to train the neural networks, may we obtain the ground state after training [4–7]. Therefore, we design this regularizer to explore the relationship between the Hamming distance and the success rates of finding the ground state for different network architectures combined with VAN.</p>
+</blockquote>
+<p>不得不说，度量学习（distance metric learning）是提升表现力的好手段。</p>
+<h1 id="Message-Passing-Variational-Autoregressive-Network-for-Solving-Intractable-Ising-Models"><a href="#Message-Passing-Variational-Autoregressive-Network-for-Solving-Intractable-Ising-Models" class="headerlink" title="Message Passing Variational Autoregressive Network for Solving Intractable Ising Models"></a>Message Passing Variational Autoregressive Network for Solving Intractable Ising Models</h1><p>通过加入消息传递机制，提升了模型的表现能力。</p>
+<p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/D_1.png" alt="模型实验结果D_1"></p>
+<p>上图基于<a href="https://arxiv.org/abs/1906.00275">Wishart planted ensemble (WPE)</a>模型，分别对比了不同算法在基态时候能量差分布图。说明文章中所提到的算法是有其优越性的。</p>
+<p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/D_2.png" alt="模型实验结果D_2"></p>
+<p>消息传递层，主要增加了不同节点之间相互作用的耦合。文章同时还论证了为什么增加这样的网络结构能够降低能量、自由能，从而提升模型能力。</p>
+<font color="red">文章中如何从(21)得到(18)，我觉得这里有问题。同样的对于(22)的论证同样存在问题，非凸函数$q_\theta$最外层加一个$\ln$并不会变成凸函数。</font>
+
+
+
+<p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/D_6.png" alt="模型实验结果D_6"></p>
+<p>实验结果说明，在具有阻锉的结构下，文章所提到的方法确实能够得到更好的基态。</p>
+<font color="blue">这篇文章加入了消息传递层，使得最终能探索到更低的能量状态。消息传递的方案本身，是在处理具有弱阻锉情况下的模型自由能，而文章中用到的模型属于弱耦合的模型，是消息传递算法可以处理的。</font>
+
+<h1 id="Variational-Neural-Annealing"><a href="#Variational-Neural-Annealing" class="headerlink" title="Variational Neural Annealing"></a>Variational Neural Annealing</h1><p>主要探讨在RNN的基础上，利用模拟退火方式采样，结合变分方式训练，最后在基态问题上的优秀表现。</p>
+<p>文章中采用的变分退火公式：</p>
+<script type="math/tex; mode=display">
+F_{\boldsymbol{\lambda}}(t)=\left\langle H_{\text {target }}\right\rangle_{\boldsymbol{\lambda}}-T(t) S_{\text {classical }}\left(p_{\boldsymbol{\lambda}}\right),</script><p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/E_1.png" alt="VNA"><br>从红色到蓝色代表了温度的下降，其中黄线是Boltamann 分布，红线和绿线代表模拟和变分的结果，可见最后变分的结果更靠近真实分布</p>
+<p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/E_2.png" alt="VNA"></p>
+<p>模拟退火算法在经典和量子状态下的演示图。</p>
+<p>接下来，文章展示了在random Ising chains、Edwards-Anderson model、SherringtonKirkpatrick (SK) model、Wishart planted ensemble (WPE)下的实验结果，均展示了该方案能够很好的探索到模型基态。</p>
+<p><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/E_3.png" alt="Result1"><br><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/E_4.png" alt="Result2"><br><img src="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/E_5.png" alt="Result3"></p>
 ]]></content>
       <categories>
         <category>Machine Learning</category>
