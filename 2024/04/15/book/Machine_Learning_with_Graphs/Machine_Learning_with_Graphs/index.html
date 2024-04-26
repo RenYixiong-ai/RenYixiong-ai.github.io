@@ -27,11 +27,16 @@
 <meta property="og:site_name" content="Yixiong&#39;s Blog">
 <meta property="og:description" content="其中有两部分需要加入，图的等变性内容，图的embeding内容  图论（Graphs）是数学的一个分支，它研究的是图这种数学结构。图论中的图是由点（也称为顶点）和连接这些点的线（也称为边）组成的。点通常用来代表事物，而边则表示事物之间的关系。图可以是有向的，也可以是无向的，这取决于边是否有方向。 图论的研究内容包括图的各种性质，如度（一个点连接的边的数量）、连通性（图中的点是否都通过边相互可达）、">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/3-1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/3-3.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/3-4.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/3-5.png">
 <meta property="article:published_time" content="2024-04-15T12:39:00.000Z">
-<meta property="article:modified_time" content="2024-04-18T03:11:28.174Z">
+<meta property="article:modified_time" content="2024-04-26T15:48:36.285Z">
 <meta property="article:author" content="Ren Yixiong">
 <meta property="article:tag" content="Graphs">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/3-1.png">
 
 <link rel="canonical" href="https://renyixiong-ai.github.io/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/">
 
@@ -219,7 +224,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-04-18 11:11:28" itemprop="dateModified" datetime="2024-04-18T11:11:28+08:00">2024-04-18</time>
+                <time title="修改时间：2024-04-26 23:48:36" itemprop="dateModified" datetime="2024-04-26T23:48:36+08:00">2024-04-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -244,14 +249,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.7k</span>
+              <span>7.4k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
+              <span>13 分钟</span>
             </span>
 
         </div>
@@ -272,6 +277,7 @@
 <ul>
 <li><a target="_blank" rel="noopener" href="https://datawhalechina.github.io/grape-book/#/">图深度学习（葡萄书）</a></li>
 <li><a target="_blank" rel="noopener" href="https://jingboyang.github.io/stanford-cs224w-graph-ml/stanford_cs224w_graph_ml.pdf">The Healthy Birds Trio, Jure Leskovec, Notes for Stanford CS224W Machine Learning with Graphs, 2020</a></li>
+<li>《图强化学习：原理与实践入门》谢文杰、周炜星，清华大学出版社</li>
 </ul>
 <p>感谢<a target="_blank" rel="noopener" href="https://github.com/datawhalechina/grape-book">Datawhale开源社区</a>提供学习平台与相关资源。</p>
 <span id="more"></span>
@@ -288,7 +294,7 @@
 <li>node-level<br>Node-level tasks are concerned with predicting the identity or role of each node within a graph.</li>
 <li>edge-level<br>Edge-level task get the relationship between the nodes.</li>
 </ul>
-<h1 id="Graphs"><a href="#Graphs" class="headerlink" title="Graphs"></a>Graphs</h1><ul>
+<h1 id="Graphs-with-Complex-Network"><a href="#Graphs-with-Complex-Network" class="headerlink" title="Graphs with Complex Network"></a>Graphs with Complex Network</h1><ul>
 <li><a target="_blank" rel="noopener" href="https://distill.pub/2021/gnn-intro/">优秀的可视化网站</a></li>
 <li>python中关于图的包<a target="_blank" rel="noopener" href="https://networkx.github.io/">Networkx</a></li>
 </ul>
@@ -296,10 +302,121 @@
 <h3 id="关联矩阵（incidence-matrix）"><a href="#关联矩阵（incidence-matrix）" class="headerlink" title="关联矩阵（incidence matrix）"></a>关联矩阵（incidence matrix）</h3><p>描述定点和边的关系</p>
 <h3 id="拉普拉斯矩阵（Laplacian-matrix）"><a href="#拉普拉斯矩阵（Laplacian-matrix）" class="headerlink" title="拉普拉斯矩阵（Laplacian matrix）"></a>拉普拉斯矩阵（Laplacian matrix）</h3><font color="red">这个需要拓展说一下，为什么需要Laplace Matrix</font>
 
-<h2 id="图的类型"><a href="#图的类型" class="headerlink" title="图的类型"></a>图的类型</h2><h3 id="图的拓扑结构"><a href="#图的拓扑结构" class="headerlink" title="图的拓扑结构"></a>图的拓扑结构</h3><h3 id="同质图（Homogeneous-Graph）和异质图（Heterogeneous-Graph）"><a href="#同质图（Homogeneous-Graph）和异质图（Heterogeneous-Graph）" class="headerlink" title="同质图（Homogeneous Graph）和异质图（Heterogeneous Graph）"></a>同质图（Homogeneous Graph）和异质图（Heterogeneous Graph）</h3><h3 id="二分图-（bipartite-graph）"><a href="#二分图-（bipartite-graph）" class="headerlink" title="二分图 （bipartite graph）"></a>二分图 （bipartite graph）</h3><font color="red">unend</font>
-
-
-
+<h2 id="图的类型"><a href="#图的类型" class="headerlink" title="图的类型"></a>图的类型</h2><h3 id="图的拓扑结构"><a href="#图的拓扑结构" class="headerlink" title="图的拓扑结构"></a>图的拓扑结构</h3><h3 id="同质图（Homogeneous-Graph）和异质图（Heterogeneous-Graph）"><a href="#同质图（Homogeneous-Graph）和异质图（Heterogeneous-Graph）" class="headerlink" title="同质图（Homogeneous Graph）和异质图（Heterogeneous Graph）"></a>同质图（Homogeneous Graph）和异质图（Heterogeneous Graph）</h3><h3 id="二分图-（bipartite-graph）"><a href="#二分图-（bipartite-graph）" class="headerlink" title="二分图 （bipartite graph）"></a>二分图 （bipartite graph）</h3><h2 id="节点指标"><a href="#节点指标" class="headerlink" title="节点指标"></a>节点指标</h2><p>节点是构成图的关键因素，表示的是个体。</p>
+<h3 id="节点的度"><a href="#节点的度" class="headerlink" title="节点的度"></a>节点的度</h3><p>有向网络中节点$i$的度：</p>
+<ul>
+<li>出度 $k_i^{\text{out}}=\sum_{j=1}^N a_{ij}$</li>
+<li>入度 $k_i^{\text{in}}=\sum_{j=1}^N a_{ji}$</li>
+<li>节点的度 $k_i = k_i^{\text{in}} + k_i^{\text{out}}$</li>
+</ul>
+<p>无向网络：</p>
+<ul>
+<li>$k_i = \sum_{j=1}^N a_{ij} = \sum_{j=1}^N a_{ji}$</li>
+</ul>
+<h3 id="节点的强度"><a href="#节点的强度" class="headerlink" title="节点的强度"></a>节点的强度</h3><p>加权网络中更准确刻画节点的中心性（重性质），必须要考虑边的权重。在有向网络中：</p>
+<ul>
+<li>出度 $k_i^{\text{out}}=\sum_{j=1}^N w_{ij}$</li>
+<li>入度 $k_i^{\text{in}}=\sum_{j=1}^N w_{ji}$</li>
+<li>节点的度 $k_i = k_i^{\text{in}} + k_i^{\text{out}}$</li>
+</ul>
+<h3 id="聚簇系数"><a href="#聚簇系数" class="headerlink" title="聚簇系数"></a>聚簇系数</h3><p>聚簇系数（Clustering Coefficient）刻画网络节点的邻居节点之间的连接紧密程度。节点$i$的局部聚簇系数$C_c{i}$是它的相离节点之间的关系系数与它们所有可能存在的关系数量的比值：</p>
+<script type="math/tex; mode=display">\begin{align}
+C_c(i) = \frac{\sum_{i,j\in\mathcal{N}_i}a_{ij}}{k_i (k_i-1)}
+\end{align}</script><p>其中$\mathcal{N}_i$为节点$i$的邻居节点集合，$a_{ij}$为邻接矩阵元素，$k_i$表示节点$i$相邻的边数。</p>
+<p>整个网络的平均聚簇系数：</p>
+<script type="math/tex; mode=display">\begin{align}
+C_c(i) = \frac{\sum_{i=1}^N C_c(i)}{N}
+\end{align}</script><p>可以知道，星状网络的节点聚簇系数为$0$，全连接图的节点聚簇系数为$1$。</p>
+<h2 id="网络连边指标"><a href="#网络连边指标" class="headerlink" title="网络连边指标"></a>网络连边指标</h2><p>通过将原始图转化对偶图，原始图中的边成为对偶图中的节点，因此研究节点中心性和重要性的指标与方法同样适用于研究边。</p>
+<h2 id="网络模体结构"><a href="#网络模体结构" class="headerlink" title="网络模体结构"></a>网络模体结构</h2><p>网络模体（Network Motif）是指在网络中重复出现的子网络的结构模式，被认为是在复杂网络中扮演重要功能角色的基本构建单元。</p>
+<h1 id="Graph-Representation-Learning"><a href="#Graph-Representation-Learning" class="headerlink" title="Graph Representation Learning"></a>Graph Representation Learning</h1><p>经典机器学习任务不能简单的迁移到图数据上，因此需要基于图类型数据开发新的算法（监督、无监督、强化学习）。图表示学习是其中的重要组件。</p>
+<h2 id="图表示一般框架"><a href="#图表示一般框架" class="headerlink" title="图表示一般框架"></a>图表示一般框架</h2><p>将图机器学习过程描述为学习一个函数映射的过程：</p>
+<script type="math/tex; mode=display">\begin{align}
+\boldsymbol{y} =& f_\boldsymbol{w} (\boldsymbol{A}, \boldsymbol{X}) \\
+\boldsymbol{y} =& f_\boldsymbol{w} (\boldsymbol{A}, \boldsymbol{X}, \boldsymbol{X}_{\text{edge}})
+\end{align}</script><p>其中$\boldsymbol y$是标签，$\boldsymbol{w}$是模型参数，$\boldsymbol{AX}$与$\boldsymbol{AXX}_\text{edge}$为图的相关信息。</p>
+<p>可以构建基于均方差的损失函数：</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{L}(w)=&\frac{1}{N}\sum_{k=1}^N \left(f_{w}(A_k, X_k)-y_k \right) ^2 \\
+\hat{\boldsymbol{w}}=&\arg\max_{\boldsymbol{w}}\mathcal{L}\left(\boldsymbol{w}|(A_k,X_k,y_k)_{k=1,2,3\dots N} \right)
+\end{align}</script><p>自编码器架构，在图网络中广泛使用，通过encoder-decoder过程，将图信息从高维离散转化到低维稠密信息空间，在稠密信息空间计算相关特征值。其中encoder过是称为：图嵌入（Graph Embedding）或者网络嵌入（Network Embedding）。</p>
+<h3 id="编码器"><a href="#编码器" class="headerlink" title="编码器"></a>编码器</h3><p>图嵌入模型的映射关系可用函数表示, 一般称之为编码器 $f_{\text {Encoder }}$, 或者特征提取器:</p>
+<script type="math/tex; mode=display">\begin{align}
+f_{\text {Encoder }}: V \rightarrow \mathbb{R}^D 
+\end{align}</script><p>其中， $D$ 表示低维嵌入空间的维度。编码器将网络节点映射为低维稠密向量。</p>
+<p>下面给出一个浅层嵌入（shallow Embedding）的例子，将所有节点向量表示成矩阵形式 $Z$, 矩阵如下所示:</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+& \\
+& 1 \\
+& 2 \\
+& \vdots \\
+& D-1 \\
+& D
+\end{aligned}\begin{array}{cccccc}
+v_1 & v_2 & v_3 & \cdots & v_{N-1} & v_N \\
+z_{11} & z_{12} & z_{13} & \cdots & z_{1, N-1} & z_{1 N} \\
+z_{21} & z_{22} & z_{23} & \cdots & z_{2, N-1} & z_{2 N} \\
+\vdots & \vdots & \vdots & \ddots & \vdots & \vdots \\
+z_{D-1,1} & z_{D-1,2} & z_{D-1,3} & \cdots & z_{D-1, N-1} & z_{D-1, N} \\
+z_{D 1} & z_{D 2} & z_{D 3} & \cdots & z_{D, N-1} & z_{D N}
+\end{array}</script><p>在节点属性向量矩阵中，第 $i$ 行表示节点 $v_i$ 的嵌入空间属性向量值, 属性向量表示节点的结构属性特征和语义属性特征的融合信息，可作为下游图机器学习任务的决策变量。因此，我们可定义编码器函数为</p>
+<script type="math/tex; mode=display">\begin{align}
+f_{\text {Encoder }}\left(v_i\right)=\boldsymbol{Z}\left[\boldsymbol{e}_i\right]
+\end{align}</script><p>其中 $\left[e_i\right]$ 表示单位矩阵的第 $i$ 列，即列向量长度为 $N$, 第 $i$ 个元素为 1 , 其他元素为 0 。矩阵 $Z$ 和列向量 $\left[\boldsymbol{e}_i\right]$ 相乘，得到矩阵 $Z$的第 $i$ 列。<br>编码器映射函数 $f_{\text {Encoder }}$ 输出结果为节点对应的低维嵌入空间的坐标信息，或者称之为隐空间信息（潜变量空间）：</p>
+<script type="math/tex; mode=display">\begin{align}
+f_{\text {Encoder }}\left(v_i\right)=z_i=\left[z_{i 1}, z_{i 2}, \cdots, z_{i D}\right]^{\top} 
+\end{align}</script><h3 id="解码器"><a href="#解码器" class="headerlink" title="解码器"></a>解码器</h3><p>在图表示学习中，一般将解码器表示成函数形式：</p>
+<script type="math/tex; mode=display">\begin{align}
+f_{\text {Decoder }}: \mathbb{R}^D \times \mathbb{R}^D \rightarrow \mathbb{R}^{+}
+\end{align}</script><p>其中, $\mathbb{R}^{+}$表示解码器的输出。解码过程为信息还原的过程。一般而言, 现流行的一些图嵌入算法都选择重建原始网络结构信息。这样的好处在于为监督学习，有含标签的数据集，产生了高效的编码器，方便下游任务的使用。</p>
+<p>为衡量与原始网络之间的差异大小，会选取一些特征值指标，如网络节点邻域信息或网络节点间相似性信息。最简单的情况则为基于编码信息预测节点之间的连边情况，或是节点之间的相似性测度 $S\left(v_i, v_j\right)$, 解码器可以表示为:</p>
+<script type="math/tex; mode=display">\begin{align}
+f_{\text {Decoder }}\left(f_{\text {Encoder }}\left(v_i\right), f_{\text {Encoder }}\left(v_j\right)\right)=f_{\text {Decoder }}\left(\boldsymbol{z}_i, \boldsymbol{z}_j\right) \approx S\left(v_i, v_j\right)
+\end{align}</script><p>公式表明, 越好的图表示向量或图嵌入属性 $Z$, 能使得解码器更好地还原原始节点之间关联信息，如相似性或邻域结构。相似性测度 $S\left(v_i, v_j\right)$ 可以作为先验知识，如邻接矩阵等。</p>
+<h3 id="模型优化"><a href="#模型优化" class="headerlink" title="模型优化"></a>模型优化</h3><p>编码器和解码器组合构成模型的整体框架和信息处理流程图, 而节点嵌入向量是需要最终学习的属性向量, 即为模型的可学习参数，也是可优化参数，因此设定损失函数为</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{L}=\sum_{(i, j) \in E} f_{\text {Loss }}\left(f_{\text {Decoder }}\left(\boldsymbol{z}_i, \boldsymbol{z}_j\right), S\left(v_i, v_j\right)\right)
+\end{align}</script><p>上式中，损失函数 $f_{\text {Loss }}$ 计算解码器输出值 $f_{\text {Decoder }}\left(z_i, z_j\right)$ 和相似性测度值 $S\left(v_i, v_j\right)$ 之间的差异。差异测度函数有多种选择，如绝对值、均方差等。因此，最优化的图嵌入空间向量矩阵为:</p>
+<script type="math/tex; mode=display">\begin{align}
+\hat{\boldsymbol{Z}}=\arg \min _{\boldsymbol{Z}} \mathcal{L}(\boldsymbol{Z} \mid G(V, E)) 
+\end{align}</script><p>上式中，网络 $G(V, E)$ 包含图嵌入算法需要的信息，如邻接矩阵和节点属性等。</p>
+<h2 id="基于矩阵分解的图嵌入"><a href="#基于矩阵分解的图嵌入" class="headerlink" title="基于矩阵分解的图嵌入"></a>基于矩阵分解的图嵌入</h2><p>图嵌入或网络嵌入是将复杂网络映射到一个维稠密空间。</p>
+<p><img src="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/3-1.png" alt="图嵌入"></p>
+<h3 id="图分解方法"><a href="#图分解方法" class="headerlink" title="图分解方法"></a>图分解方法</h3><p>图分解方法（GF），其解码器为：</p>
+<script type="math/tex; mode=display">
+f_{\text {Decoder }}=z_i^T z_j,</script><p>表示节点 $v_i$ 和 $v_j$ 在嵌入空间的属性向量 $z_i$ 和 $z_j$ 的内积，度量嵌入向量 $z_i$ 和 $z_j$ 之间的相似性。选择二范数作为 GF 方法的损失函数:</p>
+<script type="math/tex; mode=display">
+\mathcal{L}=\sum_{(i, j) \in E}\left\|\boldsymbol{z}_i^T \boldsymbol{z}_j-\boldsymbol{A}[i, j]\right\|_2^2,</script><p>损失函数度量解码器输出值和相似性测度 $\boldsymbol{A}[i, j]$ 之间的差异。</p>
+<h3 id="GraRep方法"><a href="#GraRep方法" class="headerlink" title="GraRep方法"></a>GraRep方法</h3><p>GraRep方法在 GF 方法的基础上考虑了次邻接、第三邻接等信息。例如$\boldsymbol{A}^2[i, j], \boldsymbol{A}^3[i, j]\cdots \boldsymbol{A}^k[i, j]$表示图的二阶邻接、三阶邻接、$k$阶邻接，表示距离为$2、3、k$的节点连接情况。</p>
+<h3 id="HOPE方法"><a href="#HOPE方法" class="headerlink" title="HOPE方法"></a>HOPE方法</h3><p>高阶邻接保留嵌入算法（HOPE）是一种能够有向图的不对称传递性的网络嵌入算法。</p>
+<p>高阶邻近性源自不对称传递性, 采用机器学习中最优化算法最小化损失函数:</p>
+<script type="math/tex; mode=display">\begin{align}
+\min \left\|\boldsymbol{S}-\boldsymbol{U}^{\boldsymbol{s}} \boldsymbol{U}^{t^{\top}}\right\|^2
+\end{align}</script><p>公式中, $\boldsymbol{S}$ 是网络高阶相似性测度指标值, $\boldsymbol{U}^s$ 和 $\boldsymbol{U}^t$ 是每个网络节点嵌入向量组成的嵌入属性矩阵。</p>
+<h2 id="基于随机游走的图嵌入算法"><a href="#基于随机游走的图嵌入算法" class="headerlink" title="基于随机游走的图嵌入算法"></a>基于随机游走的图嵌入算法</h2><p>矩阵嵌入的算法局限在于矩阵的运算和复杂度较高，针对大型网络表现出一定局限性。为了提升效率以及高效采样，采用随机游走的思路。</p>
+<h3 id="DeepWalk算法"><a href="#DeepWalk算法" class="headerlink" title="DeepWalk算法"></a>DeepWalk算法</h3><p>原始文献<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1403.6652">DeepWalk: Online Learning of Social Representations</a></p>
+<p>DeepWalk方法通过随机游走在网络上采样，获得网络节点和连边构成的序列数据，构造不同网络节点之间的相似性特征或者领域结构特征。</p>
+<p><img src="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/3-3.png" alt="DeepWalk"></p>
+<p><img src="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/3-4.png" alt="DeepWalk"></p>
+<p>先初始化参数矩阵$\Phi$为$|V|\times d$的矩阵。然后随机采样，减少网络之间的关联性。</p>
+<p>从网络节点$v_i$开始，采样长度为$t$的样本，表示为：</p>
+<script type="math/tex; mode=display">\begin{align}
+W_{v_i} =& \{ v_i,v_{i+1},v_{i+2}\cdots v_{i+t}\} \\
+=& \text{RandomWalk}(G, v_i, t)
+\end{align}</script><p>基于随机游走进行数据的采样，算法定义节点之间的领域关系。一般而言，如果两个节$u_k, v_j$相邻，其同时出现在一条随机游走路径上的概率较高，因此目标函数定义为：</p>
+<script type="math/tex; mode=display">\begin{align}
+J(\Phi)=&-\log{P_\Phi(u_k|v_j)} \\
+P_\Phi(u_k|v_j) =& \frac{\exp(\Phi_k^T\Phi_j)}{\sum_{u\in V}\exp(\Phi_u^T\Phi_j)}
+\end{align}</script><p>将嵌入词向量之间的关联性转化为概率值P_\Phi(u_k|v_j)，计算两节点同时出现在同一序列的概率值。</p>
+<h3 id="Node2Vec算法"><a href="#Node2Vec算法" class="headerlink" title="Node2Vec算法"></a>Node2Vec算法</h3><p><img src="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/3-5.png" alt="Node2Vec"></p>
+<p>如上图，从节点$v$跳转到候选节点$t,x_1,x_2,x_3$的概率为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\pi_{vx}=\alpha_{pq}(t,x)w_{vx}
+\end{align}</script><p>其中$w_{vx}$表示节点$v$与$x$之间的权重，$\alpha_{pq}(tx)$表示在超参数$p,q$的情形下，从节点$v$跳转到$x$的非归一化概率，如上图所示。</p>
+<p>其中包含超参数$p,q$，如上图所示，$v$节点是从$t$转移过来跳回原节点$t$的概率利用超参数$p$设置概率为$\frac{1}{p}$；如果跳的节点是$t$的二阶相邻节点，则利用超参数$q$设置概率为$\frac{1}{q}$；如果同时是$v,t$的超参数，则直接设为$1$。</p>
+<p>由于这种超参数的设置，使得整个网络的采样是有偏的。</p>
+<font color="red">unend</font>
 
 
 
@@ -401,7 +518,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Why-Graphs"><span class="nav-number">1.</span> <span class="nav-text">Why Graphs</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-types-of-problems-have-graph-structured-data"><span class="nav-number">1.2.</span> <span class="nav-text">What types of problems have graph structured data?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Graphs"><span class="nav-number">2.</span> <span class="nav-text">Graphs</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">图的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="nav-number">2.2.</span> <span class="nav-text">图的性质</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E8%8A%82%E7%82%B9%EF%BC%88neighbors%EF%BC%89"><span class="nav-number">2.2.1.</span> <span class="nav-text">邻接节点（neighbors）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E5%BA%A6%EF%BC%88degree%EF%BC%89"><span class="nav-number">2.2.2.</span> <span class="nav-text">图的度（degree）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%8C%E8%B5%B0%EF%BC%88walk%EF%BC%89%E5%92%8C%E8%B7%AF%E5%BE%84%EF%BC%88path%EF%BC%89"><span class="nav-number">2.2.3.</span> <span class="nav-text">行走（walk）和路径（path）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%9D%E7%A6%BB%EF%BC%88distance%EF%BC%89%E5%92%8C%E7%9B%B4%E5%BE%84%EF%BC%88diameter%EF%BC%89"><span class="nav-number">2.2.4.</span> <span class="nav-text">距离（distance）和直径（diameter）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%90%E5%9B%BE%EF%BC%88subgraph%EF%BC%89%E3%80%81%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%EF%BC%88connected-component%EF%BC%89%E3%80%81%E8%BF%9E%E9%80%9A%E5%9B%BE%EF%BC%88conected-graph%EF%BC%89"><span class="nav-number">2.2.5.</span> <span class="nav-text">子图（subgraph）、连通分量（connected component）、连通图（conected graph）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%9A%E7%B1%BB%E7%B3%BB%E6%95%B0%EF%BC%88Clustering-Coefficient%EF%BC%89"><span class="nav-number">2.2.6.</span> <span class="nav-text">聚类系数（Clustering Coefficient）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E8%BF%91%E4%B8%AD%E5%BF%83%E5%BA%A6%EF%BC%88closeness-centrality%EF%BC%89"><span class="nav-number">2.2.7.</span> <span class="nav-text">接近中心度（closeness centrality）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E8%BF%9E%E6%8E%A5%E8%A1%A8%E7%A4%BA"><span class="nav-number">2.3.</span> <span class="nav-text">图的连接表示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5%EF%BC%88adjacency-matrix%EF%BC%89"><span class="nav-number">2.3.1.</span> <span class="nav-text">邻接矩阵（adjacency matrix）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E8%81%94%E7%9F%A9%E9%98%B5%EF%BC%88incidence-matrix%EF%BC%89"><span class="nav-number">2.3.2.</span> <span class="nav-text">关联矩阵（incidence matrix）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%89%E6%99%AE%E6%8B%89%E6%96%AF%E7%9F%A9%E9%98%B5%EF%BC%88Laplacian-matrix%EF%BC%89"><span class="nav-number">2.3.3.</span> <span class="nav-text">拉普拉斯矩阵（Laplacian matrix）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.4.</span> <span class="nav-text">图的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84"><span class="nav-number">2.4.1.</span> <span class="nav-text">图的拓扑结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E8%B4%A8%E5%9B%BE%EF%BC%88Homogeneous-Graph%EF%BC%89%E5%92%8C%E5%BC%82%E8%B4%A8%E5%9B%BE%EF%BC%88Heterogeneous-Graph%EF%BC%89"><span class="nav-number">2.4.2.</span> <span class="nav-text">同质图（Homogeneous Graph）和异质图（Heterogeneous Graph）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E5%9B%BE-%EF%BC%88bipartite-graph%EF%BC%89"><span class="nav-number">2.4.3.</span> <span class="nav-text">二分图 （bipartite graph）</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Why-Graphs"><span class="nav-number">1.</span> <span class="nav-text">Why Graphs</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.1.</span> <span class="nav-text">数据结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#What-types-of-problems-have-graph-structured-data"><span class="nav-number">1.2.</span> <span class="nav-text">What types of problems have graph structured data?</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Graphs-with-Complex-Network"><span class="nav-number">2.</span> <span class="nav-text">Graphs with Complex Network</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">2.1.</span> <span class="nav-text">图的定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="nav-number">2.2.</span> <span class="nav-text">图的性质</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E8%8A%82%E7%82%B9%EF%BC%88neighbors%EF%BC%89"><span class="nav-number">2.2.1.</span> <span class="nav-text">邻接节点（neighbors）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E5%BA%A6%EF%BC%88degree%EF%BC%89"><span class="nav-number">2.2.2.</span> <span class="nav-text">图的度（degree）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%8C%E8%B5%B0%EF%BC%88walk%EF%BC%89%E5%92%8C%E8%B7%AF%E5%BE%84%EF%BC%88path%EF%BC%89"><span class="nav-number">2.2.3.</span> <span class="nav-text">行走（walk）和路径（path）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B7%9D%E7%A6%BB%EF%BC%88distance%EF%BC%89%E5%92%8C%E7%9B%B4%E5%BE%84%EF%BC%88diameter%EF%BC%89"><span class="nav-number">2.2.4.</span> <span class="nav-text">距离（distance）和直径（diameter）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%90%E5%9B%BE%EF%BC%88subgraph%EF%BC%89%E3%80%81%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F%EF%BC%88connected-component%EF%BC%89%E3%80%81%E8%BF%9E%E9%80%9A%E5%9B%BE%EF%BC%88conected-graph%EF%BC%89"><span class="nav-number">2.2.5.</span> <span class="nav-text">子图（subgraph）、连通分量（connected component）、连通图（conected graph）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%9A%E7%B1%BB%E7%B3%BB%E6%95%B0%EF%BC%88Clustering-Coefficient%EF%BC%89"><span class="nav-number">2.2.6.</span> <span class="nav-text">聚类系数（Clustering Coefficient）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A5%E8%BF%91%E4%B8%AD%E5%BF%83%E5%BA%A6%EF%BC%88closeness-centrality%EF%BC%89"><span class="nav-number">2.2.7.</span> <span class="nav-text">接近中心度（closeness centrality）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E8%BF%9E%E6%8E%A5%E8%A1%A8%E7%A4%BA"><span class="nav-number">2.3.</span> <span class="nav-text">图的连接表示</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5%EF%BC%88adjacency-matrix%EF%BC%89"><span class="nav-number">2.3.1.</span> <span class="nav-text">邻接矩阵（adjacency matrix）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E8%81%94%E7%9F%A9%E9%98%B5%EF%BC%88incidence-matrix%EF%BC%89"><span class="nav-number">2.3.2.</span> <span class="nav-text">关联矩阵（incidence matrix）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%89%E6%99%AE%E6%8B%89%E6%96%AF%E7%9F%A9%E9%98%B5%EF%BC%88Laplacian-matrix%EF%BC%89"><span class="nav-number">2.3.3.</span> <span class="nav-text">拉普拉斯矩阵（Laplacian matrix）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">2.4.</span> <span class="nav-text">图的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%9A%84%E6%8B%93%E6%89%91%E7%BB%93%E6%9E%84"><span class="nav-number">2.4.1.</span> <span class="nav-text">图的拓扑结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8C%E8%B4%A8%E5%9B%BE%EF%BC%88Homogeneous-Graph%EF%BC%89%E5%92%8C%E5%BC%82%E8%B4%A8%E5%9B%BE%EF%BC%88Heterogeneous-Graph%EF%BC%89"><span class="nav-number">2.4.2.</span> <span class="nav-text">同质图（Homogeneous Graph）和异质图（Heterogeneous Graph）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E5%88%86%E5%9B%BE-%EF%BC%88bipartite-graph%EF%BC%89"><span class="nav-number">2.4.3.</span> <span class="nav-text">二分图 （bipartite graph）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E6%8C%87%E6%A0%87"><span class="nav-number">2.5.</span> <span class="nav-text">节点指标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E7%9A%84%E5%BA%A6"><span class="nav-number">2.5.1.</span> <span class="nav-text">节点的度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8A%82%E7%82%B9%E7%9A%84%E5%BC%BA%E5%BA%A6"><span class="nav-number">2.5.2.</span> <span class="nav-text">节点的强度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%81%9A%E7%B0%87%E7%B3%BB%E6%95%B0"><span class="nav-number">2.5.3.</span> <span class="nav-text">聚簇系数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E8%BF%9E%E8%BE%B9%E6%8C%87%E6%A0%87"><span class="nav-number">2.6.</span> <span class="nav-text">网络连边指标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E6%A8%A1%E4%BD%93%E7%BB%93%E6%9E%84"><span class="nav-number">2.7.</span> <span class="nav-text">网络模体结构</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Graph-Representation-Learning"><span class="nav-number">3.</span> <span class="nav-text">Graph Representation Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E8%A1%A8%E7%A4%BA%E4%B8%80%E8%88%AC%E6%A1%86%E6%9E%B6"><span class="nav-number">3.1.</span> <span class="nav-text">图表示一般框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E7%A0%81%E5%99%A8"><span class="nav-number">3.1.1.</span> <span class="nav-text">编码器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E7%A0%81%E5%99%A8"><span class="nav-number">3.1.2.</span> <span class="nav-text">解码器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E4%BC%98%E5%8C%96"><span class="nav-number">3.1.3.</span> <span class="nav-text">模型优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3%E7%9A%84%E5%9B%BE%E5%B5%8C%E5%85%A5"><span class="nav-number">3.2.</span> <span class="nav-text">基于矩阵分解的图嵌入</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E5%88%86%E8%A7%A3%E6%96%B9%E6%B3%95"><span class="nav-number">3.2.1.</span> <span class="nav-text">图分解方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GraRep%E6%96%B9%E6%B3%95"><span class="nav-number">3.2.2.</span> <span class="nav-text">GraRep方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HOPE%E6%96%B9%E6%B3%95"><span class="nav-number">3.2.3.</span> <span class="nav-text">HOPE方法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E4%BA%8E%E9%9A%8F%E6%9C%BA%E6%B8%B8%E8%B5%B0%E7%9A%84%E5%9B%BE%E5%B5%8C%E5%85%A5%E7%AE%97%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">基于随机游走的图嵌入算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#DeepWalk%E7%AE%97%E6%B3%95"><span class="nav-number">3.3.1.</span> <span class="nav-text">DeepWalk算法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Node2Vec%E7%AE%97%E6%B3%95"><span class="nav-number">3.3.2.</span> <span class="nav-text">Node2Vec算法</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -481,12 +598,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">56k</span>
+    <span title="站点总字数">62k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">1:42</span>
+    <span title="站点阅读时长">1:52</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
