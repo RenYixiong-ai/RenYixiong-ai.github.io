@@ -1117,9 +1117,7 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
   <entry>
     <title>Machine Learning with Graphs</title>
     <url>/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/</url>
-    <content><![CDATA[<font color="red">需要加入，图的等变性内容</font>
-
-<p>图论（Graphs）是数学的一个分支，它研究的是图这种数学结构。图论中的图是由点（也称为顶点）和连接这些点的线（也称为边）组成的。点通常用来代表事物，而边则表示事物之间的关系。图可以是有向的，也可以是无向的，这取决于边是否有方向。</p>
+    <content><![CDATA[<p>图论（Graphs）是数学的一个分支，它研究的是图这种数学结构。图论中的图是由点（也称为顶点）和连接这些点的线（也称为边）组成的。点通常用来代表事物，而边则表示事物之间的关系。图可以是有向的，也可以是无向的，这取决于边是否有方向。</p>
 <p>图论的研究内容包括图的各种性质，如度（一个点连接的边的数量）、连通性（图中的点是否都通过边相互可达）、路径（点与点之间的连线序列）等。图论不仅在数学领域内有广泛的应用，还在计算机科学、工程学、经济学等多个领域发挥着重要作用。</p>
 <p>因多次发现与图论相关的内容，故在这里记录学习图论的笔记与想法。</p>
 <p>参考文献：</p>
@@ -1173,7 +1171,16 @@ d_i, & \text { if } i=j \\
 -1, & \text { if } i \neq j \text { and } v_i \text { adjacent with } v_j \\
 0, & \text { otherwise }
 \end{array}\right.</script><p><img src="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/2-3.png" alt="拉普拉斯矩阵"></p>
-<h2 id="图的类型"><a href="#图的类型" class="headerlink" title="图的类型"></a>图的类型</h2><h3 id="图的拓扑结构"><a href="#图的拓扑结构" class="headerlink" title="图的拓扑结构"></a>图的拓扑结构</h3><h3 id="同质图（Homogeneous-Graph）和异质图（Heterogeneous-Graph）"><a href="#同质图（Homogeneous-Graph）和异质图（Heterogeneous-Graph）" class="headerlink" title="同质图（Homogeneous Graph）和异质图（Heterogeneous Graph）"></a>同质图（Homogeneous Graph）和异质图（Heterogeneous Graph）</h3><h3 id="二分图-（bipartite-graph）"><a href="#二分图-（bipartite-graph）" class="headerlink" title="二分图 （bipartite graph）"></a>二分图 （bipartite graph）</h3><h2 id="节点指标"><a href="#节点指标" class="headerlink" title="节点指标"></a>节点指标</h2><p>节点是构成图的关键因素，表示的是个体。</p>
+<p>拉普拉斯矩阵也有标准化的表示方法，即矩阵的主对角线元素为$1$：</p>
+<script type="math/tex; mode=display">\begin{align}
+L_{\text {norm }}=& D^{-1 / 2} L D^{-1 / 2} \\
+=&\boldsymbol{I}_n-D^{-1 / 2} W D^{-1 / 2} \label{normal_laplace}\\
+=&\left\{\begin{array}{c}
+1, i=j \\
+-\frac{1}{\sqrt{d_i d_j}}, e_{i j} \in E \\
+0, e_{i j} \notin E
+\end{array}\right. 
+\end{align}</script><h2 id="图的类型"><a href="#图的类型" class="headerlink" title="图的类型"></a>图的类型</h2><h3 id="图的拓扑结构"><a href="#图的拓扑结构" class="headerlink" title="图的拓扑结构"></a>图的拓扑结构</h3><h3 id="同质图（Homogeneous-Graph）和异质图（Heterogeneous-Graph）"><a href="#同质图（Homogeneous-Graph）和异质图（Heterogeneous-Graph）" class="headerlink" title="同质图（Homogeneous Graph）和异质图（Heterogeneous Graph）"></a>同质图（Homogeneous Graph）和异质图（Heterogeneous Graph）</h3><h3 id="二分图-（bipartite-graph）"><a href="#二分图-（bipartite-graph）" class="headerlink" title="二分图 （bipartite graph）"></a>二分图 （bipartite graph）</h3><h2 id="节点指标"><a href="#节点指标" class="headerlink" title="节点指标"></a>节点指标</h2><p>节点是构成图的关键因素，表示的是个体。</p>
 <h3 id="节点的度"><a href="#节点的度" class="headerlink" title="节点的度"></a>节点的度</h3><p>有向网络中节点$i$的度：</p>
 <ul>
 <li>出度 $k_i^{\text{out}}=\sum_{j=1}^N a_{ij}$</li>
@@ -1501,35 +1508,53 @@ T_0=&1 \quad T_1=x
 </ul>
 <p>图卷积神经网络（Graph Convolutional Network, GCN）</p>
 <p>在实际运用中，如果$K$值取得过高，则对于包含度数较大的节点的图来说，一个卷积层的感受野很有可能直接覆盖了几乎整张图。这样的话，即使堆叠几层卷积层，后续的卷积层的感受野仍然是整张图，重复执行全局平均操作，最终导致输出的图信号过平滑。</p>
-<p>为此进一步近似，令$K=1,\lambda_{\max}=2$</p>
-<font color="red">这部分内容还需要进一步完善</font>
+<p>为此进一步近似，令$K=1,\lambda_{\max}=2$，得到一阶切比雪夫多项式近似：</p>
+<script type="math/tex; mode=display">\begin{align}
+\Lambda(\boldsymbol{h})=&\sum_{i=0}^2 h_i T_i(\bar{\Lambda}) \\
+=& h_0 T_0(\bar{\Lambda}) + h_1 T_1(\bar{\Lambda}) \\
+=& h_0 \boldsymbol{I} + h_1 \bar{\Lambda} \\
+=& h_0 \boldsymbol{I} + h_1 (\frac{2\Lambda}{\lambda_\max}-\boldsymbol{I}) \\
+\end{align}</script><p>利用$\eqref{normal_laplace}$，可以将输出转化为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\boldsymbol{y}=&h_0 \boldsymbol{x}+h_1\left(L-I_n\right) \boldsymbol{x} \\
+=&h_0 \boldsymbol{x}-h_1 D^{-\frac{1}{2}} W D^{-\frac{1}{2}} \boldsymbol{x}
+\end{align}</script><p>设 $h_0=-h_1=h$, 则</p>
+<script type="math/tex; mode=display">\begin{align}
+\boldsymbol{y}=h\left(I_n+D^{-\frac{1}{2}} W D^{-\frac{1}{2}}\right) \boldsymbol{x}=H \boldsymbol{x}
+\end{align}</script><p>因为 $I_n+D^{-\frac{1}{2}} W D^{-\frac{1}{2}}=2 I_n-\bar{L}$ 的特征值范围是 $[0,2]$, 连续堆叠这样的卷积层相当于引入了频率响应函数 $\left(2-\bar{\lambda}_i\right)^K$, 会容易过度放大 $\bar{\lambda}_i&lt;1$ 频段的信号, 进而可能会引发某些参数梯度爆炸而另外一些参数梯度消失。</p>
+<font color="red">未完待续</font>
 
-
-
-
-<font color="red">unend</font>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<h1 id="图网络几何等变性"><a href="#图网络几何等变性" class="headerlink" title="图网络几何等变性"></a>图网络几何等变性</h1><ul>
+<li><a href="https://arxiv.org/abs/2202.07230">Geometrically Equivariant Graph Neural Networks: A Survey</a></li>
+</ul>
+<p>这篇综述给出研究几何等变性的动机十分精确：</p>
+<blockquote>
+<p>在物理学和化学等领域中，许多问题需要处理形式为几何图形的数据 [Bronstein et al., 2021]。与一般的图形数据不同，几何图形不仅为每个节点分配一个特征，还分配一个几何向量。例如，可以将分子/蛋白质视为一个几何图形，其中原子的3D位置坐标是几何向量；或者在一个一般的多体物理系统中，粒子的3D状态（位置、速度或自旋）是几何向量。值得注意的是，几何图形展现出平移、旋转和/或反射的对称性。这是因为控制原子（或粒子）动态的物理定律无论我们如何将分子（或一般的物理系统）从一个地方平移或旋转到另一个地方都是相同的。在处理这类数据时，将对称性的归纳偏差融入到模型设计中是至关重要的，这激发了对具有几何等变性的图神经网络（GNNs）的研究。</p>
+</blockquote>
+<p>然后这篇综述描述了在消息传递下的等变性问题。</p>
+<p>令$\mathcal{X}$和$\mathcal{Y}$分别为输入和输出向量空间，它们都赋予了一组变换$G: G \times \mathcal{X} \rightarrow \mathcal{X}$和$G \times \mathcal{Y} \rightarrow \mathcal{Y}$。如果函数$\phi: \mathcal{X} \rightarrow \mathcal{Y}$在我们对输入应用任何变换时，输出也通过相同的变换或某种可预测的行为发生变化，则称该函数相对于$G$是<strong>等变</strong>的。具体来说，有：</p>
+<p><strong>定义 1（等变性）</strong> 函数$\phi: \mathcal{X} \mapsto \mathcal{Y}$是$G$-等变的，如果它与$G$中的任何变换交换，</p>
+<script type="math/tex; mode=display">\begin{align}
+\phi\left(\rho_{\mathcal{X}}(g) x\right)=\rho_{\mathcal{Y}}(g) \phi(x), \quad \forall g \in G \label{transformation}
+\end{align}</script><p>其中$\rho_{\mathcal{X}}$和$\rho_{\mathcal{Y}}$分别是输入空间和输出空间中的群表示。特别是，如果$\rho_{\mathcal{Y}}$是恒等的，则称$\phi$是<strong>不变</strong>的。</p>
+<p><strong>定义 2（群）</strong> 群$G$是一组变换，具有满足以下属性的二元操作“$\cdot$“在关联复合下是封闭的，存在一个单位元，且$G$中的每个元素必须有一个逆元。</p>
+<p>根据群的定义，我们在这里提供一些例子：</p>
+<ul>
+<li>$\mathrm{O}(n)$是一个$n$维正交群，由旋转和反射组成。</li>
+<li>$\mathrm{SO}(n)$是一个特殊正交群，仅由旋转组成。</li>
+<li>$\mathrm{E}(n)$是一个$n$维欧几里得群，由旋转、反射和平移组成。</li>
+<li>$\mathrm{SE}(n)$是一个特殊欧几里得群，由旋转和平移组成。</li>
+<li>李群是其元素构成可微流形的群。实际上，上面所有的群都是李群的具体例子。</li>
+</ul>
+<p><strong>群表示</strong> 一个群的表示是一个可逆的线性映射$\rho(g): G \mapsto \mathcal{V}$，它接受群元素$g \in G$作为输入，并在向量空间$\mathcal{V}$上作用。同时，它是线性的：$\rho(g) \rho(h)=\rho(g \cdot h), \forall g, h \in G$。例如，对于$\mathrm{O}(n)$的矩阵表示是正交矩阵$\boldsymbol{O} \in \mathbb{R}^n$，满足$\boldsymbol{O}^{\top} \boldsymbol{O}=\boldsymbol{I}$。在$\mathrm{O}(3)$上实例化 $\eqref{transformation}$ 变为$\phi(\boldsymbol{O} x)=\boldsymbol{O} \phi(x)$，如果输入和输出空间共享相同的表示。对于平移等价性，我们有$\phi(x-\boldsymbol{t})=\phi(x)-\boldsymbol{t}$，其中$t \in \mathbb{R}^n$。</p>
+<p><img src="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/5-1.png" alt="An illustration of the geometrically equivariant"></p>
+<p>上图是在消息传递图网络上，展示旋转等变性。左边是通常的消息传递过程，首先进行消息传递，然后进行聚合得出最后的结果。有边的图最开始是由左图进行旋转得到，然后同样经过消息传递与聚合操作，得出的结果与左图进行旋转结果相同。由此说明了消息传递的图神经网络的几何等变性。</p>
+<p>在消息传递GNN中，实现等变性，主要有以下三种思路：</p>
+<ul>
+<li>使用群论中的不可约表示，例如对于$\mathrm{SO}(3)$群，使用 Wigner-D matrices 进行表示。</li>
+<li>通过李群和李代数，对之前参见的操作进行修改。例如将卷积修改为李卷积(LieConv)。</li>
+<li>通过标量化，将几何向量首先被转换为不变的标量，然后通过几个多层感知机（MLPs）来控制大小，最后在原始方向上相加以获得等变性。</li>
+</ul>
 ]]></content>
       <categories>
         <category>Machine Learning</category>
@@ -1537,6 +1562,7 @@ T_0=&1 \quad T_1=x
       <tags>
         <tag>Graphs</tag>
         <tag>Complex Network</tag>
+        <tag>Laplacian Matrix</tag>
       </tags>
   </entry>
   <entry>
