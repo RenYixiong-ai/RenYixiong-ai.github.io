@@ -154,6 +154,38 @@ c\neq& b \label{test2} \\
       </tags>
   </entry>
   <entry>
+    <title>Neural Network Diffusion</title>
+    <url>/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/</url>
+    <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>这篇文章的主要任务是，利用Diffusion Model生成具备高表现能力的神经网络参数。</p>
+<p>利用 autoencoder 和 laten diffusion model 两个主要部件，其中autoencoder将网络参数进行提取，diffusion model再进行训练，然后再将训练好的模型进行解码。</p>
+<span id="more"></span>
+<p>将神经网络的训练与扩散逆过程进行对比：</p>
+<ol>
+<li>都是从随机到一个特定的分布。</li>
+<li>高质量的图像与具备很好表现的网络参数，可以退化为一个简单分布。</li>
+</ol>
+<p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/fig1.png" alt="diffusion model VS model parameters"></p>
+<p>本文提出parameter generation, 叫做 neural network diffusion (p-diff, p stands for parameter)。</p>
+<p>首先用已经训练好的模型参数，训练自编码器。<br>然后用标准latent diffusion model 从随机噪声中合成编码后的表示。最后，利用训练完的diffusion model，通过已经训练过的自编码器去生成新的参数。</p>
+<h1 id="Nerual-Network-Diffusion"><a href="#Nerual-Network-Diffusion" class="headerlink" title="Nerual Network Diffusion"></a>Nerual Network Diffusion</h1><h2 id="Preliminaries-of-diffusion-models"><a href="#Preliminaries-of-diffusion-models" class="headerlink" title="Preliminaries of diffusion models"></a>Preliminaries of diffusion models</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/NND.png" alt="Train LDM"></p>
+<p>前向过程在不断的增加噪声，后向过程在猜测噪声分布。训练目标是计算分布的KL散度，尽可能的小。</p>
+<p>上图中，LDM表示latent diffusion model，训练编码后的表示。前向过程为：从已经表示的分布增加噪声，逐步成为随机噪声分布；后向过程为，从随机噪声出发逐步预测噪声进行去噪，得到原始的表达。</p>
+<h2 id="Parameter-autoencoder"><a href="#Parameter-autoencoder" class="headerlink" title="Parameter autoencoder"></a>Parameter autoencoder</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/autoencoder.png" alt="AutoEncoder"></p>
+<p>利用训练好的数据，进行编码训练。</p>
+<h2 id="Inference"><a href="#Inference" class="headerlink" title="Inference"></a>Inference</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/inference.png" alt="Inference"></p>
+<p>使用DDPM进行优化。</p>
+<h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/result.png" alt="result"></p>
+<p>从结果来看部分数据集上最优，其它大部分也与最优表现持平。</p>
+<p>该模型是否仅仅记住了训练好的模型参数，而非生成了新的模型参数？从结果来看，生成的模型要高于输入训练的模型，可见其是学习到了一些内容。</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Diffusion Model</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Score matching model</title>
     <url>/2024/01/19/DL/Score_matching_model/Score_matching_model/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这篇文章主要描述基于得分匹配（Score matching model）的想法，以及之后主要的修改思路。这种思路是生成模型的一种，与GAN、normal-flow等模型具备同样的功能。</p>
@@ -312,38 +344,6 @@ Data Distribution.
         <tag>Implicit Score Matching</tag>
         <tag>Denoising Score Matching</tag>
         <tag>Sliced Score Matching</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Neural Network Diffusion</title>
-    <url>/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/</url>
-    <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>这篇文章的主要任务是，利用Diffusion Model生成具备高表现能力的神经网络参数。</p>
-<p>利用 autoencoder 和 laten diffusion model 两个主要部件，其中autoencoder将网络参数进行提取，diffusion model再进行训练，然后再将训练好的模型进行解码。</p>
-<span id="more"></span>
-<p>将神经网络的训练与扩散逆过程进行对比：</p>
-<ol>
-<li>都是从随机到一个特定的分布。</li>
-<li>高质量的图像与具备很好表现的网络参数，可以退化为一个简单分布。</li>
-</ol>
-<p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/fig1.png" alt="diffusion model VS model parameters"></p>
-<p>本文提出parameter generation, 叫做 neural network diffusion (p-diff, p stands for parameter)。</p>
-<p>首先用已经训练好的模型参数，训练自编码器。<br>然后用标准latent diffusion model 从随机噪声中合成编码后的表示。最后，利用训练完的diffusion model，通过已经训练过的自编码器去生成新的参数。</p>
-<h1 id="Nerual-Network-Diffusion"><a href="#Nerual-Network-Diffusion" class="headerlink" title="Nerual Network Diffusion"></a>Nerual Network Diffusion</h1><h2 id="Preliminaries-of-diffusion-models"><a href="#Preliminaries-of-diffusion-models" class="headerlink" title="Preliminaries of diffusion models"></a>Preliminaries of diffusion models</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/NND.png" alt="Train LDM"></p>
-<p>前向过程在不断的增加噪声，后向过程在猜测噪声分布。训练目标是计算分布的KL散度，尽可能的小。</p>
-<p>上图中，LDM表示latent diffusion model，训练编码后的表示。前向过程为：从已经表示的分布增加噪声，逐步成为随机噪声分布；后向过程为，从随机噪声出发逐步预测噪声进行去噪，得到原始的表达。</p>
-<h2 id="Parameter-autoencoder"><a href="#Parameter-autoencoder" class="headerlink" title="Parameter autoencoder"></a>Parameter autoencoder</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/autoencoder.png" alt="AutoEncoder"></p>
-<p>利用训练好的数据，进行编码训练。</p>
-<h2 id="Inference"><a href="#Inference" class="headerlink" title="Inference"></a>Inference</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/inference.png" alt="Inference"></p>
-<p>使用DDPM进行优化。</p>
-<h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/result.png" alt="result"></p>
-<p>从结果来看部分数据集上最优，其它大部分也与最优表现持平。</p>
-<p>该模型是否仅仅记住了训练好的模型参数，而非生成了新的模型参数？从结果来看，生成的模型要高于输入训练的模型，可见其是学习到了一些内容。</p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Diffusion Model</tag>
       </tags>
   </entry>
   <entry>
@@ -1568,10 +1568,8 @@ T_0=&1 \quad T_1=x
 <p>首先将超图定义为$\mathcal{G}=(\mathcal{V}，\mathcal{E}, \mathbf{W})$，其中顶点集合为$\mathcal{V}$，超边集为$\mathcal{E}$，每一个超边给予一个权重$\mathbf{W}$。超图$\mathcal{G}$可以通过$|\mathcal{V}| \times|\mathcal{E}|$的矩阵$\mathbf{H}$定义为：</p>
 <script type="math/tex; mode=display">\begin{align}
 h(v, e)= \begin{cases}1, & \text { if } v \in e \\ 0, & \text { if } v \notin e,\end{cases}
-\end{align}$$双
-
-接下来考虑节点的分类任务，参考[Learning with Hypergraphs: Clustering, Classification, and Embedding](https://ieeexplore.ieee.org/abstract/document/6287378)，利用正则化框架：
-$$\begin{align}
+\end{align}</script><p>接下来考虑节点的分类任务，参考<a href="https://ieeexplore.ieee.org/abstract/document/6287378">Learning with Hypergraphs: Clustering, Classification, and Embedding</a>，利用正则化框架：</p>
+<script type="math/tex; mode=display">\begin{align}
 \arg \min _f\left\{\mathcal{R}_{e m p}(f)+\Omega(f)\right\},
 \end{align}</script><p>其中$\Omega(f)$是正则化项， $\mathcal{R}_{e m p}(f)$是经验损失，$f(\cdot)$ 表示分类函数。</p>
 <script type="math/tex; mode=display">
