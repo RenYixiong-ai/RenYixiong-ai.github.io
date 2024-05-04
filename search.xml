@@ -154,38 +154,6 @@ c\neq& b \label{test2} \\
       </tags>
   </entry>
   <entry>
-    <title>Neural Network Diffusion</title>
-    <url>/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/</url>
-    <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>这篇文章的主要任务是，利用Diffusion Model生成具备高表现能力的神经网络参数。</p>
-<p>利用 autoencoder 和 laten diffusion model 两个主要部件，其中autoencoder将网络参数进行提取，diffusion model再进行训练，然后再将训练好的模型进行解码。</p>
-<span id="more"></span>
-<p>将神经网络的训练与扩散逆过程进行对比：</p>
-<ol>
-<li>都是从随机到一个特定的分布。</li>
-<li>高质量的图像与具备很好表现的网络参数，可以退化为一个简单分布。</li>
-</ol>
-<p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/fig1.png" alt="diffusion model VS model parameters"></p>
-<p>本文提出parameter generation, 叫做 neural network diffusion (p-diff, p stands for parameter)。</p>
-<p>首先用已经训练好的模型参数，训练自编码器。<br>然后用标准latent diffusion model 从随机噪声中合成编码后的表示。最后，利用训练完的diffusion model，通过已经训练过的自编码器去生成新的参数。</p>
-<h1 id="Nerual-Network-Diffusion"><a href="#Nerual-Network-Diffusion" class="headerlink" title="Nerual Network Diffusion"></a>Nerual Network Diffusion</h1><h2 id="Preliminaries-of-diffusion-models"><a href="#Preliminaries-of-diffusion-models" class="headerlink" title="Preliminaries of diffusion models"></a>Preliminaries of diffusion models</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/NND.png" alt="Train LDM"></p>
-<p>前向过程在不断的增加噪声，后向过程在猜测噪声分布。训练目标是计算分布的KL散度，尽可能的小。</p>
-<p>上图中，LDM表示latent diffusion model，训练编码后的表示。前向过程为：从已经表示的分布增加噪声，逐步成为随机噪声分布；后向过程为，从随机噪声出发逐步预测噪声进行去噪，得到原始的表达。</p>
-<h2 id="Parameter-autoencoder"><a href="#Parameter-autoencoder" class="headerlink" title="Parameter autoencoder"></a>Parameter autoencoder</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/autoencoder.png" alt="AutoEncoder"></p>
-<p>利用训练好的数据，进行编码训练。</p>
-<h2 id="Inference"><a href="#Inference" class="headerlink" title="Inference"></a>Inference</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/inference.png" alt="Inference"></p>
-<p>使用DDPM进行优化。</p>
-<h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/result.png" alt="result"></p>
-<p>从结果来看部分数据集上最优，其它大部分也与最优表现持平。</p>
-<p>该模型是否仅仅记住了训练好的模型参数，而非生成了新的模型参数？从结果来看，生成的模型要高于输入训练的模型，可见其是学习到了一些内容。</p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Diffusion Model</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Score matching model</title>
     <url>/2024/01/19/DL/Score_matching_model/Score_matching_model/</url>
     <content><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>这篇文章主要描述基于得分匹配（Score matching model）的想法，以及之后主要的修改思路。这种思路是生成模型的一种，与GAN、normal-flow等模型具备同样的功能。</p>
@@ -344,6 +312,38 @@ Data Distribution.
         <tag>Implicit Score Matching</tag>
         <tag>Denoising Score Matching</tag>
         <tag>Sliced Score Matching</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Neural Network Diffusion</title>
+    <url>/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/</url>
+    <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>这篇文章的主要任务是，利用Diffusion Model生成具备高表现能力的神经网络参数。</p>
+<p>利用 autoencoder 和 laten diffusion model 两个主要部件，其中autoencoder将网络参数进行提取，diffusion model再进行训练，然后再将训练好的模型进行解码。</p>
+<span id="more"></span>
+<p>将神经网络的训练与扩散逆过程进行对比：</p>
+<ol>
+<li>都是从随机到一个特定的分布。</li>
+<li>高质量的图像与具备很好表现的网络参数，可以退化为一个简单分布。</li>
+</ol>
+<p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/fig1.png" alt="diffusion model VS model parameters"></p>
+<p>本文提出parameter generation, 叫做 neural network diffusion (p-diff, p stands for parameter)。</p>
+<p>首先用已经训练好的模型参数，训练自编码器。<br>然后用标准latent diffusion model 从随机噪声中合成编码后的表示。最后，利用训练完的diffusion model，通过已经训练过的自编码器去生成新的参数。</p>
+<h1 id="Nerual-Network-Diffusion"><a href="#Nerual-Network-Diffusion" class="headerlink" title="Nerual Network Diffusion"></a>Nerual Network Diffusion</h1><h2 id="Preliminaries-of-diffusion-models"><a href="#Preliminaries-of-diffusion-models" class="headerlink" title="Preliminaries of diffusion models"></a>Preliminaries of diffusion models</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/NND.png" alt="Train LDM"></p>
+<p>前向过程在不断的增加噪声，后向过程在猜测噪声分布。训练目标是计算分布的KL散度，尽可能的小。</p>
+<p>上图中，LDM表示latent diffusion model，训练编码后的表示。前向过程为：从已经表示的分布增加噪声，逐步成为随机噪声分布；后向过程为，从随机噪声出发逐步预测噪声进行去噪，得到原始的表达。</p>
+<h2 id="Parameter-autoencoder"><a href="#Parameter-autoencoder" class="headerlink" title="Parameter autoencoder"></a>Parameter autoencoder</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/autoencoder.png" alt="AutoEncoder"></p>
+<p>利用训练好的数据，进行编码训练。</p>
+<h2 id="Inference"><a href="#Inference" class="headerlink" title="Inference"></a>Inference</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/inference.png" alt="Inference"></p>
+<p>使用DDPM进行优化。</p>
+<h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/result.png" alt="result"></p>
+<p>从结果来看部分数据集上最优，其它大部分也与最优表现持平。</p>
+<p>该模型是否仅仅记住了训练好的模型参数，而非生成了新的模型参数？从结果来看，生成的模型要高于输入训练的模型，可见其是学习到了一些内容。</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Diffusion Model</tag>
       </tags>
   </entry>
   <entry>
@@ -1555,7 +1555,33 @@ T_0=&1 \quad T_1=x
 <li>通过李群和李代数，对之前参见的操作进行修改。例如将卷积修改为李卷积(LieConv)。</li>
 <li>通过标量化，将几何向量首先被转换为不变的标量，然后通过几个多层感知机（MLPs）来控制大小，最后在原始方向上相加以获得等变性。</li>
 </ul>
-]]></content>
+<h1 id="Hypergraph"><a href="#Hypergraph" class="headerlink" title="Hypergraph"></a>Hypergraph</h1><p>超图（Hypergraph）是<strong>一种高维的图形结构</strong>，用于表示对象之间的复杂关系。</p>
+<p>超图的核心概念在于它包含的“超边”，这是与普通图的边不同的概念。在普通图中，一条边连接两个顶点，而在超图中，一条<strong>超边可以连接多个顶点</strong>（包括两个以上）。这种结构使得超图能够表示更为复杂的关系，比如社交网络中一个人可能同时属于多个社交圈，或者在生态系统中一个物种可能在多个栖息地中出现。</p>
+<p>超图由两部分组成：一组顶点集合 $\mathcal{V}$ 和一组超边集合 $\mathcal{E}$ ，超图可以表示为这些集合的组合 $\mathcal{H}=(\mathcal{V},\mathcal{E})$ 。在超图中，如果一个顶点 $v$ 出现在一个超边 $e$ 中，那么我们说顶点 $v$ 与超边 $e$ 相关联。</p>
+<h2 id="Special-Hypergraph-Neural-Networks"><a href="#Special-Hypergraph-Neural-Networks" class="headerlink" title="Special Hypergraph Neural Networks"></a>Special Hypergraph Neural Networks</h2><ul>
+<li><a href="https://dl.acm.org/doi/abs/10.1609/aaai.v33i01.33013558">Hypergraph Neural Networks</a><br><a href="https://github.com/iMoonLab/HGNN">代码仓库Github</a><br><a href="https://zhuanlan.zhihu.com/p/653917458">文章解读</a></li>
+<li><a href="https://ieeexplore.ieee.org/abstract/document/6287378">Learning with Hypergraphs: Clustering, Classification, and Embedding</a><br><img src="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/6-1.png" alt="Hypergraph"></li>
+</ul>
+<p>针对超图这种复杂的结构，作者提出了 hypergraph neural networks (HGNN) 框架。</p>
+<p><img src="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/6-2.png" alt="The comparison between graph and hypergraph"></p>
+<p>由上图可见，左边的$W$为邻接矩阵，右边表示含有超边的图。该图的每一行代表一个节点，每一列表示一条超边，例如$e_1$这条超边与$n_2, n_4, n_8$相连，在矩阵上只有这三行为$1$。这种数据结构可以将任意的超边包含在内。<font color="red">这种方式十分有效，但是之后如何进行嵌入呢？这样看只能在空域运算；在谱域，没有邻接矩阵，如何得到拉普拉斯矩阵？</font></p>
+<p>首先将超图定义为$\mathcal{G}=(\mathcal{V}，\mathcal{E}, \mathbf{W})$，其中顶点集合为$\mathcal{V}$，超边集为$\mathcal{E}$，每一个超边给予一个权重$\mathbf{W}$。超图$\mathcal{G}$可以通过$|\mathcal{V}| \times|\mathcal{E}|$的矩阵$\mathbf{H}$定义为：</p>
+<script type="math/tex; mode=display">\begin{align}
+h(v, e)= \begin{cases}1, & \text { if } v \in e \\ 0, & \text { if } v \notin e,\end{cases}
+\end{align}$$双
+
+接下来考虑节点的分类任务，参考[Learning with Hypergraphs: Clustering, Classification, and Embedding](https://ieeexplore.ieee.org/abstract/document/6287378)，利用正则化框架：
+$$\begin{align}
+\arg \min _f\left\{\mathcal{R}_{e m p}(f)+\Omega(f)\right\},
+\end{align}</script><p>其中$\Omega(f)$是正则化项， $\mathcal{R}_{e m p}(f)$是经验损失，$f(\cdot)$ 表示分类函数。</p>
+<script type="math/tex; mode=display">
+\begin{align}
+\Omega(f)= & \frac{1}{2} \sum_{e \in \mathcal{E}} \sum_{\{u, v\} \in \mathcal{V}} \frac{w(e) h(u, e) h(v, e)}{\delta(e)} \left(\frac{f(u)}{\sqrt{d(u)}}-\frac{f(v)}{\sqrt{d(v)}}\right)^2
+\end{align}</script><p>令$\theta=\mathbf{D}_v^{-1 / 2} \mathbf{H W D}_e^{-1} \mathbf{H}^{\top} \mathbf{D}_v^{-1 / 2}$ 和 $\boldsymbol{\Delta}=\mathbf{I}-\boldsymbol{\Theta}$，那么正则化项$\Omega(f)$ 可以写为：</p>
+<script type="math/tex; mode=display">
+\Omega(f)=f^{\top} \boldsymbol{\Delta},</script><p>其中$\boldsymbol{\Delta}$ 是版正定的通常被叫为超图上的拉普拉斯矩阵（hypergraph Laplacian）。</p>
+<p>剩下的操作和之前的一致，找到其本征态定义为傅里叶变换矩阵，然后利用本征值作为滤波函数，引入学习参数。为了简化，将滤波函数用切比雪夫多项式表示。最后完成特征提取。</p>
+<h2 id="Hypergraph-Embedding-Based-on-Random-Walk"><a href="#Hypergraph-Embedding-Based-on-Random-Walk" class="headerlink" title="Hypergraph Embedding Based on Random Walk"></a>Hypergraph Embedding Based on Random Walk</h2><h2 id="Random-Walks-on-Random-Hypergraph"><a href="#Random-Walks-on-Random-Hypergraph" class="headerlink" title="Random Walks on Random Hypergraph"></a>Random Walks on Random Hypergraph</h2><h2 id="Random-walks-and-Laplacians-on-hypergraphs-When-do-they-match"><a href="#Random-walks-and-Laplacians-on-hypergraphs-When-do-they-match" class="headerlink" title="Random walks and Laplacians on hypergraphs: When do they match?"></a>Random walks and Laplacians on hypergraphs: When do they match?</h2><h2 id="Message-Passing-on-Hypergraphs"><a href="#Message-Passing-on-Hypergraphs" class="headerlink" title="Message-Passing on Hypergraphs"></a>Message-Passing on Hypergraphs</h2>]]></content>
       <categories>
         <category>Machine Learning</category>
       </categories>
@@ -1563,6 +1589,7 @@ T_0=&1 \quad T_1=x
         <tag>Graphs</tag>
         <tag>Complex Network</tag>
         <tag>Laplacian Matrix</tag>
+        <tag>Hypergraph Neural Networks</tag>
       </tags>
   </entry>
   <entry>
