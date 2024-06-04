@@ -32,11 +32,12 @@ c\neq& b \label{test2} \\
 <p><code>&lt;span id=&quot;anchor_name&quot;/&gt;这篇文章作为案例，实现公式的交叉引用。</code></p>
 <p>使用相对地址引用锚点：<br><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">[点击这里](#anchor_name)</span><br></pre></td></tr></table></figure></p>
 <p><a href="#anchor_name">点击这里</a></p>
-<h1 id="Hexo官方方案"><a href="#Hexo官方方案" class="headerlink" title="Hexo官方方案"></a>Hexo官方方案</h1><p>目前没有跑通，给出下属链接：</p>
+<h1 id="Hexo官方方案"><a href="#Hexo官方方案" class="headerlink" title="Hexo官方方案"></a>Hexo官方方案</h1><p>目前跑通一个，给出下属链接：</p>
 <ul>
 <li><a href="https://hexo.io/zh-cn/docs/tag-plugins#%E5%BC%95%E7%94%A8%E6%96%87%E7%AB%A0">官方</a></li>
 <li><a href="https://blog.jijian.link/2020-01-08/hexo-anchor-link/#hexo-%E6%A0%87%E9%A2%98%E4%B8%8E-id-%E5%85%B3%E7%B3%BB">博客</a></li>
 </ul>
+<p>连接到之前的一个文章 Git:<br><a href="/2022/09/16/CS/git/git/" title="Git Note">Git Note</a><br><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;% post_link CS/git/git %&#125;</span><br></pre></td></tr></table></figure></p>
 ]]></content>
       <categories>
         <category>Note</category>
@@ -90,6 +91,130 @@ c\neq& b \label{test2} \\
       </categories>
       <tags>
         <tag>Git</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning</title>
+    <url>/2024/06/01/DL/DRL_COM/DRL_COM/</url>
+    <content><![CDATA[<p>The application of deep reinforcement learning to combinatorial optimization methods.</p>
+<p>Reference:</p>
+<ul>
+<li>Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning</li>
+<li><a href="https://arxiv.org/abs/1811.06128">Machine Learning for Combinatorial Optimization: a Methodological Tour d’Horizon</a></li>
+<li><a href="/2024/06/03/DL/DRL_COM/NeuRewriter/" title="Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning">Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning</a>
+</li>
+</ul>
+<span id="more"></span>
+<h1 id="Combinatorial-Optimization-Problem"><a href="#Combinatorial-Optimization-Problem" class="headerlink" title="Combinatorial Optimization Problem"></a>Combinatorial Optimization Problem</h1><p>Combinatorial optimization problem(COP) usually described as:</p>
+<script type="math/tex; mode=display">\begin{align}
+\begin{aligned}
+& \min F(x) \\
+& \text { s.t. } G(x) \geq 0 \\
+& x \in D
+\end{aligned}
+\end{align}</script><p>Solving combinatorial optimization problems involves two types of methods: exact and approximate approaches.</p>
+<p>For exact approaches, there are the ‘Branch and Bound’ and ‘Dynamic Programming’ algorithms.</p>
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Branch_and_bound">Branch and Bound algorithm</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/521325108">Lecture 009-Branch-and-Bound</a></li>
+</ul>
+<p>The Branch and Bound algorithm depends on efficient estimation of the lower and upper bounds of regions/branches of the search space. If no bounds are available, the algorithm degenerates to an exhaustive search.</p>
+<font color="red">Can the Branch and Bound algorithm be used for continuous problems?</font>
+
+<p>For approximate approaches, there are the “Approximate” and “Heuristic” algorithm.</p>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>Hopefield addresses the first thought about using Neural Networks to solve optimization problems.</p>
+<ul>
+<li><a href="https://link.springer.com/article/10.1007/BF00339943">“ Neural ”  computation  of  decisions  in optimization  problems</a></li>
+<li><a href="https://www.researchgate.net/publication/220669035_Neural_Networks_for_Combinatorial_Optimization_A_Review_of_More_Than_a_Decade_of_Research">Neural Networks for Combinatorial Optimization: A Review of More Than a Decade of Research</a></li>
+</ul>
+<p>In 2015, Vinyals initiated the application of neural networks in optimization by comparing combinatorial optimization to machine translation and introducing the Pointer Network (Ptr-Net). This comparison highlighted their common ground in sequence-to-sequence (Seq2Seq) modeling.</p>
+<ul>
+<li><a href="https://arxiv.org/abs/1506.03134">Pointer Networks</a></li>
+</ul>
+<p>After introducting Ptr-Net, many advanced algorithms have been developed that combine graph networks or transforms. <font color="red">Combining the Pointer Network (Ptr-Net) with graph networks is futile. The essence of graph networks lies in message passing, which relies on mean-field theory. Therefore, enhancing these algorithms amounts to an approximation. The method of choosing the mean field determines whether those functions can succeed.</font></p>
+<p>The above algorithm employs an end-to-end approach, which has the advantage of providing answers directly and more quickly compared to traditional algorithms. However, the drawback is that it does not guarantee the optimality of the solutions and may fail when dealing with larger problems.</p>
+<p>Another type is to base deep reinforcement learning on boosting traditional algorithms, with the dual directions of improving the branch and bound method and the iterative searching approach.</p>
+<ul>
+<li><a href="https://arxiv.org/abs/1811.06128">Machine Learning for Combinatorial Optimization: a Methodological Tour d’Horizon</a></li>
+</ul>
+<font color="red">stop</font>
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>Math</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Spin Glass</tag>
+        <tag>Combinatorial Optimization Methods</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning</title>
+    <url>/2024/06/03/DL/DRL_COM/NeuRewriter/</url>
+    <content><![CDATA[<p>这篇文章提出了NeuRewriter的方法，使用强化学习中 actor-critic 的方式训练。</p>
+<p>感觉类似于 “A Monte Carlo Policy Gradient Method with Local Search for Binary Optimization” 中的操作。<font color="yellow">当然了，NeuRewriter是最先提出来的，时间跨度基本都有4年了。</font></p>
+<p>Reference:</p>
+<ul>
+<li><a href="https://arxiv.org/abs/1810.00337">Learning to Perform Local Rewriting for Combinatorial Optimization</a></li>
+<li><a href="https://github.com/facebookresearch/neural-rewriter">github地址</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="Problem-Setup"><a href="#Problem-Setup" class="headerlink" title="Problem Setup"></a>Problem Setup</h1><p>Let $\mathcal{S}$ be the solution’s space of problem domain, and $c: \mathcal{S} \rightarrow \mathbb{R}$ be the cost function. The goal of optimization is to find $\arg \min _{s \in \mathcal{S}} c(s)$. Formally, each solutionis a state, and each local region and the associated rule is an action.</p>
+<p>Optimization as a rewriting problem. Let $\mathcal{U}$ be the rewriting ruleset. Suppose $s_t$ is the current solution (or state) at iteration $t$. We first compute a state-dependent region set $\Omega\left(s_t\right)$, then pick a region $\omega_t \in \Omega\left(s_t\right)$ using the region-picking policy $\pi_\omega\left(\omega_t \mid s_t\right)$. We then pick a rewriting rule $u_t$ applicable to that region $\omega_t$ using the rule-picking policy $\pi_u\left(u_t \mid s_t\left[\omega_t\right]\right)$, where $s_t\left[\omega_t\right]$ is a subset of state $s_t$. </p>
+<p>$\Omega\left(s_t\right)$ is a problem-dependent region set. For expression simplification, $\Omega\left(s_t\right)$ includes all sub-trees of the expression parse trees; for job scheduling, $\Omega\left(s_t\right)$ covers all job nodes for scheduling; and for vehicle routing, it includes all nodes in the route.</p>
+<p>We then apply this rewriting rule $u_t \in \mathcal{U}$ to $s_t\left[\omega_t\right]$, and obtain the next state $s_{t+1}=$ $f\left(s_t, \omega_t, u_t\right)$. Given an initial solution (or state) $s_0$, our goal is to find a sequence of rewriting steps $\left(s_0,\left(\omega_0, u_0\right)\right),\left(s_1,\left(\omega_1, u_1\right)\right), \ldots,\left(s_{T-1},\left(\omega_{T-1}, u_{T-1}\right)\right), s_T$ so that the final cost $c\left(s_T\right)$ is minimized.</p>
+<font color="blue">In this part mention two new functions: region-picking and rule-picking, what's mean of them? At the end of the following is rewriting rule. I need the accurate meaning of rewriting.</font> Before this paper, same idea had been proposed by [Halide](https://github.com/halide/Halide).
+
+Instead of searching from scratch, this work searches solution by iteratively applying local rewriting rules to the existing until convergence. Thus, rewriting formulation is suitable for such problem:
+
+* Easily find feasible solution.
+* Well-behaved local structures, which could be utilized to incrementally improve the solution. <font color="red">It's a hard to satisfy feature in spin glass.</font>
+
+
+
+
+<font color="red">
+
+Three words means nedd to know:
+* region-picking
+* rule-picking
+* rewriting rule
+
+</font>
+
+
+
+
+
+
+<h1 id="Neural-Rewriter-Model"><a href="#Neural-Rewriter-Model" class="headerlink" title="Neural Rewriter Model"></a>Neural Rewriter Model</h1><p><img src="/2024/06/03/DL/DRL_COM/NeuRewriter/1.png" alt="Model Overview"></p>
+<p>Above is the entire model framework. Show the pseudo-code below.</p>
+<p><img src="/2024/06/03/DL/DRL_COM/NeuRewriter/ForwardPass.png" alt="ForwardPass"></p>
+<p>Score predictor. Given the state $s_t$, the score predictor computes a score $Q\left(s_t, \omega_t\right)$ for every $\omega_t \in \Omega\left(s_t\right)$, which measures the benefit of rewriting $s_t\left[\omega_t\right]$. A high score indicates that rewriting $s_t\left[\omega_t\right]$ could be desirable. </p>
+<p>In lines 2-10, I believe this algorithm resembles the Monte Carlo method; it initially establishes a probability distribution by $\Omega_\omega$ and gets each score; then selects one from it. However, the choice is not entirely random—an acceptance probability is set. Through this process, high-quality data for learning are generated. Thus, region-picking function serves as a judgment function to assess whether the situation is favorable or not. The loss function of this par write as:</p>
+<script type="math/tex; mode=display">\begin{align}
+L_\omega(\theta)=\frac{1}{T} \sum_{t=0}^{T-1}\left(\sum_{t^{\prime}=t}^{T-1} \gamma^{t^{\prime}-t} r\left(s_t^{\prime},\left(\omega_t^{\prime}, u_t^{\prime}\right)\right)-Q\left(s_t, \omega_t ; \theta\right)\right)^2
+\end{align}</script><p>Rule selector. Given $s_t\left[\omega_t\right]$ to be rewritten, the rule-picking policy predicts a probability distribution $\pi_u\left(s_t\left[\omega_t\right]\right)$ over the entire ruleset $\mathcal{U}$, and selects a rule $u_t \in \mathcal{U}$ to apply accordingly.</p>
+<p>In lines 11-16, we will employ the Advantage Actor-Critic algorithm to train both the Rule-picking and Score-picking models. The primary network we aim to obtain is the Rule-picking model, which will assist us in addressing subsequent problems.</p>
+<script type="math/tex; mode=display">\begin{align}
+\Delta\left(s_t,\left(\omega_t, u_t\right)\right) &\equiv \sum_{t^{\prime}=t}^{T-1} \gamma^{t^{\prime}-t} r\left(s_t^{\prime},\left(\omega_t^{\prime}, u_t^{\prime}\right)\right)-Q\left(s_t, \omega_t ; \theta\right) \\
+L_u(\phi)&=-\sum_{t=0}^{T-1} \Delta\left(s_t,\left(\omega_t, u_t\right)\right) \log \pi_u\left(u_t \mid s_t\left[\omega_t\right] ; \phi\right) \\
+L(\theta, \phi)&=L_u(\phi)+\alpha L_\omega(\theta)
+\end{align}</script><p>The rewriting rule merely changes the description method; in fact, it addresses the same issue, similar to the gauge theory in the SK model.</p>
+]]></content>
+      <categories>
+        <category>Math</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Spin Glass</tag>
+        <tag>Combinatorial Optimization Methods</tag>
       </tags>
   </entry>
   <entry>
@@ -524,9 +649,9 @@ Data Distribution.
         <category>Machine Learning</category>
       </categories>
       <tags>
+        <tag>Reinforcement Learning</tag>
         <tag>Monte Carlo</tag>
         <tag>Monte Carlo Tree Search</tag>
-        <tag>Reinforcement Learning</tag>
       </tags>
   </entry>
   <entry>

@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="NkKZQoWWke3m9VdST86r08CsQDi6fRUGsiYhl_bl6yc">
+  <meta name="msvalidate.01" content="07C0174F9E4B4B2C960172E0CDFB3DC9">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":-1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这篇文章提出了NeuRewriter的方法，使用强化学习中 actor-critic 的方式训练。 感觉类似于 “A Monte Carlo Policy Gradient Method with Local Search for Binary Optimization” 中的操作。当然了，NeuRewriter是最先提出来的，时间跨度基本都有4年了。 Reference:  Learning t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/06/03/DL/DRL_COM/NeuRewriter/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="这篇文章提出了NeuRewriter的方法，使用强化学习中 actor-critic 的方式训练。 感觉类似于 “A Monte Carlo Policy Gradient Method with Local Search for Binary Optimization” 中的操作。当然了，NeuRewriter是最先提出来的，时间跨度基本都有4年了。 Reference:  Learning t">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/06/03/DL/DRL_COM/NeuRewriter/1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/06/03/DL/DRL_COM/NeuRewriter/ForwardPass.png">
+<meta property="article:published_time" content="2024-06-03T04:18:00.000Z">
+<meta property="article:modified_time" content="2024-06-04T09:23:04.292Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Reinforcement Learning">
+<meta property="article:tag" content="Spin Glass">
+<meta property="article:tag" content="Combinatorial Optimization Methods">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/06/03/DL/DRL_COM/NeuRewriter/1.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/06/03/DL/DRL_COM/NeuRewriter/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link rel="alternate" href="/atom.xml" title="Yixiong's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/06/03/DL/DRL_COM/NeuRewriter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-06-03 12:18:00" itemprop="dateCreated datePublished" datetime="2024-06-03T12:18:00+08:00">2024-06-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-06-04 17:23:04" itemprop="dateModified" datetime="2024-06-04T17:23:04+08:00">2024-06-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>8 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这篇文章提出了NeuRewriter的方法，使用强化学习中 actor-critic 的方式训练。</p>
+<p>感觉类似于 “A Monte Carlo Policy Gradient Method with Local Search for Binary Optimization” 中的操作。<font color="yellow">当然了，NeuRewriter是最先提出来的，时间跨度基本都有4年了。</font></p>
+<p>Reference:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/abs/1810.00337">Learning to Perform Local Rewriting for Combinatorial Optimization</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/facebookresearch/neural-rewriter">github地址</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="Problem-Setup"><a href="#Problem-Setup" class="headerlink" title="Problem Setup"></a>Problem Setup</h1><p>Let $\mathcal{S}$ be the solution’s space of problem domain, and $c: \mathcal{S} \rightarrow \mathbb{R}$ be the cost function. The goal of optimization is to find $\arg \min _{s \in \mathcal{S}} c(s)$. Formally, each solutionis a state, and each local region and the associated rule is an action.</p>
+<p>Optimization as a rewriting problem. Let $\mathcal{U}$ be the rewriting ruleset. Suppose $s_t$ is the current solution (or state) at iteration $t$. We first compute a state-dependent region set $\Omega\left(s_t\right)$, then pick a region $\omega_t \in \Omega\left(s_t\right)$ using the region-picking policy $\pi_\omega\left(\omega_t \mid s_t\right)$. We then pick a rewriting rule $u_t$ applicable to that region $\omega_t$ using the rule-picking policy $\pi_u\left(u_t \mid s_t\left[\omega_t\right]\right)$, where $s_t\left[\omega_t\right]$ is a subset of state $s_t$. </p>
+<p>$\Omega\left(s_t\right)$ is a problem-dependent region set. For expression simplification, $\Omega\left(s_t\right)$ includes all sub-trees of the expression parse trees; for job scheduling, $\Omega\left(s_t\right)$ covers all job nodes for scheduling; and for vehicle routing, it includes all nodes in the route.</p>
+<p>We then apply this rewriting rule $u_t \in \mathcal{U}$ to $s_t\left[\omega_t\right]$, and obtain the next state $s_{t+1}=$ $f\left(s_t, \omega_t, u_t\right)$. Given an initial solution (or state) $s_0$, our goal is to find a sequence of rewriting steps $\left(s_0,\left(\omega_0, u_0\right)\right),\left(s_1,\left(\omega_1, u_1\right)\right), \ldots,\left(s_{T-1},\left(\omega_{T-1}, u_{T-1}\right)\right), s_T$ so that the final cost $c\left(s_T\right)$ is minimized.</p>
+<font color="blue">In this part mention two new functions: region-picking and rule-picking, what's mean of them? At the end of the following is rewriting rule. I need the accurate meaning of rewriting.</font> Before this paper, same idea had been proposed by [Halide](https://github.com/halide/Halide).
+
+Instead of searching from scratch, this work searches solution by iteratively applying local rewriting rules to the existing until convergence. Thus, rewriting formulation is suitable for such problem:
+
+* Easily find feasible solution.
+* Well-behaved local structures, which could be utilized to incrementally improve the solution. <font color="red">It's a hard to satisfy feature in spin glass.</font>
+
+
+
+
+<font color="red">
+
+Three words means nedd to know:
+* region-picking
+* rule-picking
+* rewriting rule
+
+</font>
+
+
+
+
+
+
+<h1 id="Neural-Rewriter-Model"><a href="#Neural-Rewriter-Model" class="headerlink" title="Neural Rewriter Model"></a>Neural Rewriter Model</h1><p><img src="/2024/06/03/DL/DRL_COM/NeuRewriter/1.png" alt="Model Overview"></p>
+<p>Above is the entire model framework. Show the pseudo-code below.</p>
+<p><img src="/2024/06/03/DL/DRL_COM/NeuRewriter/ForwardPass.png" alt="ForwardPass"></p>
+<p>Score predictor. Given the state $s_t$, the score predictor computes a score $Q\left(s_t, \omega_t\right)$ for every $\omega_t \in \Omega\left(s_t\right)$, which measures the benefit of rewriting $s_t\left[\omega_t\right]$. A high score indicates that rewriting $s_t\left[\omega_t\right]$ could be desirable. </p>
+<p>In lines 2-10, I believe this algorithm resembles the Monte Carlo method; it initially establishes a probability distribution by $\Omega_\omega$ and gets each score; then selects one from it. However, the choice is not entirely random—an acceptance probability is set. Through this process, high-quality data for learning are generated. Thus, region-picking function serves as a judgment function to assess whether the situation is favorable or not. The loss function of this par write as:</p>
+<script type="math/tex; mode=display">\begin{align}
+L_\omega(\theta)=\frac{1}{T} \sum_{t=0}^{T-1}\left(\sum_{t^{\prime}=t}^{T-1} \gamma^{t^{\prime}-t} r\left(s_t^{\prime},\left(\omega_t^{\prime}, u_t^{\prime}\right)\right)-Q\left(s_t, \omega_t ; \theta\right)\right)^2
+\end{align}</script><p>Rule selector. Given $s_t\left[\omega_t\right]$ to be rewritten, the rule-picking policy predicts a probability distribution $\pi_u\left(s_t\left[\omega_t\right]\right)$ over the entire ruleset $\mathcal{U}$, and selects a rule $u_t \in \mathcal{U}$ to apply accordingly.</p>
+<p>In lines 11-16, we will employ the Advantage Actor-Critic algorithm to train both the Rule-picking and Score-picking models. The primary network we aim to obtain is the Rule-picking model, which will assist us in addressing subsequent problems.</p>
+<script type="math/tex; mode=display">\begin{align}
+\Delta\left(s_t,\left(\omega_t, u_t\right)\right) &\equiv \sum_{t^{\prime}=t}^{T-1} \gamma^{t^{\prime}-t} r\left(s_t^{\prime},\left(\omega_t^{\prime}, u_t^{\prime}\right)\right)-Q\left(s_t, \omega_t ; \theta\right) \\
+L_u(\phi)&=-\sum_{t=0}^{T-1} \Delta\left(s_t,\left(\omega_t, u_t\right)\right) \log \pi_u\left(u_t \mid s_t\left[\omega_t\right] ; \phi\right) \\
+L(\theta, \phi)&=L_u(\phi)+\alpha L_\omega(\theta)
+\end{align}</script><p>The rewriting rule merely changes the description method; in fact, it addresses the same issue, similar to the gauge theory in the SK model.</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Reinforcement-Learning/" rel="tag"># Reinforcement Learning</a>
+              <a href="/tags/Spin-Glass/" rel="tag"># Spin Glass</a>
+              <a href="/tags/Combinatorial-Optimization-Methods/" rel="tag"># Combinatorial Optimization Methods</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/06/01/DL/DRL_COM/DRL_COM/" rel="prev" title="Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning">
+      <i class="fa fa-chevron-left"></i> Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Problem-Setup"><span class="nav-number">1.</span> <span class="nav-text">Problem Setup</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Neural-Rewriter-Model"><span class="nav-number">2.</span> <span class="nav-text">Neural Rewriter Model</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">20</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">43</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/RenYixiong-ai" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;RenYixiong-ai" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:renyixiong@mail.ustc.edu.cn" title="E-Mail → mailto:renyixiong@mail.ustc.edu.cn" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://renyixiong-ai.github.io/" title="GitHub Page → https:&#x2F;&#x2F;renyixiong-ai.github.io&#x2F;"><i class="fab fa-github fa-fw"></i>GitHub Page</a>
+      </span>
+  </div>
+
+
+  <div class="">
+    <a target="_blank" class="social-link" href="/atom.xml" style="color: burlywood;">
+      <span class="icon">
+        <i class="fa fa-rss"></i>
+      </span>
+      <span class="label">RSS</span>
+    </a>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">103k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">3:08</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
