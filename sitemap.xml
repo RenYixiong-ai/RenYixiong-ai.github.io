@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://renyixiong-ai.github.io/2024/06/05/DL/DRL_COM/PointerNetwork/</loc>
+    
+    <lastmod>2024-06-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://renyixiong-ai.github.io/2024/06/03/DL/DRL_COM/NeuRewriter/</loc>
     
     <lastmod>2024-06-06</lastmod>
@@ -12,15 +21,6 @@
   
   <url>
     <loc>https://renyixiong-ai.github.io/2024/06/01/DL/DRL_COM/DRL_COM/</loc>
-    
-    <lastmod>2024-06-06</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/2024/06/05/DL/DRL_COM/PointerNetwork/</loc>
     
     <lastmod>2024-06-06</lastmod>
     
@@ -528,14 +528,14 @@
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/categories/Math/</loc>
+    <loc>https://renyixiong-ai.github.io/categories/Machine-Learning/</loc>
     <lastmod>2024-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/categories/Machine-Learning/</loc>
+    <loc>https://renyixiong-ai.github.io/categories/Math/</loc>
     <lastmod>2024-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
