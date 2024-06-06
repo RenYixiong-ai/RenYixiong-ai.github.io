@@ -136,6 +136,7 @@ c\neq& b \label{test2} \\
 <ul>
 <li><a href="https://arxiv.org/abs/1811.06128">Machine Learning for Combinatorial Optimization: a Methodological Tour d’Horizon</a></li>
 </ul>
+<h1 id="Basic-Theory"><a href="#Basic-Theory" class="headerlink" title="Basic Theory"></a>Basic Theory</h1><p>Using <a href="/2024/06/05/DL/DRL_COM/PointerNetwork/" title="Pointer Networks">pointer networks</a> and <a href="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/" title="Machine Learning with Graphs">graph networks</a> is a common approach to solving combinatorial optimization problems with reinforcement learning.</p>
 <font color="red">stop</font>
 
 
@@ -145,7 +146,7 @@ c\neq& b \label{test2} \\
 
 ]]></content>
       <categories>
-        <category>Math</category>
+        <category>Machine Learning</category>
       </categories>
       <tags>
         <tag>Reinforcement Learning</tag>
@@ -208,7 +209,30 @@ L(\theta, \phi)&=L_u(\phi)+\alpha L_\omega(\theta)
 \end{align}</script><p>The rewriting rule merely changes the description method; in fact, it addresses the same issue, similar to the gauge theory in the SK model.</p>
 ]]></content>
       <categories>
-        <category>Math</category>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Spin Glass</tag>
+        <tag>Combinatorial Optimization Methods</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Pointer Networks</title>
+    <url>/2024/06/05/DL/DRL_COM/PointerNetwork/</url>
+    <content><![CDATA[<p>Pointer Network(Ptr-Net) uses attention as a pointer to select a member of the input sequence as the output. The author shows that Ptr-Net could solve three challenging geometric problems - finding planner convex hulls, computing Delunary triangulations, and the planner Travelling Salesman Problem.</p>
+<p>Reference:</p>
+<ul>
+<li><a href="https://arxiv.org/abs/1506.03134">Pointer Networks</a></li>
+<li><a href="https://myencyclopedia.github.io/zh/2020/tsp-3-pointer-net/">TSP问题从DP算法到深度学习3：Pointer Network</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/48959800">Pointer Networks简介及其应用</a></li>
+</ul>
+<span id="more"></span>
+<font color="red">stop</font>
+
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
       </categories>
       <tags>
         <tag>Reinforcement Learning</tag>
