@@ -100,7 +100,7 @@ c\neq& b \label{test2} \\
 <p>Reference:</p>
 <ul>
 <li><a href="https://arxiv.org/abs/1811.06128">Machine Learning for Combinatorial Optimization: a Methodological Tour d’Horizon</a></li>
-<li><a href="/2024/06/03/DL/DRL_COM/NeuRewriter/" title="Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning">Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning</a>
+<li><a href="/2024/06/03/DL/DRL_COM/NeuRewriter/" title="Learning to Perform Local Rewriting for Combinatorial Optimization">Learning to Perform Local Rewriting for Combinatorial Optimization</a>
 </li>
 </ul>
 <span id="more"></span>
@@ -128,7 +128,8 @@ c\neq& b \label{test2} \\
 </ul>
 <p>In 2015, Vinyals initiated the application of neural networks in optimization by comparing combinatorial optimization to machine translation and introducing the Pointer Network (Ptr-Net). This comparison highlighted their common ground in sequence-to-sequence (Seq2Seq) modeling.</p>
 <ul>
-<li><a href="https://arxiv.org/abs/1506.03134">Pointer Networks</a></li>
+<li><a href="/2024/06/05/DL/DRL_COM/PointerNetwork/" title="Pointer Networks">pointer networks</a>
+</li>
 </ul>
 <p>After introducting Ptr-Net, many advanced algorithms have been developed that combine graph networks or transforms. <font color="red">Combining the Pointer Network (Ptr-Net) with graph networks is futile. The essence of graph networks lies in message passing, which relies on mean-field theory. Therefore, enhancing these algorithms amounts to an approximation. The method of choosing the mean field determines whether those functions can succeed.</font></p>
 <p>The above algorithm employs an end-to-end approach, which has the advantage of providing answers directly and more quickly compared to traditional algorithms. However, the drawback is that it does not guarantee the optimality of the solutions and may fail when dealing with larger problems.</p>
@@ -137,6 +138,7 @@ c\neq& b \label{test2} \\
 <li><a href="https://arxiv.org/abs/1811.06128">Machine Learning for Combinatorial Optimization: a Methodological Tour d’Horizon</a></li>
 </ul>
 <h1 id="Basic-Theory"><a href="#Basic-Theory" class="headerlink" title="Basic Theory"></a>Basic Theory</h1><p>Using <a href="/2024/06/05/DL/DRL_COM/PointerNetwork/" title="Pointer Networks">pointer networks</a> and <a href="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/" title="Machine Learning with Graphs">graph networks</a> is a common approach to solving combinatorial optimization problems with reinforcement learning.</p>
+<p><img src="/2024/06/01/DL/DRL_COM/DRL_COM/table1.png" alt="surbey of point to point model"></p>
 <font color="red">stop</font>
 
 
@@ -155,7 +157,7 @@ c\neq& b \label{test2} \\
       </tags>
   </entry>
   <entry>
-    <title>Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning</title>
+    <title>Learning to Perform Local Rewriting for Combinatorial Optimization</title>
     <url>/2024/06/03/DL/DRL_COM/NeuRewriter/</url>
     <content><![CDATA[<p>这篇文章提出了NeuRewriter的方法，使用强化学习中 actor-critic 的方式训练。</p>
 <p>感觉类似于 “A Monte Carlo Policy Gradient Method with Local Search for Binary Optimization” 中的操作。<font color="yellow">当然了，NeuRewriter是最先提出来的，时间跨度基本都有4年了。</font></p>
