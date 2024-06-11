@@ -100,7 +100,13 @@ c\neq& b \label{test2} \\
 <p>Reference:</p>
 <ul>
 <li><a href="https://arxiv.org/abs/1811.06128">Machine Learning for Combinatorial Optimization: a Methodological Tour d’Horizon</a></li>
-<li><a href="/2024/06/03/DL/DRL_COM/NeuRewriter/" title="Learning to Perform Local Rewriting for Combinatorial Optimization">Learning to Perform Local Rewriting for Combinatorial Optimization</a>
+</ul>
+<p>Link:</p>
+<ul>
+<li><a href="/2024/06/03/DL/DRL_COM/NeuRewriter/" title="Learning to Perform Local Rewriting for Combinatorial Optimization">Learning to Perform Local Rewriting for Combinatorial Optimization</a></li>
+<li><a href="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/" title="Machine Learning with Graphs">graph networks</a></li>
+<li><a href="/2024/06/05/DL/DRL_COM/PointerNetwork/" title="Pointer Networks">pointer networks</a></li>
+<li><a href="/2024/06/11/DL/DRL_COM/NCORL/" title="Neural Combiantorial Optimization with Reinforcement Learning">Neural Combiantorial Optimization with Reinforcement Learning</a>
 </li>
 </ul>
 <span id="more"></span>
@@ -137,15 +143,63 @@ c\neq& b \label{test2} \\
 <ul>
 <li><a href="https://arxiv.org/abs/1811.06128">Machine Learning for Combinatorial Optimization: a Methodological Tour d’Horizon</a></li>
 </ul>
-<h1 id="Basic-Theory"><a href="#Basic-Theory" class="headerlink" title="Basic Theory"></a>Basic Theory</h1><p>Using <a href="/2024/06/05/DL/DRL_COM/PointerNetwork/" title="Pointer Networks">pointer networks</a> and <a href="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/" title="Machine Learning with Graphs">graph networks</a> is a common approach to solving combinatorial optimization problems with reinforcement learning.</p>
+<p>Before continuing our discussion, let’s address why reinforcement learning is needed to solve combinatorial optimization problems. While supervised learning networks perform well, their capability is constrained by the training data. As a result, the quality of the solution cannot exceed that of the input data. Hence, it is essential to employ reinforcement learning to enhance the solution quality.</p>
+<ul>
+<li>The performance of the model is tied to the quality of the supervised labels.</li>
+<li>Getting high-quality labeled data is expensive and may be infeasible for new problem statements.</li>
+<li>One cares more about finding a competitive solution more than replicating the results of another algorithm.</li>
+</ul>
+<h1 id="End-to-End-Approach"><a href="#End-to-End-Approach" class="headerlink" title="End-to-End Approach"></a>End-to-End Approach</h1><p>Using <a href="/2024/06/05/DL/DRL_COM/PointerNetwork/" title="Pointer Networks">pointer networks</a> and <a href="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/" title="Machine Learning with Graphs">graph networks</a> is a common approach to solving combinatorial optimization problems with reinforcement learning.</p>
 <p><img src="/2024/06/01/DL/DRL_COM/DRL_COM/table1.png" alt="surbey of point to point model"></p>
+<p>Two directions for improving the end-to-end approach are changing the model and using different training patterns. In my view, the network model determines the peak performance level, while the training patterns influence whether this peak can be reached and factors like time and data requirements. </p>
+<p>However, sometimes network models incorporate training patterns, necessitating an in-depth exploration of specific algorithms. This study originated from <a href="/2024/06/11/DL/DRL_COM/NCORL/" title="Neural Combiantorial Optimization with Reinforcement Learning">Neural Combiantorial Optimization with Reinforcement Learning</a>, which was later modified by <a href="/2024/06/11/DL/DRL_COM/RLSVRP/" title="Reinforcement Learning for Solving the Vehicle Routing Problem">Reinforcement Learning for Solving the Vehicle Routing Problem</a>, followed by numerous improved versions.</p>
 <font color="red">stop</font>
 
 
 
 
 
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Spin Glass</tag>
+        <tag>Combinatorial Optimization Methods</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Neural Combiantorial Optimization with Reinforcement Learning</title>
+    <url>/2024/06/11/DL/DRL_COM/NCORL/</url>
+    <content><![CDATA[<p>Utilizing neural networks and reinforcement learning to tackle the Traveling Salesman Problem, where the neural network model is a Recurrent Neural Network (RNN), and the policy for reinforcement learning employs policy gradients.</p>
+<p>Reference:</p>
+<ul>
+<li><a href="https://arxiv.org/abs/1611.09940">Neural Combinatorial Optimization with Reinforcement Learning</a></li>
+</ul>
+<span id="more"></span>
+<p>On the 2D Euclidean TSP, given an input graph, represented as a sequence of $n$ cities in a two dimensional space $s=\left\{\mathbf{x}_i\right\}_{i=1}^n$ where each $\mathbf{x}_i \in \mathbb{R}^2$, we are concerned with finding a permutation of the points $\pi$, termed a tour, that visits each city once and has the minimum total length. We define the length of a tour defined by a permutation $\pi$ as</p>
+<script type="math/tex; mode=display">\begin{align}
+L(\pi \mid s)=\left\|\mathbf{x}_{\pi(n)}-\mathbf{x}_{\pi(1)}\right\|_2+\sum_{i=1}^{n-1}\left\|\mathbf{x}_{\pi(i)}-\mathbf{x}_{\pi(i+1)}\right\|_2,
+\end{align}</script><p>where $|\cdot|_2$ denotes $\ell_2$ norm. The aim </p>
+<p>Neural network architecture uses the chain relue to factorize the probability of a tour as:</p>
+<script type="math/tex; mode=display">\begin{align}
+p(\pi \mid s)=\prod_{i=1}^n p(\pi(i) \mid \pi(<i), s)
+\end{align}</script><p>where $p(\pi \mid s)$ is stochastic policy, and then uses individual softmax modules to represent each term</p>
+<p>The architecture is pointer network.<br><img src="/2024/06/11/DL/DRL_COM/NCORL/architecture.png" alt="architecture"></p>
+<p>Propose to use model-free policy-based Reinforcement Learning to optimize the parameters of a pointer network denoted $\boldsymbol{\theta}$. Our training objective is the expected tour length which, given an input graph $s$, is defined as</p>
+<script type="math/tex; mode=display">\begin{align}
+J(\boldsymbol{\theta} \mid s)&=\mathbb{E}_{\pi \sim p_\theta(. \mid s)} L(\pi \mid s) \\
+\nabla_\theta J(\theta \mid s)&=\mathbb{E}_{\pi \sim p_\theta(. \mid s)}\left[(L(\pi \mid s)-b(s)) \nabla_\theta \log p_\theta(\pi \mid s)\right]\\
+\nabla_\theta J(\theta) &\approx \frac{1}{B} \sum_{i=1}^B\left(L\left(\pi_i \mid s_i\right)-b\left(s_i\right)\right) \nabla_\theta \log p_\theta\left(\pi_i \mid s_i\right)
+\end{align}</script><p>where $b(s)$ denotes a baseline function that does not depend on $\pi$ and estimates the expected tour length to reduce the variance of the gradients.</p>
+<p>From the above discussion, it is clear that $b(s)$， which provides a method to measure path length, is crucial for achieving an optimal network. The network will deliver an exact policy if $b(s)$ offers a precise value.</p>
+<p>We introduce an auxiliary network, called a critic and parameterized by $\theta_v$, to learn the expected tour length found by our current policy $p_\theta$ given an input sequence $s$.</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{L}\left(\theta_v\right)=\frac{1}{B} \sum_{i=1}^B\left\|b_{\theta_v}\left(s_i\right)-L\left(\pi_i \mid s_i\right)\right\|_2^2
+\end{align}</script><font color="red">I believe $b(s)$ is more than just an auxiliary network. As crucial as an engine in chess, $b(s)$ provides a criterion for key optimization problems, which can be seamlessly integrated into search algorithms. However, to utilize it effectively for the TSP, we need to devise a functional approach to incorporate actions into $s$.</font>
 
+<p><img src="/2024/06/11/DL/DRL_COM/NCORL/actor-critic.png" alt="architecture"></p>
 ]]></content>
       <categories>
         <category>Machine Learning</category>
@@ -252,6 +306,24 @@ p\left(C_i \mid C_1, \ldots, C_{i-1}, \mathcal{P}\right)&=\operatorname{softmax}
 <p>Then, select the site with the highest probability, 1 in the above figure.</p>
 <p><img src="/2024/06/05/DL/DRL_COM/PointerNetwork/3.png" alt="step2"></p>
 <p>Next, choose site 1 data $(x_1, y_1)$ as the key and input it into the network to obtain the distribution. Continue until we receive the end signal, identified as $(x_1, y_0)$ in this example.</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Spin Glass</tag>
+        <tag>Combinatorial Optimization Methods</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Reinforcement Learning for Solving the Vehicle Routing Problem</title>
+    <url>/2024/06/11/DL/DRL_COM/RLSVRP/</url>
+    <content><![CDATA[<p>Reference:</p>
+<ul>
+<li><a href="https://arxiv.org/abs/1802.04240">Reinforcement Learning for Solving the Vehicle Routing Problem</a></li>
+</ul>
+<span id="more"></span>
 ]]></content>
       <categories>
         <category>Machine Learning</category>
