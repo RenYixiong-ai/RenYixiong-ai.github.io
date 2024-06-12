@@ -146,7 +146,7 @@ c\neq& b \label{test2} \\
 <p>Before continuing our discussion, let’s address why reinforcement learning is needed to solve combinatorial optimization problems. While supervised learning networks perform well, their capability is constrained by the training data. As a result, the quality of the solution cannot exceed that of the input data. Hence, it is essential to employ reinforcement learning to enhance the solution quality.</p>
 <ul>
 <li>The performance of the model is tied to the quality of the supervised labels.</li>
-<li>Getting high-quality labeled data is expensive and may be infeasible for new problem statements.</li>
+<li>Getting high-quality labeled data is expensive and may be infeasible for new problem statements. <font color="red"><br>How were they sure they got the best answer?</font></li>
 <li>One cares more about finding a competitive solution more than replicating the results of another algorithm.</li>
 </ul>
 <h1 id="End-to-End-Approach"><a href="#End-to-End-Approach" class="headerlink" title="End-to-End Approach"></a>End-to-End Approach</h1><p>Using <a href="/2024/06/05/DL/DRL_COM/PointerNetwork/" title="Pointer Networks">pointer networks</a> and <a href="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/" title="Machine Learning with Graphs">graph networks</a> is a common approach to solving combinatorial optimization problems with reinforcement learning.</p>
@@ -154,7 +154,6 @@ c\neq& b \label{test2} \\
 <p>Two directions for improving the end-to-end approach are changing the model and using different training patterns. In my view, the network model determines the peak performance level, while the training patterns influence whether this peak can be reached and factors like time and data requirements. </p>
 <p>However, sometimes network models incorporate training patterns, necessitating an in-depth exploration of specific algorithms. This study originated from <a href="/2024/06/11/DL/DRL_COM/NCORL/" title="Neural Combiantorial Optimization with Reinforcement Learning">Neural Combiantorial Optimization with Reinforcement Learning</a>, which was later modified by <a href="/2024/06/11/DL/DRL_COM/RLSVRP/" title="Reinforcement Learning for Solving the Vehicle Routing Problem">Reinforcement Learning for Solving the Vehicle Routing Problem</a>, followed by numerous improved versions.</p>
 <font color="red">stop</font>
-
 
 
 
@@ -176,6 +175,7 @@ c\neq& b \label{test2} \\
 <p>Reference:</p>
 <ul>
 <li><a href="https://arxiv.org/abs/1611.09940">Neural Combinatorial Optimization with Reinforcement Learning</a></li>
+<li><a href="https://github.com/pemami4911/neural-combinatorial-rl-pytorch">code</a></li>
 </ul>
 <span id="more"></span>
 <p>On the 2D Euclidean TSP, given an input graph, represented as a sequence of $n$ cities in a two dimensional space $s=\left\{\mathbf{x}_i\right\}_{i=1}^n$ where each $\mathbf{x}_i \in \mathbb{R}^2$, we are concerned with finding a permutation of the points $\pi$, termed a tour, that visits each city once and has the minimum total length. We define the length of a tour defined by a permutation $\pi$ as</p>
@@ -319,11 +319,17 @@ p\left(C_i \mid C_1, \ldots, C_{i-1}, \mathcal{P}\right)&=\operatorname{softmax}
   <entry>
     <title>Reinforcement Learning for Solving the Vehicle Routing Problem</title>
     <url>/2024/06/11/DL/DRL_COM/RLSVRP/</url>
-    <content><![CDATA[<p>Reference:</p>
+    <content><![CDATA[<p>Although the framework proposed by Bello at <a href="/2024/06/11/DL/DRL_COM/NCORL/" title="Neural Combiantorial Optimization with Reinforcement Learning">Neural Combiantorial Optimization with Reinforcement Learning</a> works well on TSP, it is not applicable to more complicated combinatorial optimization problems in which the system representation varies over time, such as Vehicle Routing Problem(VRP). Thus, this paper propose a new model to overcome drawback of previous.</p>
+<p>Reference:</p>
 <ul>
 <li><a href="https://arxiv.org/abs/1802.04240">Reinforcement Learning for Solving the Vehicle Routing Problem</a></li>
+<li><a href="https://github.com/OptMLGroup/VRP-RL">code</a></li>
 </ul>
 <span id="more"></span>
+<p><img src="/2024/06/11/DL/DRL_COM/RLSVRP/figure1.png" alt="drawback of previous"></p>
+<p>As figure 1 have been show, once change a part of elements, we must update the whole input.</p>
+<p><img src="/2024/06/11/DL/DRL_COM/RLSVRP/figure2.png" alt="new model"></p>
+<p>Therefore, in new model, thet just simply leave out the encoder RNN and directly use the embedded inputs instead of the RNN hidden states. By this modification, many of the computational complications disappear, without decreasing the model’s efficiency.</p>
 ]]></content>
       <categories>
         <category>Machine Learning</category>
