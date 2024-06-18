@@ -22,22 +22,22 @@
     var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":-1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Git简单教程工作逻辑图： 每次更改完文件，需要将文件先增加进版本库，然后再提交改变确认本次所有修改完成，并备注本次内容。 reference:  莫凡PYTHON">
+  <meta name="description" content="Reference:  Hopfield模型的统计物理视频">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Git Note">
-<meta property="og:url" content="https://renyixiong-ai.github.io/2022/09/16/CS/git/git/index.html">
+<meta property="og:title" content="Replica">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/06/13/Phys/replica/replica/index.html">
 <meta property="og:site_name" content="Yixiong&#39;s Blog">
-<meta property="og:description" content="Git简单教程工作逻辑图： 每次更改完文件，需要将文件先增加进版本库，然后再提交改变确认本次所有修改完成，并备注本次内容。 reference:  莫凡PYTHON">
+<meta property="og:description" content="Reference:  Hopfield模型的统计物理视频">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2022/09/16/CS/git/git/workflow.png">
-<meta property="article:published_time" content="2022-09-15T16:00:01.000Z">
-<meta property="article:modified_time" content="2024-04-15T09:19:19.017Z">
+<meta property="article:published_time" content="2024-06-13T13:37:00.000Z">
+<meta property="article:modified_time" content="2024-06-16T05:34:26.854Z">
 <meta property="article:author" content="Ren Yixiong">
-<meta property="article:tag" content="Git">
+<meta property="article:tag" content="Spin Glass">
+<meta property="article:tag" content="Hopfield Model">
+<meta property="article:tag" content="Replica Method">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://renyixiong-ai.github.io/2022/09/16/CS/git/git/workflow.png">
 
-<link rel="canonical" href="https://renyixiong-ai.github.io/2022/09/16/CS/git/git/">
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/06/13/Phys/replica/replica/">
 
 
 <script id="page-configurations">
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>Git Note | Yixiong's Blog</title>
+  <title>Replica | Yixiong's Blog</title>
   
 
 
@@ -193,7 +193,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2022/09/16/CS/git/git/">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/06/13/Phys/replica/replica/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -206,7 +206,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Git Note
+          Replica
         </h1>
 
         <div class="post-meta">
@@ -216,14 +216,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2022-09-16 00:00:01" itemprop="dateCreated datePublished" datetime="2022-09-16T00:00:01+08:00">2022-09-16</time>
+              <time title="Created: 2024-06-13 21:37:00" itemprop="dateCreated datePublished" datetime="2024-06-13T21:37:00+08:00">2024-06-13</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-04-15 17:19:19" itemprop="dateModified" datetime="2024-04-15T17:19:19+08:00">2024-04-15</time>
+                <time title="Modified: 2024-06-16 13:34:26" itemprop="dateModified" datetime="2024-06-16T13:34:26+08:00">2024-06-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -231,7 +231,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
+                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
                 </span>
             </span>
 
@@ -248,14 +248,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.8k</span>
+              <span>2.3k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
+              <span>4 mins.</span>
             </span>
 
         </div>
@@ -267,42 +267,63 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Git简单教程"><a href="#Git简单教程" class="headerlink" title="Git简单教程"></a>Git简单教程</h1><p>工作逻辑图：<br><img src="/2022/09/16/CS/git/git/workflow.png" alt="逻辑图"></p>
-<p>每次更改完文件，需要将文件先增加进版本库，然后再提交改变确认本次所有修改完成，并备注本次内容。</p>
-<p>reference:</p>
+        <p>Reference:</p>
 <ul>
-<li><a target="_blank" rel="noopener" href="https://mofanpy.com/tutorials/others/git/">莫凡PYTHON</a></li>
+<li><a target="_blank" rel="noopener" href="https://campus.swarma.org/course/4913/study">Hopfield模型的统计物理视频</a></li>
 </ul>
 <span id="more"></span>
-<h1 id="基础操作"><a href="#基础操作" class="headerlink" title="基础操作"></a>基础操作</h1><p>创建一个新的仓库</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
-<p>查看当前版本库状态</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git status</span><br></pre></td></tr></table></figure>
-<p>增加进版本库</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git add .       #添加所有更改进版本库</span><br><span class="line">git add 文件     #添加具体文件进版本库</span><br></pre></td></tr></table></figure>
-<p>提交改变</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m &quot;这次提交的备注&quot;</span><br></pre></td></tr></table></figure>
-<h1 id="回到从前"><a href="#回到从前" class="headerlink" title="回到从前"></a>回到从前</h1><h2 id="查看历史版本"><a href="#查看历史版本" class="headerlink" title="查看历史版本"></a>查看历史版本</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git lod --oneline</span><br></pre></td></tr></table></figure>
-<h2 id="回到过去的版本"><a href="#回到过去的版本" class="headerlink" title="回到过去的版本"></a>回到过去的版本</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"># 不管我们之前有没有做了一些 add 工作, 这一步让我们回到 上一次的 commit</span><br><span class="line">$ git reset --hard HEAD    </span><br><span class="line"># 输出</span><br><span class="line">HEAD is now at 904e1ba change 2</span><br><span class="line">-----------------------</span><br><span class="line"># 看看所有的log</span><br><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br><span class="line">-----------------------</span><br><span class="line"># 回到 c6762a1 change 1</span><br><span class="line"># 方式1: &quot;HEAD^&quot;</span><br><span class="line">$ git reset --hard HEAD^  </span><br><span class="line"></span><br><span class="line"># 方式2: &quot;commit id&quot;</span><br><span class="line">$ git reset --hard c6762a1</span><br><span class="line">-----------------------</span><br><span class="line"># 看看现在的 log</span><br><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br></pre></td></tr></table></figure>
-<h2 id="在回到历史版本之后再回来"><a href="#在回到历史版本之后再回来" class="headerlink" title="在回到历史版本之后再回来"></a>在回到历史版本之后再回来</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#第一步</span><br><span class="line">$ git reflog</span><br><span class="line"># 输出</span><br><span class="line">c6762a1 HEAD@&#123;0&#125;: reset: moving to c6762a1</span><br><span class="line">904e1ba HEAD@&#123;1&#125;: commit (amend): change 2</span><br><span class="line">0107760 HEAD@&#123;2&#125;: commit: change 2</span><br><span class="line">c6762a1 HEAD@&#123;3&#125;: commit: change 1</span><br><span class="line">13be9a7 HEAD@&#123;4&#125;: commit (initial): create 1.py</span><br><span class="line"></span><br><span class="line">#第二步</span><br><span class="line">$ git reset --hard 904e1ba</span><br><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br></pre></td></tr></table></figure>
-<h2 id="单个文件回到过去"><a href="#单个文件回到过去" class="headerlink" title="单个文件回到过去"></a>单个文件回到过去</h2><p>利用 <code>checkout</code> 将过去版本的文件覆盖现在同名文件，然后作为当前版本的一个新的更新，更新进版本库。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ git log --oneline</span><br><span class="line"># 输出</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br><span class="line">---------------------</span><br><span class="line">$ git checkout c6762a1 -- 1.py  #checkout + id + -- + 文件名字</span><br></pre></td></tr></table></figure>
-<p>然后增加进版本库并提交改变</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ git add 1.py</span><br><span class="line">$ git commit -m &quot;back to change 1 and add comment for 1.py&quot;</span><br><span class="line">$ git log --oneline</span><br><span class="line"></span><br><span class="line"># 输出</span><br><span class="line">47f167e back to change 1 and add comment for 1.py</span><br><span class="line">904e1ba change 2</span><br><span class="line">c6762a1 change 1</span><br><span class="line">13be9a7 create 1.py</span><br></pre></td></tr></table></figure>
-<h1 id="推送到远程仓库"><a href="#推送到远程仓库" class="headerlink" title="推送到远程仓库"></a>推送到远程仓库</h1><p>创建远程仓库、设置本地文件帐号密码。首先在 github 创建新的仓库（不要添加README文件，以及创建主分支），之后按照 github 上提示，将本地文件推送到新的仓库。</p>
-<p>将主分支推送到远程仓库（老项目为master, 新项目为main）<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure></p>
-<p>如果远程库和本地库不相同，想要强行覆盖远程库<br>“””<br>    git push -u origin master -f<br>“””</p>
-<h1 id="拉取远程仓库内容"><a href="#拉取远程仓库内容" class="headerlink" title="拉取远程仓库内容"></a>拉取远程仓库内容</h1><p>本地文件在拉取远程仓库前没有修改：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull origin master</span><br></pre></td></tr></table></figure>
-<h2 id="本地文件发生改动"><a href="#本地文件发生改动" class="headerlink" title="本地文件发生改动"></a>本地文件发生改动</h2><p>首先获取远程仓库的文件：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch --all</span><br></pre></td></tr></table></figure></p>
-<p>接下来有两个选择：</p>
-<ul>
-<li>直接覆盖本地文件</li>
-<li>将远程仓库文件作为本地的一个分支</li>
+<h1 id="Average"><a href="#Average" class="headerlink" title="Average"></a>Average</h1><p>淬火平均（quenched average）：</p>
+<script type="math/tex; mode=display">\begin{align}
+\langle\ln Z\rangle 
+\end{align}</script><p>退火平均（annealed average）:</p>
+<script type="math/tex; mode=display">\begin{align}
+\ln\langle Z\rangle
+\end{align}</script><p>首先从数学上来看这两者是不一样的，可以把$\ln$当成一个凸函数来看待，本质分析的就是先平均再经过凸函数处理，还是先经过凸函数处理然后再平均。通过Jensen不等式有：</p>
+<script type="math/tex; mode=display">\langle\ln Z\rangle\leq\ln\langle Z\rangle</script><p>这两者有什么区别呢？</p>
+<p>对于一个物理量 $Q$ ，淬火平均表示为：</p>
+<script type="math/tex; mode=display">\begin{align} 
+\langle Q \rangle_{\text{quenched}} = \int P(\{J\}) \left[ \frac{1}{Z(\{J\})} \sum_{\{s\}} Q(\{s\}, \{J\}) e^{-\beta H(\{s\}, \{J\})} \right] d\{J\} 
+\end{align}</script><ul>
+<li>$\{J\}$：无序变量的集合（如随机耦合）。</li>
+<li>$P(\{J\})$：无序变量的概率分布。</li>
+<li>$\{s\}$：系统的状态（如自旋配置）。</li>
+<li>$H(\{s\}, \{J\})$：系统的哈密顿量（能量函数）。</li>
+<li>$Z(\{J\})$：对固定无序变量的配分函数。</li>
 </ul>
-<p>直接覆盖方案：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard origin/master</span><br></pre></td></tr></table></figure></p>
-<p>创建其它分支方案：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reset --hard origin/&lt;branch_name&gt;</span><br></pre></td></tr></table></figure></p>
-<h1 id="将远程内容部署到本地"><a href="#将远程内容部署到本地" class="headerlink" title="将远程内容部署到本地"></a>将远程内容部署到本地</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://.....</span><br></pre></td></tr></table></figure>
+<p>对于一个物理量 $Q$ ，退火平均表示为：</p>
+<script type="math/tex; mode=display">\begin{align} 
+\langle Q \rangle_{\text{annealed}} = \frac{1}{Z_{\text{annealed}}} \sum_{\{s\}, \{J\}} Q(\{s\}, \{J\}) e^{-\beta H(\{s\}, \{J\})}
+\end{align}</script><ul>
+<li>$Z_{\text{annealed}}$：退火平均下的配分函数：<script type="math/tex; mode=display">\begin{align} 
+Z_{\text{annealed}} = \sum_{\{s\}, \{J\}} e^{-\beta H(\{s\}, \{J\})}
+\end{align}</script></li>
+</ul>
+<p>两者的主要区别在$\{J\}$的处理上，对于淬火平均只是选取了其中的几个无序点进行计算，即固定$J$为特定的值。而退火平均将会考虑所有$J$的分布组合。以$\langle\ln Z\rangle $和$\ln\langle Z\rangle$进行区别，其中$Z$是对所有构型$S$进行的求和；$\langle\cdot\rangle$是对耦合系数$J$的平均，对于两种方式这个符号有着不同的含义，淬火平均只会选取其中的一些点进行计算，而退火平均将会计算所有的构型。</p>
+<p>对于铁磁Ising模型，由于$J$本固定的，因此不会存在上面的讨论的$\langle\cdot\rangle$符号的区别。但是对于Hopfield模型，其相互作用是随机连接的，这里存在$J$变化的问题，因此需要讨论退火与淬火的区别。</p>
+<p>这里有一个猜测，Jensen不等式什么时候取等号，就是对$\{J\}$进行平均的时候，由于每一个具体的$J$存在一个权重，因此可能将$\ln$计算变成一个线性的计算。<font color="red">想办法证明这个猜测。</font></p>
+<p>通常对于这两个概念来说，是从演化时间尺度上比较，淬火表示无序的时间尺度远大于动力学的时间尺度，退火表示无序与动力学的时间尺度差不多大。</p>
+<h1 id="Replica-Method"><a href="#Replica-Method" class="headerlink" title="Replica Method"></a>Replica Method</h1><p>利用数学中的极限有：</p>
+<script type="math/tex; mode=display">\begin{align}
+\ln Z=\lim_{n\to0}\frac{Z^n-1}{n}
+\end{align}</script><p>然后计算两边的期望值：</p>
+<script type="math/tex; mode=display">\begin{align}
+\langle\ln Z\rangle=\lim _{n \rightarrow 0} \frac{\left\langle Z^n\right\rangle-1}{n}=\lim _{n \rightarrow 0} \frac{\ln \left\langle Z^n\right\rangle}{n},
+\end{align}</script><p>其中 $\langle\cdot\rangle$ 是 $\xi$ 的无序平均。</p>
+<p>以下证明，以上公式第二个等号成立。首先利用$\ln z=z-\frac{z^2}{2}+\cdots$：</p>
+<script type="math/tex; mode=display">\begin{align}
+\langle\ln Z\rangle=\lim _{n \rightarrow 0} \frac{n\langle\ln Z\rangle}{n}=\lim _{n \rightarrow 0} \frac{\ln (1+n\langle\ln Z\rangle)}{n}
+\end{align}</script><p>因为 $Z^n \simeq 1+n \ln Z+\cdots$, 得到 $\left\langle Z^n\right\rangle \simeq 1+n\langle\ln Z\rangle \cdots$，故当$n$是一个小量的时候可以将展开公式从右到左用：</p>
+<script type="math/tex; mode=display">\begin{align}
+\lim _{n \rightarrow 0} \frac{\ln (1+n\langle\ln Z\rangle)}{n}=\lim _{n \rightarrow 0} \frac{\ln \left\langle Z^n\right\rangle}{n}
+\end{align}</script><p>其中 $n$ 足够小，可以利用展开$Z^n=e^{n \ln Z}=1+$ $n \ln Z+\cdots$. 每个自旋的平均值可以写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+f=\lim _{n \rightarrow 0} \lim _{N \rightarrow \infty} \frac{-\ln \left\langle Z^n\right\rangle}{\beta n N} .
+\end{align}</script><font color="red">stop</font>
+
+
+
+
+
 
     </div>
 
@@ -312,7 +333,9 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/Git/" rel="tag"># Git</a>
+              <a href="/tags/Spin-Glass/" rel="tag"># Spin Glass</a>
+              <a href="/tags/Hopfield-Model/" rel="tag"># Hopfield Model</a>
+              <a href="/tags/Replica-Method/" rel="tag"># Replica Method</a>
           </div>
 
         
@@ -320,10 +343,13 @@
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2024/01/19/DL/Score_matching_model/Score_matching_model/" rel="next" title="Score matching model">
-      Score matching model <i class="fa fa-chevron-right"></i>
+    <a href="/2024/06/12/Phys/Hopfield/Hopfield/" rel="prev" title="Hopfield Model">
+      <i class="fa fa-chevron-left"></i> Hopfield Model
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/06/15/Phys/Hopfield/Hopfield1/" rel="next" title="Hopfield Model 自由能">
+      Hopfield Model 自由能 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -383,7 +409,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Git%E7%AE%80%E5%8D%95%E6%95%99%E7%A8%8B"><span class="nav-number">1.</span> <span class="nav-text">Git简单教程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C"><span class="nav-number">2.</span> <span class="nav-text">基础操作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9E%E5%88%B0%E4%BB%8E%E5%89%8D"><span class="nav-number">3.</span> <span class="nav-text">回到从前</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E7%9C%8B%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC"><span class="nav-number">3.1.</span> <span class="nav-text">查看历史版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E5%88%B0%E8%BF%87%E5%8E%BB%E7%9A%84%E7%89%88%E6%9C%AC"><span class="nav-number">3.2.</span> <span class="nav-text">回到过去的版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E5%9B%9E%E5%88%B0%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC%E4%B9%8B%E5%90%8E%E5%86%8D%E5%9B%9E%E6%9D%A5"><span class="nav-number">3.3.</span> <span class="nav-text">在回到历史版本之后再回来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8D%95%E4%B8%AA%E6%96%87%E4%BB%B6%E5%9B%9E%E5%88%B0%E8%BF%87%E5%8E%BB"><span class="nav-number">3.4.</span> <span class="nav-text">单个文件回到过去</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8E%A8%E9%80%81%E5%88%B0%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93"><span class="nav-number">4.</span> <span class="nav-text">推送到远程仓库</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%8B%89%E5%8F%96%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%E5%86%85%E5%AE%B9"><span class="nav-number">5.</span> <span class="nav-text">拉取远程仓库内容</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E6%96%87%E4%BB%B6%E5%8F%91%E7%94%9F%E6%94%B9%E5%8A%A8"><span class="nav-number">5.1.</span> <span class="nav-text">本地文件发生改动</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%86%E8%BF%9C%E7%A8%8B%E5%86%85%E5%AE%B9%E9%83%A8%E7%BD%B2%E5%88%B0%E6%9C%AC%E5%9C%B0"><span class="nav-number">6.</span> <span class="nav-text">将远程内容部署到本地</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Average"><span class="nav-number">1.</span> <span class="nav-text">Average</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Replica-Method"><span class="nav-number">2.</span> <span class="nav-text">Replica Method</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

@@ -22,15 +22,15 @@
     var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":-1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Link:  Hopfield 相图   根据前文已知： \begin{equation} \begin{aligned} \omega_{ij}&amp;&#x3D;\frac{1}{N}\xi_i\xi_j \quad i\neq j\\ \omega_{ii}&amp;&#x3D;0 \end{aligned} \label{omega} \end{equation}\begin{equation} H&#x3D;-\frac{1}{2">
+  <meta name="description" content="Link:  Hopfield 相图 Replica   根据前文已知： \begin{equation} \begin{aligned} \omega_{ij}&amp;&#x3D;\frac{1}{N}\xi_i\xi_j \quad i\neq j\\ \omega_{ii}&amp;&#x3D;0 \end{aligned} \label{omega} \end{equation}\begin{equation} H&#x3D;-\f">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hopfield Model 自由能">
 <meta property="og:url" content="https://renyixiong-ai.github.io/2024/06/15/Phys/Hopfield/Hopfield1/index.html">
 <meta property="og:site_name" content="Yixiong&#39;s Blog">
-<meta property="og:description" content="Link:  Hopfield 相图   根据前文已知： \begin{equation} \begin{aligned} \omega_{ij}&amp;&#x3D;\frac{1}{N}\xi_i\xi_j \quad i\neq j\\ \omega_{ii}&amp;&#x3D;0 \end{aligned} \label{omega} \end{equation}\begin{equation} H&#x3D;-\frac{1}{2">
+<meta property="og:description" content="Link:  Hopfield 相图 Replica   根据前文已知： \begin{equation} \begin{aligned} \omega_{ij}&amp;&#x3D;\frac{1}{N}\xi_i\xi_j \quad i\neq j\\ \omega_{ii}&amp;&#x3D;0 \end{aligned} \label{omega} \end{equation}\begin{equation} H&#x3D;-\f">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-06-15T13:37:00.000Z">
-<meta property="article:modified_time" content="2024-06-15T14:26:00.515Z">
+<meta property="article:modified_time" content="2024-06-18T08:27:41.114Z">
 <meta property="article:author" content="Ren Yixiong">
 <meta property="article:tag" content="Spin Glass">
 <meta property="article:tag" content="Hopfield Model">
@@ -215,10 +215,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2024-06-15 21:37:00 / Modified: 22:26:00" itemprop="dateCreated datePublished" datetime="2024-06-15T21:37:00+08:00">2024-06-15</time>
+              <time title="Created: 2024-06-15 21:37:00" itemprop="dateCreated datePublished" datetime="2024-06-15T21:37:00+08:00">2024-06-15</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-06-18 16:27:41" itemprop="dateModified" datetime="2024-06-18T16:27:41+08:00">2024-06-18</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -242,14 +248,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>18k</span>
+              <span>11k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>33 mins.</span>
+              <span>20 mins.</span>
             </span>
 
         </div>
@@ -263,7 +269,8 @@
       
         <p>Link:</p>
 <ul>
-<li><a href="/2024/06/15/Phys/Hopfield/Hopfield2/" title="Hopfield Model 相图">Hopfield 相图</a>
+<li><a href="/2024/06/15/Phys/Hopfield/Hopfield2/" title="Hopfield Model">Hopfield 相图</a></li>
+<li><a href="/2024/06/13/Phys/replica/replica/" title="Replica">Replica</a>
 </li>
 </ul>
 <p>根据前文已知：</p>
@@ -274,26 +281,13 @@
 \end{aligned} \label{omega}
 \end{equation}</script><script type="math/tex; mode=display">\begin{equation}
 H=-\frac{1}{2} \sum_{i, j}^N w_{i j} S_i S_j \label{hamiltonian}
-\end{equation}</script><h1 id="Replica-Method"><a href="#Replica-Method" class="headerlink" title="Replica Method"></a>Replica Method</h1><p>在数学中有：</p>
-<script type="math/tex; mode=display">\begin{align}
-\ln(Z)=\lim_{n\to0}\frac{Z^n-1}{n}
-\end{align}</script><p>然后计算期望值：</p>
-<script type="math/tex; mode=display">\begin{align}
-\langle\ln Z\rangle=\lim _{n \rightarrow 0} \frac{\left\langle Z^n\right\rangle-1}{n}=\lim _{n \rightarrow 0} \frac{\ln \left\langle Z^n\right\rangle}{n},
-\end{align}</script><p>其中 $\langle\cdot\rangle$ 是 $\xi$ 的无序平均. 因为 $Z^n \simeq 1+n \ln Z+\cdots$, 得到 $\left\langle Z^n\right\rangle \simeq 1+n\langle\ln Z\rangle \cdots$. </p>
-<p>可以得到：</p>
-<script type="math/tex; mode=display">\begin{align}
-\lim _{n \rightarrow 0} \frac{\ln \left\langle Z^n\right\rangle}{n}=\lim _{n \rightarrow 0} \frac{\ln (1+n\langle\ln Z\rangle)}{n}=\lim _{n \rightarrow 0} \frac{n\langle\ln Z\rangle}{n}=\langle\ln Z\rangle,
-\end{align}</script><p>其中 $n$ 足够小，可以利用展开$Z^n=e^{n \ln Z}=1+$ $n \ln Z+\cdots$. 每个自旋的平均值可以写为：</p>
-<script type="math/tex; mode=display">\begin{align}
-f=\lim _{n \rightarrow 0} \lim _{N \rightarrow \infty} \frac{-\ln \left\langle Z^n\right\rangle}{\beta n N} .
-\end{align}</script><h1 id="Free-Energy"><a href="#Free-Energy" class="headerlink" title="Free Energy"></a>Free Energy</h1><p>假定能够存储$P=\alpha N$个随机模式。结合$\eqref{omega}$与$\eqref{hamiltonian}$有：</p>
+\end{equation}</script><h1 id="Free-Energy"><a href="#Free-Energy" class="headerlink" title="Free Energy"></a>Free Energy</h1><p>假定能够存储$P=\alpha N$个随机模式。结合$\eqref{omega}$与$\eqref{hamiltonian}$有：</p>
 <script type="math/tex; mode=display">\begin{aligned}
 \left\langle Z^n\right\rangle & =\left\langle\operatorname{Tr} \exp \left[\frac{\beta}{2 N} \sum_{i, j}^N \sum_{\mu=1}^P \sum_{\rho=1}^n \xi_i^\mu \xi_j^\mu S_i^\rho S_j^\rho\right]\right\rangle \\
 & =\left\langle\operatorname{Tr} \exp \left[\frac{\beta}{2 N} \sum_{\rho, \mu}\left(\sum_i \xi_i^\mu S_i^\rho\right)\left(\sum_j \xi_j^\mu S_j^\rho\right)\right]\right\rangle \\
 & =\left\langle\operatorname{Tr} \exp \left[\frac{\beta N}{2} \sum_{\rho, \mu}\left(\frac{1}{N} \sum_i \xi_i^\mu S_i^\rho\right)^2\right]\right\rangle \\
 & =\left\langle\operatorname{Tr} \prod_{\rho, \mu} \exp \left[\frac{\beta N}{2}\left(\frac{1}{N} \sum_i \xi_i^\mu S_i^\rho\right)^2\right]\right\rangle,
-\end{aligned}</script><p>其中$\operatorname{Tr}$表示对所有构型${\mathbf{S}}$求和，$\langle\cdot\rangle$表示淬火无序平均。将其中指数中的二次项转化为高斯积分：</p>
+\end{aligned}</script><p>其中$\operatorname{Tr}$表示对所有构型${\mathbf{S}}$求和，$\langle\cdot\rangle$表示淬火无序平均。使用Hubbard-Stratonovich transformation技巧，将其中指数中的二次项转化为高斯积分：</p>
 <script type="math/tex; mode=display">\begin{align}
 e^{a b^2}=\sqrt{\frac{a}{\pi}} \int e^{-a x^2+2 a b x} d x
 \end{align}</script><p>设定这些参数为：</p>
@@ -309,7 +303,7 @@ a \rightarrow \frac{\beta N}{2}
 & =\left\langle\operatorname{Tr} \int \prod_{\rho', \mu'} \sqrt{\frac{\beta N}{2 \pi}} d m_{\rho'}^{\mu'} \exp \left[-\frac{\beta N}{2} \sum_{\rho, \mu}\left(m_\rho^\mu\right)^2+\beta \sum_{\rho, \mu} m_\rho^\mu \sum_i \xi_i^\mu S_i^\rho\right]\right\rangle \\
 & =\left\langle\operatorname{Tr} \int \prod_{\rho', \mu'} \sqrt{\frac{\beta N}{2 \pi}} d m_{\rho'}^{\mu'} \exp \left[-\frac{\beta N}{2} \sum_{\mu \geq 2} \sum_\rho\left(m_\rho^\mu\right)^2+\right.\left.\beta \sum_{\mu \geq 2} \sum_\rho m_\rho^\mu \sum_i \xi_i^\mu S_i^\rho-\frac{\beta N}{2} \sum_\rho\left(m_\rho^1\right)^2+\beta \sum_\rho m_\rho^1 \sum_i \xi_i^1 S_i^\rho\right]\right\rangle .
 \end{align}</script><p>最后假设只有第一个模式被恢复$\mu=1$，在表达式中将其单独分出来，因此交错项$m_\rho^\mu \sim O(1)$。</p>
-<p>接下来考虑没有被恢复的模式($\mu \geq 2$)，由于没有被恢复，因此$\left\langle\sum_i \xi_i^\mu S_i^\rho\right\rangle_{\xi}=0$并且$\left\langle\left(\sum_i \xi_i^\mu S_i^\rho\right)^2\right\rangle_{\xi}=N+\left\langle\sum_{i \neq j} \xi_i^\mu \xi_j^\mu S_i^\rho S_j^\rho\right\rangle_{\xi}=N$。$m_\rho^\mu(\mu \geq 2)$的大小数量级为：</p>
+<p>接下来考虑没有被恢复的模式($\mu \geq 2$)，由于没有被恢复，因此$\left\langle\sum_i \xi_i^\mu S_i^\rho\right\rangle_{\xi}=0$并且$\left\langle\left(\sum_i \xi_i^\mu S_i^\rho\right)^2\right\rangle_{\xi}=N+\left\langle\sum_{i \neq j} \xi_i^\mu \xi_j^\mu S_i^\rho S_j^\rho\right\rangle_{\xi}=N$。$m_\rho^\mu(\mu \geq 2)$的大小数量级为（可以将这个过程认为是一维链上的随机游走过程，计算的是绝对值的期望）：</p>
 <script type="math/tex; mode=display">\begin{align}
 m_\rho^\mu=\frac{1}{N} \sum_i \xi_i^\mu S_i^\rho \approx O\left(\frac{1}{\sqrt{N}}\right)
 \end{align}</script><p>为了将整个数量级变为$O(1)$，因此将$m^\mu_\rho$进行变换$m_\rho^\mu \rightarrow \frac{m_\rho^\mu}{\sqrt{\beta N}}$。变化之后为：</p>
@@ -362,231 +356,57 @@ q_{\rho \sigma}&=\left\{\begin{array}{ll}
 \begin{aligned}
 \delta\left(q_{\rho \sigma}-\frac{1}{N} \sum_i S_i^\rho S_i^\sigma\right) \propto \int_{-\infty}^{+\infty} d r_{\rho \sigma} \exp \left[-i r_{\rho \sigma} q_{\rho \sigma}+ i r_{\rho \sigma} \frac{1}{N} \sum_i S_i^\rho S_i^\sigma\right]
 \end{aligned}</script><p>将$r$进行重标度$r_{\rho \sigma} \rightarrow -\frac{\mathrm{i} N \alpha \beta^2}{2} r_{\rho \sigma}$，使得$r_{\rho \sigma} \sim O(1)$，这种操作对计算结果没有影响。上式变换忽略了因子项。</p>
-<font color="red">这么操作可能之后有用？</font>其中$\alpha=P/N$。
-
-$$\begin{align}
+<p><font color="blue">这样操作使得最后的结果变得简洁。</font>其中$\alpha=P/N$。</p>
+<script type="math/tex; mode=display">\begin{align}
 \delta\left(q_{\rho \sigma}-\frac{1}{N} \sum_i S_i^\rho S_i^\sigma\right) \propto \int_{-\infty}^{+\infty} d r_{\rho \sigma} \exp \left[-\frac{N \alpha \beta^2}{2} r_{\rho \sigma} q_{\rho \sigma}+\frac{\alpha \beta^2}{2} \sum_{i} r_{\rho \sigma} S_i^\rho S_i^\sigma\right] \label{fuliye}
-\end{align}$$
-
-接下来将$\eqref{zn}$中的最后一项与$\eqref{fuliye}$中最后一项组合一起：
-$$\begin{align}
+\end{align}</script><p>接下来将$\eqref{zn}$中的最后一项与$\eqref{fuliye}$中最后一项组合一起：</p>
+<script type="math/tex; mode=display">\begin{align}
 \left\langle\operatorname{Tr} \exp \left[\beta \sum_\rho m_\rho^1 \sum_i \xi_i^1 S_i^\rho+\frac{\alpha \beta^2}{2} \sum_{i} r_{\rho \sigma} S_i^\rho S_i^\sigma\right]\right\rangle_{\xi^1} = & \left\langle\exp \left\{\sum_i \ln \operatorname{Tr} \exp \left(\beta \sum_\rho m_\rho^1 \xi_i^1 S^\rho+\frac{\alpha \beta^2}{2} r_{\rho \sigma} S^\rho S^\sigma\right)\right\}\right\rangle_{\xi^1} \\
 = & \exp \left\{N\left\langle\ln \operatorname{Tr} \exp \left(\beta \sum_\rho m_\rho^1 \xi^1 S^\rho+\frac{\alpha \beta^2}{2}  r_{\rho \sigma} S^\rho S^\sigma\right)\right\rangle_{\xi^1}\right\} \\
 := & \exp \left\{N\left\langle\ln \operatorname{Tr} \exp \left(\beta H_{\xi^1}\right)\right\rangle_{\xi^1}\right\}
-\end{align}$$
-
-定义：
-$$\begin{align}
-\beta H_{\xi^1}=\frac{1}{2} \alpha \beta^2 r_{\rho \sigma} S^\rho S^\sigma+\beta \sum_\rho m_\rho^1 \xi^1 S^\rho,
-\end{align}$$
-
-最终$\eqref{zn}$转化为：
-$$\begin{equation}
+\end{align}</script><p>定义，因为上面分析的是一个$q_{\rho \sigma}$的$\delta$函数展开，原来表达式中在积分符号中含有$\prod_{\rho \sigma}$，在指数中将会增加求和符号$\sum_{\rho \sigma}$：</p>
+<script type="math/tex; mode=display">\begin{align}
+\beta H_{\xi^1}=\frac{1}{2} \alpha \beta^2 \sum_{\rho \sigma}r_{\rho \sigma} S^\rho S^\sigma+\beta \sum_\rho m_\rho^1 \xi^1 S^\rho,
+\end{align}</script><p>最终$\eqref{zn}$转化为：</p>
+<script type="math/tex; mode=display">\begin{equation}
 \begin{aligned}
 & \left\langle Z^n\right\rangle \propto \int \prod_\rho d m_\rho^1 \prod_{\rho, \sigma} d q_{\rho \sigma} d r_{\rho \sigma} \exp \left[-\frac{N}{2} \alpha \beta^2 \sum_{\rho, \sigma} r_{\rho \sigma} q_{\rho \sigma}\right] \\
 & \times \exp \left[-\frac{P-1}{2} \operatorname{Tr} \ln [\mathbf{I}-\beta \mathbf{Q}]\right] \exp \left[-\frac{\beta N}{2} \sum_\rho\left(m_\rho^1\right)^2+N\left\langle\ln \operatorname{Tr} e^{\beta H_{\xi^1}}\right\rangle_{\xi^1}\right] 
 \end{aligned} \label{zn2}
-\end{equation}$$
-
-因为假定$N$足够大，使用 [Laplace's Method](https://wuli.wiki/changed/LapAsm.html#eq_LapAsm_1)：
-
-$$
-\int_a^b e^{N f(z)} d z \approx \sqrt{\frac{2 \pi}{-N f^{\prime \prime}\left(z_0\right)}} e^{N f\left(z_0\right)}
-$$
-其中$Z_0$表示$f(z)$的极值点，这样就把积分转化为在极值点起作用的标量。采用近似$\left\langle Z^n\right\rangle \sim$ $e^{N F\left(\theta^*\right)}$，其中$F\left(\theta^*\right)=\max _\theta F(\theta)$，其中用$\theta$表示序参量。
-
-淬火无序平均值变为：
-$$\begin{align}
+\end{equation}</script><p>因为假定$N$足够大，使用 <a target="_blank" rel="noopener" href="https://wuli.wiki/changed/LapAsm.html#eq_LapAsm_1">Laplace’s Method</a>：</p>
+<script type="math/tex; mode=display">
+\int_a^b e^{N f(z)} d z \approx \sqrt{\frac{2 \pi}{-N f^{\prime \prime}\left(z_0\right)}} e^{N f\left(z_0\right)}</script><p>其中$Z_0$表示$f(z)$的极值点，这样就把积分转化为在极值点起作用的标量。采用近似  $\left\langle Z^n\right\rangle \sim e^{N F\left(\theta^*\right)}$，其中用$\theta$表示序参量。</p>
+<script type="math/tex; mode=display">\begin{equation}
+F(\theta^{*})=\max_\theta F(\theta)
+\end{equation}</script><p>淬火无序平均值变为：</p>
+<script type="math/tex; mode=display">\begin{align}
 \langle\ln Z\rangle=\lim _{n \rightarrow 0} \frac{\ln \left\langle Z^n\right\rangle}{n}=\lim _{n \rightarrow 0} \frac{\ln e^{N F\left(\theta^*\right)}}{n}=N \lim _{n \rightarrow 0} \frac{F\left(\theta^*\right)}{n} \label{847}
-\end{align}$$
-其中：
-
-$$\begin{align}
+\end{align}</script><p>当$n$足够大时，近似有$P-1 \simeq P=\alpha N$：</p>
+<script type="math/tex; mode=display">\begin{align}
 F\left(r_{\rho \sigma}, q_{\rho \sigma}, m_\rho^1\right)= & -\frac{\alpha \beta^2}{2} \sum_{\rho, \sigma} r_{\rho \sigma} q_{\rho \sigma}-\frac{\alpha}{2} \operatorname{Tr} \ln [\mathbf{I}-\beta \mathbf{Q}] -\frac{\beta}{2} \sum_\rho\left(m_\rho^1\right)^2+\left\langle\ln \operatorname{Tr} e^{\beta H_{\xi^1}}\right\rangle_{\xi^1} \label{freeenergy1}
-\end{align}$$
-
-当$n$足够大时，近似有$P-1 \simeq P=\alpha N$。这个模型的序参量是$\left(r_{\rho \sigma}, q_{\rho \sigma}, m_\rho^1\right)$。
-
-接下来计算$F\left(r_{\rho \sigma}, q_{\rho \sigma}, m_\rho^1\right)$的极值，首先处理$q_{\rho \sigma}$，结合$\eqref{zn}$：
-
-$$\begin{align}
+\end{align}</script><h1 id="序参量分析"><a href="#序参量分析" class="headerlink" title="序参量分析"></a>序参量分析</h1><p>通过以上讨论已经得到与相变相关的序参量$\left(r_{\rho \sigma}, q_{\rho \sigma}, m_\rho^1\right)$，即其满足的方程$\eqref{freeenergy1}$。在继续进行极值分析前，先回顾一下其中每一个变量的含义。$\alpha$是存储模式的比例；$\beta$是逆温度；$r$是在进行傅里叶变换的时候引入的变量；$q$是在进行变量替换时候引入的变量；$\mathbf{Q}$是$q$矩阵形式；$m$是在进行高斯积分引入的变量；$H_\xi$是将$S$重新组合之后的表达形式。</p>
+<p>接下来计算$F\left(r_{\rho \sigma}, q_{\rho \sigma}, m_\rho^1\right)$的极值，首先处理$q_{\rho \sigma}$，结合$\eqref{zn}$：</p>
+<script type="math/tex; mode=display">\begin{align}
 \frac{\partial F}{\partial q_{\rho \sigma}}=0 \Rightarrow \frac{\partial}{\partial q_{\rho \sigma}}\left[-\frac{N \alpha \beta^2}{2} \sum_{\rho, \sigma} r_{\rho \sigma} q_{\rho \sigma}+\frac{\beta}{2}(\sqrt{\beta N})^2 \sum_{\mu \geq 2} \sum_{\rho, \sigma} m_\rho^\mu q_{\rho \sigma} m_\sigma^\mu\right]=0 \text {, }
-\end{align}$$
-
-得到解为：
-$$\begin{align}
+\end{align}</script><p>得到解为：</p>
+<script type="math/tex; mode=display">\begin{align}
 r_{\rho \sigma}=\frac{1}{\alpha} \sum_{\mu \geq 2} m_\rho^\mu m_\sigma^\mu
-\end{align}$$
-
-从表达式中可以看出，之前进行标度的变换，目的是为了使得最终的共轭关系变得更直观。
-
-然后处理$m_\rho^\mu$，结合最开始的$\eqref{znstart}$：
-
-$$\begin{align}
+\end{align}</script><p>从表达式中可以看出，之前进行标度的变换，目的是为了使得最终的共轭关系变得更直观。</p>
+<p>然后处理$m_\rho^\mu$，结合最开始的$\eqref{znstart}$：</p>
+<script type="math/tex; mode=display">\begin{align}
 \frac{\partial F}{\partial m_\rho^\mu}=0 \Rightarrow \frac{\partial}{\partial m_\rho^\mu}\left[-\frac{\beta N}{2}\left(m_\rho^\mu\right)^2+\beta m_\rho^\mu \sum_i \xi_i^\mu S_i^\rho\right]=0
-\end{align}$$
-
-可以得到：
-$$\begin{align}
+\end{align}</script><p>可以得到：</p>
+<script type="math/tex; mode=display">\begin{align}
 m_\rho^\mu=\frac{1}{N} \sum_i \xi_i^\mu S_i^\rho
-\end{align}$$
-
-可以看出$m_\rho^\mu$在处理不同的模式之间影响的作用，也称作交叠项。
-
-最后处理$r_{\rho\sigma}$，结合$\eqref{zn2}$：
-$$\begin{align}
+\end{align}</script><p>可以看出$m_\rho^\mu$在处理不同的模式之间影响的作用，也称作交叠项。</p>
+<p>最后处理$r_{\rho\sigma}$，结合$\eqref{zn2}$：</p>
+<script type="math/tex; mode=display">\begin{align}
 \frac{\partial F}{\partial r_{\rho \sigma}}=0 \Rightarrow \frac{\partial}{\partial r_{\rho \sigma}}\left[-\frac{N \alpha \beta^2}{2} \sum_{\rho, \sigma} r_{\rho \sigma} q_{\rho \sigma}+\frac{\alpha \beta^2}{2} \sum_{i, \rho, \sigma} r_{\rho \sigma} S_i^\rho S_i^\sigma\right]=0,
-\end{align}$$
-
-得到序参量：
-$$\begin{align}
+\end{align}</script><p>得到序参量：</p>
+<script type="math/tex; mode=display">\begin{align}
 q_{\rho \sigma}=\frac{1}{N} \sum_i S_i^\rho S_i^\sigma
-\end{align}$$
-
-$q_{\rho \sigma}$通常理解为两个纯态之间的相互重叠。如果一个单一状态主导了相空间，爱德华兹-安德森序参量就用来表征该状态的大小。
-
-# Replica-Symmetric Ansätz
-讨论到以上的情形，为了继续分析，需要对重叠矩阵做一个近似（考虑最简单的形式）：在复制索引的置换下重叠是不变的。这被称为副本对称（RS）假设。
-
-$$\begin{align}
-\left\{\begin{array}{l}
-r_{\rho \sigma}=r, \forall \rho, \sigma \\
-m_\rho^1=m, \forall \rho \\
-q_{\rho \sigma}=q, \forall \rho \neq \sigma
-\end{array} \right.
-\end{align}$$
-
-将$\eqref{freeenergy1}$改写为：
-$$
-\begin{aligned}
-F(r, q, m)= & -\frac{\alpha \beta^2}{2} r q\left(n^2-n\right)-\frac{\alpha \beta^2}{2} n r-\frac{\alpha}{2} \operatorname{Tr} \ln [\mathbf{I}-\beta \mathbf{Q}] \\
-& -\frac{\beta}{2} n m^2+\left\langle\ln \operatorname{Tr} e^{\beta H_{\xi}}\right\rangle
-\end{aligned}
-$$
-
-结合$\eqref{847}$:
-$$\begin{align}
-\langle\ln Z\rangle= & \frac{N \alpha \beta^2 r q}{2}-\frac{N \alpha \beta^2 r}{2}-\frac{\alpha N}{2} \lim _{n \rightarrow 0} \frac{\operatorname{Tr} \ln [\mathbf{I}-\beta \mathbf{Q}]}{n}-\frac{\beta N m^2}{2}+N \lim _{n \rightarrow 0} \frac{\left\langle\ln \operatorname{Tr} e^{\beta H_{\xi^1}}\right\rangle}{n} \label{zn3}\\
-\beta H_{\xi^1}=&\beta m \xi^1 \sum_\rho S^\rho+\frac{1}{2} \alpha \beta^2 r \sum_{\rho, \sigma} S^\rho S^\sigma 
-\end{align}$$
-
-<font color="red">这里$H$中是否要对$\rho\sigma$求和没有明白，需要再继续看一看。</font>
-
-<p>首先计算$\eqref{zn3}$中最后一项：</p>
-<script type="math/tex; mode=display">\begin{align}
-\operatorname{Tr} e^{\beta H_{\xi} 1} & =\operatorname{Tr} e^{\beta m \xi^1 \Sigma_\rho S^\rho+\frac{1}{2} \alpha \beta^2 r\left(\sum_\rho S^\rho\right)^2} \\
-& :=\operatorname{Tr} e^{A\left(\Sigma_\rho S^\rho\right)^2+B \Sigma_\rho S^\rho} \\
-& =\operatorname{Tr} \sqrt{\frac{A}{\pi}} \int d z e^{-A z^2+2 A z \sum_\rho S^\rho+B \Sigma_\rho S^\rho} \\
-& =\sqrt{\frac{A}{\pi}} \int d z e^{-A z^2} \operatorname{Tr} \prod_\rho e^{(2 A z+B) S^\rho} \\
-& =\sqrt{\frac{\alpha \beta^2 r}{2 \pi}} \int d z e^{-\frac{1}{2} \alpha \beta^2 r z^2}\left[2 \cosh \left(\alpha \beta^2 r z+\beta m \xi^1\right)\right]^n \\
-& =\sqrt{\frac{\alpha \beta^2 r}{2 \pi}} \int d z e^{-\frac{1}{2} \alpha \beta^2 r z^2+n \ln \left[2 \cosh \left(\alpha \beta^2 r z+\beta m \xi^1\right)\right]} \\
-& =\sqrt{\frac{1}{2 \pi}} \int d z e^{-\frac{1}{2} z^2+n \ln \left[2 \cosh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right]} .
-\end{align}</script><p>并且可知其极限为：</p>
-<script type="math/tex; mode=display">\begin{align}
-\lim _{n \rightarrow 0} \operatorname{Tr} e^{\beta H_{\xi} 1}=\sqrt{\frac{1}{2 \pi}} \int d z e^{-\frac{1}{2} z^2}=1
-\end{align}</script><p>由此可获得最后一项为：</p>
-<script type="math/tex; mode=display">\begin{align}
-& \lim _{n \rightarrow 0} \frac{\left\langle\ln \operatorname{Tr} e^{\beta H_{\xi}}\right\rangle}{n} \\
-& =\left\langle\lim _{n \rightarrow 0} \frac{\frac{d}{d n} \operatorname{Tr} e^{\beta H_{\xi} 1}}{\operatorname{Tr} e^{\beta H_{\xi} 1}}\right\rangle \\
-& =\left\langle\sqrt{\frac{1}{2 \pi}} \lim _{n \rightarrow 0} \frac{d}{d n} \int d z e^{-\frac{1}{2} z^2+n \ln \left[2 \cosh \left(\beta \sqrt{a r} z+\beta m \xi^1\right)\right]}\right\rangle \\
-& =\left\langle\sqrt{\frac{1}{2 \pi}} \lim _{n \rightarrow 0} \int d z e^{-\frac{1}{2} z^2} \frac{d}{d n}\left[2 \cosh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right]^n\right\rangle \\
-& =\left\langle\sqrt{\frac{1}{2 \pi}} \lim _{n \rightarrow 0} \int d z e^{-\frac{1}{2} z^2}\left[2 \cosh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right]^n \ln \left[2 \cosh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right]\right\rangle \\
-& =\left\langle\sqrt{\frac{1}{2 \pi}} \int d z e^{-\frac{1}{2} z^2} \lim _{n \rightarrow 0}\left[2 \cosh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right]^n \ln \left[2 \cosh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right]\right\rangle \\
-& =\left\langle\sqrt{\frac{1}{2 \pi}} \int d z e^{-\frac{1}{2} z^2} \ln \left[2 \cosh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right]\right\rangle \\
-& =\int D z\left\langle\ln \left[2 \cosh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right]\right\rangle 
-\end{align}</script><font color="red">最后一项$Dz$是什么？</font>
-
-<p>然后计算$\eqref{zn3}$中第三项。由于$\mathbf{Q}$是对称矩阵，将其对角化：</p>
-<script type="math/tex; mode=display">\begin{align}
-\mathbf{A Q A}^{-1}=\Lambda=\operatorname{diag}\left(\lambda_1, \lambda_2, \ldots, \lambda_n\right) 
-\end{align}</script><p>将$\ln [\mathbf{I}-\beta \mathbf{Q}]$进行指数展开$\ln (1-x)=-\sum_{n=1}^{\infty} \frac{x^n}{n}$，得到：</p>
-<script type="math/tex; mode=display">\begin{align}
-\operatorname{Tr} \ln [\mathbf{I}-\beta \mathbf{Q}] & =\operatorname{Tr}\left\{\mathbf{A} \cdot \ln [\mathbf{I}-\beta \mathbf{Q}] \cdot \mathbf{A}^{-1}\right\} \\
-& =-\operatorname{Tr}\left\{\sum_{l=1}^{\infty} \frac{\beta^l\left(\mathbf{A Q A}^{-1}\right)^l}{l}\right\} \\
-& =-\operatorname{Tr}\left\{\sum_{l=1}^{\infty} \frac{\beta^l(\Lambda)^l}{l}\right\} \\
-& =-\sum_{l=1}^{\infty} \frac{\beta^l}{l} \sum_{i=1}^n \lambda_i^l=\sum_{i=1}^n \ln \left[1-\beta \lambda_i\right]
-\end{align}</script><p>再结合矩阵恒等式$\operatorname{Tr} \ln \mathbf{K}=\ln \operatorname{det} \mathbf{K}$，可以计算$\mathbf{Q}$的本征值：</p>
-<script type="math/tex; mode=display">\begin{align}
-& \left|\begin{array}{cccc}
-1-\lambda & q & \cdots & q \\
-q & 1-\lambda & \cdots & q \\
-\vdots & \vdots & & \vdots \\
-q & q & \cdots & 1-\lambda
-\end{array}\right| \\
-& =\left|\begin{array}{cccc}
-1-\lambda+(n-1) q & 1-\lambda+(n-1) q & \cdots & 1-\lambda+(n-1) q \\
-q & 1-\lambda & \cdots & q \\
-\vdots & \vdots & & \vdots \\
-q & q & \cdots & 1-\lambda
-\end{array}\right| \\
-& =[1-\lambda+(n-1) q]\left|\begin{array}{cccc}
-1 & 1 & \cdots & 1 \\
-q & 1-\lambda & \cdots & q \\
-\vdots & \vdots & & \vdots \\
-q & q & \cdots & 1-\lambda
-\end{array}\right| \\
-& =[1-\lambda+(n-1) q]\left|\begin{array}{cccc}
-1 & 1 & \cdots & 1 \\
-0 & 1-\lambda-q & 0 \\
-\vdots & \vdots & & \vdots \\
-0 & 0 & \cdots 1-\lambda-q
-\end{array}\right| \\
-& =[1-\lambda+(n-1) q](1-q-\lambda)^{n-1}=0 
-\end{align}</script><p>可以得到$1$个本征值$(1+(n+1)q)$与$n-1$个本征值$(1-q)$，可以将迹写为：</p>
-<script type="math/tex; mode=display">\begin{align}
-\operatorname{Tr} \ln [\mathbf{I}-\beta \mathbf{Q}]=\ln (1-\beta+\beta q-n \beta q)+(n-1) \ln (1-\beta+\beta q)
-\end{align}</script><p>从而;</p>
-<script type="math/tex; mode=display">\begin{align}
-\lim _{n \rightarrow 0} \frac{\operatorname{Tr} \ln [\mathbf{I}-\beta \mathbf{Q}]}{n} & =\lim _{n \rightarrow 0}\left[\frac{\ln \left(\frac{1-\beta+\beta q-n \beta q}{1-\beta+\beta q}\right)}{n}+\ln (1-\beta+\beta q)\right] \\
-& =-\frac{\beta q}{1-\beta+\beta q}+\ln (1-\beta+\beta q)
-\end{align}</script><p>得到自由能为：</p>
-<script type="math/tex; mode=display">\begin{align}
--\beta f & =\frac{1}{N}\langle\ln Z\rangle \\
-& =\frac{\alpha \beta^2}{2} r(q-1)-\frac{\alpha}{2}\left[\ln (1-\beta+\beta q)-\frac{\beta q}{1-\beta+\beta q}\right]-\frac{\beta}{2} m^2 +\int D z\left\langle\ln \left[2 \cosh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right]\right\rangle
-\end{align}</script><p>求解其极值：</p>
-<script type="math/tex; mode=display">\begin{align}
-\left\{\begin{array}{l}
-\frac{\partial(-\beta f)}{\partial r}=0 \\
-\frac{\partial(-\beta f)}{\partial m}=0 \\
-\frac{\partial(-\beta f)}{\partial q}=0
-\end{array}\right.
-\end{align}</script><p><font color="red">具体计算一下</font></p>
-<script type="math/tex; mode=display">\begin{align}
-q= & -\frac{1}{\beta \sqrt{2 \pi \alpha r}} \int d z e^{-\frac{1}{2} z^2} z\left\langle\tanh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right\rangle+1 \\
-= & \frac{1}{\beta \sqrt{2 \pi \alpha r}} \int d z \frac{d e^{-\frac{1}{2} z^2}}{d z}\left\langle\tanh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right\rangle+1 \\
-= & \left.\frac{1}{\beta \sqrt{2 \pi \alpha r}} e^{-\frac{1}{2} z^2}\left\langle\tanh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right\rangle\right|_{-\infty} ^{+\infty} -\int D z\left\langle 1-\tanh ^2\left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right\rangle+1 \\
-= & \int D z\left\langle\tanh ^2\left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right\rangle \\
-= & \int D z \tanh ^2 \beta(\sqrt{\alpha r} z+m) 
-\end{align}</script><p>可以得到联想记忆模型的鞍点方程：</p>
-<script type="math/tex; mode=display">\begin{align}
-& q=\int D z \tanh ^2 \beta(\sqrt{\alpha r} z+m) \label{860} \\
-& m=\int D z\langle\xi \tanh \beta(\sqrt{\alpha r} z+m \xi)\rangle=\int D z \tanh \beta(\sqrt{\alpha r} z+m) \label{861} \\
-& r=\frac{q}{(1-\beta+\beta q)^2} \label{862}\\
-\end{align}</script><p>可以从以上的内容分析相变点。</p>
-<h1 id="Zero-Temperature-Limit"><a href="#Zero-Temperature-Limit" class="headerlink" title="Zero-Temperature Limit"></a>Zero-Temperature Limit</h1><p>当$T \rightarrow 0(\beta \rightarrow \infty)$时候，有：</p>
-<script type="math/tex; mode=display">\tanh (\beta x) \rightarrow \operatorname{sign}(x)=\left\{ \begin{array}{ll}
-1 & x>0 \\
-0 & x=0 \\
--1 & x<0
-\end{array} \right.</script><p>$\eqref{861}$为：</p>
-<script type="math/tex; mode=display">\begin{align}
-m&=\int D z\operatorname{sign}(\sqrt{\alpha r} z+m)+O(T) \\
-& =\operatorname{erf}\left( \frac{m}{\sqrt{2 \alpha r}} \right)+O(T)
-\end{align}</script><p><font color="red"> 没明白上面这个公式是怎么变为误差函数的 </font><br>另一方面，当$\beta\to\infty$：</p>
-<script type="math/tex; mode=display">\begin{align}
-1-q & =\int \frac{d z}{\sqrt{2 \pi}} e^{-\frac{z^2}{2}}\left(1-\tanh ^2 \beta(\sqrt{\alpha r} z+m)\right) \\
-& \left.\simeq \frac{1}{\sqrt{2 \pi}} e^{-\frac{z^2}{2}}\right|_{\tanh ^2 \beta(\sqrt{\alpha r} z+m)=0} \int d z\left(1-\tanh ^2 \beta(\sqrt{\alpha r} z+m)\right) \\
-& =\frac{1}{\sqrt{2 \pi}} e^{-\frac{m^2}{2 \alpha r}} \frac{1}{\beta \sqrt{\alpha r}} \int d z \frac{\partial}{\partial z} \tanh \beta(\sqrt{\alpha r} z+m) \\
-& =\frac{2}{\sqrt{2 \pi}} \frac{1}{\beta \sqrt{\alpha r}} e^{-\frac{m^2}{2 \alpha r}}
-\end{align}</script><p>$\eqref{860}$产生$q=1-C T$，其中</p>
-<script type="math/tex; mode=display">\begin{align}
-C \stackrel{\text { def }}{=} \sqrt{\frac{2}{\pi r \alpha}} e^{-\frac{m^2}{2 \alpha r}} 
-\end{align}</script><p>将$\eqref{862}$变为$r=(1-C)^{-2}$。</p>
-<p>通过定义辅助变量$y=m / \sqrt{2 \alpha r}$将$m$ 和 $r$ 减少为一个方程：</p>
-<script type="math/tex; mode=display">\begin{align}
-\operatorname{erf}(y)=y\left(\sqrt{2 \alpha}+\frac{2}{\sqrt{\pi}} e^{-y^2}\right) .
-\end{align}</script><p>其中的一个解为$y=m=0$，这是自旋玻璃的解。对于$\alpha \geq \alpha_c=0.138$这是唯一解；当$a&lt;\alpha_c$时,$m \neq 0$的解出现；当$\alpha=\alpha_c$时，$m=0.967$。</p>
-<a href="/2024/06/15/Phys/Hopfield/Hopfield2/" title="Hopfield Model 相图">Hopfield 相图</a>
+\end{align}</script><p>$q_{\rho \sigma}$通常理解为两个纯态之间的相互重叠。如果一个单一状态主导了相空间，爱德华兹-安德森序参量就用来表征该状态的大小。</p>
+<h1 id="Append"><a href="#Append" class="headerlink" title="Append"></a>Append</h1><h2 id="行列式与迹的关系证明"><a href="#行列式与迹的关系证明" class="headerlink" title="行列式与迹的关系证明"></a>行列式与迹的关系证明</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">M = &#123;&#123;a, b&#125;, &#123;c, d&#125;&#125;;</span><br><span class="line">Sum[Det[MatrixPower[M, k]]/(k!), &#123;k, 0, Infinity&#125;] // FullSimplify</span><br></pre></td></tr></table></figure>
 
     </div>
 
@@ -607,11 +427,11 @@ C \stackrel{\text { def }}{=} \sqrt{\frac{2}{\pi r \alpha}} e^{-\frac{m^2}{2 \al
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/06/12/Phys/Hopfield/Hopfield/" rel="prev" title="Hopfield Model">
-      <i class="fa fa-chevron-left"></i> Hopfield Model
+    <a href="/2024/06/13/Phys/replica/replica/" rel="prev" title="Replica">
+      <i class="fa fa-chevron-left"></i> Replica
     </a></div>
       <div class="post-nav-item">
-    <a href="/2024/06/15/Phys/Hopfield/Hopfield2/" rel="next" title="Hopfield Model 相图">
+    <a href="/2024/06/15/Phys/Hopfield/Hopfield3/" rel="next" title="Hopfield Model 相图">
       Hopfield Model 相图 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -672,7 +492,7 @@ C \stackrel{\text { def }}{=} \sqrt{\frac{2}{\pi r \alpha}} e^{-\frac{m^2}{2 \al
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Replica-Method"><span class="nav-number">1.</span> <span class="nav-text">Replica Method</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Free-Energy"><span class="nav-number">2.</span> <span class="nav-text">Free Energy</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Zero-Temperature-Limit"><span class="nav-number">3.</span> <span class="nav-text">Zero-Temperature Limit</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Free-Energy"><span class="nav-number">1.</span> <span class="nav-text">Free Energy</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%8F%E5%8F%82%E9%87%8F%E5%88%86%E6%9E%90"><span class="nav-number">2.</span> <span class="nav-text">序参量分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Append"><span class="nav-number">3.</span> <span class="nav-text">Append</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A1%8C%E5%88%97%E5%BC%8F%E4%B8%8E%E8%BF%B9%E7%9A%84%E5%85%B3%E7%B3%BB%E8%AF%81%E6%98%8E"><span class="nav-number">3.1.</span> <span class="nav-text">行列式与迹的关系证明</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -686,7 +506,7 @@ C \stackrel{\text { def }}{=} \sqrt{\frac{2}{\pi r \alpha}} e^{-\frac{m^2}{2 \al
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-count">28</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -752,12 +572,12 @@ C \stackrel{\text { def }}{=} \sqrt{\frac{2}{\pi r \alpha}} e^{-\frac{m^2}{2 \al
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">130k</span>
+    <span title="Symbols count total">133k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">3:55</span>
+    <span title="Reading time total">4:01</span>
 </div>
 
         

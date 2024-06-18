@@ -402,38 +402,6 @@ p\left(C_i \mid C_1, \ldots, C_{i-1}, \mathcal{P}\right)&=\operatorname{softmax}
       </tags>
   </entry>
   <entry>
-    <title>Neural Network Diffusion</title>
-    <url>/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/</url>
-    <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>这篇文章的主要任务是，利用Diffusion Model生成具备高表现能力的神经网络参数。</p>
-<p>利用 autoencoder 和 laten diffusion model 两个主要部件，其中autoencoder将网络参数进行提取，diffusion model再进行训练，然后再将训练好的模型进行解码。</p>
-<span id="more"></span>
-<p>将神经网络的训练与扩散逆过程进行对比：</p>
-<ol>
-<li>都是从随机到一个特定的分布。</li>
-<li>高质量的图像与具备很好表现的网络参数，可以退化为一个简单分布。</li>
-</ol>
-<p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/fig1.png" alt="diffusion model VS model parameters"></p>
-<p>本文提出parameter generation, 叫做 neural network diffusion (p-diff, p stands for parameter)。</p>
-<p>首先用已经训练好的模型参数，训练自编码器。<br>然后用标准latent diffusion model 从随机噪声中合成编码后的表示。最后，利用训练完的diffusion model，通过已经训练过的自编码器去生成新的参数。</p>
-<h1 id="Nerual-Network-Diffusion"><a href="#Nerual-Network-Diffusion" class="headerlink" title="Nerual Network Diffusion"></a>Nerual Network Diffusion</h1><h2 id="Preliminaries-of-diffusion-models"><a href="#Preliminaries-of-diffusion-models" class="headerlink" title="Preliminaries of diffusion models"></a>Preliminaries of diffusion models</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/NND.png" alt="Train LDM"></p>
-<p>前向过程在不断的增加噪声，后向过程在猜测噪声分布。训练目标是计算分布的KL散度，尽可能的小。</p>
-<p>上图中，LDM表示latent diffusion model，训练编码后的表示。前向过程为：从已经表示的分布增加噪声，逐步成为随机噪声分布；后向过程为，从随机噪声出发逐步预测噪声进行去噪，得到原始的表达。</p>
-<h2 id="Parameter-autoencoder"><a href="#Parameter-autoencoder" class="headerlink" title="Parameter autoencoder"></a>Parameter autoencoder</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/autoencoder.png" alt="AutoEncoder"></p>
-<p>利用训练好的数据，进行编码训练。</p>
-<h2 id="Inference"><a href="#Inference" class="headerlink" title="Inference"></a>Inference</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/inference.png" alt="Inference"></p>
-<p>使用DDPM进行优化。</p>
-<h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/result.png" alt="result"></p>
-<p>从结果来看部分数据集上最优，其它大部分也与最优表现持平。</p>
-<p>该模型是否仅仅记住了训练好的模型参数，而非生成了新的模型参数？从结果来看，生成的模型要高于输入训练的模型，可见其是学习到了一些内容。</p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Diffusion Model</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>KAN: Kolmogorov–Arnold Networks</title>
     <url>/2024/05/08/DL/Kolmogorov%E2%80%93Arnold_Networks/Kolmogorov%E2%80%93Arnold_Networks/</url>
     <content><![CDATA[<p>文献地址：</p>
@@ -545,6 +513,38 @@ b_{i, n}(t) &= C_n^i(1-t)^{n-i} t^i \quad i=0,1, \ldots, n \quad t \in[0,1] \lab
       <tags>
         <tag>Kolmogorov–Arnold Networks</tag>
         <tag>Physics</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Neural Network Diffusion</title>
+    <url>/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/</url>
+    <content><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>这篇文章的主要任务是，利用Diffusion Model生成具备高表现能力的神经网络参数。</p>
+<p>利用 autoencoder 和 laten diffusion model 两个主要部件，其中autoencoder将网络参数进行提取，diffusion model再进行训练，然后再将训练好的模型进行解码。</p>
+<span id="more"></span>
+<p>将神经网络的训练与扩散逆过程进行对比：</p>
+<ol>
+<li>都是从随机到一个特定的分布。</li>
+<li>高质量的图像与具备很好表现的网络参数，可以退化为一个简单分布。</li>
+</ol>
+<p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/fig1.png" alt="diffusion model VS model parameters"></p>
+<p>本文提出parameter generation, 叫做 neural network diffusion (p-diff, p stands for parameter)。</p>
+<p>首先用已经训练好的模型参数，训练自编码器。<br>然后用标准latent diffusion model 从随机噪声中合成编码后的表示。最后，利用训练完的diffusion model，通过已经训练过的自编码器去生成新的参数。</p>
+<h1 id="Nerual-Network-Diffusion"><a href="#Nerual-Network-Diffusion" class="headerlink" title="Nerual Network Diffusion"></a>Nerual Network Diffusion</h1><h2 id="Preliminaries-of-diffusion-models"><a href="#Preliminaries-of-diffusion-models" class="headerlink" title="Preliminaries of diffusion models"></a>Preliminaries of diffusion models</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/NND.png" alt="Train LDM"></p>
+<p>前向过程在不断的增加噪声，后向过程在猜测噪声分布。训练目标是计算分布的KL散度，尽可能的小。</p>
+<p>上图中，LDM表示latent diffusion model，训练编码后的表示。前向过程为：从已经表示的分布增加噪声，逐步成为随机噪声分布；后向过程为，从随机噪声出发逐步预测噪声进行去噪，得到原始的表达。</p>
+<h2 id="Parameter-autoencoder"><a href="#Parameter-autoencoder" class="headerlink" title="Parameter autoencoder"></a>Parameter autoencoder</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/autoencoder.png" alt="AutoEncoder"></p>
+<p>利用训练好的数据，进行编码训练。</p>
+<h2 id="Inference"><a href="#Inference" class="headerlink" title="Inference"></a>Inference</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/inference.png" alt="Inference"></p>
+<p>使用DDPM进行优化。</p>
+<h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/result.png" alt="result"></p>
+<p>从结果来看部分数据集上最优，其它大部分也与最优表现持平。</p>
+<p>该模型是否仅仅记住了训练好的模型参数，而非生成了新的模型参数？从结果来看，生成的模型要高于输入训练的模型，可见其是学习到了一些内容。</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Diffusion Model</tag>
       </tags>
   </entry>
   <entry>
@@ -1234,7 +1234,8 @@ E=E_c+E_l
     <url>/2024/06/15/Phys/Hopfield/Hopfield1/</url>
     <content><![CDATA[<p>Link:</p>
 <ul>
-<li><a href="/2024/06/15/Phys/Hopfield/Hopfield2/" title="Hopfield Model 相图">Hopfield 相图</a>
+<li><a href="/2024/06/15/Phys/Hopfield/Hopfield2/" title="Hopfield Model">Hopfield 相图</a></li>
+<li><a href="/2024/06/13/Phys/replica/replica/" title="Replica">Replica</a>
 </li>
 </ul>
 <p>根据前文已知：</p>
@@ -1245,26 +1246,13 @@ E=E_c+E_l
 \end{aligned} \label{omega}
 \end{equation}</script><script type="math/tex; mode=display">\begin{equation}
 H=-\frac{1}{2} \sum_{i, j}^N w_{i j} S_i S_j \label{hamiltonian}
-\end{equation}</script><h1 id="Replica-Method"><a href="#Replica-Method" class="headerlink" title="Replica Method"></a>Replica Method</h1><p>在数学中有：</p>
-<script type="math/tex; mode=display">\begin{align}
-\ln(Z)=\lim_{n\to0}\frac{Z^n-1}{n}
-\end{align}</script><p>然后计算期望值：</p>
-<script type="math/tex; mode=display">\begin{align}
-\langle\ln Z\rangle=\lim _{n \rightarrow 0} \frac{\left\langle Z^n\right\rangle-1}{n}=\lim _{n \rightarrow 0} \frac{\ln \left\langle Z^n\right\rangle}{n},
-\end{align}</script><p>其中 $\langle\cdot\rangle$ 是 $\xi$ 的无序平均. 因为 $Z^n \simeq 1+n \ln Z+\cdots$, 得到 $\left\langle Z^n\right\rangle \simeq 1+n\langle\ln Z\rangle \cdots$. </p>
-<p>可以得到：</p>
-<script type="math/tex; mode=display">\begin{align}
-\lim _{n \rightarrow 0} \frac{\ln \left\langle Z^n\right\rangle}{n}=\lim _{n \rightarrow 0} \frac{\ln (1+n\langle\ln Z\rangle)}{n}=\lim _{n \rightarrow 0} \frac{n\langle\ln Z\rangle}{n}=\langle\ln Z\rangle,
-\end{align}</script><p>其中 $n$ 足够小，可以利用展开$Z^n=e^{n \ln Z}=1+$ $n \ln Z+\cdots$. 每个自旋的平均值可以写为：</p>
-<script type="math/tex; mode=display">\begin{align}
-f=\lim _{n \rightarrow 0} \lim _{N \rightarrow \infty} \frac{-\ln \left\langle Z^n\right\rangle}{\beta n N} .
-\end{align}</script><h1 id="Free-Energy"><a href="#Free-Energy" class="headerlink" title="Free Energy"></a>Free Energy</h1><p>假定能够存储$P=\alpha N$个随机模式。结合$\eqref{omega}$与$\eqref{hamiltonian}$有：</p>
+\end{equation}</script><h1 id="Free-Energy"><a href="#Free-Energy" class="headerlink" title="Free Energy"></a>Free Energy</h1><p>假定能够存储$P=\alpha N$个随机模式。结合$\eqref{omega}$与$\eqref{hamiltonian}$有：</p>
 <script type="math/tex; mode=display">\begin{aligned}
 \left\langle Z^n\right\rangle & =\left\langle\operatorname{Tr} \exp \left[\frac{\beta}{2 N} \sum_{i, j}^N \sum_{\mu=1}^P \sum_{\rho=1}^n \xi_i^\mu \xi_j^\mu S_i^\rho S_j^\rho\right]\right\rangle \\
 & =\left\langle\operatorname{Tr} \exp \left[\frac{\beta}{2 N} \sum_{\rho, \mu}\left(\sum_i \xi_i^\mu S_i^\rho\right)\left(\sum_j \xi_j^\mu S_j^\rho\right)\right]\right\rangle \\
 & =\left\langle\operatorname{Tr} \exp \left[\frac{\beta N}{2} \sum_{\rho, \mu}\left(\frac{1}{N} \sum_i \xi_i^\mu S_i^\rho\right)^2\right]\right\rangle \\
 & =\left\langle\operatorname{Tr} \prod_{\rho, \mu} \exp \left[\frac{\beta N}{2}\left(\frac{1}{N} \sum_i \xi_i^\mu S_i^\rho\right)^2\right]\right\rangle,
-\end{aligned}</script><p>其中$\operatorname{Tr}$表示对所有构型${\mathbf{S}}$求和，$\langle\cdot\rangle$表示淬火无序平均。将其中指数中的二次项转化为高斯积分：</p>
+\end{aligned}</script><p>其中$\operatorname{Tr}$表示对所有构型${\mathbf{S}}$求和，$\langle\cdot\rangle$表示淬火无序平均。使用Hubbard-Stratonovich transformation技巧，将其中指数中的二次项转化为高斯积分：</p>
 <script type="math/tex; mode=display">\begin{align}
 e^{a b^2}=\sqrt{\frac{a}{\pi}} \int e^{-a x^2+2 a b x} d x
 \end{align}</script><p>设定这些参数为：</p>
@@ -1280,7 +1268,7 @@ a \rightarrow \frac{\beta N}{2}
 & =\left\langle\operatorname{Tr} \int \prod_{\rho', \mu'} \sqrt{\frac{\beta N}{2 \pi}} d m_{\rho'}^{\mu'} \exp \left[-\frac{\beta N}{2} \sum_{\rho, \mu}\left(m_\rho^\mu\right)^2+\beta \sum_{\rho, \mu} m_\rho^\mu \sum_i \xi_i^\mu S_i^\rho\right]\right\rangle \\
 & =\left\langle\operatorname{Tr} \int \prod_{\rho', \mu'} \sqrt{\frac{\beta N}{2 \pi}} d m_{\rho'}^{\mu'} \exp \left[-\frac{\beta N}{2} \sum_{\mu \geq 2} \sum_\rho\left(m_\rho^\mu\right)^2+\right.\left.\beta \sum_{\mu \geq 2} \sum_\rho m_\rho^\mu \sum_i \xi_i^\mu S_i^\rho-\frac{\beta N}{2} \sum_\rho\left(m_\rho^1\right)^2+\beta \sum_\rho m_\rho^1 \sum_i \xi_i^1 S_i^\rho\right]\right\rangle .
 \end{align}</script><p>最后假设只有第一个模式被恢复$\mu=1$，在表达式中将其单独分出来，因此交错项$m_\rho^\mu \sim O(1)$。</p>
-<p>接下来考虑没有被恢复的模式($\mu \geq 2$)，由于没有被恢复，因此$\left\langle\sum_i \xi_i^\mu S_i^\rho\right\rangle_{\xi}=0$并且$\left\langle\left(\sum_i \xi_i^\mu S_i^\rho\right)^2\right\rangle_{\xi}=N+\left\langle\sum_{i \neq j} \xi_i^\mu \xi_j^\mu S_i^\rho S_j^\rho\right\rangle_{\xi}=N$。$m_\rho^\mu(\mu \geq 2)$的大小数量级为：</p>
+<p>接下来考虑没有被恢复的模式($\mu \geq 2$)，由于没有被恢复，因此$\left\langle\sum_i \xi_i^\mu S_i^\rho\right\rangle_{\xi}=0$并且$\left\langle\left(\sum_i \xi_i^\mu S_i^\rho\right)^2\right\rangle_{\xi}=N+\left\langle\sum_{i \neq j} \xi_i^\mu \xi_j^\mu S_i^\rho S_j^\rho\right\rangle_{\xi}=N$。$m_\rho^\mu(\mu \geq 2)$的大小数量级为（可以将这个过程认为是一维链上的随机游走过程，计算的是绝对值的期望）：</p>
 <script type="math/tex; mode=display">\begin{align}
 m_\rho^\mu=\frac{1}{N} \sum_i \xi_i^\mu S_i^\rho \approx O\left(\frac{1}{\sqrt{N}}\right)
 \end{align}</script><p>为了将整个数量级变为$O(1)$，因此将$m^\mu_\rho$进行变换$m_\rho^\mu \rightarrow \frac{m_\rho^\mu}{\sqrt{\beta N}}$。变化之后为：</p>
@@ -1333,117 +1321,95 @@ q_{\rho \sigma}&=\left\{\begin{array}{ll}
 \begin{aligned}
 \delta\left(q_{\rho \sigma}-\frac{1}{N} \sum_i S_i^\rho S_i^\sigma\right) \propto \int_{-\infty}^{+\infty} d r_{\rho \sigma} \exp \left[-i r_{\rho \sigma} q_{\rho \sigma}+ i r_{\rho \sigma} \frac{1}{N} \sum_i S_i^\rho S_i^\sigma\right]
 \end{aligned}</script><p>将$r$进行重标度$r_{\rho \sigma} \rightarrow -\frac{\mathrm{i} N \alpha \beta^2}{2} r_{\rho \sigma}$，使得$r_{\rho \sigma} \sim O(1)$，这种操作对计算结果没有影响。上式变换忽略了因子项。</p>
-<font color="red">这么操作可能之后有用？</font>其中$\alpha=P/N$。
-
-$$\begin{align}
+<p><font color="blue">这样操作使得最后的结果变得简洁。</font>其中$\alpha=P/N$。</p>
+<script type="math/tex; mode=display">\begin{align}
 \delta\left(q_{\rho \sigma}-\frac{1}{N} \sum_i S_i^\rho S_i^\sigma\right) \propto \int_{-\infty}^{+\infty} d r_{\rho \sigma} \exp \left[-\frac{N \alpha \beta^2}{2} r_{\rho \sigma} q_{\rho \sigma}+\frac{\alpha \beta^2}{2} \sum_{i} r_{\rho \sigma} S_i^\rho S_i^\sigma\right] \label{fuliye}
-\end{align}$$
-
-接下来将$\eqref{zn}$中的最后一项与$\eqref{fuliye}$中最后一项组合一起：
-$$\begin{align}
+\end{align}</script><p>接下来将$\eqref{zn}$中的最后一项与$\eqref{fuliye}$中最后一项组合一起：</p>
+<script type="math/tex; mode=display">\begin{align}
 \left\langle\operatorname{Tr} \exp \left[\beta \sum_\rho m_\rho^1 \sum_i \xi_i^1 S_i^\rho+\frac{\alpha \beta^2}{2} \sum_{i} r_{\rho \sigma} S_i^\rho S_i^\sigma\right]\right\rangle_{\xi^1} = & \left\langle\exp \left\{\sum_i \ln \operatorname{Tr} \exp \left(\beta \sum_\rho m_\rho^1 \xi_i^1 S^\rho+\frac{\alpha \beta^2}{2} r_{\rho \sigma} S^\rho S^\sigma\right)\right\}\right\rangle_{\xi^1} \\
 = & \exp \left\{N\left\langle\ln \operatorname{Tr} \exp \left(\beta \sum_\rho m_\rho^1 \xi^1 S^\rho+\frac{\alpha \beta^2}{2}  r_{\rho \sigma} S^\rho S^\sigma\right)\right\rangle_{\xi^1}\right\} \\
 := & \exp \left\{N\left\langle\ln \operatorname{Tr} \exp \left(\beta H_{\xi^1}\right)\right\rangle_{\xi^1}\right\}
-\end{align}$$
-
-定义：
-$$\begin{align}
-\beta H_{\xi^1}=\frac{1}{2} \alpha \beta^2 r_{\rho \sigma} S^\rho S^\sigma+\beta \sum_\rho m_\rho^1 \xi^1 S^\rho,
-\end{align}$$
-
-最终$\eqref{zn}$转化为：
-$$\begin{equation}
+\end{align}</script><p>定义，因为上面分析的是一个$q_{\rho \sigma}$的$\delta$函数展开，原来表达式中在积分符号中含有$\prod_{\rho \sigma}$，在指数中将会增加求和符号$\sum_{\rho \sigma}$：</p>
+<script type="math/tex; mode=display">\begin{align}
+\beta H_{\xi^1}=\frac{1}{2} \alpha \beta^2 \sum_{\rho \sigma}r_{\rho \sigma} S^\rho S^\sigma+\beta \sum_\rho m_\rho^1 \xi^1 S^\rho,
+\end{align}</script><p>最终$\eqref{zn}$转化为：</p>
+<script type="math/tex; mode=display">\begin{equation}
 \begin{aligned}
 & \left\langle Z^n\right\rangle \propto \int \prod_\rho d m_\rho^1 \prod_{\rho, \sigma} d q_{\rho \sigma} d r_{\rho \sigma} \exp \left[-\frac{N}{2} \alpha \beta^2 \sum_{\rho, \sigma} r_{\rho \sigma} q_{\rho \sigma}\right] \\
 & \times \exp \left[-\frac{P-1}{2} \operatorname{Tr} \ln [\mathbf{I}-\beta \mathbf{Q}]\right] \exp \left[-\frac{\beta N}{2} \sum_\rho\left(m_\rho^1\right)^2+N\left\langle\ln \operatorname{Tr} e^{\beta H_{\xi^1}}\right\rangle_{\xi^1}\right] 
 \end{aligned} \label{zn2}
-\end{equation}$$
-
-因为假定$N$足够大，使用 [Laplace's Method](https://wuli.wiki/changed/LapAsm.html#eq_LapAsm_1)：
-
-$$
-\int_a^b e^{N f(z)} d z \approx \sqrt{\frac{2 \pi}{-N f^{\prime \prime}\left(z_0\right)}} e^{N f\left(z_0\right)}
-$$
-其中$Z_0$表示$f(z)$的极值点，这样就把积分转化为在极值点起作用的标量。采用近似$\left\langle Z^n\right\rangle \sim$ $e^{N F\left(\theta^*\right)}$，其中$F\left(\theta^*\right)=\max _\theta F(\theta)$，其中用$\theta$表示序参量。
-
-淬火无序平均值变为：
-$$\begin{align}
+\end{equation}</script><p>因为假定$N$足够大，使用 <a href="https://wuli.wiki/changed/LapAsm.html#eq_LapAsm_1">Laplace’s Method</a>：</p>
+<script type="math/tex; mode=display">
+\int_a^b e^{N f(z)} d z \approx \sqrt{\frac{2 \pi}{-N f^{\prime \prime}\left(z_0\right)}} e^{N f\left(z_0\right)}</script><p>其中$Z_0$表示$f(z)$的极值点，这样就把积分转化为在极值点起作用的标量。采用近似  $\left\langle Z^n\right\rangle \sim e^{N F\left(\theta^*\right)}$，其中用$\theta$表示序参量。</p>
+<script type="math/tex; mode=display">\begin{equation}
+F(\theta^{*})=\max_\theta F(\theta)
+\end{equation}</script><p>淬火无序平均值变为：</p>
+<script type="math/tex; mode=display">\begin{align}
 \langle\ln Z\rangle=\lim _{n \rightarrow 0} \frac{\ln \left\langle Z^n\right\rangle}{n}=\lim _{n \rightarrow 0} \frac{\ln e^{N F\left(\theta^*\right)}}{n}=N \lim _{n \rightarrow 0} \frac{F\left(\theta^*\right)}{n} \label{847}
-\end{align}$$
-其中：
-
-$$\begin{align}
+\end{align}</script><p>当$n$足够大时，近似有$P-1 \simeq P=\alpha N$：</p>
+<script type="math/tex; mode=display">\begin{align}
 F\left(r_{\rho \sigma}, q_{\rho \sigma}, m_\rho^1\right)= & -\frac{\alpha \beta^2}{2} \sum_{\rho, \sigma} r_{\rho \sigma} q_{\rho \sigma}-\frac{\alpha}{2} \operatorname{Tr} \ln [\mathbf{I}-\beta \mathbf{Q}] -\frac{\beta}{2} \sum_\rho\left(m_\rho^1\right)^2+\left\langle\ln \operatorname{Tr} e^{\beta H_{\xi^1}}\right\rangle_{\xi^1} \label{freeenergy1}
-\end{align}$$
-
-当$n$足够大时，近似有$P-1 \simeq P=\alpha N$。这个模型的序参量是$\left(r_{\rho \sigma}, q_{\rho \sigma}, m_\rho^1\right)$。
-
-接下来计算$F\left(r_{\rho \sigma}, q_{\rho \sigma}, m_\rho^1\right)$的极值，首先处理$q_{\rho \sigma}$，结合$\eqref{zn}$：
-
-$$\begin{align}
+\end{align}</script><h1 id="序参量分析"><a href="#序参量分析" class="headerlink" title="序参量分析"></a>序参量分析</h1><p>通过以上讨论已经得到与相变相关的序参量$\left(r_{\rho \sigma}, q_{\rho \sigma}, m_\rho^1\right)$，即其满足的方程$\eqref{freeenergy1}$。在继续进行极值分析前，先回顾一下其中每一个变量的含义。$\alpha$是存储模式的比例；$\beta$是逆温度；$r$是在进行傅里叶变换的时候引入的变量；$q$是在进行变量替换时候引入的变量；$\mathbf{Q}$是$q$矩阵形式；$m$是在进行高斯积分引入的变量；$H_\xi$是将$S$重新组合之后的表达形式。</p>
+<p>接下来计算$F\left(r_{\rho \sigma}, q_{\rho \sigma}, m_\rho^1\right)$的极值，首先处理$q_{\rho \sigma}$，结合$\eqref{zn}$：</p>
+<script type="math/tex; mode=display">\begin{align}
 \frac{\partial F}{\partial q_{\rho \sigma}}=0 \Rightarrow \frac{\partial}{\partial q_{\rho \sigma}}\left[-\frac{N \alpha \beta^2}{2} \sum_{\rho, \sigma} r_{\rho \sigma} q_{\rho \sigma}+\frac{\beta}{2}(\sqrt{\beta N})^2 \sum_{\mu \geq 2} \sum_{\rho, \sigma} m_\rho^\mu q_{\rho \sigma} m_\sigma^\mu\right]=0 \text {, }
-\end{align}$$
-
-得到解为：
-$$\begin{align}
+\end{align}</script><p>得到解为：</p>
+<script type="math/tex; mode=display">\begin{align}
 r_{\rho \sigma}=\frac{1}{\alpha} \sum_{\mu \geq 2} m_\rho^\mu m_\sigma^\mu
-\end{align}$$
-
-从表达式中可以看出，之前进行标度的变换，目的是为了使得最终的共轭关系变得更直观。
-
-然后处理$m_\rho^\mu$，结合最开始的$\eqref{znstart}$：
-
-$$\begin{align}
+\end{align}</script><p>从表达式中可以看出，之前进行标度的变换，目的是为了使得最终的共轭关系变得更直观。</p>
+<p>然后处理$m_\rho^\mu$，结合最开始的$\eqref{znstart}$：</p>
+<script type="math/tex; mode=display">\begin{align}
 \frac{\partial F}{\partial m_\rho^\mu}=0 \Rightarrow \frac{\partial}{\partial m_\rho^\mu}\left[-\frac{\beta N}{2}\left(m_\rho^\mu\right)^2+\beta m_\rho^\mu \sum_i \xi_i^\mu S_i^\rho\right]=0
-\end{align}$$
-
-可以得到：
-$$\begin{align}
+\end{align}</script><p>可以得到：</p>
+<script type="math/tex; mode=display">\begin{align}
 m_\rho^\mu=\frac{1}{N} \sum_i \xi_i^\mu S_i^\rho
-\end{align}$$
-
-可以看出$m_\rho^\mu$在处理不同的模式之间影响的作用，也称作交叠项。
-
-最后处理$r_{\rho\sigma}$，结合$\eqref{zn2}$：
-$$\begin{align}
+\end{align}</script><p>可以看出$m_\rho^\mu$在处理不同的模式之间影响的作用，也称作交叠项。</p>
+<p>最后处理$r_{\rho\sigma}$，结合$\eqref{zn2}$：</p>
+<script type="math/tex; mode=display">\begin{align}
 \frac{\partial F}{\partial r_{\rho \sigma}}=0 \Rightarrow \frac{\partial}{\partial r_{\rho \sigma}}\left[-\frac{N \alpha \beta^2}{2} \sum_{\rho, \sigma} r_{\rho \sigma} q_{\rho \sigma}+\frac{\alpha \beta^2}{2} \sum_{i, \rho, \sigma} r_{\rho \sigma} S_i^\rho S_i^\sigma\right]=0,
-\end{align}$$
-
-得到序参量：
-$$\begin{align}
+\end{align}</script><p>得到序参量：</p>
+<script type="math/tex; mode=display">\begin{align}
 q_{\rho \sigma}=\frac{1}{N} \sum_i S_i^\rho S_i^\sigma
-\end{align}$$
-
-$q_{\rho \sigma}$通常理解为两个纯态之间的相互重叠。如果一个单一状态主导了相空间，爱德华兹-安德森序参量就用来表征该状态的大小。
-
-# Replica-Symmetric Ansätz
-讨论到以上的情形，为了继续分析，需要对重叠矩阵做一个近似（考虑最简单的形式）：在复制索引的置换下重叠是不变的。这被称为副本对称（RS）假设。
-
-$$\begin{align}
+\end{align}</script><p>$q_{\rho \sigma}$通常理解为两个纯态之间的相互重叠。如果一个单一状态主导了相空间，爱德华兹-安德森序参量就用来表征该状态的大小。</p>
+<h1 id="Append"><a href="#Append" class="headerlink" title="Append"></a>Append</h1><h2 id="行列式与迹的关系证明"><a href="#行列式与迹的关系证明" class="headerlink" title="行列式与迹的关系证明"></a>行列式与迹的关系证明</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">M = &#123;&#123;a, b&#125;, &#123;c, d&#125;&#125;;</span><br><span class="line">Sum[Det[MatrixPower[M, k]]/(k!), &#123;k, 0, Infinity&#125;] // FullSimplify</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Spin Glass</tag>
+        <tag>Hopfield Model</tag>
+        <tag>Replica Method</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Hopfield Model</title>
+    <url>/2024/06/15/Phys/Hopfield/Hopfield2/</url>
+    <content><![CDATA[<script type="math/tex; mode=display">\begin{align}
+F\left(r_{\rho \sigma}, q_{\rho \sigma}, m_\rho^1\right)= & -\frac{\alpha \beta^2}{2} \sum_{\rho, \sigma} r_{\rho \sigma} q_{\rho \sigma}-\frac{\alpha}{2} \operatorname{Tr} \ln [\mathbf{I}-\beta \mathbf{Q}] -\frac{\beta}{2} \sum_\rho\left(m_\rho^1\right)^2+\left\langle\ln \operatorname{Tr} e^{\beta H_{\xi^1}}\right\rangle_{\xi^1} \label{freeenergy1}
+\end{align}</script><script type="math/tex; mode=display">\begin{align}
+r_{\rho \sigma}&=\frac{1}{\alpha} \sum_{\mu \geq 2} m_\rho^\mu m_\sigma^\mu \\
+m_\rho^\mu&=\frac{1}{N} \sum_i \xi_i^\mu S_i^\rho \\
+q_{\rho \sigma}&=\frac{1}{N} \sum_i S_i^\rho S_i^\sigma
+\end{align}</script><script type="math/tex; mode=display">\begin{align}
+\langle\ln Z\rangle=\lim _{n \rightarrow 0} \frac{\ln \left\langle Z^n\right\rangle}{n}=\lim _{n \rightarrow 0} \frac{\ln e^{N F\left(\theta^*\right)}}{n}=N \lim _{n \rightarrow 0} \frac{F\left(\theta^*\right)}{n} \label{847}
+\end{align}</script><h1 id="Replica-Symmetric-Ansatz"><a href="#Replica-Symmetric-Ansatz" class="headerlink" title="Replica-Symmetric Ansätz"></a>Replica-Symmetric Ansätz</h1><p>讨论到以上的情形，为了继续分析，需要对重叠矩阵做一个近似（考虑最简单的形式）：任意两个纯态应该是对称的。这被称为副本对称（RS）假设。</p>
+<script type="math/tex; mode=display">\begin{align}
 \left\{\begin{array}{l}
 r_{\rho \sigma}=r, \forall \rho, \sigma \\
 m_\rho^1=m, \forall \rho \\
 q_{\rho \sigma}=q, \forall \rho \neq \sigma
 \end{array} \right.
-\end{align}$$
-
-将$\eqref{freeenergy1}$改写为：
-$$
+\end{align}</script><p>将$\eqref{freeenergy1}$改写为：</p>
+<script type="math/tex; mode=display">
 \begin{aligned}
 F(r, q, m)= & -\frac{\alpha \beta^2}{2} r q\left(n^2-n\right)-\frac{\alpha \beta^2}{2} n r-\frac{\alpha}{2} \operatorname{Tr} \ln [\mathbf{I}-\beta \mathbf{Q}] \\
 & -\frac{\beta}{2} n m^2+\left\langle\ln \operatorname{Tr} e^{\beta H_{\xi}}\right\rangle
-\end{aligned}
-$$
-
-结合$\eqref{847}$:
-$$\begin{align}
+\end{aligned}</script><p>结合$\eqref{847}$:</p>
+<script type="math/tex; mode=display">\begin{align}
 \langle\ln Z\rangle= & \frac{N \alpha \beta^2 r q}{2}-\frac{N \alpha \beta^2 r}{2}-\frac{\alpha N}{2} \lim _{n \rightarrow 0} \frac{\operatorname{Tr} \ln [\mathbf{I}-\beta \mathbf{Q}]}{n}-\frac{\beta N m^2}{2}+N \lim _{n \rightarrow 0} \frac{\left\langle\ln \operatorname{Tr} e^{\beta H_{\xi^1}}\right\rangle}{n} \label{zn3}\\
 \beta H_{\xi^1}=&\beta m \xi^1 \sum_\rho S^\rho+\frac{1}{2} \alpha \beta^2 r \sum_{\rho, \sigma} S^\rho S^\sigma 
-\end{align}$$
-
-<font color="red">这里$H$中是否要对$\rho\sigma$求和没有明白，需要再继续看一看。</font>
-
-<p>首先计算$\eqref{zn3}$中最后一项：</p>
+\end{align}</script><p>首先计算$\eqref{zn3}$中最后一项：</p>
 <script type="math/tex; mode=display">\begin{align}
 \operatorname{Tr} e^{\beta H_{\xi} 1} & =\operatorname{Tr} e^{\beta m \xi^1 \Sigma_\rho S^\rho+\frac{1}{2} \alpha \beta^2 r\left(\sum_\rho S^\rho\right)^2} \\
 & :=\operatorname{Tr} e^{A\left(\Sigma_\rho S^\rho\right)^2+B \Sigma_\rho S^\rho} \\
@@ -1465,7 +1431,7 @@ $$\begin{align}
 & =\left\langle\sqrt{\frac{1}{2 \pi}} \int d z e^{-\frac{1}{2} z^2} \lim _{n \rightarrow 0}\left[2 \cosh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right]^n \ln \left[2 \cosh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right]\right\rangle \\
 & =\left\langle\sqrt{\frac{1}{2 \pi}} \int d z e^{-\frac{1}{2} z^2} \ln \left[2 \cosh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right]\right\rangle \\
 & =\int D z\left\langle\ln \left[2 \cosh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right]\right\rangle 
-\end{align}</script><font color="red">最后一项$Dz$是什么？</font>
+\end{align}</script><font color="blue">此时用$Dz$表示对$z$的高斯积分。</font>
 
 <p>然后计算$\eqref{zn3}$中第三项。由于$\mathbf{Q}$是对称矩阵，将其对角化：</p>
 <script type="math/tex; mode=display">\begin{align}
@@ -1503,7 +1469,7 @@ q & q & \cdots & 1-\lambda
 0 & 0 & \cdots 1-\lambda-q
 \end{array}\right| \\
 & =[1-\lambda+(n-1) q](1-q-\lambda)^{n-1}=0 
-\end{align}</script><p>可以得到$1$个本征值$(1+(n+1)q)$与$n-1$个本征值$(1-q)$，可以将迹写为：</p>
+\end{align}</script><p>可以得到$1$个本征值$(1+(n-1)q)$与$n-1$个本征值$(1-q)$，可以将迹写为：</p>
 <script type="math/tex; mode=display">\begin{align}
 \operatorname{Tr} \ln [\mathbf{I}-\beta \mathbf{Q}]=\ln (1-\beta+\beta q-n \beta q)+(n-1) \ln (1-\beta+\beta q)
 \end{align}</script><p>从而;</p>
@@ -1521,8 +1487,7 @@ q & q & \cdots & 1-\lambda
 \frac{\partial(-\beta f)}{\partial m}=0 \\
 \frac{\partial(-\beta f)}{\partial q}=0
 \end{array}\right.
-\end{align}</script><p><font color="red">具体计算一下</font></p>
-<script type="math/tex; mode=display">\begin{align}
+\end{align}</script><script type="math/tex; mode=display">\begin{align}
 q= & -\frac{1}{\beta \sqrt{2 \pi \alpha r}} \int d z e^{-\frac{1}{2} z^2} z\left\langle\tanh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right\rangle+1 \\
 = & \frac{1}{\beta \sqrt{2 \pi \alpha r}} \int d z \frac{d e^{-\frac{1}{2} z^2}}{d z}\left\langle\tanh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right\rangle+1 \\
 = & \left.\frac{1}{\beta \sqrt{2 \pi \alpha r}} e^{-\frac{1}{2} z^2}\left\langle\tanh \left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right\rangle\right|_{-\infty} ^{+\infty} -\int D z\left\langle 1-\tanh ^2\left(\beta \sqrt{\alpha r} z+\beta m \xi^1\right)\right\rangle+1 \\
@@ -1543,7 +1508,7 @@ q= & -\frac{1}{\beta \sqrt{2 \pi \alpha r}} \int d z e^{-\frac{1}{2} z^2} z\left
 <script type="math/tex; mode=display">\begin{align}
 m&=\int D z\operatorname{sign}(\sqrt{\alpha r} z+m)+O(T) \\
 & =\operatorname{erf}\left( \frac{m}{\sqrt{2 \alpha r}} \right)+O(T)
-\end{align}</script><p><font color="red"> 没明白上面这个公式是怎么变为误差函数的 </font><br>另一方面，当$\beta\to\infty$：</p>
+\end{align}</script><p><font color="blue">上面这个变换利用正态分布与误差函数之间的关系完成。</font><br>另一方面，当$\beta\to\infty$：</p>
 <script type="math/tex; mode=display">\begin{align}
 1-q & =\int \frac{d z}{\sqrt{2 \pi}} e^{-\frac{z^2}{2}}\left(1-\tanh ^2 \beta(\sqrt{\alpha r} z+m)\right) \\
 & \left.\simeq \frac{1}{\sqrt{2 \pi}} e^{-\frac{z^2}{2}}\right|_{\tanh ^2 \beta(\sqrt{\alpha r} z+m)=0} \int d z\left(1-\tanh ^2 \beta(\sqrt{\alpha r} z+m)\right) \\
@@ -1556,8 +1521,26 @@ C \stackrel{\text { def }}{=} \sqrt{\frac{2}{\pi r \alpha}} e^{-\frac{m^2}{2 \al
 <p>通过定义辅助变量$y=m / \sqrt{2 \alpha r}$将$m$ 和 $r$ 减少为一个方程：</p>
 <script type="math/tex; mode=display">\begin{align}
 \operatorname{erf}(y)=y\left(\sqrt{2 \alpha}+\frac{2}{\sqrt{\pi}} e^{-y^2}\right) .
-\end{align}</script><p>其中的一个解为$y=m=0$，这是自旋玻璃的解。对于$\alpha \geq \alpha_c=0.138$这是唯一解；当$a&lt;\alpha_c$时,$m \neq 0$的解出现；当$\alpha=\alpha_c$时，$m=0.967$。</p>
-<a href="/2024/06/15/Phys/Hopfield/Hopfield2/" title="Hopfield Model 相图">Hopfield 相图</a>
+\end{align}</script><p><img src="/2024/06/15/Phys/Hopfield/Hopfield2/plot.gif" alt="equation"></p>
+<p>其中的一个恒定解为$y=m=0$。对于$\alpha \geq \alpha_c=0.138$只有为$0$的唯一解；当$a&lt;\alpha_c$时,$m \neq 0$的解出现；当$\alpha=\alpha_c$时，$m=0.967$。</p>
+<p><img src="/2024/06/15/Phys/Hopfield/Hopfield2/error_probability.png" alt="error probability"></p>
+<p>通过求解$m=\operatorname{erf}(y)$可以得到$m$的值。图中纵坐标表示误差$P_{\text{error}}=\frac{1-m}{2}$，横坐标表述存储的比例。可以发现，在图中存在一个跃变的点，当$\alpha——c=0.138$的时候，误差跳至$0.5$，这是一个不连续的转变，此时代表跳转至玻璃相；当$\alpha&lt;\alpha_c$时，误差很小，表示此时网络可以从之前学习的模式中“恢复”；当$\alpha&gt;\alpha_c$时，误差为$0.5$，为瞎猜的几率，可以认为此时网络不能恢复之前学习的模式。</p>
+<a href="/2024/06/15/Phys/Hopfield/Hopfield2/" title="Hopfield Model">Hopfield 相图</a>
+<h1 id="Append"><a href="#Append" class="headerlink" title="Append"></a>Append</h1><h2 id="高斯积分和误差函数之间的关系"><a href="#高斯积分和误差函数之间的关系" class="headerlink" title="高斯积分和误差函数之间的关系"></a>高斯积分和误差函数之间的关系</h2><p>高斯函数（Gaussian function）与误差函数（erf）之间的关系主要通过正态分布的累积分布函数（CDF）来体现。为了详细说明这一点，我们从标准正态分布及其累积分布函数出发。</p>
+<h3 id="标准正态分布"><a href="#标准正态分布" class="headerlink" title="标准正态分布"></a>标准正态分布</h3><p>标准正态分布的概率密度函数（PDF）定义为：</p>
+<script type="math/tex; mode=display">f(x) = \frac{1}{\sqrt{2\pi}} e^{-x^2 / 2}</script><h3 id="标准正态分布的累积分布函数"><a href="#标准正态分布的累积分布函数" class="headerlink" title="标准正态分布的累积分布函数"></a>标准正态分布的累积分布函数</h3><p>累积分布函数（CDF）是从负无穷到某个值 $x$ 的概率密度函数的积分。对于标准正态分布，CDF 通常记作 $\Phi(x)$：</p>
+<script type="math/tex; mode=display">\Phi(x) = \int_{-\infty}^x \frac{1}{\sqrt{2\pi}} e^{-t^2 / 2} \, dt</script><h3 id="误差函数的定义"><a href="#误差函数的定义" class="headerlink" title="误差函数的定义"></a>误差函数的定义</h3><p>误差函数（erf）定义为：</p>
+<script type="math/tex; mode=display">\text{erf}(x) = \frac{2}{\sqrt{\pi}} \int_0^x e^{-t^2} \, dt</script><h3 id="高斯函数与误差函数的关系"><a href="#高斯函数与误差函数的关系" class="headerlink" title="高斯函数与误差函数的关系"></a>高斯函数与误差函数的关系</h3><p>我们可以通过一些变换将标准正态分布的 CDF 表示为误差函数。首先，考虑累积分布函数从负无穷大积分到某个值 $x$：</p>
+<script type="math/tex; mode=display">\Phi(x) = \int_{-\infty}^x \frac{1}{\sqrt{2\pi}} e^{-t^2 / 2} \, dt</script><p>通过代换 $u = \frac{t}{\sqrt{2}}$，我们得到：</p>
+<script type="math/tex; mode=display">du = \frac{dt}{\sqrt{2}} \quad \Rightarrow \quad dt = \sqrt{2} \, du</script><p>因此，积分变为：</p>
+<script type="math/tex; mode=display">\Phi(x) = \int_{-\infty}^{x} \frac{1}{\sqrt{2\pi}} e^{-t^2 / 2} \, dt = \int_{-\infty}^{x/\sqrt{2}} \frac{1}{\sqrt{2\pi}} e^{-2u^2 / 2} \cdot \sqrt{2} \, du</script><p>简化后，我们得到：</p>
+<script type="math/tex; mode=display">\Phi(x) = \frac{1}{2} \left(1 + \text{erf}\left(\frac{x}{\sqrt{2}}\right)\right)</script><p>因此，标准正态分布的累积分布函数与误差函数之间的关系为：</p>
+<script type="math/tex; mode=display">\Phi(x) = \frac{1}{2} \left(1 + \text{erf}\left(\frac{x}{\sqrt{2}}\right)\right)</script><h3 id="逆误差函数"><a href="#逆误差函数" class="headerlink" title="逆误差函数"></a>逆误差函数</h3><p>误差函数的反函数（逆误差函数）是一个重要工具，用于将累积分布函数反转：</p>
+<script type="math/tex; mode=display">x = \sqrt{2} \, \text{erf}^{-1}(2\Phi(x) - 1)</script><h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>假设我们想计算标准正态分布 $\mathcal{N}(0, 1)$ 的某个值 $x$ 的累积分布函数。使用 Python，我们可以如下计算：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> scipy.special <span class="keyword">as</span> sp</span><br><span class="line"></span><br><span class="line">x = <span class="number">1.0</span></span><br><span class="line">Phi_x = <span class="number">0.5</span> * (<span class="number">1</span> + sp.erf(x / np.sqrt(<span class="number">2</span>)))</span><br><span class="line"><span class="built_in">print</span>(Phi_x)</span><br></pre></td></tr></table></figure>
+<p>这个示例计算了 $x = 1$ 时的累积分布函数值。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>高斯函数（正态分布）与误差函数之间的关系通过正态分布的累积分布函数（CDF）体现。正态分布的累积分布函数可以表示为误差函数的形式：</p>
+<script type="math/tex; mode=display">\Phi(x) = \frac{1}{2} \left(1 + \text{erf}\left(\frac{x}{\sqrt{2}}\right)\right)</script><p>这使得误差函数成为研究正态分布及其相关问题的一个重要工具。</p>
 ]]></content>
       <categories>
         <category>Physics</category>
@@ -1570,14 +1553,20 @@ C \stackrel{\text { def }}{=} \sqrt{\frac{2}{\pi r \alpha}} e^{-\frac{m^2}{2 \al
   </entry>
   <entry>
     <title>Hopfield Model 相图</title>
-    <url>/2024/06/15/Phys/Hopfield/Hopfield2/</url>
+    <url>/2024/06/15/Phys/Hopfield/Hopfield3/</url>
     <content><![CDATA[<h1 id="Phase-Diagram"><a href="#Phase-Diagram" class="headerlink" title="Phase Diagram"></a>Phase Diagram</h1><p>根据<a href="/2024/06/15/Phys/Hopfield/Hopfield1/" title="Hopfield Model 自由能">“Hopfield 自由能”</a>中的讨论，可知：</p>
 <script type="math/tex; mode=display">\begin{align}
 & q=\int D z \tanh ^2 \beta(\sqrt{\alpha r} z+m) \label{860} \\
 & m=\int D z\langle\xi \tanh \beta(\sqrt{\alpha r} z+m \xi)\rangle=\int D z \tanh \beta(\sqrt{\alpha r} z+m) \label{861} \\
 & r=\frac{q}{(1-\beta+\beta q)^2} \label{862}\\
 \end{align}</script><p>通过数值求解 $\eqref{860},\eqref{861},\eqref{862}$ 可以得到Hopfield的相图：</p>
-<p><img src="/2024/06/15/Phys/Hopfield/Hopfield2/diagram.png" alt="diagram"></p>
+<p><img src="/2024/06/15/Phys/Hopfield/Hopfield3/diagram.png" alt="diagram"></p>
+<p>在高温的情况下，热噪音阻碍了模式恢复的过程，因此$m=0,q=0,r=0$；当温度下降，参数开始在临界线$T_g$不稳定，可以通过$\eqref{860}$分析得到；随着温度继续下降，Spin Glass相变成亚稳定态，相变线$T_M$，恢复的模式是局域稳定的，这个相变是一阶相变。当记忆率下降，转变为稳定的态，对应相变线为$T_c$。</p>
+<p>在温度$T=0$的时候，每个自旋的平均熵值为$S=-\left.\frac{\partial f}{\partial T}\right|_{T \rightarrow 0}=-\frac{1}{2} \alpha[\ln (1-C)+C /(1-C)]$，其中$C=\beta(1-q)$，可知自旋平均值是负数，这是非物理的。</p>
+<font color="red">stop</font>
+
+
+
 ]]></content>
       <categories>
         <category>Physics</category>
@@ -2140,6 +2129,76 @@ K_c & =\frac{\ln (1+\sqrt{2})}{2} \approx 0.4407
       </categories>
       <tags>
         <tag>Potts Model</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Replica</title>
+    <url>/2024/06/13/Phys/replica/replica/</url>
+    <content><![CDATA[<p>Reference:</p>
+<ul>
+<li><a href="https://campus.swarma.org/course/4913/study">Hopfield模型的统计物理视频</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="Average"><a href="#Average" class="headerlink" title="Average"></a>Average</h1><p>淬火平均（quenched average）：</p>
+<script type="math/tex; mode=display">\begin{align}
+\langle\ln Z\rangle 
+\end{align}</script><p>退火平均（annealed average）:</p>
+<script type="math/tex; mode=display">\begin{align}
+\ln\langle Z\rangle
+\end{align}</script><p>首先从数学上来看这两者是不一样的，可以把$\ln$当成一个凸函数来看待，本质分析的就是先平均再经过凸函数处理，还是先经过凸函数处理然后再平均。通过Jensen不等式有：</p>
+<script type="math/tex; mode=display">\langle\ln Z\rangle\leq\ln\langle Z\rangle</script><p>这两者有什么区别呢？</p>
+<p>对于一个物理量 $Q$ ，淬火平均表示为：</p>
+<script type="math/tex; mode=display">\begin{align} 
+\langle Q \rangle_{\text{quenched}} = \int P(\{J\}) \left[ \frac{1}{Z(\{J\})} \sum_{\{s\}} Q(\{s\}, \{J\}) e^{-\beta H(\{s\}, \{J\})} \right] d\{J\} 
+\end{align}</script><ul>
+<li>$\{J\}$：无序变量的集合（如随机耦合）。</li>
+<li>$P(\{J\})$：无序变量的概率分布。</li>
+<li>$\{s\}$：系统的状态（如自旋配置）。</li>
+<li>$H(\{s\}, \{J\})$：系统的哈密顿量（能量函数）。</li>
+<li>$Z(\{J\})$：对固定无序变量的配分函数。</li>
+</ul>
+<p>对于一个物理量 $Q$ ，退火平均表示为：</p>
+<script type="math/tex; mode=display">\begin{align} 
+\langle Q \rangle_{\text{annealed}} = \frac{1}{Z_{\text{annealed}}} \sum_{\{s\}, \{J\}} Q(\{s\}, \{J\}) e^{-\beta H(\{s\}, \{J\})}
+\end{align}</script><ul>
+<li>$Z_{\text{annealed}}$：退火平均下的配分函数：<script type="math/tex; mode=display">\begin{align} 
+Z_{\text{annealed}} = \sum_{\{s\}, \{J\}} e^{-\beta H(\{s\}, \{J\})}
+\end{align}</script></li>
+</ul>
+<p>两者的主要区别在$\{J\}$的处理上，对于淬火平均只是选取了其中的几个无序点进行计算，即固定$J$为特定的值。而退火平均将会考虑所有$J$的分布组合。以$\langle\ln Z\rangle $和$\ln\langle Z\rangle$进行区别，其中$Z$是对所有构型$S$进行的求和；$\langle\cdot\rangle$是对耦合系数$J$的平均，对于两种方式这个符号有着不同的含义，淬火平均只会选取其中的一些点进行计算，而退火平均将会计算所有的构型。</p>
+<p>对于铁磁Ising模型，由于$J$本固定的，因此不会存在上面的讨论的$\langle\cdot\rangle$符号的区别。但是对于Hopfield模型，其相互作用是随机连接的，这里存在$J$变化的问题，因此需要讨论退火与淬火的区别。</p>
+<p>这里有一个猜测，Jensen不等式什么时候取等号，就是对$\{J\}$进行平均的时候，由于每一个具体的$J$存在一个权重，因此可能将$\ln$计算变成一个线性的计算。<font color="red">想办法证明这个猜测。</font></p>
+<p>通常对于这两个概念来说，是从演化时间尺度上比较，淬火表示无序的时间尺度远大于动力学的时间尺度，退火表示无序与动力学的时间尺度差不多大。</p>
+<h1 id="Replica-Method"><a href="#Replica-Method" class="headerlink" title="Replica Method"></a>Replica Method</h1><p>利用数学中的极限有：</p>
+<script type="math/tex; mode=display">\begin{align}
+\ln Z=\lim_{n\to0}\frac{Z^n-1}{n}
+\end{align}</script><p>然后计算两边的期望值：</p>
+<script type="math/tex; mode=display">\begin{align}
+\langle\ln Z\rangle=\lim _{n \rightarrow 0} \frac{\left\langle Z^n\right\rangle-1}{n}=\lim _{n \rightarrow 0} \frac{\ln \left\langle Z^n\right\rangle}{n},
+\end{align}</script><p>其中 $\langle\cdot\rangle$ 是 $\xi$ 的无序平均。</p>
+<p>以下证明，以上公式第二个等号成立。首先利用$\ln z=z-\frac{z^2}{2}+\cdots$：</p>
+<script type="math/tex; mode=display">\begin{align}
+\langle\ln Z\rangle=\lim _{n \rightarrow 0} \frac{n\langle\ln Z\rangle}{n}=\lim _{n \rightarrow 0} \frac{\ln (1+n\langle\ln Z\rangle)}{n}
+\end{align}</script><p>因为 $Z^n \simeq 1+n \ln Z+\cdots$, 得到 $\left\langle Z^n\right\rangle \simeq 1+n\langle\ln Z\rangle \cdots$，故当$n$是一个小量的时候可以将展开公式从右到左用：</p>
+<script type="math/tex; mode=display">\begin{align}
+\lim _{n \rightarrow 0} \frac{\ln (1+n\langle\ln Z\rangle)}{n}=\lim _{n \rightarrow 0} \frac{\ln \left\langle Z^n\right\rangle}{n}
+\end{align}</script><p>其中 $n$ 足够小，可以利用展开$Z^n=e^{n \ln Z}=1+$ $n \ln Z+\cdots$. 每个自旋的平均值可以写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+f=\lim _{n \rightarrow 0} \lim _{N \rightarrow \infty} \frac{-\ln \left\langle Z^n\right\rangle}{\beta n N} .
+\end{align}</script><font color="red">stop</font>
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Spin Glass</tag>
+        <tag>Hopfield Model</tag>
+        <tag>Replica Method</tag>
       </tags>
   </entry>
   <entry>
