@@ -25,19 +25,22 @@
   <meta name="description" content="Reference:  Hopfield模型的统计物理视频">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Replica">
-<meta property="og:url" content="https://renyixiong-ai.github.io/2024/06/13/Phys/replica/replica/index.html">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/index.html">
 <meta property="og:site_name" content="Yixiong&#39;s Blog">
 <meta property="og:description" content="Reference:  Hopfield模型的统计物理视频">
 <meta property="og:locale" content="en_US">
-<meta property="article:published_time" content="2024-06-13T13:37:00.000Z">
-<meta property="article:modified_time" content="2024-06-16T05:34:26.854Z">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/diagram.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/landscape.png">
+<meta property="article:published_time" content="2022-11-13T13:37:00.000Z">
+<meta property="article:modified_time" content="2024-06-19T09:41:23.024Z">
 <meta property="article:author" content="Ren Yixiong">
 <meta property="article:tag" content="Spin Glass">
 <meta property="article:tag" content="Hopfield Model">
 <meta property="article:tag" content="Replica Method">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/diagram.png">
 
-<link rel="canonical" href="https://renyixiong-ai.github.io/2024/06/13/Phys/replica/replica/">
+<link rel="canonical" href="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/">
 
 
 <script id="page-configurations">
@@ -193,7 +196,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/06/13/Phys/replica/replica/">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -216,14 +219,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2024-06-13 21:37:00" itemprop="dateCreated datePublished" datetime="2024-06-13T21:37:00+08:00">2024-06-13</time>
+              <time title="Created: 2022-11-13 21:37:00" itemprop="dateCreated datePublished" datetime="2022-11-13T21:37:00+08:00">2022-11-13</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-06-16 13:34:26" itemprop="dateModified" datetime="2024-06-16T13:34:26+08:00">2024-06-16</time>
+                <time title="Modified: 2024-06-19 17:41:23" itemprop="dateModified" datetime="2024-06-19T17:41:23+08:00">2024-06-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -248,14 +251,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.3k</span>
+              <span>5.5k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>4 mins.</span>
+              <span>10 mins.</span>
             </span>
 
         </div>
@@ -318,12 +321,56 @@ Z_{\text{annealed}} = \sum_{\{s\}, \{J\}} e^{-\beta H(\{s\}, \{J\})}
 \end{align}</script><p>其中 $n$ 足够小，可以利用展开$Z^n=e^{n \ln Z}=1+$ $n \ln Z+\cdots$. 每个自旋的平均值可以写为：</p>
 <script type="math/tex; mode=display">\begin{align}
 f=\lim _{n \rightarrow 0} \lim _{N \rightarrow \infty} \frac{-\ln \left\langle Z^n\right\rangle}{\beta n N} .
-\end{align}</script><font color="red">stop</font>
+\end{align}</script><h1 id="Replica-Symmetry-and-Replica-Symmetry-Breaking"><a href="#Replica-Symmetry-and-Replica-Symmetry-Breaking" class="headerlink" title="Replica Symmetry and Replica Symmetry Breaking"></a>Replica Symmetry and Replica Symmetry Breaking</h1><p>在<a href="/2022/11/15/Phys/Hopfield/Hopfield3/" title="Hopfield Model 相图">Hopfield Model 相图</a>中已经展示了复本技巧的使用，得到相图：</p>
+<p><img src="/2022/11/13/Phys/replica/replica/diagram.png" alt="diagram"></p>
+<p>在虚线下方将会得到非物理的解，这个现象的发生是因为之前进行的复本对称假设过于简陋，需要使用更高阶的近似——复本对称破缺。</p>
+<h2 id="Generalized-Free-Energy-and-Complexity-of-States"><a href="#Generalized-Free-Energy-and-Complexity-of-States" class="headerlink" title="Generalized Free Energy and Complexity of States"></a>Generalized Free Energy and Complexity of States</h2><p><img src="/2022/11/13/Phys/replica/replica/landscape.png" alt="free energy landscape"></p>
+<p>随着温度的下降，一整个自由能的解，将会分裂为几个部分。每一最小值点对应TAP方程或者信念传播方程的解。为了解开Gibbs measure中的耦合，需要引入额外的一项刻画自由能的波动，定义为$y$：</p>
+<script type="math/tex; mode=display">\begin{align}
+e^{-y \Phi}=\sum_\alpha e^{-y F_\alpha}=\int \mathrm{d} f e^{N(-y f+\Sigma(f))} \label{RSB}
+\end{align}</script><p>其中$\sum(f)$是指数多个态的集合体；$\Phi$表示复本（广义）自由能；通过自由能密度$f_\alpha$表示波动。这个式子也被叫做 1-RSB 。</p>
+<p>下面具体分析$\eqref{RSB}$中的每一项，其中第一项含义为：</p>
+<script type="math/tex; mode=display">\begin{align}
+e^{-y\Phi}=\sum_\alpha Z_\alpha^m
+\end{align}</script><p>其中第$\alpha$个态的配分函数有指数权重$m$，这个参量也叫做 Parisi RSB parameter 或者 Parisi parameter 。$e^{-y\Phi}$表示将这些纯态通过加权的方式进行求和。</p>
+<p>对于第三项，在热力学极限下，结合 Laplace 近似得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+-y \phi =\max _f\{\Sigma(f)-y f\} 
+\end{align}</script><p>求极值点，可知 $y=\frac{\partial \Sigma(f)}{\partial f}$。$\phi$表示复本自由能密度（自旋的平均值）。通过勒让德变换，得到如下的关系：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+f & =\frac{\partial(y \phi)}{\partial y} \label{94}\\
+\Sigma & =y(f-\phi)=y^2 \frac{\partial \phi}{\partial y} \label{95}
+\end{align}</script><p>利用一阶复本对称破缺的空腔方法可以估计$\phi$。<font color="red">这个和空腔方法是怎么结合的？</font>通过在因子图上增加一个变量节点，在增加节点前后变化如下：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+e^{-y \phi_i^{\text {new }}} & =\sum_\alpha e^{-y F^\alpha-y \Delta F_i^\alpha}=e^{-y \phi^{\text {old }}} \sum_\alpha \omega(\alpha) e^{-y \Delta F_i^\alpha} \\
+& =e^{-y \phi^{\text {old }}}\left\langle e^{-y \Delta F_i}\right\rangle
+\end{align}</script><p>其中$\omega(\alpha)=\frac{e^{-y F^\alpha}}{\sum_a e^{-y F^\alpha}}$，并且$\langle\cdot\rangle$表示所有平衡态的平均。<br>对于增加功能节点有关系式：</p>
+<script type="math/tex; mode=display">\begin{align}
+e^{-y \phi_a^{\text {new }}}=e^{-y \phi^{\mathrm{old}}}\left\langle e^{-y \Delta F_a}\right\rangle
+\end{align}</script><p>由此复本自由能转变为空腔操作：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& -y \Delta \phi_i=\ln \left\langle e^{-y \Delta F_i}\right\rangle \\
+& -y \Delta \phi_a=\ln \left\langle e^{-y \Delta F_a}\right\rangle
+\end{align}</script><p>最后利用Bethe近似，复本自由能得到表示为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\phi=\sum_i \Delta \phi_i-\sum_a(|\partial a|-1) \Delta \phi_a,
+\end{align}</script><p>因此$\eqref{94}$和$\eqref{95}$表示为：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+f & =\frac{\left\langle\Delta F_i e^{-y \Delta F_i}\right\rangle}{\left\langle e^{-y \Delta F_i}\right\rangle}-\sum_a(|\partial a|-1) \frac{\left\langle\Delta F_a e^{-y \Delta F_a}\right\rangle}{\left\langle e^{-y \Delta F_a}\right\rangle} \\
+\Sigma & =y(f-\phi) 
+\end{aligned}</script><h1 id="Optimization"><a href="#Optimization" class="headerlink" title="Optimization"></a>Optimization</h1><p>参考 Spin Glass Theory and Beyound 书籍。</p>
+<font color="red">stop</font>
 
 
-
-
-
+<p>where the weight , and the angular bracket indicates an average over all equilibrium states.<br>Analogously, we have the contribution of adding a function node as follows:</p>
+<p>Therefore, the replicated free energy shift due to both cavity operations can be summarized as follows:</p>
+<p>where $\Delta F_i$ and $\Delta F_a$ are the free energy shifts under the cavity operations, and can be estimated within each pure state, thereby having the same form with the RS theory. Finally, applying the Bethe approximation at the 1RSB level, the replicated free energy can be constructed by collecting two parts, given by</p>
+<p>where $|\partial a|$ denotes the degree of the function node $a$ in the factor graph. The free energy density and the complexity can be derived based on Eqs. (9.4) and (9.5)</p>
+<p>The mean-field spin glass models can be classified into two distinct categories. One is the SK model, where the low temperature phase can be described as an ultrametric hierarchy of states, or mathematically a full replica symmetry breaking (fRSB), explained in detail later. The transition to the spin glass phase is of a second order, accompanying a diverging correlation length. The other class is the p-spin $(p&gt;2)$ models or discontinuous glass models [5]. The transition to the spin glass</p>
 
     </div>
 
@@ -344,11 +391,11 @@ f=\lim _{n \rightarrow 0} \lim _{N \rightarrow \infty} \frac{-\ln \left\langle Z
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2024/06/12/Phys/Hopfield/Hopfield/" rel="prev" title="Hopfield Model">
+    <a href="/2022/11/12/Phys/Hopfield/Hopfield/" rel="prev" title="Hopfield Model">
       <i class="fa fa-chevron-left"></i> Hopfield Model
     </a></div>
       <div class="post-nav-item">
-    <a href="/2024/06/13/Phys/Hopfield/Hopfield1/" rel="next" title="Hopfield Model 自由能">
+    <a href="/2022/11/13/Phys/Hopfield/Hopfield1/" rel="next" title="Hopfield Model 自由能">
       Hopfield Model 自由能 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -409,7 +456,7 @@ f=\lim _{n \rightarrow 0} \lim _{N \rightarrow \infty} \frac{-\ln \left\langle Z
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Average"><span class="nav-number">1.</span> <span class="nav-text">Average</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Replica-Method"><span class="nav-number">2.</span> <span class="nav-text">Replica Method</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Average"><span class="nav-number">1.</span> <span class="nav-text">Average</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Replica-Method"><span class="nav-number">2.</span> <span class="nav-text">Replica Method</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Replica-Symmetry-and-Replica-Symmetry-Breaking"><span class="nav-number">3.</span> <span class="nav-text">Replica Symmetry and Replica Symmetry Breaking</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Generalized-Free-Energy-and-Complexity-of-States"><span class="nav-number">3.1.</span> <span class="nav-text">Generalized Free Energy and Complexity of States</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Optimization"><span class="nav-number">4.</span> <span class="nav-text">Optimization</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -489,12 +536,12 @@ f=\lim _{n \rightarrow 0} \lim _{N \rightarrow \infty} \frac{-\ln \left\langle Z
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">141k</span>
+    <span title="Symbols count total">144k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">4:17</span>
+    <span title="Reading time total">4:23</span>
 </div>
 
         
