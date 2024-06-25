@@ -22,17 +22,19 @@
     var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":-1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Reference:  Hopfield模型的统计物理视频 Analytic and Algorithmic Solution of Random Satisfiability Problems">
+  <meta name="description" content="Reference:  Hopfield模型的统计物理视频 Analytic and Algorithmic Solution of Random Satisfiability Problems Gibbs states and the set of solutions of random constraint satisfaction problems">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Replica">
 <meta property="og:url" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/index.html">
 <meta property="og:site_name" content="Yixiong&#39;s Blog">
-<meta property="og:description" content="Reference:  Hopfield模型的统计物理视频 Analytic and Algorithmic Solution of Random Satisfiability Problems">
+<meta property="og:description" content="Reference:  Hopfield模型的统计物理视频 Analytic and Algorithmic Solution of Random Satisfiability Problems Gibbs states and the set of solutions of random constraint satisfaction problems">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/diagram.png">
 <meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/landscape.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/ms.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/sigma_alpha.png">
 <meta property="article:published_time" content="2022-11-13T13:37:00.000Z">
-<meta property="article:modified_time" content="2024-06-20T05:41:28.816Z">
+<meta property="article:modified_time" content="2024-06-23T03:26:23.636Z">
 <meta property="article:author" content="Ren Yixiong">
 <meta property="article:tag" content="Spin Glass">
 <meta property="article:tag" content="Hopfield Model">
@@ -226,7 +228,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-06-20 13:41:28" itemprop="dateModified" datetime="2024-06-20T13:41:28+08:00">2024-06-20</time>
+                <time title="Modified: 2024-06-23 11:26:23" itemprop="dateModified" datetime="2024-06-23T11:26:23+08:00">2024-06-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -251,14 +253,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>8k</span>
+              <span>10k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>15 mins.</span>
+              <span>19 mins.</span>
             </span>
 
         </div>
@@ -274,6 +276,7 @@
 <ul>
 <li><a target="_blank" rel="noopener" href="https://campus.swarma.org/course/4913/study">Hopfield模型的统计物理视频</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.science.org/doi/10.1126/science.1073287">Analytic and Algorithmic Solution of Random Satisfiability Problems</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.pnas.org/doi/full/10.1073/pnas.0703685104">Gibbs states and the set of solutions of random constraint satisfaction problems</a></li>
 </ul>
 <span id="more"></span>
 <h1 id="Average"><a href="#Average" class="headerlink" title="Average"></a>Average</h1><p>淬火平均（quenched average）：</p>
@@ -372,12 +375,41 @@ f & =\frac{\left\langle\Delta F_i e^{-y \Delta F_i}\right\rangle}{\left\langle e
 &= \sum_{\alpha}Z^m_\alpha
 \end{align}</script><p>利用Laplace近似，$\eqref{laplace}写为$：</p>
 <script type="math/tex; mode=display">\begin{align}
--\beta m \phi(\beta, m)=\max _{s, \epsilon}\{\Sigma(s, \epsilon)+m(s-\beta \epsilon)\}
+-\beta m \phi(\beta, m)=\max _{s, \epsilon}\{\Sigma(s, \epsilon)+m(s-\beta \epsilon)\} \label{913}
 \end{align}</script><p>其中将自由能写为熵和能量的依赖关系$-\beta f= s-\beta\epsilon$。</p>
-<p>如果看能量的关系，将熵固定，有关系：</p>
+<p>如果看能量的关系，将$\eqref{913}$中熵固定，有关系：</p>
 <script type="math/tex; mode=display">\begin{align}
 \phi_\epsilon(y)=\max _\epsilon\{\Sigma(\epsilon)-y \epsilon\} .
 \end{align}</script><p>$\Sigma(\epsilon)$表示在能量密度为$\epsilon$的情况下，集团的数目。以K-SAT问题为例，其中$\epsilon$表示能量（如果全部满足则$\epsilon=0$，存在不满足的情况时则$\epsilon&gt;0$）；$\Sigma(\epsilon)$表示在该能量的情况下有多少个解的数目，当$\lim \epsilon\to 0$的时候就表示全部满足的解的数目。</p>
+<h3 id="Entropic-Cavity"><a href="#Entropic-Cavity" class="headerlink" title="Entropic Cavity"></a>Entropic Cavity</h3><p>将$\eqref{913}$中能量固定，得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+\phi(m) = \max_{s}\{\Sigma(s)+ms\}
+\end{align}</script><p>并且有勒让德变化关系：</p>
+<script type="math/tex; mode=display">\begin{align}
+s=&\frac{\partial \phi(m)}{\partial m}\\
+\Sigma(s)&=\phi(m)-ms
+\end{align}</script><p><img src="/2022/11/13/Phys/replica/replica/ms.png" alt="ms"></p>
+<p>上图中的小图斜率为$-m=\frac{\partial \Sigma(s)}{\partial s}$，只有$0\leq m$的部分有意义，随着熵$s$增大广义熵$\Sigma$开始减少，对于优化问题对应含义为：当组合优化问题中（例如k-SAT问题）一个特定问题（给定参数）的解的数量增加时候（$s$增加），则组合优化问题（没有指定具体参数）存在这样解的问题数量将会减少（$\Sigma$变小）；小图中$m=0$的点，对应上面讨论的$\epsilon=0$的情况，即问题只需满足有解条件。大图是$m$与k-SAT问题中$\alpha$的关系，当问题比较容易的时候($\leq\alpha_c$)$m=1$，随着问题的难度增加（$\alpha$变大），$m$开始变小，逐渐出现小图中的的关系，当达到一定程度（$=\alpha_c$）的时候成为是否有解的阈值。</p>
+<p><img src="/2022/11/13/Phys/replica/replica/sigma_alpha.png" alt="sigma-alpha"></p>
+<p>上图中两条曲线是两条相变线。$m=1$的红线是动力学相变线，遍历性开始破缺，从此线开始问题对应的解的数量开始变少，例如蒙卡模拟临界慢化；$m=0$是熵为$0$的线，分别基态与激发态，判别是否有解。</p>
+<h3 id="1RSB"><a href="#1RSB" class="headerlink" title="1RSB"></a>1RSB</h3><p>之前已经将Cavity  用于计算一个构型的自由能，接下来将其引入复本技巧中，计算不同构型自由能之间的耦合。</p>
+<script type="math/tex; mode=display">\begin{align}
+P\left(m_{i \rightarrow a}\right)=\frac{1}{\mathcal{Z}_{i \rightarrow a}} \prod_{b \in \partial i \backslash a} \int \mathrm{d} \hat{m}_{b \rightarrow i} \delta\left(m_{i \rightarrow a}-\mathcal{F}\left(\left\{\hat{m}_{b \rightarrow a}\right\}\right)\right) Z_{i \rightarrow a}^m
+\end{align}</script><p>其中必须考虑一个构型自由能变化，导致对其它自由能构型的扰动，这一项用$Z_{i \rightarrow a}^m$表示。<font color="red">可以尝试使用变分导出。</font></p>
+<p>当$m=1$的时候，$\eqref{913}$有:</p>
+<script type="math/tex; mode=display">\begin{align}
+\phi(\beta,m=1)=\epsilon-\frac{\Sigma(s,\epsilon)+s}{\beta}=\epsilon-Ts_\text{tot}
+\end{align}</script><p>其中$s_\text{tot}=\Sigma+s$是总解的数目，$\Sigma$为构型数目，$s$为一个构型中解的数目，两者相乘则得到$s_\text{tot}$。这个公式说明了 Cavity的方法在1阶复本破缺的情况下适用的原因。</p>
+<p>接下来讨论冻结（Frozen）的情况，也即是每一个构型只有一个解的情况，此时$s=0$：</p>
+<script type="math/tex; mode=display">\begin{align}
+e^{-N \beta m \phi(\beta, m)}=\sum_\alpha e^{-N \beta m f_\alpha}=\sum_\alpha e^{-N \beta m \epsilon_\alpha}=e^{-N \beta m f_{\mathrm{RS}}(\beta m)}
+\end{align}</script><p>存在冻结温度$s_\text{RS}(\beta_s)=0$，此时有$m=\frac{\beta_s}{\beta}=1$。$m$的含义为$1-m=\sum_\alpha\overline{\omega_\alpha^2}$，其中$\omega$为构型权重，更多的参考<a target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Storage-capacity-of-memory-networks-with-binary-Krauth-M%C3%A9zard/。5c7af8e28ed12cbfb07cbbcfb001919f6a081d5a">Storage capacity of memory networks with binary<br>couplings</a>。</p>
+<font color="red">阅读这篇文献。</font>
+
+<h2 id="More-Steps-of-Replica-Symmetry-Breaking"><a href="#More-Steps-of-Replica-Symmetry-Breaking" class="headerlink" title="More Steps of Replica Symmetry Breaking"></a>More Steps of Replica Symmetry Breaking</h2><p>由于使用了空腔方法，在具备长程关联的情况下将会变得不精确。解正确的必要条件是spin glass susceptibility $\chi_{\text {SG }}$没有发散:</p>
+<script type="math/tex; mode=display">\begin{align}
+\chi_{\mathrm{SG}}=\frac{1}{N} \sum_{i, j} \overline{\left(\left\langle\sigma_i \sigma_j\right\rangle-\left\langle\sigma_i\right\rangle\left\langle\sigma_j\right\rangle\right)^2}
+\end{align}</script><p>其中$\langle\cdot\rangle$是热力学平均，上划线是无序平均。当这个条件不满足的时候，需要引入更高阶的复本对称。</p>
 <h1 id="Optimization"><a href="#Optimization" class="headerlink" title="Optimization"></a>Optimization</h1><p>参考 Spin Glass Theory and Beyound 书籍。</p>
 <h1 id="Append"><a href="#Append" class="headerlink" title="Append"></a>Append</h1><h2 id="勒让德变换"><a href="#勒让德变换" class="headerlink" title="勒让德变换"></a>勒让德变换</h2><p>勒让德变换（Legendre transform）是一种数学工具，用于在物理学和数学中将一个函数转换为其共轭变量的函数。它在经典力学、热力学、统计力学以及最优化问题中有重要应用。勒让德变换能够将一个变量的依赖关系转化为另一变量的依赖关系，从而简化问题的求解。</p>
 <h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>设 $f(x)$ 是一个实函数，其导数 $f’(x)$ 单调且严格递增，这样 $f’(x)$ 的反函数 $x = (f’)^{-1}(p)$ 存在。勒让德变换将函数 $f(x)$ 转换为一个新函数 $g(p)$，其中 $p$ 是 $f(x)$ 的导数 $p = f’(x)$。勒让德变换定义为：</p>
@@ -534,7 +566,7 @@ f & =\frac{\left\langle\Delta F_i e^{-y \Delta F_i}\right\rangle}{\left\langle e
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Average"><span class="nav-number">1.</span> <span class="nav-text">Average</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Replica-Method"><span class="nav-number">2.</span> <span class="nav-text">Replica Method</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Replica-Symmetry-and-Replica-Symmetry-Breaking"><span class="nav-number">3.</span> <span class="nav-text">Replica Symmetry and Replica Symmetry Breaking</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Generalized-Free-Energy-and-Complexity-of-States"><span class="nav-number">3.1.</span> <span class="nav-text">Generalized Free Energy and Complexity of States</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Claculate-Generalized-Free-Energy"><span class="nav-number">3.2.</span> <span class="nav-text">Claculate Generalized Free Energy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cavity"><span class="nav-number">3.3.</span> <span class="nav-text">Cavity</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Energy-Cavity"><span class="nav-number">3.3.1.</span> <span class="nav-text">Energy Cavity</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Optimization"><span class="nav-number">4.</span> <span class="nav-text">Optimization</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Append"><span class="nav-number">5.</span> <span class="nav-text">Append</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8B%92%E8%AE%A9%E5%BE%B7%E5%8F%98%E6%8D%A2"><span class="nav-number">5.1.</span> <span class="nav-text">勒让德变换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">5.1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8"><span class="nav-number">5.1.2.</span> <span class="nav-text">性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">5.1.3.</span> <span class="nav-text">应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90"><span class="nav-number">5.1.4.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#K-SAT"><span class="nav-number">5.2.</span> <span class="nav-text">K-SAT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#K-SAT%E9%97%AE%E9%A2%98%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">5.2.1.</span> <span class="nav-text">K-SAT问题的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">5.2.2.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E6%80%A7"><span class="nav-number">5.2.3.</span> <span class="nav-text">重要性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E4%BE%8B"><span class="nav-number">5.2.4.</span> <span class="nav-text">特例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">5.2.5.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">5.2.6.</span> <span class="nav-text">结论</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Average"><span class="nav-number">1.</span> <span class="nav-text">Average</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Replica-Method"><span class="nav-number">2.</span> <span class="nav-text">Replica Method</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Replica-Symmetry-and-Replica-Symmetry-Breaking"><span class="nav-number">3.</span> <span class="nav-text">Replica Symmetry and Replica Symmetry Breaking</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Generalized-Free-Energy-and-Complexity-of-States"><span class="nav-number">3.1.</span> <span class="nav-text">Generalized Free Energy and Complexity of States</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Claculate-Generalized-Free-Energy"><span class="nav-number">3.2.</span> <span class="nav-text">Claculate Generalized Free Energy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cavity"><span class="nav-number">3.3.</span> <span class="nav-text">Cavity</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Energy-Cavity"><span class="nav-number">3.3.1.</span> <span class="nav-text">Energy Cavity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Entropic-Cavity"><span class="nav-number">3.3.2.</span> <span class="nav-text">Entropic Cavity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1RSB"><span class="nav-number">3.3.3.</span> <span class="nav-text">1RSB</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#More-Steps-of-Replica-Symmetry-Breaking"><span class="nav-number">3.4.</span> <span class="nav-text">More Steps of Replica Symmetry Breaking</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Optimization"><span class="nav-number">4.</span> <span class="nav-text">Optimization</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Append"><span class="nav-number">5.</span> <span class="nav-text">Append</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8B%92%E8%AE%A9%E5%BE%B7%E5%8F%98%E6%8D%A2"><span class="nav-number">5.1.</span> <span class="nav-text">勒让德变换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">5.1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8"><span class="nav-number">5.1.2.</span> <span class="nav-text">性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">5.1.3.</span> <span class="nav-text">应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90"><span class="nav-number">5.1.4.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#K-SAT"><span class="nav-number">5.2.</span> <span class="nav-text">K-SAT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#K-SAT%E9%97%AE%E9%A2%98%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">5.2.1.</span> <span class="nav-text">K-SAT问题的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">5.2.2.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E6%80%A7"><span class="nav-number">5.2.3.</span> <span class="nav-text">重要性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E4%BE%8B"><span class="nav-number">5.2.4.</span> <span class="nav-text">特例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">5.2.5.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">5.2.6.</span> <span class="nav-text">结论</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -548,7 +580,7 @@ f & =\frac{\left\langle\Delta F_i e^{-y \Delta F_i}\right\rangle}{\left\langle e
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">28</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -559,7 +591,7 @@ f & =\frac{\left\langle\Delta F_i e^{-y \Delta F_i}\right\rangle}{\left\langle e
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">45</span>
+        <span class="site-state-item-count">46</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -614,12 +646,12 @@ f & =\frac{\left\langle\Delta F_i e^{-y \Delta F_i}\right\rangle}{\left\langle e
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">147k</span>
+    <span title="Symbols count total">151k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">4:27</span>
+    <span title="Reading time total">4:35</span>
 </div>
 
         

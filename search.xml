@@ -1158,464 +1158,6 @@ F_{\boldsymbol{\lambda}}(t)=\left\langle H_{\text {target }}\right\rangle_{\bold
       </tags>
   </entry>
   <entry>
-    <title>Feynman path integrals</title>
-    <url>/2024/05/26/Phys/Path_integrals/Path_integrals/</url>
-    <content><![CDATA[<p>考虑到状态的演化，最直接的想法是通过经典力学通过拉格朗日量来构建经典的运动路径。如何处理的问题不是精确的状态，而是概率密度的分布，如何求概率密度分布的演化？路径积分则是十分自然的想法。将每一个小的状态，以任意的路径进行演化，最后得到最终转态的概率分布。这样处理的麻烦在于，不是每一条路径都是等价的，有一些路径发生的概率高一些，另一些则低一些。如何表示这样的概率分布，以及实际得到演化后的概率分布，则是本文要探讨的。</p>
-<p>当然，这只是一个简单的版本，需要更多的讨论。</p>
-<p>参考：</p>
-<ul>
-<li><a href="https://zhuanlan.zhihu.com/p/275827978">QM - 路径积分 (Path Integral) PT. 1 - 基本构架</a></li>
-<li><a href="https://zhuanlan.zhihu.com/p/270684456">QM - 路径积分 (Path Integral) PT. 2 - 求解实例</a></li>
-</ul>
-<span id="more"></span>
-<h1 id="路径积分的基本构架"><a href="#路径积分的基本构架" class="headerlink" title="路径积分的基本构架"></a>路径积分的基本构架</h1><font color="red">
-
-本部分的目标：
-1. 构建传播子 
-2. 相空间、位形空间的形式
-3. 以自由粒子为例，展示两种形式
-
-</font>
-
-<p>传播子是研究态随时间演化的方法，这样演化过程由基本方程确定，在量子力学中这样的方程是薛定谔方程。但是随时间演化的方程有很多，这些同样可以在传播子的框架下研究。</p>
-<p>由于薛定谔方程过于出名，接下来的讨论在薛定谔方程下进行。</p>
-<h2 id="传播子"><a href="#传播子" class="headerlink" title="传播子"></a>传播子</h2><p>定义一个算符 $U$，它的作用是给出演化结果:</p>
-<script type="math/tex; mode=display">\begin{align}
-U\left(t-t_0\right)\left|\psi\left(t_0\right)\right\rangle=|\psi(t)\rangle
-\end{align}</script><p>然后求解 $U$ 的表达式，研究时间演化最熟悉的是薛定谔方程:</p>
-<script type="math/tex; mode=display">\begin{align}
-& i \hbar \frac{\mathrm{d}}{\mathrm{d} t}|\psi(t)\rangle=H|\psi(t)\rangle \\
-\Rightarrow & \frac{\mathrm{d}}{\mathrm{d} t} U\left(t-t_0\right)\left|\psi\left(t_0\right)\right\rangle=-i \frac{H}{\hbar} U\left(t-t_0\right)\left|\psi\left(t_0\right)\right\rangle \\
-\Rightarrow & \frac{\mathrm{d}}{\mathrm{d} t} U\left(t-t_0\right)=-i \frac{H}{\hbar} U\left(t-t_0\right) \\
-\Rightarrow & \mathrm{d} \ln U\left(t-t_0\right)=-i \frac{H}{\hbar} \mathrm{d} t \\
-\Rightarrow & U\left(t-t_0\right)=e^{-i \frac{H}{\hbar} t} \cdot \text { const }
-\end{align}</script><p>如果时间不变自然不发生演化，以此作为初始条件，即 $t=t_0 \Rightarrow U=I$。确定系数之后得到了么正时间演化算符的表达式:</p>
-<script type="math/tex; mode=display">\begin{align}
-U\left(t-t_0\right)=e^{-i \frac{H}{\hbar}\left(t-t_0\right)}
-\end{align}</script><p>在形式上地使用：</p>
-<script type="math/tex; mode=display">\begin{align}
-|\psi(t)\rangle=U\left(t-t_0\right)\left|\psi\left(t_0\right)\right\rangle \label{1_U}
-\end{align}</script><p>接下来$\eqref{1_U}$式取坐标表象，即左乘 $\langle\vec{r}|$，再插入完备性关系式 $I=\int\left|\vec{r}_0\right\rangle\left\langle\vec{r}_0\right| \mathrm{d} \vec{r}_0$，可得：</p>
-<script type="math/tex; mode=display">\begin{align}
-\psi(\vec{r}, t)&=\int\left\langle\vec{r}\left|U\left(t, t_0\right)\right| \vec{r}_0\right\rangle\left\langle\vec{r}_0 \mid \psi\left(t_0\right)\right\rangle \mathrm{d} \vec{r}_0 \\
-&=\int K\left(\vec{r}, t ; \vec{r}_0, t_0\right) \psi\left(\vec{r}_0, t_0\right) \mathrm{d} \vec{r}_0 \\
-K\left(\vec{r}, t ; \vec{r}_0, t_0\right) &= \left\langle\vec{r}\left|U\left(t, t_0\right)\right| \vec{r}_0\right\rangle
-\end{align}</script><p>其中 $K\left(\vec{r}, t ; \vec{r}_0, t_0\right)$ 称作传播子, 作用如上所示, 路径积分的最终目的就是得到其具体表达式。</p>
-<h2 id="传播子的性质"><a href="#传播子的性质" class="headerlink" title="传播子的性质"></a>传播子的性质</h2><p>设置时间节点（无特殊声明全文适用）：</p>
-<script type="math/tex; mode=display">\begin{align}
-t_0<t_n \leq t=t_N, n \in\{1,2,3, \cdots, N\}
-\end{align}</script><p>注意不平均分割时间。由传播子的定义，我们不难发现它具有如下特性：</p>
-<script type="math/tex; mode=display">\begin{align}
-K\left(\vec{r}, t ; \vec{r}_0, t_0\right) & =\left\langle\vec{r}\left|U\left(t, t_0\right)\right| \vec{r}_0\right\rangle \\
-& =\left\langle\vec{r}\left|U\left(t, t_1\right) U\left(t_1, t_0\right)\right| \vec{r}_0\right\rangle \\
-& =\int\left\langle\vec{r}\left|U\left(t, t_1\right)\right| \vec{r}_1\right\rangle\left\langle\vec{r}_1\left|U\left(t_1, t_0\right)\right| \vec{r}_0\right\rangle \mathrm{d} \vec{r}_1 \\
-& =\int\left\langle\vec{r}\left|U\left(t, t_2\right)\right| \vec{r}_2\right\rangle\left\langle\vec{r}_2\left|U\left(t_2, t_1\right)\right| \vec{r}_1\right\rangle\left\langle\vec{r}_1\left|U\left(t_1, t_0\right)\right| \vec{r}_0\right\rangle \mathrm{d} \vec{r}_1 \mathrm{~d} \vec{r}_2 \\
-& =\int K\left(\vec{r}, t ; \vec{r}_2, t_2\right) K\left(\vec{r}_2, t_2 ; \vec{r}_1, t_1\right) K\left(\vec{r}_1, t_1 ; \vec{r}_0, t_0\right) \mathrm{d} \vec{r}_1 \mathrm{~d} \vec{r}_2
-\end{align}</script><p>注意我们要求上式中恒满足关系 $\vec{r}_N=\vec{r}, t_N=t, a&gt;b \Leftrightarrow t_a&gt;t_b$。利用该性质进行无穷分割:</p>
-<script type="math/tex; mode=display">\begin{align}
-K\left(\vec{r}, t ; \vec{r}_0, t_0\right)&=\int\left[\prod_{n=1}^N K\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
-\max \left\{t_n-t_{n-1}\right\} &\rightarrow 0
-\end{align}</script><p>将积分号里边儿的那个无穷小过程传播子换一个符号, 记为:</p>
-<script type="math/tex; mode=display">\begin{align}
-K\left(\vec{r}, t ; \vec{r}_0, t_0\right)=\int\left[\prod_{n=1}^N \mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1}{ }^{[2]}
-\end{align}</script><h2 id="相空间的路径积分"><a href="#相空间的路径积分" class="headerlink" title="相空间的路径积分"></a>相空间的路径积分</h2><p>要求 $K\left(\vec{r}, t ; \vec{r}_0, t_0\right)$ ，需先处理 $\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)$ 。</p>
-<script type="math/tex; mode=display">\begin{align}
-\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)&=\left\langle\vec{r}_n\left|U\left(t_n, t_{n-1}\right)\right| \vec{r}_{n-1}\right\rangle=\left\langle\vec{r}_n\left|e^{-\frac{i H}{\hbar} \Delta t_n}\right| \vec{r}_{n-1}\right\rangle\\
-e^{-\frac{i}{\hbar} H \Delta t_n}&=e^{-\frac{i}{\hbar}\left[\frac{p^2}{2 m}+V\left(\vec{R}, t_n\right)\right] \Delta t_n \Delta t_n \rightarrow 0} e^{-\frac{i}{\hbar} V\left(\vec{R}, t_n\right) \Delta t_n} e^{-\frac{i}{\hbar} \frac{p^2}{2 m} \Delta t_n}
-\end{align}</script><p>$\mathcal{K}$表示极短时间内从一个状态到另一个状态，在极限情况下式精确的；$K$是一段时间的跳跃。因此有 $K \neq \mathcal{K}$，在一些情况下这两个是相等的例如自由粒子。</p>
-<p>可以推知：</p>
-<script type="math/tex; mode=display">\begin{align}
-\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right) & =\left\langle\vec{r}_n\left|e^{-\frac{i}{\hbar} V\left(\vec{R}, t_n\right) \Delta t_n} e^{-\frac{i}{\hbar} \frac{p^2}{2 m} \Delta t_n}\right| \vec{r}_{n-1}\right\rangle \\
-& =e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n}\left\langle\vec{r}_n\left|e^{-\frac{i}{\hbar} \frac{P^2}{2 m} \Delta t_n}\right| \vec{r}_{n-1}\right\rangle \\
-& =\int e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n}\left\langle\vec{r}_n \mid \vec{p}_n\right\rangle\left\langle\vec{p}_n\left|e^{-\frac{i}{\hbar} \frac{P^2}{2 m} \Delta t_n}\right| \vec{r}_{n-1}\right\rangle \mathrm{d} \vec{p}_n \\
-& =\int e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n}\left\langle\vec{r}_n \mid \vec{p}_n\right\rangle e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n}\left\langle\vec{p}_n \mid \vec{r}_{n-1}\right\rangle \mathrm{d} \vec{p}_n \\
-& =\frac{1}{(2 \pi \hbar)^3} \int e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n} e^{i \frac{\vec{p}_n}{\hbar} \cdot \Delta \vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n} \mathrm{~d} \vec{p}_n \\
-& =\frac{1}{(2 \pi \hbar)^3} \int e^{\frac{i}{\hbar}\left[\vec{p}_n \cdot \frac{\Delta \vec{r}_n}{\Delta t_n}-H\left(\vec{r}_n, \vec{p}_n, t_n\right)\right] \Delta t_n} \mathrm{~d} \vec{p}_n \\
-& =\frac{1}{(2 \pi \hbar)^3} \int e^{\frac{i}{\hbar}\left[\vec{p}_n \cdot \vec{r}_n-H\left(\vec{r}_n, \vec{p}_n, t_n\right)\right] \Delta t_n} \mathrm{~d} \vec{p}_n \\
-& =\frac{1}{(2 \pi \hbar)^3} \int e^{i \frac{L\left(\vec{r}_n, \vec{p}_n, t_n\right) \Delta t_n}{\hbar}} \mathrm{d} \vec{p}_n
-\end{align}</script><p>将上式代回传播子的表达式就得到相空间的路径积分:</p>
-<script type="math/tex; mode=display">\begin{align}
-K\left(\vec{r}, t ; \vec{r}_0, t_0\right) & =\int\left[\prod_{n=1}^N \mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
-& =\int \prod_{n=1}^N\left[\frac{1}{(2 \pi \hbar)^3} \int e^{\frac{i}{\hbar} L\left(\vec{r}_n, \vec{p}_n, t_n\right) \Delta t_n} \mathrm{~d} \vec{p}_n\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
-& =\frac{1}{(2 \pi \hbar)^{3 N}} \int\left[\int e^{\frac{i}{\hbar} \sum_{n=1}^N L\left(\vec{r}_n, \vec{p}_n, t_n\right) \Delta t_n} \mathrm{~d} \vec{p}_1 \cdots \mathrm{d} \vec{p}_N\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
-& \stackrel{\text { limit }}{=} \frac{1}{(2 \pi \hbar)^{3 N}} \int e^{\frac{i}{\hbar} \int L(\vec{r}, \vec{p}, \tau) \mathrm{d} \tau} \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \mathrm{~d} \vec{p}_1 \cdots \mathrm{d} \vec{p}_N \\
-& =\frac{1}{(2 \pi \hbar)^{3 N}} \int \mathcal{D} \vec{r} \mathcal{D} \vec{p} e^{i \frac{S(\vec{r}, \vec{p}, t)}{\hbar}}
-\end{align}</script><p>其中的 $\mathcal{D}$ 表征对各种怪异路径进行积分。注意位置积分比动量积分少一重，因为端点是固定的。</p>
-<h2 id="位形空间的路径积分"><a href="#位形空间的路径积分" class="headerlink" title="位形空间的路径积分"></a>位形空间的路径积分</h2><p>位形空间的路径积分，就是把动量先积掉：</p>
-<script type="math/tex; mode=display">\begin{align}
-\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right) & =\frac{1}{(2 \pi \hbar)^3} \int e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n} e^{i \frac{\vec{p}_n}{\hbar} \cdot \Delta \vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n} \mathrm{~d} \vec{p}_n \\
-& =\frac{1}{(2 \pi \hbar)^3} e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n} \int e^{i \frac{\vec{p}_n}{\hbar} \cdot \Delta \vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n} \mathrm{~d} \vec{p}_n
-\end{align}</script><p>显然后面的积分在自由粒子的格林函数中求解过, 这里直接而代入结论:</p>
-<script type="math/tex; mode=display">
-\frac{1}{(2 \pi \hbar)^3} \int e^{i \frac{\vec{p}_n}{\hbar} \cdot \Delta \vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n} \mathrm{~d} \vec{p}_n=\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} \exp \left[i \frac{m\left(\Delta \vec{\Delta}_n\right)^2}{2 \hbar \Delta t_n}\right]</script><p>将上式代回无穷小间隔传播子表达式得:</p>
-<script type="math/tex; mode=display">\begin{align}
-\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right) & =\frac{1}{(2 \pi \hbar)^3} \int e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n} e^{i \frac{\vec{p}_n}{\hbar} \cdot \Delta \vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n} \mathrm{~d} \vec{p}_n \\
-& =\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n} e^{i \frac{m\left(\Delta \vec{F}_n\right)^2}{2 \hbar \Delta t_n}} \\
-& =\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} e^{\frac{i}{\hbar}\left[\frac{1}{2} m \frac{\left(\Delta \vec{r}_n\right)^2}{\left(\Delta t_n\right)^2}-V\left(\vec{r}_n, t_n\right)\right] \Delta t_n} \\
-& =\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} e^{\frac{i}{\hbar}\left[\frac{1}{2} m \dot{\vec{r}}_n^2-V\left(\vec{r}_n, t_n\right)\right] \Delta t_n}
-\end{align}</script><p>将上述结果代回传播子的表达式得到位形空间的路径积分:</p>
-<script type="math/tex; mode=display">\begin{align}
-K\left(\vec{r}, t ; \vec{r}_0, t_0\right) & =\int\left[\prod_{n=1}^N \mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
-& =\int\left[\prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} e^{\frac{i}{\hbar}\left[\frac{1}{2} m \dot{\vec{r}}_n^2-V\left(\vec{r}_n, t_n\right)\right] \Delta t_n}\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
-& =\prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} \int e^{\frac{i}{\hbar} \sum_{n=1}^N\left[\frac{1}{2} m \dot{\vec{r}}_n^2-V\left(\vec{r}_n, t_n\right)\right] \Delta t_n} \mathrm{~d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
-& \stackrel{\text { limit }}{=} \prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} \int e^{\frac{i}{\hbar} \int_{t_0}^t \frac{1}{2} m \dot{\vec{r}}_n^2-V(\vec{r}, \tau) \mathrm{d} \tau} \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
-& =\prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} \int \mathcal{D} \vec{r} e^{i \frac{S\left(\vec{r}, \vec{r}_t, t\right)}{\hbar}}
-\end{align}</script><h2 id="传播子的两类表达式"><a href="#传播子的两类表达式" class="headerlink" title="传播子的两类表达式"></a>传播子的两类表达式</h2><p>综上所述, 路径积分中的传播子就表达为:</p>
-<script type="math/tex; mode=display">\begin{align}
-K\left(\vec{r}, t ; \vec{r}_0, t_0\right)= & \frac{1}{(2 \pi \hbar)^{3 N}} \int \mathcal{D} \vec{r} \mathcal{D} \vec{p} e^{i \frac{S(\vec{r}, \vec{p}, t)}{\hbar}} \\
-K\left(\vec{r}, t ; \vec{r}_0, t_0\right)= & \prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} \int \mathcal{D} \vec{r} e^{i \frac{S(\vec{r}, \vec{r}, t)}{\hbar}} \label{1_weixin}
-\end{align}</script><p>实际运算中需要用到:</p>
-<script type="math/tex; mode=display">
-\left\{\begin{array}{l}
-K\left(\vec{r}, t ; \vec{r}_0, t_0\right)=\frac{1}{(2 \pi \hbar)^{3 N}} \int e^{\frac{i}{\hbar} \sum_{n=1}^N\left[\vec{p}_n \cdot \dot{\vec{r}}_n-H\left(\vec{r}_n, \vec{p}_n, t_n\right)\right] \Delta t_n} \mathrm{~d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \mathrm{~d} \vec{p}_1 \cdots \mathrm{d} \vec{p}_N \\
-K\left(\vec{r}, t ; \vec{r}_0, t_0\right)=\prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} \int e^{\frac{i}{\hbar} \sum_{n=1}^N\left[\frac{1}{2} m \dot{\vec{r}}_n^2-V\left(\vec{r}_n, t_n\right)\right] \Delta t_n} \mathrm{~d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1}
-\end{array}\right.</script><p>其中 $\left\{\begin{array}{l}\Delta t_n=t_n-t_{n-1} \\ \Delta \vec{r}_n=\vec{r}_n-\vec{r}_{n-1} \\ \dot{\vec{r}}_n=\Delta \vec{r}_n / \Delta t_n \\ n \in\{1,2,3, \cdots, N\}\end{array} \quad\right.$ 且规定 $\left\{\begin{array}{l}\vec{r}_N=\vec{r} \\ t_N=t \\ t_0<t_n \leq t \\ a>b \Leftrightarrow t_a&gt;t_b \\ \min \left\{t_n-t_{n-1}\right\} \rightarrow 0\end{array}\right.$<br>根号下的虚数单位 $i$ 定义为 $\exp [i \pi / 2]$。</t_n></p>
-<h1 id="自由粒子-利用对角化求解路径积分"><a href="#自由粒子-利用对角化求解路径积分" class="headerlink" title="自由粒子 - 利用对角化求解路径积分"></a>自由粒子 - 利用对角化求解路径积分</h1><font color="red">
-
-已完成内容：
-1. 路径积分的两种形式
-2. 自由粒子的路径积分
-
-本部分的目标：
-1. 讨论自由粒子在位形空间的路径积分，得到传播子的具体形式
-2. 讨论自由粒子在相空间的路径积分，得到传播子的具体形式所属
-
-</font>
-
-<p>对时间采用平均分割的方案$\Delta t_n=\frac{t-t_0}{N}=\varepsilon$，在极限情况下讨论$N\to \infty\quad \text{or}\quad \varepsilon\to\infty$。由$\eqref{1_weixin}$可知自由粒子位形空间传播子为：</p>
-<script type="math/tex; mode=display">\begin{align}
-K\left(x, t ; x_0, t_0\right)&=\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int \mathrm{D} x e^{i \frac{S}{\hbar}} \\
-S&=\int \frac{1}{2} m v^2 dt\\
-&=\sum_{n=1}^N \frac{1}{2} m \frac{\left(\Delta x_n\right)^2}{\varepsilon^2} \varepsilon \\
-&=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(x_n-x_{n-1}\right)^2 \label{free_partial_S}
-\end{align}</script><p>将位置$x_n$表示成经典路径$x^c_n$与路径扰动$y_n$两个部分，其中下标表示时刻$t_n$：</p>
-<script type="math/tex; mode=display">\begin{align}
-x_n&=x_n^c+y_n \\
-x_n^{\mathrm{c}}&=x^{\mathrm{c}}\left(t_n\right)=x^{\mathrm{c}}\left(t_0+n \varepsilon\right) \\
-\end{align}</script><p>并且有边界条件，在端点是固定不动的：</p>
-<script type="math/tex; mode=display">\begin{align}
-\left\{
-    \begin{array}
-    {l}x_0^{\mathrm{c}}=x^{\mathrm{c}}\left(t_0\right)=x_0 \\ 
-    x_N^{\mathrm{c}}=x^{\mathrm{c}}\left(t_N\right)=x_N=x 
-    \end{array}
-\right.
-\end{align}</script><p>以及关系：</p>
-<script type="math/tex; mode=display">\begin{aligned}
-t_N&=t_0+N \varepsilon \\
-\Delta t_2+\Delta t_1&=t_2-t_0 \Rightarrow \sum_{n=1}^N \Delta t_n=N \varepsilon=t_N-t_0
-\end{aligned}</script><p>代入$\eqref{free_partial_S}$后：</p>
-<script type="math/tex; mode=display">\begin{align}
-S&=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta x_n\right)^2 \\
-&=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta x_n^{\mathrm{c}}+\Delta y_n\right)^2\\
-&=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta x_n^{\mathrm{c}}\right)^2+\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta y_n\right)^2+\frac{m}{\varepsilon} \sum_{n=1}^N \Delta x_n^{\mathrm{c}} \Delta y_n 
-\end{align}</script><p>分为三个部分：</p>
-<script type="math/tex; mode=display">\begin{align}
-S^{\mathrm{c}}&= \frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta x_n^{\mathrm{c}}\right)^2 \\
-S^{\prime} &= \frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta y_n\right)^2 \\
-S^{\times} &= \frac{m}{\varepsilon} \sum_{n=1}^N \Delta x_n^{\mathrm{c}} \Delta y_n 
-\end{align}</script><p><img src="/2024/05/26/Phys/Path_integrals/Path_integrals/path_integral.png" alt="Path Integral"></p>
-<p>如上图所示，表示在固定初始与终点的路径积分，每条线表示可能的路径，其中红线为经典路径。</p>
-<p>针对交叉项：</p>
-<script type="math/tex; mode=display">\begin{align}
-S^{\times} &= \frac{m}{\varepsilon} \sum_{n=1}^N \Delta x_n^{\mathrm{c}} \Delta y_n \\
-&=m \sum_{n=1}^N \dot{x}_n^{\mathrm{c}}\left(y_n-y_{n-1}\right) \\
-& =m\left(\sum_{n=1}^N \dot{x}_n^{\mathrm{c}} y_n-\sum_{n=1}^N \dot{x}_n^{\mathrm{c}} y_{n-1}\right) \\ 
-& \stackrel{y_{N=0}}{=} m\left(\sum_{n=1}^{N-1} \dot{x}_n^{\mathrm{c}} y_n-\sum_{n=0}^{N-1} \dot{x}_{n+1}^{\mathrm{c}} y_n\right) \\ 
-& \stackrel{y_{0=0}}{=} m\left(\sum_{n=1}^{N-1} \dot{x}_n^{\mathrm{c}} y_n-\sum_{n=1}^{N-1} \dot{x}_{n+1}^{\mathrm{c}} y_n\right) \\
-&=-m \varepsilon \sum_{n=1}^{N-1} \frac{\Delta \dot{x}_{n+1}^{\mathrm{c}}}{\varepsilon} y_n \\
-&=-m \varepsilon \sum_{n=1}^{N-1} \ddot{x}_{n+1}^{\mathrm{c}} y_n
-\end{align}</script><p>考虑到自由粒子$F=ma=m\ddot{x}^{\mathrm{c}}=0$，因此交叉项$S^{\times}=0$。</p>
-<p>对于经典路径项$S^{\mathrm{c}}$：</p>
-<script type="math/tex; mode=display">\begin{align}
-S^{\mathrm{c}}&=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta x_n^{\mathrm{c}}\right)^2 \\
-&=\frac{m \varepsilon}{2} \sum_{n=1}^N \frac{\left(\Delta x_n^{\mathrm{c}}\right)^2}{\varepsilon^2} \\
-&=\frac{m \varepsilon}{2} \sum_{n=1}^N\left(\dot{x}_n^{\mathrm{c}}\right)^2 \\
-&\stackrel{\varepsilon \rightarrow 0}{=} \frac{m}{2} \int_{t_0}^t\left(\dot{x}^{\mathrm{c}}\right)^2 \mathrm{~d} \tau
-\end{align}</script><p>经典自由粒子解的 $\dot{x}^c$ 是一个常数, 且知道 $\dot{x}^{\mathrm{c}}=\frac{x-x_0}{t-t_0}$。所以：</p>
-<script type="math/tex; mode=display">\begin{align}
-S^{\mathrm{c}}&=\frac{m}{2} \int_{t_0}^t\left(\dot{x}^{\mathrm{c}}\right)^2 \mathrm{~d} \tau \\
-&=\frac{m}{2}\left(\frac{x-x_0}{t-t_0}\right)^2 \int_{t_0}^t \mathrm{~d} \tau\\
-&=\frac{m\left(x-x_0\right)^2}{2\left(t-t_0\right)}
-\end{align}</script><p>端点给定，并且把经典路径分离出来，因此可以将传播子写为：</p>
-<script type="math/tex; mode=display">\begin{align}
-K\left(x, t ; x_0, t_0\right)=e^{i \frac{S^{\mathrm{c}}}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int e^{\frac{i}{\hbar} S^{\prime}} \mathrm{d} y_1 \cdots \mathrm{d} y_{N-1}
-\end{align}</script><p>接下来要化简的是$S^{\prime}$，考虑到在两端点附近$y_0=y_N=0$：</p>
-<script type="math/tex; mode=display">\begin{align}
-S^{\prime} & =\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(y_n-y_{n-1}\right)^2 \\ 
-& =\frac{m}{2 \varepsilon}\left[y_1^2+\left(y_2-y_1\right)^2+\cdots+\left(y_{N-1}-y_{N-2}\right)^2+y_{N-1}^2\right] \\ 
-& =\frac{m}{2 \varepsilon}\left(2 \sum_{n=1}^{N-1} y_n^2-2 \sum_{n=1}^{N-1} y_n y_{n-1}\right) \\ 
-& =\frac{m}{2 \varepsilon} \sum_{n=1}^{N-1}\left(2 y_n^2-2 y_n y_{n-1}\right) \\
-&=\frac{m}{2 \varepsilon} \sum_{n, m=1}^{N-1} y_m A_{m n} y_n=\frac{m}{2 \varepsilon} y^{\mathrm{T}} A y
-\end{align}</script><p>其中$A$是一个实对称矩阵，$A_{mn}=2\delta_{m,n}-\delta_{m,n-1}-\delta_{m-1,n}$，如果不去掉端点的话，就会造成不是一个实对称矩阵。既然已经写成对称矩阵的形式了，那接下来就是精确对角化，将其耦合项解耦，从而方便积分。</p>
-<script type="math/tex; mode=display">\begin{align}
-R^{\mathrm{T}} A R=\Lambda=\operatorname{diag}\left(\lambda_1, \lambda_2, \cdots, \lambda_{N-1}\right),
-\end{align}</script><p>其中 $R$ 是正交矩阵，满足 $R^{\mathrm{T}} R=|R|=1$ 同时注意么正变换不改变本征值:</p>
-<script type="math/tex; mode=display">\begin{align}
-&A \varphi=\lambda \varphi \\
-&\Rightarrow R^{\mathrm{T}} A R R^{\mathrm{T}} \varphi=\lambda R^{\mathrm{T}} \varphi \\
-&\Rightarrow \Lambda \varphi^{\prime}=\lambda \varphi^{\prime}
-\end{align}</script><p>令:</p>
-<script type="math/tex; mode=display">\begin{align}
-y=R u \Rightarrow y^{\mathrm{T}} A y=u^{\mathrm{T}} R^{\mathrm{T}} A R u=u^{\mathrm{T}} \Lambda u=\sum_{n=1}^{N-1} \lambda_n u_n^2
-\end{align}</script><p>再进行变量代换: </p>
-<script type="math/tex; mode=display">\begin{align}
-\mathrm{d} y_1 \cdots \mathrm{d} y_{N-1}&=|\operatorname{det} R| \mathrm{d} u_1 \cdots \mathrm{d} u_{N-1} \\
-&=\mathrm{d} u_1 \cdots \mathrm{d} u_{N-1}
-\end{align}</script><p>因此传播子可以写为：</p>
-<script type="math/tex; mode=display">\begin{align}
-K\left(x, t ; x_0, t_0\right) & =e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int e^{i \frac{m}{2 \hbar \varepsilon} \sum_{n=1}^{N-1} \lambda_n u_n^2} \mathrm{~d} u_1 \cdots \mathrm{d} u_{N-1} \\
-& =e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \prod_{n=1}^{N-1} \int e^{-\frac{m \lambda_n}{2 i \hbar \varepsilon} u_n^2} \mathrm{~d} u_n \\
-& =e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \prod_{n=1}^{N-1} \sqrt{\frac{2 \pi i \hbar \varepsilon}{m \lambda_n}}\\
-&=e^{i \frac{s^c}{\hbar}} \sqrt{\frac{m}{2 \pi i \hbar \varepsilon}}\left(\prod_{n=1}^{N-1} \lambda_n\right)^{-\frac{1}{2}} \label{3_propagator}
-\end{align}</script><p>从$\eqref{3_propagator}$可以看出，传播子最后只与特征值的连乘积有关，下面就是求解$\prod_{n=1}^{N-1} \lambda_n$的值。求解本征的可通过本征多项式直接得到。根据$A$ 的本征多项式 $|A-\lambda I|=P_{N-1}(\lambda)$，构造多项式：</p>
-<script type="math/tex; mode=display">\begin{align}
-P_n(\lambda)=\left|\begin{array}{cccccc}
-2-\lambda & -1 & 0 & 0 & \cdots & 0 \\
--1 & 2-\lambda & -1 & 0 & \cdots & 0 \\
-0 & -1 & 2-\lambda & -1 & \cdots & 0 \\
-0 & 0 & -1 & 2-\lambda & \cdots & 0 \\
-\vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
-0 & 0 & 0 & 0 & \cdots & 2-\lambda
-\end{array}\right|
-\end{align}</script><p>将$P_n(\lambda)$从第一行展开得到：</p>
-<script type="math/tex; mode=display">\begin{align}
-&P_n = (2-\lambda)P_{n-1}-P_{n-2} \\
-&P_n + (\lambda-2)P_{n+1}+P_{n+2} = 0 \label{2_P}
-\end{align}</script><p>定义一个能提升多项式阶数的线性算子$L:LP_{n-1}=P_n$，然后将其代入递推关系$\eqref{2_P}$：</p>
-<script type="math/tex; mode=display">\begin{align}
-0&=[L^2+(\lambda-2)L+1]P_n \\
-&= (L-\alpha)(L-\beta)P_n \\
-\alpha &= \frac{2-\lambda+\sqrt{\lambda^2-4\lambda}}{2} \\
-\beta &= \frac{2-\lambda-\sqrt{\lambda^2-4\lambda}}{2} \\
-\end{align}</script><p>接下来分别求解$(L-\alpha)P_n=0$与$(L-\beta)P_n=0$：</p>
-<script type="math/tex; mode=display">\begin{align}
-(L-\alpha)P_n&=0 \\
-LP_n&=\alpha P_n \\
-P_n&=\alpha P_{n-1}=\alpha^2 P_{n-2} \\
-&=\alpha^n P_0^n = c_1\alpha^n
-\end{align}</script><p>同理可得：</p>
-<script type="math/tex; mode=display">\begin{align}
-P_n&=c_2\beta^n
-\end{align}</script><p>因此通解为：</p>
-<script type="math/tex; mode=display">\begin{align}
-P_n&=c_1\alpha^n + c_2\beta^n
-\end{align}</script><p>根据多项式$P_1=2-\lambda$与$P_2=(2-\lambda)^2-1$可知$P_1=1$，由此解得：</p>
-<script type="math/tex; mode=display">\begin{align}
-c_1 &= \frac{\alpha}{\alpha-\beta} \\
-c_2 &= \frac{-\beta}{\alpha-\beta} \\
-P_n&= \frac{\alpha^{n+1}-\beta^{n+1}}{\alpha-\beta} \\
-&=\alpha^n+\alpha^{n-1}\beta+\alpha^{n-2}\beta^2+\cdots+\alpha\beta^{n-1}+\beta^n
-\end{align}</script><p>对于连乘积有$\prod_{n=1}^{N-1} \lambda_n=|A|$，根据$|A-\lambda I|=P_{N-1}(\lambda)$可得到$|A|=P_{N-1}(0)=N$，并将结论代入$\eqref{3_propagator}$：</p>
-<script type="math/tex; mode=display">\begin{align}
-K\left(x, t ; x_0, t_0\right) &=e^{i \frac{s^c}{\hbar}} \sqrt{\frac{m}{2 \pi i \hbar \varepsilon}}\frac{1}{\sqrt{N}} \\
-&=e^{i \frac{s^c}{\hbar}} \sqrt{\frac{m}{2 \pi i \hbar (t-t_0)}} \\
-&=\sqrt{\frac{m}{2 \pi i \hbar (t-t_0)}}\exp{\left[i \frac{m(x-x_0)^2}{2\hbar(t-t_0)}\right]} 
-\end{align}</script><h1 id="谐振子-利用对角化求解路径积分"><a href="#谐振子-利用对角化求解路径积分" class="headerlink" title="谐振子 - 利用对角化求解路径积分"></a>谐振子 - 利用对角化求解路径积分</h1><font color="red">
-
-已完成内容：
-
-1. 自由粒子的路径积分
-
-本部分的目标：
-
-1. 讨论谐振子的路径积分
-
-</font>
-
-<p>对于一维谐振子势$V=\frac{1}{2}m\omega^2X^2$，研究从$t_0\to t$的演化结果。位形空间传播子：</p>
-<script type="math/tex; mode=display">\begin{align}
-K\left(x, t ; x_0, t_0\right)&=\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int \mathrm{D} x e^{i \frac{S}{\hbar}} \\
-S&=\int \frac{1}{2} m v^2 - \frac{1}{2}m\omega^2X^2 dt\\
-&=\sum_{n=1}^N \left[\frac{1}{2} m \frac{\left(\Delta x_n\right)^2}{\varepsilon^2} - \frac{1}{2}m\omega^2x_n^2 \right]\varepsilon
-\end{align}</script><p>同样进行代换，分离为经典路径和扰动项$x_n=x_n^{\mathrm{c}}+y_n$：</p>
-<script type="math/tex; mode=display">\begin{align}
-S&=\sum_{n=1}^N \left[\frac{1}{2} m \frac{\left(\Delta x_n\right)^2}{\varepsilon^2} - \frac{1}{2}m\omega^2x_n^2 \right]\varepsilon \\
-&= \sum_{n=1}^N \left[\left(\Delta x_n\right)^2 - \omega^2x_n^2 \varepsilon^2\right]\frac{m}{2\varepsilon} \\
-&= \sum_{n=1}^N \left[\left(\Delta x_n^{\mathrm{c}}+\Delta y_n\right)^2 - \omega^2(x_n^{\mathrm{c}}+y_n)^2 \varepsilon^2\right]\frac{m}{2\varepsilon} \\
-& \begin{aligned}
-=&\sum_{n=1}^N \left[\left(\Delta x_n^{\mathrm{c}}\right)^2 - \omega^2(x_n^{\mathrm{c}})^2 \varepsilon^2\right]\frac{m}{2\varepsilon} \\
-&+ \sum_{n=1}^N \left[\left(\Delta y_n\right)^2 - \omega^2(y_n)^2 \varepsilon^2\right]\frac{m} {2\varepsilon} \\
-&+ \sum_{n=1}^N \left[2\Delta x_n^{\mathrm{c}}\Delta y_n - 2\omega^2 x_n^{\mathrm{c}}y_n \varepsilon^2\right]\frac{m}{2\varepsilon}\\
-\end{aligned}
-\end{align}</script><p>同样分为三部分：</p>
-<script type="math/tex; mode=display">\begin{align} 
-& S^{\mathrm{c}}=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left[\left(\Delta x_n^{\mathrm{c}}\right)^2-\varepsilon^2 \omega^2\left(x_n^{\mathrm{c}}\right)^2\right] \\ 
-& S^{\prime}=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left[\left(\Delta y_n\right)^2-\varepsilon^2 \omega^2 y_n^2\right] \\ 
-& S^{\times}=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(2 \Delta x_n^{\mathrm{c}} \Delta y_n-\varepsilon^2 \omega^2 2 x_n^{\mathrm{c}} y_n\right)
-\end{align}</script><p>先利用$y_n$的边界条件计算交叉项$S^\times$：</p>
-<script type="math/tex; mode=display">\begin{align}
-S^{\times} & =\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(2 \Delta x_n^{\mathrm{c}} \Delta y_n-\varepsilon^2 \omega^2 2 x_n^{\mathrm{c}} y_n\right) \\ 
-& =m \sum_{n=1}^N\left[\dot{x}_n^{\mathrm{c}}\left(y_n-y_{n-1}\right)-\varepsilon \omega^2 x_n^{\mathrm{c}} y_n\right] \\ 
-& =m \sum_{n=1}^N \dot{x}_n^{\mathrm{c}} y_n-m \sum_{n=1}^N \dot{x}_n^{\mathrm{c}} y_{n-1}-m \sum_{n=1}^N \varepsilon \omega^2 x_n^{\mathrm{c}} y_n \\ 
-& \stackrel{y_{N=0}}{=} m \sum_{n=1}^{N-1} \dot{x}_n^{\mathrm{c}} y_n-m \sum_{n=0}^{N-1} \dot{x}_{n+1}^{\mathrm{c}} y_n-m \sum_{n=1}^{N-1} \varepsilon \omega^2 x_n^{\mathrm{c}} y_n \\ 
-& \stackrel{y_{0=0}}{=} m \sum_{n=1}^{N-1} \dot{x}_n^{\mathrm{c}} y_n-m \sum_{n=1}^{N-1} \dot{x}_{n+1}^{\mathrm{c}} y_n-m \sum_{n=1}^{N-1} \varepsilon \omega^2 x_n^{\mathrm{c}} y_n \\ 
-& =-\left(m \varepsilon \sum_{n=1}^{N-1} \frac{\dot{x}_{n+1}^{\mathrm{c}}-\dot{x}_n^{\mathrm{c}}}{\varepsilon} y_n+\sum_{n=1}^{N-1} m \varepsilon \omega^2 x_n^{\mathrm{c}} y_n\right) \\ 
-& =-\varepsilon \sum_{n=1}^{N-1}\left(m \ddot{x}_{n+1}^{\mathrm{c}}+m \omega^2 x_n^{\mathrm{c}}\right) y_n 
-\end{align}</script><p>根据经典方程$m\ddot{x}^{\mathrm{c}}=-\frac{\partial V}{\partial x^{\mathrm{c}}}=-m\omega^2x^\mathrm{c}$，则有$S^\times=0$。</p>
-<p>再计算经典路径$S^\mathrm{c}$：</p>
-<script type="math/tex; mode=display">\begin{align}
-S^{\mathrm{c}} & =\frac{m}{2 \varepsilon} \sum_{n=1}^N\left[\left(\Delta x_n^{\mathrm{c}}\right)^2-\varepsilon^2 \omega^2\left(x_n^{\mathrm{c}}\right)^2\right] \\ 
-& =\frac{m \varepsilon}{2} \sum_{n=1}^N\left[\left(\dot{x}_n^{\mathrm{c}}\right)^2-\omega^2\left(x_n^{\mathrm{c}}\right)^2\right] \\
-&=\frac{m}{2} \int_{t_0}^t\left[\left(\dot{x}^{\mathrm{c}}\right)^2-\omega^2\left(x^{\mathrm{c}}\right)^2\right] \mathrm{d} \tau \label{3_classical}
-\end{align}</script><p>接下来计算经典路径的形式：</p>
-<script type="math/tex; mode=display">\begin{align}
-m\ddot{x}^{\mathrm{c}}&=-m\omega^2 x^{\mathrm{c}} \\
-x^{\mathrm{c}}(t_0) &= x_0 \\
-x^{\mathrm{c}}(t) &= x
-\end{align}</script><figure class="highlight mathematica"><table><tr><td class="code"><pre><span class="line"><span class="built_in">DSolve</span><span class="punctuation">[</span><span class="punctuation">&#123;</span><span class="variable">m</span> <span class="built_in">D</span><span class="punctuation">[</span><span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">t</span><span class="operator">,</span> <span class="number">2</span><span class="punctuation">&#125;</span><span class="punctuation">]</span> <span class="operator">==</span> <span class="operator">-</span><span class="variable">m</span> <span class="variable">\[Omega]</span><span class="operator">^</span><span class="number">2</span> <span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">,</span> <span class="variable">x</span><span class="punctuation">[</span><span class="variable">t0</span><span class="punctuation">]</span> <span class="operator">==</span> <span class="variable">x0</span><span class="operator">,</span> </span><br><span class="line">   <span class="variable">x</span><span class="punctuation">[</span><span class="variable">tend</span><span class="punctuation">]</span> <span class="operator">==</span> <span class="variable">xend</span><span class="punctuation">&#125;</span><span class="operator">,</span> <span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">,</span> <span class="variable">t</span><span class="punctuation">]</span> <span class="operator">//</span> <span class="built_in">Simplify</span></span><br></pre></td></tr></table></figure>
-<p>得到结果：</p>
-<script type="math/tex; mode=display">\begin{align} 
-x^{\mathrm{c}} & =\frac{x \sin \left[\omega\left(\tau-t_0\right)\right]-x_0 \sin [\omega(\tau-t)]}{\sin \left[\omega\left(t-t_0\right)\right]} \label{classical}
-\end{align}</script><p>将经典路径的表达形式$\eqref{classical}$代入经典路径的路径积分中$\eqref{3_classical}$，可以得到路径积分的具体表达式。</p>
-<figure class="highlight mathematica"><table><tr><td class="code"><pre><span class="line"><span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span> <span class="operator">=</span> <span class="operator">-</span><span class="built_in">Csc</span><span class="punctuation">[</span><span class="punctuation">(</span><span class="variable">t0</span> <span class="operator">-</span> <span class="variable">tend</span><span class="punctuation">)</span> <span class="variable">\[Omega]</span><span class="punctuation">]</span> <span class="punctuation">(</span><span class="variable">xend</span> <span class="built_in">Sin</span><span class="punctuation">[</span><span class="punctuation">(</span><span class="variable">t</span> <span class="operator">-</span> <span class="variable">t0</span><span class="punctuation">)</span> <span class="variable">\[Omega]</span><span class="punctuation">]</span> <span class="operator">-</span> </span><br><span class="line">     <span class="variable">x0</span> <span class="built_in">Sin</span><span class="punctuation">[</span><span class="punctuation">(</span><span class="variable">t</span> <span class="operator">-</span> <span class="variable">tend</span><span class="punctuation">)</span> <span class="variable">\[Omega]</span><span class="punctuation">]</span><span class="punctuation">)</span><span class="operator">;</span></span><br><span class="line"><span class="built_in">Integrate</span><span class="punctuation">[</span></span><br><span class="line">  <span class="variable">m</span><span class="operator">/</span><span class="number">2</span> <span class="punctuation">(</span><span class="built_in">D</span><span class="punctuation">[</span><span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">t</span><span class="operator">,</span> <span class="number">1</span><span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="operator">^</span><span class="number">2</span> <span class="operator">-</span> <span class="variable">\[Omega]</span><span class="operator">^</span><span class="number">2</span> <span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">)</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">t</span><span class="operator">,</span> <span class="variable">t0</span><span class="operator">,</span> </span><br><span class="line">   <span class="variable">tend</span><span class="punctuation">&#125;</span><span class="punctuation">]</span> <span class="operator">//</span> <span class="built_in">FullSimplify</span></span><br></pre></td></tr></table></figure>
-<script type="math/tex; mode=display">\begin{align}
-S^{\mathrm{C}}&=\frac{m \omega}{2}\left\{\left(x^2+x_0^2\right) \cot \left[\omega\left(t-t_0\right)\right]-2 x x_0 \csc \left[\omega\left(t-t_0\right)\right]\right\} \\
-K\left(x, t ; x_0, t\right)&=\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int e^{i \frac{\left(S^c+S^{\prime}+S^{\times}\right)}{\hbar}} \mathrm{d} x_1 \cdots \mathrm{d} x_{N-1} \\
-& =e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int e^{i \frac{S^{\prime}}{\hbar}} \mathrm{d} y_1 \cdots \mathrm{d} y_{N-1} 
-\end{align}</script><p>路径 $x_n^{\mathrm{c}}=x^{\mathrm{c}}\left(t_n\right)$ 都是给定的,故:</p>
-<script type="math/tex; mode=display">\mathrm{d} x_n^{\mathrm{c}}=0 \Rightarrow \mathrm{d} x_n=\mathrm{d}\left(x_n^{\mathrm{c}}+y_n\right)=\mathrm{d} y_n</script><p>接下来需要解决的是：</p>
-<script type="math/tex; mode=display">\begin{align}
-S^{\prime}=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left[\left(\Delta y_n\right)^2-\varepsilon^2 \omega^2 y_n^2\right] \label{3_Sprime}
-\end{align}</script><p>首先将$\Delta y_n$利用差分的办法改写为矩阵形式：</p>
-<script type="math/tex; mode=display">\begin{align} 
-\sum_{n=1}^N\left(\Delta y_n\right)^2 & =\sum_{n=1}^N\left(y_n-y_{n-1}\right)^2 \\ 
-& =\sum_{n=1}^N y_n^2+\sum_{n=1}^N y_{n-1}^2-2 \sum_{n=1}^N y_n y_{n-1} \\ 
-& \stackrel{y_{N=0}}{=} \sum_{n=1}^{N-1} y_n^2+\sum_{n=0}^{N-1} y_n^2-2 \sum_{n=1}^{N-1} y_n y_{n-1} \\ 
-& \stackrel{y_0=0}{=} \sum_{n=1}^{N-1} y_n^2+\sum_{n=1}^{N-1} y_n^2-2 \sum_{n=1}^{N-1} y_n y_{n-1}\\ 
-& =\sum_{n=1}^{N-1}\left(2 y_n^2-2 y_n y_{n-1}\right)=y^{\mathrm{T}} A y \\
-A_{mn}&= 2\delta_{m,n}-\delta_{m-1,n}-\delta_{m,n-1}
-\end{align}</script><p>与自由粒子一样，因为是实正定矩阵，可以将其对角化。</p>
-<script type="math/tex; mode=display">\begin{align} 
-K\left(x, t ; x_0, t\right) = & e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int e^{i \frac{m}{2 \hbar \varepsilon}\left(y^{\mathrm{T}} A y-\varepsilon^2 \omega^2 y^{\mathrm{T}} y\right)} \mathrm{d} y_1 \cdots \mathrm{d} y_{N-1} \\ 
-= & e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int e^{i \frac{m}{2 \hbar \varepsilon} \sum_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2 \omega^2\right) u_n^2} \mathrm{~d} u_1 \cdots \mathrm{d} u_{N-1} \\
-= & e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \prod_{n=1}^{N-1} \int e^{-\frac{m\left(\lambda_n-\varepsilon^2 \omega^2\right)}{2 i \hbar \varepsilon} u_n^2} \mathrm{~d} u_n \\
-= & e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \prod_{n=1}^{N-1} \sqrt{\frac{2 \pi i \hbar \varepsilon}{m\left(\lambda_n-\varepsilon^2 \omega^2\right)}}\\
-=&e^{i \frac{S^c}{\hbar}} \sqrt{\frac{m}{2 \pi i \hbar \varepsilon}}\left[\prod_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2 \omega^2\right)\right]^{-\frac{1}{2}}
-\end{align}</script><p>接下来解决连乘积$\prod_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2 \omega^2\right)$，对$\eqref{3_Sprime}$的本征多项式入手，与自由粒子的区别在于对角线上会多出来一项：</p>
-<script type="math/tex; mode=display">\begin{align}
-P_n(\lambda)=\left|\begin{array}{cccccc}
-2-\varepsilon^2 \omega^2-\lambda & -1 & 0 & 0 & \cdots & 0 \\
--1 & 2-\varepsilon^2 \omega^2-\lambda & -1 & 0 & \cdots & 0 \\
-0 & -1 & 2-\varepsilon^2 \omega^2-\lambda & -1 & \cdots & 0 \\
-0 & 0 & -1 & 2-\varepsilon^2 \omega^2-\lambda & \cdots & 0 \\
-\vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
-0 & 0 & 0 & 0 & \cdots & 2-\varepsilon^2 \omega^2-\lambda
-\end{array}\right|
-\end{align}</script><p>对第一行进行展开，可以得到递推关系：</p>
-<script type="math/tex; mode=display">\begin{align}
-& P_n(\lambda) = (2-\varepsilon^2 \omega^2-\lambda)P_{n-1}(\lambda)-P_{n-2}(\lambda) \\
-& P_{n+2}(\lambda)+ P_{n}(\lambda) + (\varepsilon^2 \omega^2+\lambda-2)P_{n+1}(\lambda) = 0 \label{3_ditui}
-\end{align}</script><p>定义线性算子$LP_{n}(\lambda)=P_{n+1}(\lambda)$，并将其代入递推关系可以得到：</p>
-<script type="math/tex; mode=display">\begin{align}
-&\left[L^2+ (\varepsilon^2 \omega^2+\lambda-2)L+1\right]P_{n}(\lambda) = 0
-\end{align}</script><p>进行分解：</p>
-<script type="math/tex; mode=display">\begin{align}
-(L-\alpha)(L-\beta)P_{n}(\lambda) &= \left[L^2+ (\varepsilon^2 \omega^2+\lambda-2)L+1\right]P_{n}(\lambda) \\
-\alpha &= \frac{1}{2} \left(-\lambda +\sqrt{\left(\lambda +\omega ^2 \varepsilon ^2-2\right)^2-4}-\omega ^2 \varepsilon ^2+2\right) \\
-\beta &= \frac{1}{2} \left(-\lambda -\sqrt{\left(\lambda +\omega ^2 \varepsilon ^2-2\right)^2-4}-\omega ^2 \varepsilon ^2+2\right)
-\end{align}</script><p>接下来分别求解$(L-\beta)P_{n}=0$与$(L-\alpha)P_{n}=0$:</p>
-<script type="math/tex; mode=display">\begin{aligned}
-(L-\alpha)P_{n}&=0 \\
-LP_{n} &= \alpha P_{n}\\
-P_{n+1} &=\alpha P_{n} \\
-P_{n} &= \alpha P_{n-1} = \alpha^n P_0(\alpha) \\
-P_{n} &= \beta P_{n-1} = \beta^n P_0(\beta) \\
-\end{aligned}</script><p>因此$P$通项写为：</p>
-<script type="math/tex; mode=display">\begin{equation}
-P_{n} = c_1 \alpha^n+ c_2 \beta^n 
-\end{equation}</script><p>代入初始条件：</p>
-<script type="math/tex; mode=display">\begin{align}
-P_1(\lambda) &= 2-\varepsilon^2 \omega^2-\lambda \\
-P_2(\lambda) &= (2-\varepsilon^2 \omega^2-\lambda)^2 - 1 \\
-\end{align}</script><p>由递推关系$\eqref{3_ditui}$可以得到$P_0=1$，$P_n$的表达式：</p>
-<script type="math/tex; mode=display">\begin{align}
-c_1 &= -\frac{\beta +\lambda +\omega ^2 \varepsilon ^2-2}{\alpha -\beta }\\
-c_2 &= \frac{\alpha +\lambda +\omega ^2 \varepsilon ^2-2}{\alpha -\beta } \\
-P_{n}(\lambda) &= c_1 \alpha^n+ c_2 \beta^n \\
-&= \frac{\beta ^n \left(\alpha -1\right)-\alpha ^n \left(\beta -1\right)}{\alpha-\beta }
-\end{align}</script><p>通过以上讨论已经成功将特征多项$\eqref{3_ditui}$通项表达形式写出来。接下来需要具体写出 $\alpha$ 与 $\beta$ 的表达形式。结合需要具体求解的问题$\prod_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2 \omega^2\right)=|P_{N-1}(\lambda=0)|$，可知$\lambda=0$:</p>
-<script type="math/tex; mode=display">\begin{align}
-\lambda &= 0 \\
-\alpha &= \frac{1}{2} \left(\sqrt{\left(\omega ^2 \varepsilon ^2-2\right)^2-4}-\omega ^2 \varepsilon ^2+2\right) \\
-&\stackrel{\varepsilon \to 0}{=} \frac{1}{2} \left(\omega  \varepsilon\sqrt{-4}+2\right)\\
-\beta &= \frac{1}{2} \left( -\sqrt{\left(\omega ^2 \varepsilon ^2-2\right)^2-4}-\omega ^2 \varepsilon ^2+2\right) \\
-&\stackrel{\varepsilon \to 0}{=} \frac{1}{2} \left(-\omega \varepsilon\sqrt{-4}+2\right)\\
-\end{align}</script><p>可以得到：</p>
-<script type="math/tex; mode=display">\begin{align}
-\prod_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2 \omega^2\right)&=P_{N-1}(\lambda=0) \\
-&= \frac{(1+i \omega \varepsilon)^N-(1-i \omega \varepsilon)^N}{1+i \omega \varepsilon-1+i \omega \varepsilon} \\ 
-&= \frac{1}{2 i \omega \varepsilon}\left\{\left[1+\frac{i \omega\left(t-t_0\right)}{N}\right]^N-\left[1-\frac{i \omega\left(t-t_0\right)}{N}\right]^N\right\} \\ 
-& \stackrel{N \rightarrow \infty}{=} \frac{1}{2 i \omega \varepsilon}\left[e^{i \omega\left(t-t_0\right)}-e^{-i \omega\left(t-t_0\right)}\right] \\
-&=\frac{\sin \left[\omega\left(t-t_0\right)\right]}{\omega \varepsilon}
-\end{align}</script><p>所以谐振子的传播子写为：</p>
-<script type="math/tex; mode=display">\begin{align}
-K\left(x, t ; x_0, t_0\right)&=e^{i \frac{S^c}{\hbar}} \sqrt{\frac{m \omega}{2 \pi i \hbar \sin \left[\omega\left(t-t_0\right)\right]}} \\
-S^{\mathrm{c}}&=\frac{m \omega}{2}\left\{\left(x^2+x_0^2\right) \cot \left[\omega\left(t-t_0\right)\right]-2 x x_0 \csc \left[\omega\left(t-t_0\right)\right]\right\}
-\end{align}</script><font color="red">应该考虑相位了，但现在还没出现问题，之再说吧。详细讨论看上面引用的内容。</font>
-
-<h1 id="路径积分蒙特卡洛"><a href="#路径积分蒙特卡洛" class="headerlink" title="路径积分蒙特卡洛"></a>路径积分蒙特卡洛</h1><p>参考：</p>
-<ul>
-<li><a href="https://zhuanlan.zhihu.com/p/509118112">路径积分蒙特卡洛 PIMC</a></li>
-</ul>
-<p>考虑量子力学中的哈密顿量以及波函数：</p>
-<script type="math/tex; mode=display">\begin{align}
-H&=-\hbar^2 \sum_i \frac{1}{2 m_i} \frac{\partial^2}{\partial \mathbf{r}_i^2}+V(\mathcal{R}) \\
-\psi(\mathcal{R}, t)&=\left\langle\mathcal{R}\left|e^{-i t H / \hbar}\right| \psi\right\rangle 
-\end{align}</script><p>在使用蒙卡数值计算的过程中存在两个问题：</p>
-<ul>
-<li>指数是复数，不能用使用正实数概率分布表示</li>
-<li>$H$是量子力学算符，动能与势能不对易</li>
-</ul>
-<h2 id="Continuing-to-Imaginary-Time"><a href="#Continuing-to-Imaginary-Time" class="headerlink" title="Continuing to Imaginary Time"></a>Continuing to Imaginary Time</h2><p>解决复数问题。</p>
-<p>通过引入虚时$\tau=-it$，将复数变为一个实数处理，这种做法也出现在扩散蒙特卡洛（diffusion Monte Carlo, DMC）。通过定义配分函数，产生与统计力学的联系：</p>
-<script type="math/tex; mode=display">\begin{align}
-Z(\beta)&=\int d^{N d} \mathcal{R}\left\langle\mathcal{R}\left|e^{-\tau H / \hbar}\right| \mathcal{R}\right\rangle=\operatorname{Tr} e^{-\beta H}, \quad \beta=\frac{\tau}{\hbar} \\
-k_{\mathrm{B}} T&=1 / \beta=\hbar / \tau
-\end{align}</script><h2 id="Discretizing-the-Time-Dimension"><a href="#Discretizing-the-Time-Dimension" class="headerlink" title="Discretizing the Time Dimension"></a>Discretizing the Time Dimension</h2><p>解决不对易的问题。</p>
-<p>将时间$t$放在$M$的时间格点上，$\Delta \tau = \tau/M$，这样有$M-1$个中间时间。在每一个中间的时间步骤中都有完整的本征态：</p>
-<script type="math/tex; mode=display">\begin{align}
-\mathbf{1}=\int d^{N d} \mathcal{R}_i\left|\mathcal{R}_i\right\rangle\left\langle\mathcal{R}_i\right|, \quad i=1, \ldots, M-1
-\end{align}</script><p>然后沿着时间的顺序将配分函数分解：</p>
-<script type="math/tex; mode=display">\begin{align}
-& Z(\beta)= \int d^{N d} \mathcal{R}\left\langle\mathcal{R}\left|e^{-\tau H / \hbar}\right| \mathcal{R}\right\rangle \\ 
-&=\int d \mathcal{R}_0 \int d \mathcal{R}_1 \ldots \int d \mathcal{R}_{M-1}\left\langle\mathcal{R}_0\left|e^{-\Delta \tau H / \hbar}\right| \mathcal{R}_{M-1}\right\rangle\times \ldots\times\left\langle\mathcal{R}_2\left|e^{-\Delta \tau H / \hbar}\right| \mathcal{R}_1\right\rangle\left\langle\mathcal{R}_1\left|e^{-\Delta \tau H / \hbar}\right| \mathcal{R}_0\right\rangle
-\end{align}</script><p>根据时间分割，将一段时间的演化过程，转变为几个“瞬间”的演化过程$\Delta \tau\to 0$。这其实就是路径积分的思想。</p>
-<p>接下来通过这样的小量，解决不对易的关系。根据 Baker-Campbell-Hausdorff (BCH)定理：</p>
-<script type="math/tex; mode=display">\begin{align}
-e^{\mathcal{A}} e^{\mathcal{B}}&=e^{\mathcal{C}} \\
-\mathcal{C}&=\mathcal{A}+\mathcal{B}+\frac{1}{2}[\mathcal{A}, \mathcal{B}]+\cdots
-\end{align}</script><p>把这个关系用在短时演化的过程中：</p>
-<script type="math/tex; mode=display">\begin{align}
-\mathcal{C}&=-\Delta \tau H / \hbar\\
-\mathcal{B}&=-\Delta \tau V / \hbar\\
-\mathcal{A}&=-\Delta \tau K / \hbar \\
-K&=-\hbar^2 \sum_i \frac{1}{2 m_i} \frac{\partial^2}{\partial \mathbf{r}_i^2}
-\end{align}</script><p>通过BCH定理可以知道，将$H$分为两项，需要计算交叉项。但是这个交叉项是$\Delta\tau$的高阶小量可以直接忽略。</p>
-<script type="math/tex; mode=display">\begin{align}
-\left\langle\mathcal{R}_1\left|e^{-\Delta \tau H / \hbar}\right| \mathcal{R}_0\right\rangle &\simeq\left\langle\mathcal{R}_1\left|e^{-\Delta \tau K / \hbar} e^{-\Delta \tau V / \hbar}\right| \mathcal{R}_0\right\rangle=\left\langle\mathcal{R}_1\left|e^{-\Delta \tau K / \hbar}\right| \mathcal{R}_0\right\rangle e^{-\Delta \tau V\left(\mathcal{R}_0\right) / \hbar} \\
-\left\langle\mathcal{R}_1\left|e^{-\Delta \tau K / \hbar}\right| \mathcal{R}_0\right\rangle & =\int d \mathcal{P}_0 \int d \mathcal{P}_1\left\langle\mathcal{R}_1 \mid \mathcal{P}_1\right\rangle\left\langle\mathcal{P}_1\left|e^{-\Delta \tau K / \hbar}\right| \mathcal{P}_0\right\rangle\left\langle\mathcal{P}_0 \mid \mathcal{R}_0\right\rangle \\
-& =\left(\frac{m}{2 \pi \hbar \Delta \tau}\right)^{N d / 2} \exp \left[-\frac{m \Delta \tau}{2 \hbar} \sum_i\left(\frac{\mathbf{r}_{i 1}-\mathbf{r}_{i 0}}{\Delta \tau}\right)^2\right]
-\end{align}</script><h2 id="Path-Integral-Monte-Carlo-Algorithm"><a href="#Path-Integral-Monte-Carlo-Algorithm" class="headerlink" title="Path Integral Monte Carlo Algorithm"></a>Path Integral Monte Carlo Algorithm</h2><p>配分函数的最终表达式为：</p>
-<script type="math/tex; mode=display">\begin{align} 
-Z(\beta) \simeq\left(\frac{m}{2 \pi \hbar \Delta \tau}\right)^{M N d / 2} \int d \mathcal{R}_0 \int d \mathcal{R}_1 \ldots \int d \mathcal{R}_{M-1} \quad \times \exp \left\{-\frac{\Delta \tau}{\hbar} \sum_{j=0}^{M-1}\left[\frac{m}{2}\left(\frac{\mathcal{R}_{j+1}-\mathcal{R}_j}{\Delta \tau}\right)^2+V\left(\mathcal{R}_j\right)\right]\right\}
-\end{align}</script><p>看这个形式，对比统计晶格中的形式。具有一定的对应关系，路径积分等价于晶格所有构型的求和，因此真正需要关心的是“能量项”：</p>
-<script type="math/tex; mode=display">\begin{align}
-\sum_{j=0}^{M-1}\left[\frac{m}{2}\left(\frac{\mathcal{R}_{j+1}-\mathcal{R}_j}{\Delta \tau}\right)^2+V\left(\mathcal{R}_j\right)\right]
-\end{align}</script><p>将每一格运动区间进行计算，从而得出最终的“能量”，更准确应该是作用量。然后利用 Metropolis algorithm 进行重要性抽样，将不同权重的路径进行加权运算。</p>
-<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><p>以下是一个对于一维谐振子的实现，核心部分在<code>sample</code>模块中。这个实现，每次只对前一次路径中一步进行修改，然后接受概率设为<code>exp(-DeltaE * Delta_t / hbar)</code>，这里作者将$\hbar=1$进行无量纲化了。</p>
-<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PathIntegral</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, nt=<span class="number">100</span>, tmax = <span class="number">2</span>*np.pi</span>):</span><br><span class="line">        self.nt = nt</span><br><span class="line">        self.tmax = tmax</span><br><span class="line">        self.t = np.linspace(<span class="number">0</span>, self.tmax, nt)</span><br><span class="line">        self.sample_idx = []</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">sample</span>(<span class="params">self, steps=<span class="number">100000</span></span>):</span><br><span class="line">        <span class="comment"># 1. initialize the path</span></span><br><span class="line">        x = np.zeros_like(self.t)</span><br><span class="line">        dt = self.t[<span class="number">1</span>] - self.t[<span class="number">0</span>]</span><br><span class="line">        ilist = np.random.choice(<span class="built_in">range</span>(<span class="number">1</span>, self.nt-<span class="number">1</span>), size=steps)</span><br><span class="line">        dxlist = np.random.uniform(-<span class="number">1</span>, <span class="number">1</span>, size=steps)</span><br><span class="line">        sampled = []           </span><br><span class="line">        <span class="comment"># randomly pick x[i]</span></span><br><span class="line">        <span class="comment"># do random walk x[i] -&gt; x[i] + r </span></span><br><span class="line">        <span class="comment"># if DeltaE &lt; 0: accept</span></span><br><span class="line">        <span class="comment"># elif DeltaE &gt; 0: accept with probability exp(-DeltaE * Delta_t / hbar)</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> tqdm(<span class="built_in">range</span>(steps)):</span><br><span class="line">            i = ilist[n]</span><br><span class="line">            dx = dxlist[n]</span><br><span class="line">            </span><br><span class="line">            <span class="comment">#if x[i] + dx &lt;= 0.0: continue</span></span><br><span class="line">            ds = (self.kinetic_energy(x[i-<span class="number">1</span>], x[i]+dx, dt) -</span><br><span class="line">                  self.kinetic_energy(x[i-<span class="number">1</span>], x[i], dt) +</span><br><span class="line">                  self.kinetic_energy(x[i]+dx, x[i+<span class="number">1</span>], dt) -</span><br><span class="line">                  self.kinetic_energy(x[i], x[i+<span class="number">1</span>], dt) + </span><br><span class="line">                  self.potential(x[i]+dx) -</span><br><span class="line">                  self.potential(x[i])</span><br><span class="line">                 ) * dt</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> ds &lt; <span class="number">0</span>: </span><br><span class="line">                x[i] = x[i] + dx</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                r = np.random.rand()</span><br><span class="line">                <span class="keyword">if</span> r &lt; np.exp(-ds):</span><br><span class="line">                    x[i] = x[i] + dx</span><br><span class="line">            sampled.append(x[i])</span><br><span class="line">            </span><br><span class="line">            self.sample_idx.append(i)</span><br><span class="line">        <span class="keyword">return</span> sampled, self.sample_idx</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">kinetic_energy</span>(<span class="params">self, x1, x2, dt</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.5</span> * (x2 - x1)**<span class="number">2</span> / dt**<span class="number">2</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">potential</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.5</span> * x**<span class="number">2</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">plot</span>(<span class="params">self</span>):</span><br><span class="line">        tmax = self.tmax</span><br><span class="line">        plt.vlines(self.t, ymin=-tmax, ymax=tmax, color=<span class="string">&#x27;k&#x27;</span>, linestyles=<span class="string">&#x27;dotted&#x27;</span>, alpha=<span class="number">0.9</span>)</span><br><span class="line">        dt = self.t[<span class="number">1</span>] - self.t[<span class="number">0</span>]</span><br><span class="line">        xi = np.random.uniform(-<span class="number">1</span>, <span class="number">1</span>, self.nt)</span><br><span class="line">        xi[<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">        xi = np.cumsum(xi)</span><br><span class="line">        xi[-<span class="number">1</span>] = <span class="number">0</span></span><br><span class="line">        plt.plot(self.t, xi)</span><br><span class="line">        plt.ylabel(<span class="string">r&#x27;x $\rightarrow$&#x27;</span>, loc=<span class="string">&#x27;center&#x27;</span>)</span><br><span class="line">        plt.xlabel(<span class="string">r&#x27;t $\rightarrow$&#x27;</span>, loc=<span class="string">&#x27;center&#x27;</span>)</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>Physics</category>
-      </categories>
-      <tags>
-        <tag>Quantum Field Theory</tag>
-        <tag>Path Integrals</tag>
-        <tag>Path Integrals Monte Carlo</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Hopfield Model</title>
     <url>/2022/11/12/Phys/Hopfield/Hopfield/</url>
     <content><![CDATA[<p>讨论Hopfield Model 的相关内容，包含其本身的一些性值以及其在组合优化问题中的应用。</p>
@@ -2120,6 +1662,806 @@ Z^n=&\operatorname{Tr} \exp \left[ \frac{\beta}{2 N} \sum_{a, i, j, \mu \in B, v
       </tags>
   </entry>
   <entry>
+    <title>Feynman path integrals</title>
+    <url>/2024/05/26/Phys/Path_integrals/Path_integrals/</url>
+    <content><![CDATA[<p>考虑到状态的演化，最直接的想法是通过经典力学通过拉格朗日量来构建经典的运动路径。如何处理的问题不是精确的状态，而是概率密度的分布，如何求概率密度分布的演化？路径积分则是十分自然的想法。将每一个小的状态，以任意的路径进行演化，最后得到最终转态的概率分布。这样处理的麻烦在于，不是每一条路径都是等价的，有一些路径发生的概率高一些，另一些则低一些。如何表示这样的概率分布，以及实际得到演化后的概率分布，则是本文要探讨的。</p>
+<p>当然，这只是一个简单的版本，需要更多的讨论。</p>
+<p>参考：</p>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/275827978">QM - 路径积分 (Path Integral) PT. 1 - 基本构架</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/270684456">QM - 路径积分 (Path Integral) PT. 2 - 求解实例</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="路径积分的基本构架"><a href="#路径积分的基本构架" class="headerlink" title="路径积分的基本构架"></a>路径积分的基本构架</h1><font color="red">
+
+本部分的目标：
+1. 构建传播子 
+2. 相空间、位形空间的形式
+3. 以自由粒子为例，展示两种形式
+
+</font>
+
+<p>传播子是研究态随时间演化的方法，这样演化过程由基本方程确定，在量子力学中这样的方程是薛定谔方程。但是随时间演化的方程有很多，这些同样可以在传播子的框架下研究。</p>
+<p>由于薛定谔方程过于出名，接下来的讨论在薛定谔方程下进行。</p>
+<h2 id="传播子"><a href="#传播子" class="headerlink" title="传播子"></a>传播子</h2><p>定义一个算符 $U$，它的作用是给出演化结果:</p>
+<script type="math/tex; mode=display">\begin{align}
+U\left(t-t_0\right)\left|\psi\left(t_0\right)\right\rangle=|\psi(t)\rangle
+\end{align}</script><p>然后求解 $U$ 的表达式，研究时间演化最熟悉的是薛定谔方程:</p>
+<script type="math/tex; mode=display">\begin{align}
+& i \hbar \frac{\mathrm{d}}{\mathrm{d} t}|\psi(t)\rangle=H|\psi(t)\rangle \\
+\Rightarrow & \frac{\mathrm{d}}{\mathrm{d} t} U\left(t-t_0\right)\left|\psi\left(t_0\right)\right\rangle=-i \frac{H}{\hbar} U\left(t-t_0\right)\left|\psi\left(t_0\right)\right\rangle \\
+\Rightarrow & \frac{\mathrm{d}}{\mathrm{d} t} U\left(t-t_0\right)=-i \frac{H}{\hbar} U\left(t-t_0\right) \\
+\Rightarrow & \mathrm{d} \ln U\left(t-t_0\right)=-i \frac{H}{\hbar} \mathrm{d} t \\
+\Rightarrow & U\left(t-t_0\right)=e^{-i \frac{H}{\hbar} t} \cdot \text { const }
+\end{align}</script><p>如果时间不变自然不发生演化，以此作为初始条件，即 $t=t_0 \Rightarrow U=I$。确定系数之后得到了么正时间演化算符的表达式:</p>
+<script type="math/tex; mode=display">\begin{align}
+U\left(t-t_0\right)=e^{-i \frac{H}{\hbar}\left(t-t_0\right)}
+\end{align}</script><p>在形式上地使用：</p>
+<script type="math/tex; mode=display">\begin{align}
+|\psi(t)\rangle=U\left(t-t_0\right)\left|\psi\left(t_0\right)\right\rangle \label{1_U}
+\end{align}</script><p>接下来$\eqref{1_U}$式取坐标表象，即左乘 $\langle\vec{r}|$，再插入完备性关系式 $I=\int\left|\vec{r}_0\right\rangle\left\langle\vec{r}_0\right| \mathrm{d} \vec{r}_0$，可得：</p>
+<script type="math/tex; mode=display">\begin{align}
+\psi(\vec{r}, t)&=\int\left\langle\vec{r}\left|U\left(t, t_0\right)\right| \vec{r}_0\right\rangle\left\langle\vec{r}_0 \mid \psi\left(t_0\right)\right\rangle \mathrm{d} \vec{r}_0 \\
+&=\int K\left(\vec{r}, t ; \vec{r}_0, t_0\right) \psi\left(\vec{r}_0, t_0\right) \mathrm{d} \vec{r}_0 \\
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right) &= \left\langle\vec{r}\left|U\left(t, t_0\right)\right| \vec{r}_0\right\rangle
+\end{align}</script><p>其中 $K\left(\vec{r}, t ; \vec{r}_0, t_0\right)$ 称作传播子, 作用如上所示, 路径积分的最终目的就是得到其具体表达式。</p>
+<h2 id="传播子的性质"><a href="#传播子的性质" class="headerlink" title="传播子的性质"></a>传播子的性质</h2><p>设置时间节点（无特殊声明全文适用）：</p>
+<script type="math/tex; mode=display">\begin{align}
+t_0<t_n \leq t=t_N, n \in\{1,2,3, \cdots, N\}
+\end{align}</script><p>注意不平均分割时间。由传播子的定义，我们不难发现它具有如下特性：</p>
+<script type="math/tex; mode=display">\begin{align}
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right) & =\left\langle\vec{r}\left|U\left(t, t_0\right)\right| \vec{r}_0\right\rangle \\
+& =\left\langle\vec{r}\left|U\left(t, t_1\right) U\left(t_1, t_0\right)\right| \vec{r}_0\right\rangle \\
+& =\int\left\langle\vec{r}\left|U\left(t, t_1\right)\right| \vec{r}_1\right\rangle\left\langle\vec{r}_1\left|U\left(t_1, t_0\right)\right| \vec{r}_0\right\rangle \mathrm{d} \vec{r}_1 \\
+& =\int\left\langle\vec{r}\left|U\left(t, t_2\right)\right| \vec{r}_2\right\rangle\left\langle\vec{r}_2\left|U\left(t_2, t_1\right)\right| \vec{r}_1\right\rangle\left\langle\vec{r}_1\left|U\left(t_1, t_0\right)\right| \vec{r}_0\right\rangle \mathrm{d} \vec{r}_1 \mathrm{~d} \vec{r}_2 \\
+& =\int K\left(\vec{r}, t ; \vec{r}_2, t_2\right) K\left(\vec{r}_2, t_2 ; \vec{r}_1, t_1\right) K\left(\vec{r}_1, t_1 ; \vec{r}_0, t_0\right) \mathrm{d} \vec{r}_1 \mathrm{~d} \vec{r}_2
+\end{align}</script><p>注意我们要求上式中恒满足关系 $\vec{r}_N=\vec{r}, t_N=t, a&gt;b \Leftrightarrow t_a&gt;t_b$。利用该性质进行无穷分割:</p>
+<script type="math/tex; mode=display">\begin{align}
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right)&=\int\left[\prod_{n=1}^N K\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
+\max \left\{t_n-t_{n-1}\right\} &\rightarrow 0
+\end{align}</script><p>将积分号里边儿的那个无穷小过程传播子换一个符号, 记为:</p>
+<script type="math/tex; mode=display">\begin{align}
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right)=\int\left[\prod_{n=1}^N \mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1}{ }^{[2]}
+\end{align}</script><h2 id="相空间的路径积分"><a href="#相空间的路径积分" class="headerlink" title="相空间的路径积分"></a>相空间的路径积分</h2><p>要求 $K\left(\vec{r}, t ; \vec{r}_0, t_0\right)$ ，需先处理 $\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)$ 。</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)&=\left\langle\vec{r}_n\left|U\left(t_n, t_{n-1}\right)\right| \vec{r}_{n-1}\right\rangle=\left\langle\vec{r}_n\left|e^{-\frac{i H}{\hbar} \Delta t_n}\right| \vec{r}_{n-1}\right\rangle\\
+e^{-\frac{i}{\hbar} H \Delta t_n}&=e^{-\frac{i}{\hbar}\left[\frac{p^2}{2 m}+V\left(\vec{R}, t_n\right)\right] \Delta t_n \Delta t_n \rightarrow 0} e^{-\frac{i}{\hbar} V\left(\vec{R}, t_n\right) \Delta t_n} e^{-\frac{i}{\hbar} \frac{p^2}{2 m} \Delta t_n}
+\end{align}</script><p>$\mathcal{K}$表示极短时间内从一个状态到另一个状态，在极限情况下式精确的；$K$是一段时间的跳跃。因此有 $K \neq \mathcal{K}$，在一些情况下这两个是相等的例如自由粒子。</p>
+<p>可以推知：</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right) & =\left\langle\vec{r}_n\left|e^{-\frac{i}{\hbar} V\left(\vec{R}, t_n\right) \Delta t_n} e^{-\frac{i}{\hbar} \frac{p^2}{2 m} \Delta t_n}\right| \vec{r}_{n-1}\right\rangle \\
+& =e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n}\left\langle\vec{r}_n\left|e^{-\frac{i}{\hbar} \frac{P^2}{2 m} \Delta t_n}\right| \vec{r}_{n-1}\right\rangle \\
+& =\int e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n}\left\langle\vec{r}_n \mid \vec{p}_n\right\rangle\left\langle\vec{p}_n\left|e^{-\frac{i}{\hbar} \frac{P^2}{2 m} \Delta t_n}\right| \vec{r}_{n-1}\right\rangle \mathrm{d} \vec{p}_n \\
+& =\int e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n}\left\langle\vec{r}_n \mid \vec{p}_n\right\rangle e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n}\left\langle\vec{p}_n \mid \vec{r}_{n-1}\right\rangle \mathrm{d} \vec{p}_n \\
+& =\frac{1}{(2 \pi \hbar)^3} \int e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n} e^{i \frac{\vec{p}_n}{\hbar} \cdot \Delta \vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n} \mathrm{~d} \vec{p}_n \\
+& =\frac{1}{(2 \pi \hbar)^3} \int e^{\frac{i}{\hbar}\left[\vec{p}_n \cdot \frac{\Delta \vec{r}_n}{\Delta t_n}-H\left(\vec{r}_n, \vec{p}_n, t_n\right)\right] \Delta t_n} \mathrm{~d} \vec{p}_n \\
+& =\frac{1}{(2 \pi \hbar)^3} \int e^{\frac{i}{\hbar}\left[\vec{p}_n \cdot \vec{r}_n-H\left(\vec{r}_n, \vec{p}_n, t_n\right)\right] \Delta t_n} \mathrm{~d} \vec{p}_n \\
+& =\frac{1}{(2 \pi \hbar)^3} \int e^{i \frac{L\left(\vec{r}_n, \vec{p}_n, t_n\right) \Delta t_n}{\hbar}} \mathrm{d} \vec{p}_n
+\end{align}</script><p>将上式代回传播子的表达式就得到相空间的路径积分:</p>
+<script type="math/tex; mode=display">\begin{align}
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right) & =\int\left[\prod_{n=1}^N \mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
+& =\int \prod_{n=1}^N\left[\frac{1}{(2 \pi \hbar)^3} \int e^{\frac{i}{\hbar} L\left(\vec{r}_n, \vec{p}_n, t_n\right) \Delta t_n} \mathrm{~d} \vec{p}_n\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
+& =\frac{1}{(2 \pi \hbar)^{3 N}} \int\left[\int e^{\frac{i}{\hbar} \sum_{n=1}^N L\left(\vec{r}_n, \vec{p}_n, t_n\right) \Delta t_n} \mathrm{~d} \vec{p}_1 \cdots \mathrm{d} \vec{p}_N\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
+& \stackrel{\text { limit }}{=} \frac{1}{(2 \pi \hbar)^{3 N}} \int e^{\frac{i}{\hbar} \int L(\vec{r}, \vec{p}, \tau) \mathrm{d} \tau} \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \mathrm{~d} \vec{p}_1 \cdots \mathrm{d} \vec{p}_N \\
+& =\frac{1}{(2 \pi \hbar)^{3 N}} \int \mathcal{D} \vec{r} \mathcal{D} \vec{p} e^{i \frac{S(\vec{r}, \vec{p}, t)}{\hbar}}
+\end{align}</script><p>其中的 $\mathcal{D}$ 表征对各种怪异路径进行积分。注意位置积分比动量积分少一重，因为端点是固定的。</p>
+<h2 id="位形空间的路径积分"><a href="#位形空间的路径积分" class="headerlink" title="位形空间的路径积分"></a>位形空间的路径积分</h2><p>位形空间的路径积分，就是把动量先积掉：</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right) & =\frac{1}{(2 \pi \hbar)^3} \int e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n} e^{i \frac{\vec{p}_n}{\hbar} \cdot \Delta \vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n} \mathrm{~d} \vec{p}_n \\
+& =\frac{1}{(2 \pi \hbar)^3} e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n} \int e^{i \frac{\vec{p}_n}{\hbar} \cdot \Delta \vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n} \mathrm{~d} \vec{p}_n
+\end{align}</script><p>显然后面的积分在自由粒子的格林函数中求解过, 这里直接而代入结论:</p>
+<script type="math/tex; mode=display">
+\frac{1}{(2 \pi \hbar)^3} \int e^{i \frac{\vec{p}_n}{\hbar} \cdot \Delta \vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n} \mathrm{~d} \vec{p}_n=\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} \exp \left[i \frac{m\left(\Delta \vec{\Delta}_n\right)^2}{2 \hbar \Delta t_n}\right]</script><p>将上式代回无穷小间隔传播子表达式得:</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right) & =\frac{1}{(2 \pi \hbar)^3} \int e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n} e^{i \frac{\vec{p}_n}{\hbar} \cdot \Delta \vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n} \mathrm{~d} \vec{p}_n \\
+& =\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n} e^{i \frac{m\left(\Delta \vec{F}_n\right)^2}{2 \hbar \Delta t_n}} \\
+& =\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} e^{\frac{i}{\hbar}\left[\frac{1}{2} m \frac{\left(\Delta \vec{r}_n\right)^2}{\left(\Delta t_n\right)^2}-V\left(\vec{r}_n, t_n\right)\right] \Delta t_n} \\
+& =\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} e^{\frac{i}{\hbar}\left[\frac{1}{2} m \dot{\vec{r}}_n^2-V\left(\vec{r}_n, t_n\right)\right] \Delta t_n}
+\end{align}</script><p>将上述结果代回传播子的表达式得到位形空间的路径积分:</p>
+<script type="math/tex; mode=display">\begin{align}
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right) & =\int\left[\prod_{n=1}^N \mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
+& =\int\left[\prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} e^{\frac{i}{\hbar}\left[\frac{1}{2} m \dot{\vec{r}}_n^2-V\left(\vec{r}_n, t_n\right)\right] \Delta t_n}\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
+& =\prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} \int e^{\frac{i}{\hbar} \sum_{n=1}^N\left[\frac{1}{2} m \dot{\vec{r}}_n^2-V\left(\vec{r}_n, t_n\right)\right] \Delta t_n} \mathrm{~d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
+& \stackrel{\text { limit }}{=} \prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} \int e^{\frac{i}{\hbar} \int_{t_0}^t \frac{1}{2} m \dot{\vec{r}}_n^2-V(\vec{r}, \tau) \mathrm{d} \tau} \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
+& =\prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} \int \mathcal{D} \vec{r} e^{i \frac{S\left(\vec{r}, \vec{r}_t, t\right)}{\hbar}}
+\end{align}</script><h2 id="传播子的两类表达式"><a href="#传播子的两类表达式" class="headerlink" title="传播子的两类表达式"></a>传播子的两类表达式</h2><p>综上所述, 路径积分中的传播子就表达为:</p>
+<script type="math/tex; mode=display">\begin{align}
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right)= & \frac{1}{(2 \pi \hbar)^{3 N}} \int \mathcal{D} \vec{r} \mathcal{D} \vec{p} e^{i \frac{S(\vec{r}, \vec{p}, t)}{\hbar}} \\
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right)= & \prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} \int \mathcal{D} \vec{r} e^{i \frac{S(\vec{r}, \vec{r}, t)}{\hbar}} \label{1_weixin}
+\end{align}</script><p>实际运算中需要用到:</p>
+<script type="math/tex; mode=display">
+\left\{\begin{array}{l}
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right)=\frac{1}{(2 \pi \hbar)^{3 N}} \int e^{\frac{i}{\hbar} \sum_{n=1}^N\left[\vec{p}_n \cdot \dot{\vec{r}}_n-H\left(\vec{r}_n, \vec{p}_n, t_n\right)\right] \Delta t_n} \mathrm{~d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \mathrm{~d} \vec{p}_1 \cdots \mathrm{d} \vec{p}_N \\
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right)=\prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} \int e^{\frac{i}{\hbar} \sum_{n=1}^N\left[\frac{1}{2} m \dot{\vec{r}}_n^2-V\left(\vec{r}_n, t_n\right)\right] \Delta t_n} \mathrm{~d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1}
+\end{array}\right.</script><p>其中 $\left\{\begin{array}{l}\Delta t_n=t_n-t_{n-1} \\ \Delta \vec{r}_n=\vec{r}_n-\vec{r}_{n-1} \\ \dot{\vec{r}}_n=\Delta \vec{r}_n / \Delta t_n \\ n \in\{1,2,3, \cdots, N\}\end{array} \quad\right.$ 且规定 $\left\{\begin{array}{l}\vec{r}_N=\vec{r} \\ t_N=t \\ t_0<t_n \leq t \\ a>b \Leftrightarrow t_a&gt;t_b \\ \min \left\{t_n-t_{n-1}\right\} \rightarrow 0\end{array}\right.$<br>根号下的虚数单位 $i$ 定义为 $\exp [i \pi / 2]$。</t_n></p>
+<h1 id="自由粒子-利用对角化求解路径积分"><a href="#自由粒子-利用对角化求解路径积分" class="headerlink" title="自由粒子 - 利用对角化求解路径积分"></a>自由粒子 - 利用对角化求解路径积分</h1><font color="red">
+
+已完成内容：
+1. 路径积分的两种形式
+2. 自由粒子的路径积分
+
+本部分的目标：
+1. 讨论自由粒子在位形空间的路径积分，得到传播子的具体形式
+2. 讨论自由粒子在相空间的路径积分，得到传播子的具体形式所属
+
+</font>
+
+<p>对时间采用平均分割的方案$\Delta t_n=\frac{t-t_0}{N}=\varepsilon$，在极限情况下讨论$N\to \infty\quad \text{or}\quad \varepsilon\to\infty$。由$\eqref{1_weixin}$可知自由粒子位形空间传播子为：</p>
+<script type="math/tex; mode=display">\begin{align}
+K\left(x, t ; x_0, t_0\right)&=\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int \mathrm{D} x e^{i \frac{S}{\hbar}} \\
+S&=\int \frac{1}{2} m v^2 dt\\
+&=\sum_{n=1}^N \frac{1}{2} m \frac{\left(\Delta x_n\right)^2}{\varepsilon^2} \varepsilon \\
+&=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(x_n-x_{n-1}\right)^2 \label{free_partial_S}
+\end{align}</script><p>将位置$x_n$表示成经典路径$x^c_n$与路径扰动$y_n$两个部分，其中下标表示时刻$t_n$：</p>
+<script type="math/tex; mode=display">\begin{align}
+x_n&=x_n^c+y_n \\
+x_n^{\mathrm{c}}&=x^{\mathrm{c}}\left(t_n\right)=x^{\mathrm{c}}\left(t_0+n \varepsilon\right) \\
+\end{align}</script><p>并且有边界条件，在端点是固定不动的：</p>
+<script type="math/tex; mode=display">\begin{align}
+\left\{
+    \begin{array}
+    {l}x_0^{\mathrm{c}}=x^{\mathrm{c}}\left(t_0\right)=x_0 \\ 
+    x_N^{\mathrm{c}}=x^{\mathrm{c}}\left(t_N\right)=x_N=x 
+    \end{array}
+\right.
+\end{align}</script><p>以及关系：</p>
+<script type="math/tex; mode=display">\begin{aligned}
+t_N&=t_0+N \varepsilon \\
+\Delta t_2+\Delta t_1&=t_2-t_0 \Rightarrow \sum_{n=1}^N \Delta t_n=N \varepsilon=t_N-t_0
+\end{aligned}</script><p>代入$\eqref{free_partial_S}$后：</p>
+<script type="math/tex; mode=display">\begin{align}
+S&=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta x_n\right)^2 \\
+&=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta x_n^{\mathrm{c}}+\Delta y_n\right)^2\\
+&=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta x_n^{\mathrm{c}}\right)^2+\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta y_n\right)^2+\frac{m}{\varepsilon} \sum_{n=1}^N \Delta x_n^{\mathrm{c}} \Delta y_n 
+\end{align}</script><p>分为三个部分：</p>
+<script type="math/tex; mode=display">\begin{align}
+S^{\mathrm{c}}&= \frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta x_n^{\mathrm{c}}\right)^2 \\
+S^{\prime} &= \frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta y_n\right)^2 \\
+S^{\times} &= \frac{m}{\varepsilon} \sum_{n=1}^N \Delta x_n^{\mathrm{c}} \Delta y_n 
+\end{align}</script><p><img src="/2024/05/26/Phys/Path_integrals/Path_integrals/path_integral.png" alt="Path Integral"></p>
+<p>如上图所示，表示在固定初始与终点的路径积分，每条线表示可能的路径，其中红线为经典路径。</p>
+<p>针对交叉项：</p>
+<script type="math/tex; mode=display">\begin{align}
+S^{\times} &= \frac{m}{\varepsilon} \sum_{n=1}^N \Delta x_n^{\mathrm{c}} \Delta y_n \\
+&=m \sum_{n=1}^N \dot{x}_n^{\mathrm{c}}\left(y_n-y_{n-1}\right) \\
+& =m\left(\sum_{n=1}^N \dot{x}_n^{\mathrm{c}} y_n-\sum_{n=1}^N \dot{x}_n^{\mathrm{c}} y_{n-1}\right) \\ 
+& \stackrel{y_{N=0}}{=} m\left(\sum_{n=1}^{N-1} \dot{x}_n^{\mathrm{c}} y_n-\sum_{n=0}^{N-1} \dot{x}_{n+1}^{\mathrm{c}} y_n\right) \\ 
+& \stackrel{y_{0=0}}{=} m\left(\sum_{n=1}^{N-1} \dot{x}_n^{\mathrm{c}} y_n-\sum_{n=1}^{N-1} \dot{x}_{n+1}^{\mathrm{c}} y_n\right) \\
+&=-m \varepsilon \sum_{n=1}^{N-1} \frac{\Delta \dot{x}_{n+1}^{\mathrm{c}}}{\varepsilon} y_n \\
+&=-m \varepsilon \sum_{n=1}^{N-1} \ddot{x}_{n+1}^{\mathrm{c}} y_n
+\end{align}</script><p>考虑到自由粒子$F=ma=m\ddot{x}^{\mathrm{c}}=0$，因此交叉项$S^{\times}=0$。</p>
+<p>对于经典路径项$S^{\mathrm{c}}$：</p>
+<script type="math/tex; mode=display">\begin{align}
+S^{\mathrm{c}}&=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta x_n^{\mathrm{c}}\right)^2 \\
+&=\frac{m \varepsilon}{2} \sum_{n=1}^N \frac{\left(\Delta x_n^{\mathrm{c}}\right)^2}{\varepsilon^2} \\
+&=\frac{m \varepsilon}{2} \sum_{n=1}^N\left(\dot{x}_n^{\mathrm{c}}\right)^2 \\
+&\stackrel{\varepsilon \rightarrow 0}{=} \frac{m}{2} \int_{t_0}^t\left(\dot{x}^{\mathrm{c}}\right)^2 \mathrm{~d} \tau
+\end{align}</script><p>经典自由粒子解的 $\dot{x}^c$ 是一个常数, 且知道 $\dot{x}^{\mathrm{c}}=\frac{x-x_0}{t-t_0}$。所以：</p>
+<script type="math/tex; mode=display">\begin{align}
+S^{\mathrm{c}}&=\frac{m}{2} \int_{t_0}^t\left(\dot{x}^{\mathrm{c}}\right)^2 \mathrm{~d} \tau \\
+&=\frac{m}{2}\left(\frac{x-x_0}{t-t_0}\right)^2 \int_{t_0}^t \mathrm{~d} \tau\\
+&=\frac{m\left(x-x_0\right)^2}{2\left(t-t_0\right)}
+\end{align}</script><p>端点给定，并且把经典路径分离出来，因此可以将传播子写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+K\left(x, t ; x_0, t_0\right)=e^{i \frac{S^{\mathrm{c}}}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int e^{\frac{i}{\hbar} S^{\prime}} \mathrm{d} y_1 \cdots \mathrm{d} y_{N-1}
+\end{align}</script><p>接下来要化简的是$S^{\prime}$，考虑到在两端点附近$y_0=y_N=0$：</p>
+<script type="math/tex; mode=display">\begin{align}
+S^{\prime} & =\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(y_n-y_{n-1}\right)^2 \\ 
+& =\frac{m}{2 \varepsilon}\left[y_1^2+\left(y_2-y_1\right)^2+\cdots+\left(y_{N-1}-y_{N-2}\right)^2+y_{N-1}^2\right] \\ 
+& =\frac{m}{2 \varepsilon}\left(2 \sum_{n=1}^{N-1} y_n^2-2 \sum_{n=1}^{N-1} y_n y_{n-1}\right) \\ 
+& =\frac{m}{2 \varepsilon} \sum_{n=1}^{N-1}\left(2 y_n^2-2 y_n y_{n-1}\right) \\
+&=\frac{m}{2 \varepsilon} \sum_{n, m=1}^{N-1} y_m A_{m n} y_n=\frac{m}{2 \varepsilon} y^{\mathrm{T}} A y
+\end{align}</script><p>其中$A$是一个实对称矩阵，$A_{mn}=2\delta_{m,n}-\delta_{m,n-1}-\delta_{m-1,n}$，如果不去掉端点的话，就会造成不是一个实对称矩阵。既然已经写成对称矩阵的形式了，那接下来就是精确对角化，将其耦合项解耦，从而方便积分。</p>
+<script type="math/tex; mode=display">\begin{align}
+R^{\mathrm{T}} A R=\Lambda=\operatorname{diag}\left(\lambda_1, \lambda_2, \cdots, \lambda_{N-1}\right),
+\end{align}</script><p>其中 $R$ 是正交矩阵，满足 $R^{\mathrm{T}} R=|R|=1$ 同时注意么正变换不改变本征值:</p>
+<script type="math/tex; mode=display">\begin{align}
+&A \varphi=\lambda \varphi \\
+&\Rightarrow R^{\mathrm{T}} A R R^{\mathrm{T}} \varphi=\lambda R^{\mathrm{T}} \varphi \\
+&\Rightarrow \Lambda \varphi^{\prime}=\lambda \varphi^{\prime}
+\end{align}</script><p>令:</p>
+<script type="math/tex; mode=display">\begin{align}
+y=R u \Rightarrow y^{\mathrm{T}} A y=u^{\mathrm{T}} R^{\mathrm{T}} A R u=u^{\mathrm{T}} \Lambda u=\sum_{n=1}^{N-1} \lambda_n u_n^2
+\end{align}</script><p>再进行变量代换: </p>
+<script type="math/tex; mode=display">\begin{align}
+\mathrm{d} y_1 \cdots \mathrm{d} y_{N-1}&=|\operatorname{det} R| \mathrm{d} u_1 \cdots \mathrm{d} u_{N-1} \\
+&=\mathrm{d} u_1 \cdots \mathrm{d} u_{N-1}
+\end{align}</script><p>因此传播子可以写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+K\left(x, t ; x_0, t_0\right) & =e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int e^{i \frac{m}{2 \hbar \varepsilon} \sum_{n=1}^{N-1} \lambda_n u_n^2} \mathrm{~d} u_1 \cdots \mathrm{d} u_{N-1} \\
+& =e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \prod_{n=1}^{N-1} \int e^{-\frac{m \lambda_n}{2 i \hbar \varepsilon} u_n^2} \mathrm{~d} u_n \\
+& =e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \prod_{n=1}^{N-1} \sqrt{\frac{2 \pi i \hbar \varepsilon}{m \lambda_n}}\\
+&=e^{i \frac{s^c}{\hbar}} \sqrt{\frac{m}{2 \pi i \hbar \varepsilon}}\left(\prod_{n=1}^{N-1} \lambda_n\right)^{-\frac{1}{2}} \label{3_propagator}
+\end{align}</script><p>从$\eqref{3_propagator}$可以看出，传播子最后只与特征值的连乘积有关，下面就是求解$\prod_{n=1}^{N-1} \lambda_n$的值。求解本征的可通过本征多项式直接得到。根据$A$ 的本征多项式 $|A-\lambda I|=P_{N-1}(\lambda)$，构造多项式：</p>
+<script type="math/tex; mode=display">\begin{align}
+P_n(\lambda)=\left|\begin{array}{cccccc}
+2-\lambda & -1 & 0 & 0 & \cdots & 0 \\
+-1 & 2-\lambda & -1 & 0 & \cdots & 0 \\
+0 & -1 & 2-\lambda & -1 & \cdots & 0 \\
+0 & 0 & -1 & 2-\lambda & \cdots & 0 \\
+\vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & 0 & 0 & 0 & \cdots & 2-\lambda
+\end{array}\right|
+\end{align}</script><p>将$P_n(\lambda)$从第一行展开得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+&P_n = (2-\lambda)P_{n-1}-P_{n-2} \\
+&P_n + (\lambda-2)P_{n+1}+P_{n+2} = 0 \label{2_P}
+\end{align}</script><p>定义一个能提升多项式阶数的线性算子$L:LP_{n-1}=P_n$，然后将其代入递推关系$\eqref{2_P}$：</p>
+<script type="math/tex; mode=display">\begin{align}
+0&=[L^2+(\lambda-2)L+1]P_n \\
+&= (L-\alpha)(L-\beta)P_n \\
+\alpha &= \frac{2-\lambda+\sqrt{\lambda^2-4\lambda}}{2} \\
+\beta &= \frac{2-\lambda-\sqrt{\lambda^2-4\lambda}}{2} \\
+\end{align}</script><p>接下来分别求解$(L-\alpha)P_n=0$与$(L-\beta)P_n=0$：</p>
+<script type="math/tex; mode=display">\begin{align}
+(L-\alpha)P_n&=0 \\
+LP_n&=\alpha P_n \\
+P_n&=\alpha P_{n-1}=\alpha^2 P_{n-2} \\
+&=\alpha^n P_0^n = c_1\alpha^n
+\end{align}</script><p>同理可得：</p>
+<script type="math/tex; mode=display">\begin{align}
+P_n&=c_2\beta^n
+\end{align}</script><p>因此通解为：</p>
+<script type="math/tex; mode=display">\begin{align}
+P_n&=c_1\alpha^n + c_2\beta^n
+\end{align}</script><p>根据多项式$P_1=2-\lambda$与$P_2=(2-\lambda)^2-1$可知$P_1=1$，由此解得：</p>
+<script type="math/tex; mode=display">\begin{align}
+c_1 &= \frac{\alpha}{\alpha-\beta} \\
+c_2 &= \frac{-\beta}{\alpha-\beta} \\
+P_n&= \frac{\alpha^{n+1}-\beta^{n+1}}{\alpha-\beta} \\
+&=\alpha^n+\alpha^{n-1}\beta+\alpha^{n-2}\beta^2+\cdots+\alpha\beta^{n-1}+\beta^n
+\end{align}</script><p>对于连乘积有$\prod_{n=1}^{N-1} \lambda_n=|A|$，根据$|A-\lambda I|=P_{N-1}(\lambda)$可得到$|A|=P_{N-1}(0)=N$，并将结论代入$\eqref{3_propagator}$：</p>
+<script type="math/tex; mode=display">\begin{align}
+K\left(x, t ; x_0, t_0\right) &=e^{i \frac{s^c}{\hbar}} \sqrt{\frac{m}{2 \pi i \hbar \varepsilon}}\frac{1}{\sqrt{N}} \\
+&=e^{i \frac{s^c}{\hbar}} \sqrt{\frac{m}{2 \pi i \hbar (t-t_0)}} \\
+&=\sqrt{\frac{m}{2 \pi i \hbar (t-t_0)}}\exp{\left[i \frac{m(x-x_0)^2}{2\hbar(t-t_0)}\right]} 
+\end{align}</script><h1 id="谐振子-利用对角化求解路径积分"><a href="#谐振子-利用对角化求解路径积分" class="headerlink" title="谐振子 - 利用对角化求解路径积分"></a>谐振子 - 利用对角化求解路径积分</h1><font color="red">
+
+已完成内容：
+
+1. 自由粒子的路径积分
+
+本部分的目标：
+
+1. 讨论谐振子的路径积分
+
+</font>
+
+<p>对于一维谐振子势$V=\frac{1}{2}m\omega^2X^2$，研究从$t_0\to t$的演化结果。位形空间传播子：</p>
+<script type="math/tex; mode=display">\begin{align}
+K\left(x, t ; x_0, t_0\right)&=\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int \mathrm{D} x e^{i \frac{S}{\hbar}} \\
+S&=\int \frac{1}{2} m v^2 - \frac{1}{2}m\omega^2X^2 dt\\
+&=\sum_{n=1}^N \left[\frac{1}{2} m \frac{\left(\Delta x_n\right)^2}{\varepsilon^2} - \frac{1}{2}m\omega^2x_n^2 \right]\varepsilon
+\end{align}</script><p>同样进行代换，分离为经典路径和扰动项$x_n=x_n^{\mathrm{c}}+y_n$：</p>
+<script type="math/tex; mode=display">\begin{align}
+S&=\sum_{n=1}^N \left[\frac{1}{2} m \frac{\left(\Delta x_n\right)^2}{\varepsilon^2} - \frac{1}{2}m\omega^2x_n^2 \right]\varepsilon \\
+&= \sum_{n=1}^N \left[\left(\Delta x_n\right)^2 - \omega^2x_n^2 \varepsilon^2\right]\frac{m}{2\varepsilon} \\
+&= \sum_{n=1}^N \left[\left(\Delta x_n^{\mathrm{c}}+\Delta y_n\right)^2 - \omega^2(x_n^{\mathrm{c}}+y_n)^2 \varepsilon^2\right]\frac{m}{2\varepsilon} \\
+& \begin{aligned}
+=&\sum_{n=1}^N \left[\left(\Delta x_n^{\mathrm{c}}\right)^2 - \omega^2(x_n^{\mathrm{c}})^2 \varepsilon^2\right]\frac{m}{2\varepsilon} \\
+&+ \sum_{n=1}^N \left[\left(\Delta y_n\right)^2 - \omega^2(y_n)^2 \varepsilon^2\right]\frac{m} {2\varepsilon} \\
+&+ \sum_{n=1}^N \left[2\Delta x_n^{\mathrm{c}}\Delta y_n - 2\omega^2 x_n^{\mathrm{c}}y_n \varepsilon^2\right]\frac{m}{2\varepsilon}\\
+\end{aligned}
+\end{align}</script><p>同样分为三部分：</p>
+<script type="math/tex; mode=display">\begin{align} 
+& S^{\mathrm{c}}=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left[\left(\Delta x_n^{\mathrm{c}}\right)^2-\varepsilon^2 \omega^2\left(x_n^{\mathrm{c}}\right)^2\right] \\ 
+& S^{\prime}=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left[\left(\Delta y_n\right)^2-\varepsilon^2 \omega^2 y_n^2\right] \\ 
+& S^{\times}=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(2 \Delta x_n^{\mathrm{c}} \Delta y_n-\varepsilon^2 \omega^2 2 x_n^{\mathrm{c}} y_n\right)
+\end{align}</script><p>先利用$y_n$的边界条件计算交叉项$S^\times$：</p>
+<script type="math/tex; mode=display">\begin{align}
+S^{\times} & =\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(2 \Delta x_n^{\mathrm{c}} \Delta y_n-\varepsilon^2 \omega^2 2 x_n^{\mathrm{c}} y_n\right) \\ 
+& =m \sum_{n=1}^N\left[\dot{x}_n^{\mathrm{c}}\left(y_n-y_{n-1}\right)-\varepsilon \omega^2 x_n^{\mathrm{c}} y_n\right] \\ 
+& =m \sum_{n=1}^N \dot{x}_n^{\mathrm{c}} y_n-m \sum_{n=1}^N \dot{x}_n^{\mathrm{c}} y_{n-1}-m \sum_{n=1}^N \varepsilon \omega^2 x_n^{\mathrm{c}} y_n \\ 
+& \stackrel{y_{N=0}}{=} m \sum_{n=1}^{N-1} \dot{x}_n^{\mathrm{c}} y_n-m \sum_{n=0}^{N-1} \dot{x}_{n+1}^{\mathrm{c}} y_n-m \sum_{n=1}^{N-1} \varepsilon \omega^2 x_n^{\mathrm{c}} y_n \\ 
+& \stackrel{y_{0=0}}{=} m \sum_{n=1}^{N-1} \dot{x}_n^{\mathrm{c}} y_n-m \sum_{n=1}^{N-1} \dot{x}_{n+1}^{\mathrm{c}} y_n-m \sum_{n=1}^{N-1} \varepsilon \omega^2 x_n^{\mathrm{c}} y_n \\ 
+& =-\left(m \varepsilon \sum_{n=1}^{N-1} \frac{\dot{x}_{n+1}^{\mathrm{c}}-\dot{x}_n^{\mathrm{c}}}{\varepsilon} y_n+\sum_{n=1}^{N-1} m \varepsilon \omega^2 x_n^{\mathrm{c}} y_n\right) \\ 
+& =-\varepsilon \sum_{n=1}^{N-1}\left(m \ddot{x}_{n+1}^{\mathrm{c}}+m \omega^2 x_n^{\mathrm{c}}\right) y_n 
+\end{align}</script><p>根据经典方程$m\ddot{x}^{\mathrm{c}}=-\frac{\partial V}{\partial x^{\mathrm{c}}}=-m\omega^2x^\mathrm{c}$，则有$S^\times=0$。</p>
+<p>再计算经典路径$S^\mathrm{c}$：</p>
+<script type="math/tex; mode=display">\begin{align}
+S^{\mathrm{c}} & =\frac{m}{2 \varepsilon} \sum_{n=1}^N\left[\left(\Delta x_n^{\mathrm{c}}\right)^2-\varepsilon^2 \omega^2\left(x_n^{\mathrm{c}}\right)^2\right] \\ 
+& =\frac{m \varepsilon}{2} \sum_{n=1}^N\left[\left(\dot{x}_n^{\mathrm{c}}\right)^2-\omega^2\left(x_n^{\mathrm{c}}\right)^2\right] \\
+&=\frac{m}{2} \int_{t_0}^t\left[\left(\dot{x}^{\mathrm{c}}\right)^2-\omega^2\left(x^{\mathrm{c}}\right)^2\right] \mathrm{d} \tau \label{3_classical}
+\end{align}</script><p>接下来计算经典路径的形式：</p>
+<script type="math/tex; mode=display">\begin{align}
+m\ddot{x}^{\mathrm{c}}&=-m\omega^2 x^{\mathrm{c}} \\
+x^{\mathrm{c}}(t_0) &= x_0 \\
+x^{\mathrm{c}}(t) &= x
+\end{align}</script><figure class="highlight mathematica"><table><tr><td class="code"><pre><span class="line"><span class="built_in">DSolve</span><span class="punctuation">[</span><span class="punctuation">&#123;</span><span class="variable">m</span> <span class="built_in">D</span><span class="punctuation">[</span><span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">t</span><span class="operator">,</span> <span class="number">2</span><span class="punctuation">&#125;</span><span class="punctuation">]</span> <span class="operator">==</span> <span class="operator">-</span><span class="variable">m</span> <span class="variable">\[Omega]</span><span class="operator">^</span><span class="number">2</span> <span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">,</span> <span class="variable">x</span><span class="punctuation">[</span><span class="variable">t0</span><span class="punctuation">]</span> <span class="operator">==</span> <span class="variable">x0</span><span class="operator">,</span> </span><br><span class="line">   <span class="variable">x</span><span class="punctuation">[</span><span class="variable">tend</span><span class="punctuation">]</span> <span class="operator">==</span> <span class="variable">xend</span><span class="punctuation">&#125;</span><span class="operator">,</span> <span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">,</span> <span class="variable">t</span><span class="punctuation">]</span> <span class="operator">//</span> <span class="built_in">Simplify</span></span><br></pre></td></tr></table></figure>
+<p>得到结果：</p>
+<script type="math/tex; mode=display">\begin{align} 
+x^{\mathrm{c}} & =\frac{x \sin \left[\omega\left(\tau-t_0\right)\right]-x_0 \sin [\omega(\tau-t)]}{\sin \left[\omega\left(t-t_0\right)\right]} \label{classical}
+\end{align}</script><p>将经典路径的表达形式$\eqref{classical}$代入经典路径的路径积分中$\eqref{3_classical}$，可以得到路径积分的具体表达式。</p>
+<figure class="highlight mathematica"><table><tr><td class="code"><pre><span class="line"><span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span> <span class="operator">=</span> <span class="operator">-</span><span class="built_in">Csc</span><span class="punctuation">[</span><span class="punctuation">(</span><span class="variable">t0</span> <span class="operator">-</span> <span class="variable">tend</span><span class="punctuation">)</span> <span class="variable">\[Omega]</span><span class="punctuation">]</span> <span class="punctuation">(</span><span class="variable">xend</span> <span class="built_in">Sin</span><span class="punctuation">[</span><span class="punctuation">(</span><span class="variable">t</span> <span class="operator">-</span> <span class="variable">t0</span><span class="punctuation">)</span> <span class="variable">\[Omega]</span><span class="punctuation">]</span> <span class="operator">-</span> </span><br><span class="line">     <span class="variable">x0</span> <span class="built_in">Sin</span><span class="punctuation">[</span><span class="punctuation">(</span><span class="variable">t</span> <span class="operator">-</span> <span class="variable">tend</span><span class="punctuation">)</span> <span class="variable">\[Omega]</span><span class="punctuation">]</span><span class="punctuation">)</span><span class="operator">;</span></span><br><span class="line"><span class="built_in">Integrate</span><span class="punctuation">[</span></span><br><span class="line">  <span class="variable">m</span><span class="operator">/</span><span class="number">2</span> <span class="punctuation">(</span><span class="built_in">D</span><span class="punctuation">[</span><span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">t</span><span class="operator">,</span> <span class="number">1</span><span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="operator">^</span><span class="number">2</span> <span class="operator">-</span> <span class="variable">\[Omega]</span><span class="operator">^</span><span class="number">2</span> <span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">)</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">t</span><span class="operator">,</span> <span class="variable">t0</span><span class="operator">,</span> </span><br><span class="line">   <span class="variable">tend</span><span class="punctuation">&#125;</span><span class="punctuation">]</span> <span class="operator">//</span> <span class="built_in">FullSimplify</span></span><br></pre></td></tr></table></figure>
+<script type="math/tex; mode=display">\begin{align}
+S^{\mathrm{C}}&=\frac{m \omega}{2}\left\{\left(x^2+x_0^2\right) \cot \left[\omega\left(t-t_0\right)\right]-2 x x_0 \csc \left[\omega\left(t-t_0\right)\right]\right\} \\
+K\left(x, t ; x_0, t\right)&=\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int e^{i \frac{\left(S^c+S^{\prime}+S^{\times}\right)}{\hbar}} \mathrm{d} x_1 \cdots \mathrm{d} x_{N-1} \\
+& =e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int e^{i \frac{S^{\prime}}{\hbar}} \mathrm{d} y_1 \cdots \mathrm{d} y_{N-1} 
+\end{align}</script><p>路径 $x_n^{\mathrm{c}}=x^{\mathrm{c}}\left(t_n\right)$ 都是给定的,故:</p>
+<script type="math/tex; mode=display">\mathrm{d} x_n^{\mathrm{c}}=0 \Rightarrow \mathrm{d} x_n=\mathrm{d}\left(x_n^{\mathrm{c}}+y_n\right)=\mathrm{d} y_n</script><p>接下来需要解决的是：</p>
+<script type="math/tex; mode=display">\begin{align}
+S^{\prime}=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left[\left(\Delta y_n\right)^2-\varepsilon^2 \omega^2 y_n^2\right] \label{3_Sprime}
+\end{align}</script><p>首先将$\Delta y_n$利用差分的办法改写为矩阵形式：</p>
+<script type="math/tex; mode=display">\begin{align} 
+\sum_{n=1}^N\left(\Delta y_n\right)^2 & =\sum_{n=1}^N\left(y_n-y_{n-1}\right)^2 \\ 
+& =\sum_{n=1}^N y_n^2+\sum_{n=1}^N y_{n-1}^2-2 \sum_{n=1}^N y_n y_{n-1} \\ 
+& \stackrel{y_{N=0}}{=} \sum_{n=1}^{N-1} y_n^2+\sum_{n=0}^{N-1} y_n^2-2 \sum_{n=1}^{N-1} y_n y_{n-1} \\ 
+& \stackrel{y_0=0}{=} \sum_{n=1}^{N-1} y_n^2+\sum_{n=1}^{N-1} y_n^2-2 \sum_{n=1}^{N-1} y_n y_{n-1}\\ 
+& =\sum_{n=1}^{N-1}\left(2 y_n^2-2 y_n y_{n-1}\right)=y^{\mathrm{T}} A y \\
+A_{mn}&= 2\delta_{m,n}-\delta_{m-1,n}-\delta_{m,n-1}
+\end{align}</script><p>与自由粒子一样，因为是实正定矩阵，可以将其对角化。</p>
+<script type="math/tex; mode=display">\begin{align} 
+K\left(x, t ; x_0, t\right) = & e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int e^{i \frac{m}{2 \hbar \varepsilon}\left(y^{\mathrm{T}} A y-\varepsilon^2 \omega^2 y^{\mathrm{T}} y\right)} \mathrm{d} y_1 \cdots \mathrm{d} y_{N-1} \\ 
+= & e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \int e^{i \frac{m}{2 \hbar \varepsilon} \sum_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2 \omega^2\right) u_n^2} \mathrm{~d} u_1 \cdots \mathrm{d} u_{N-1} \\
+= & e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \prod_{n=1}^{N-1} \int e^{-\frac{m\left(\lambda_n-\varepsilon^2 \omega^2\right)}{2 i \hbar \varepsilon} u_n^2} \mathrm{~d} u_n \\
+= & e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar \varepsilon}\right)^{\frac{N}{2}} \prod_{n=1}^{N-1} \sqrt{\frac{2 \pi i \hbar \varepsilon}{m\left(\lambda_n-\varepsilon^2 \omega^2\right)}}\\
+=&e^{i \frac{S^c}{\hbar}} \sqrt{\frac{m}{2 \pi i \hbar \varepsilon}}\left[\prod_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2 \omega^2\right)\right]^{-\frac{1}{2}}
+\end{align}</script><p>接下来解决连乘积$\prod_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2 \omega^2\right)$，对$\eqref{3_Sprime}$的本征多项式入手，与自由粒子的区别在于对角线上会多出来一项：</p>
+<script type="math/tex; mode=display">\begin{align}
+P_n(\lambda)=\left|\begin{array}{cccccc}
+2-\varepsilon^2 \omega^2-\lambda & -1 & 0 & 0 & \cdots & 0 \\
+-1 & 2-\varepsilon^2 \omega^2-\lambda & -1 & 0 & \cdots & 0 \\
+0 & -1 & 2-\varepsilon^2 \omega^2-\lambda & -1 & \cdots & 0 \\
+0 & 0 & -1 & 2-\varepsilon^2 \omega^2-\lambda & \cdots & 0 \\
+\vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\
+0 & 0 & 0 & 0 & \cdots & 2-\varepsilon^2 \omega^2-\lambda
+\end{array}\right|
+\end{align}</script><p>对第一行进行展开，可以得到递推关系：</p>
+<script type="math/tex; mode=display">\begin{align}
+& P_n(\lambda) = (2-\varepsilon^2 \omega^2-\lambda)P_{n-1}(\lambda)-P_{n-2}(\lambda) \\
+& P_{n+2}(\lambda)+ P_{n}(\lambda) + (\varepsilon^2 \omega^2+\lambda-2)P_{n+1}(\lambda) = 0 \label{3_ditui}
+\end{align}</script><p>定义线性算子$LP_{n}(\lambda)=P_{n+1}(\lambda)$，并将其代入递推关系可以得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+&\left[L^2+ (\varepsilon^2 \omega^2+\lambda-2)L+1\right]P_{n}(\lambda) = 0
+\end{align}</script><p>进行分解：</p>
+<script type="math/tex; mode=display">\begin{align}
+(L-\alpha)(L-\beta)P_{n}(\lambda) &= \left[L^2+ (\varepsilon^2 \omega^2+\lambda-2)L+1\right]P_{n}(\lambda) \\
+\alpha &= \frac{1}{2} \left(-\lambda +\sqrt{\left(\lambda +\omega ^2 \varepsilon ^2-2\right)^2-4}-\omega ^2 \varepsilon ^2+2\right) \\
+\beta &= \frac{1}{2} \left(-\lambda -\sqrt{\left(\lambda +\omega ^2 \varepsilon ^2-2\right)^2-4}-\omega ^2 \varepsilon ^2+2\right)
+\end{align}</script><p>接下来分别求解$(L-\beta)P_{n}=0$与$(L-\alpha)P_{n}=0$:</p>
+<script type="math/tex; mode=display">\begin{aligned}
+(L-\alpha)P_{n}&=0 \\
+LP_{n} &= \alpha P_{n}\\
+P_{n+1} &=\alpha P_{n} \\
+P_{n} &= \alpha P_{n-1} = \alpha^n P_0(\alpha) \\
+P_{n} &= \beta P_{n-1} = \beta^n P_0(\beta) \\
+\end{aligned}</script><p>因此$P$通项写为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+P_{n} = c_1 \alpha^n+ c_2 \beta^n 
+\end{equation}</script><p>代入初始条件：</p>
+<script type="math/tex; mode=display">\begin{align}
+P_1(\lambda) &= 2-\varepsilon^2 \omega^2-\lambda \\
+P_2(\lambda) &= (2-\varepsilon^2 \omega^2-\lambda)^2 - 1 \\
+\end{align}</script><p>由递推关系$\eqref{3_ditui}$可以得到$P_0=1$，$P_n$的表达式：</p>
+<script type="math/tex; mode=display">\begin{align}
+c_1 &= -\frac{\beta +\lambda +\omega ^2 \varepsilon ^2-2}{\alpha -\beta }\\
+c_2 &= \frac{\alpha +\lambda +\omega ^2 \varepsilon ^2-2}{\alpha -\beta } \\
+P_{n}(\lambda) &= c_1 \alpha^n+ c_2 \beta^n \\
+&= \frac{\beta ^n \left(\alpha -1\right)-\alpha ^n \left(\beta -1\right)}{\alpha-\beta }
+\end{align}</script><p>通过以上讨论已经成功将特征多项$\eqref{3_ditui}$通项表达形式写出来。接下来需要具体写出 $\alpha$ 与 $\beta$ 的表达形式。结合需要具体求解的问题$\prod_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2 \omega^2\right)=|P_{N-1}(\lambda=0)|$，可知$\lambda=0$:</p>
+<script type="math/tex; mode=display">\begin{align}
+\lambda &= 0 \\
+\alpha &= \frac{1}{2} \left(\sqrt{\left(\omega ^2 \varepsilon ^2-2\right)^2-4}-\omega ^2 \varepsilon ^2+2\right) \\
+&\stackrel{\varepsilon \to 0}{=} \frac{1}{2} \left(\omega  \varepsilon\sqrt{-4}+2\right)\\
+\beta &= \frac{1}{2} \left( -\sqrt{\left(\omega ^2 \varepsilon ^2-2\right)^2-4}-\omega ^2 \varepsilon ^2+2\right) \\
+&\stackrel{\varepsilon \to 0}{=} \frac{1}{2} \left(-\omega \varepsilon\sqrt{-4}+2\right)\\
+\end{align}</script><p>可以得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+\prod_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2 \omega^2\right)&=P_{N-1}(\lambda=0) \\
+&= \frac{(1+i \omega \varepsilon)^N-(1-i \omega \varepsilon)^N}{1+i \omega \varepsilon-1+i \omega \varepsilon} \\ 
+&= \frac{1}{2 i \omega \varepsilon}\left\{\left[1+\frac{i \omega\left(t-t_0\right)}{N}\right]^N-\left[1-\frac{i \omega\left(t-t_0\right)}{N}\right]^N\right\} \\ 
+& \stackrel{N \rightarrow \infty}{=} \frac{1}{2 i \omega \varepsilon}\left[e^{i \omega\left(t-t_0\right)}-e^{-i \omega\left(t-t_0\right)}\right] \\
+&=\frac{\sin \left[\omega\left(t-t_0\right)\right]}{\omega \varepsilon}
+\end{align}</script><p>所以谐振子的传播子写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+K\left(x, t ; x_0, t_0\right)&=e^{i \frac{S^c}{\hbar}} \sqrt{\frac{m \omega}{2 \pi i \hbar \sin \left[\omega\left(t-t_0\right)\right]}} \\
+S^{\mathrm{c}}&=\frac{m \omega}{2}\left\{\left(x^2+x_0^2\right) \cot \left[\omega\left(t-t_0\right)\right]-2 x x_0 \csc \left[\omega\left(t-t_0\right)\right]\right\}
+\end{align}</script><font color="red">应该考虑相位了，但现在还没出现问题，之再说吧。详细讨论看上面引用的内容。</font>
+
+<h1 id="路径积分蒙特卡洛"><a href="#路径积分蒙特卡洛" class="headerlink" title="路径积分蒙特卡洛"></a>路径积分蒙特卡洛</h1><p>参考：</p>
+<ul>
+<li><a href="https://zhuanlan.zhihu.com/p/509118112">路径积分蒙特卡洛 PIMC</a></li>
+</ul>
+<p>考虑量子力学中的哈密顿量以及波函数：</p>
+<script type="math/tex; mode=display">\begin{align}
+H&=-\hbar^2 \sum_i \frac{1}{2 m_i} \frac{\partial^2}{\partial \mathbf{r}_i^2}+V(\mathcal{R}) \\
+\psi(\mathcal{R}, t)&=\left\langle\mathcal{R}\left|e^{-i t H / \hbar}\right| \psi\right\rangle 
+\end{align}</script><p>在使用蒙卡数值计算的过程中存在两个问题：</p>
+<ul>
+<li>指数是复数，不能用使用正实数概率分布表示</li>
+<li>$H$是量子力学算符，动能与势能不对易</li>
+</ul>
+<h2 id="Continuing-to-Imaginary-Time"><a href="#Continuing-to-Imaginary-Time" class="headerlink" title="Continuing to Imaginary Time"></a>Continuing to Imaginary Time</h2><p>解决复数问题。</p>
+<p>通过引入虚时$\tau=-it$，将复数变为一个实数处理，这种做法也出现在扩散蒙特卡洛（diffusion Monte Carlo, DMC）。通过定义配分函数，产生与统计力学的联系：</p>
+<script type="math/tex; mode=display">\begin{align}
+Z(\beta)&=\int d^{N d} \mathcal{R}\left\langle\mathcal{R}\left|e^{-\tau H / \hbar}\right| \mathcal{R}\right\rangle=\operatorname{Tr} e^{-\beta H}, \quad \beta=\frac{\tau}{\hbar} \\
+k_{\mathrm{B}} T&=1 / \beta=\hbar / \tau
+\end{align}</script><h2 id="Discretizing-the-Time-Dimension"><a href="#Discretizing-the-Time-Dimension" class="headerlink" title="Discretizing the Time Dimension"></a>Discretizing the Time Dimension</h2><p>解决不对易的问题。</p>
+<p>将时间$t$放在$M$的时间格点上，$\Delta \tau = \tau/M$，这样有$M-1$个中间时间。在每一个中间的时间步骤中都有完整的本征态：</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathbf{1}=\int d^{N d} \mathcal{R}_i\left|\mathcal{R}_i\right\rangle\left\langle\mathcal{R}_i\right|, \quad i=1, \ldots, M-1
+\end{align}</script><p>然后沿着时间的顺序将配分函数分解：</p>
+<script type="math/tex; mode=display">\begin{align}
+& Z(\beta)= \int d^{N d} \mathcal{R}\left\langle\mathcal{R}\left|e^{-\tau H / \hbar}\right| \mathcal{R}\right\rangle \\ 
+&=\int d \mathcal{R}_0 \int d \mathcal{R}_1 \ldots \int d \mathcal{R}_{M-1}\left\langle\mathcal{R}_0\left|e^{-\Delta \tau H / \hbar}\right| \mathcal{R}_{M-1}\right\rangle\times \ldots\times\left\langle\mathcal{R}_2\left|e^{-\Delta \tau H / \hbar}\right| \mathcal{R}_1\right\rangle\left\langle\mathcal{R}_1\left|e^{-\Delta \tau H / \hbar}\right| \mathcal{R}_0\right\rangle
+\end{align}</script><p>根据时间分割，将一段时间的演化过程，转变为几个“瞬间”的演化过程$\Delta \tau\to 0$。这其实就是路径积分的思想。</p>
+<p>接下来通过这样的小量，解决不对易的关系。根据 Baker-Campbell-Hausdorff (BCH)定理：</p>
+<script type="math/tex; mode=display">\begin{align}
+e^{\mathcal{A}} e^{\mathcal{B}}&=e^{\mathcal{C}} \\
+\mathcal{C}&=\mathcal{A}+\mathcal{B}+\frac{1}{2}[\mathcal{A}, \mathcal{B}]+\cdots
+\end{align}</script><p>把这个关系用在短时演化的过程中：</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{C}&=-\Delta \tau H / \hbar\\
+\mathcal{B}&=-\Delta \tau V / \hbar\\
+\mathcal{A}&=-\Delta \tau K / \hbar \\
+K&=-\hbar^2 \sum_i \frac{1}{2 m_i} \frac{\partial^2}{\partial \mathbf{r}_i^2}
+\end{align}</script><p>通过BCH定理可以知道，将$H$分为两项，需要计算交叉项。但是这个交叉项是$\Delta\tau$的高阶小量可以直接忽略。</p>
+<script type="math/tex; mode=display">\begin{align}
+\left\langle\mathcal{R}_1\left|e^{-\Delta \tau H / \hbar}\right| \mathcal{R}_0\right\rangle &\simeq\left\langle\mathcal{R}_1\left|e^{-\Delta \tau K / \hbar} e^{-\Delta \tau V / \hbar}\right| \mathcal{R}_0\right\rangle=\left\langle\mathcal{R}_1\left|e^{-\Delta \tau K / \hbar}\right| \mathcal{R}_0\right\rangle e^{-\Delta \tau V\left(\mathcal{R}_0\right) / \hbar} \\
+\left\langle\mathcal{R}_1\left|e^{-\Delta \tau K / \hbar}\right| \mathcal{R}_0\right\rangle & =\int d \mathcal{P}_0 \int d \mathcal{P}_1\left\langle\mathcal{R}_1 \mid \mathcal{P}_1\right\rangle\left\langle\mathcal{P}_1\left|e^{-\Delta \tau K / \hbar}\right| \mathcal{P}_0\right\rangle\left\langle\mathcal{P}_0 \mid \mathcal{R}_0\right\rangle \\
+& =\left(\frac{m}{2 \pi \hbar \Delta \tau}\right)^{N d / 2} \exp \left[-\frac{m \Delta \tau}{2 \hbar} \sum_i\left(\frac{\mathbf{r}_{i 1}-\mathbf{r}_{i 0}}{\Delta \tau}\right)^2\right]
+\end{align}</script><h2 id="Path-Integral-Monte-Carlo-Algorithm"><a href="#Path-Integral-Monte-Carlo-Algorithm" class="headerlink" title="Path Integral Monte Carlo Algorithm"></a>Path Integral Monte Carlo Algorithm</h2><p>配分函数的最终表达式为：</p>
+<script type="math/tex; mode=display">\begin{align} 
+Z(\beta) \simeq\left(\frac{m}{2 \pi \hbar \Delta \tau}\right)^{M N d / 2} \int d \mathcal{R}_0 \int d \mathcal{R}_1 \ldots \int d \mathcal{R}_{M-1} \quad \times \exp \left\{-\frac{\Delta \tau}{\hbar} \sum_{j=0}^{M-1}\left[\frac{m}{2}\left(\frac{\mathcal{R}_{j+1}-\mathcal{R}_j}{\Delta \tau}\right)^2+V\left(\mathcal{R}_j\right)\right]\right\}
+\end{align}</script><p>看这个形式，对比统计晶格中的形式。具有一定的对应关系，路径积分等价于晶格所有构型的求和，因此真正需要关心的是“能量项”：</p>
+<script type="math/tex; mode=display">\begin{align}
+\sum_{j=0}^{M-1}\left[\frac{m}{2}\left(\frac{\mathcal{R}_{j+1}-\mathcal{R}_j}{\Delta \tau}\right)^2+V\left(\mathcal{R}_j\right)\right]
+\end{align}</script><p>将每一格运动区间进行计算，从而得出最终的“能量”，更准确应该是作用量。然后利用 Metropolis algorithm 进行重要性抽样，将不同权重的路径进行加权运算。</p>
+<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><p>以下是一个对于一维谐振子的实现，核心部分在<code>sample</code>模块中。这个实现，每次只对前一次路径中一步进行修改，然后接受概率设为<code>exp(-DeltaE * Delta_t / hbar)</code>，这里作者将$\hbar=1$进行无量纲化了。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PathIntegral</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, nt=<span class="number">100</span>, tmax = <span class="number">2</span>*np.pi</span>):</span><br><span class="line">        self.nt = nt</span><br><span class="line">        self.tmax = tmax</span><br><span class="line">        self.t = np.linspace(<span class="number">0</span>, self.tmax, nt)</span><br><span class="line">        self.sample_idx = []</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">sample</span>(<span class="params">self, steps=<span class="number">100000</span></span>):</span><br><span class="line">        <span class="comment"># 1. initialize the path</span></span><br><span class="line">        x = np.zeros_like(self.t)</span><br><span class="line">        dt = self.t[<span class="number">1</span>] - self.t[<span class="number">0</span>]</span><br><span class="line">        ilist = np.random.choice(<span class="built_in">range</span>(<span class="number">1</span>, self.nt-<span class="number">1</span>), size=steps)</span><br><span class="line">        dxlist = np.random.uniform(-<span class="number">1</span>, <span class="number">1</span>, size=steps)</span><br><span class="line">        sampled = []           </span><br><span class="line">        <span class="comment"># randomly pick x[i]</span></span><br><span class="line">        <span class="comment"># do random walk x[i] -&gt; x[i] + r </span></span><br><span class="line">        <span class="comment"># if DeltaE &lt; 0: accept</span></span><br><span class="line">        <span class="comment"># elif DeltaE &gt; 0: accept with probability exp(-DeltaE * Delta_t / hbar)</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> tqdm(<span class="built_in">range</span>(steps)):</span><br><span class="line">            i = ilist[n]</span><br><span class="line">            dx = dxlist[n]</span><br><span class="line">            </span><br><span class="line">            <span class="comment">#if x[i] + dx &lt;= 0.0: continue</span></span><br><span class="line">            ds = (self.kinetic_energy(x[i-<span class="number">1</span>], x[i]+dx, dt) -</span><br><span class="line">                  self.kinetic_energy(x[i-<span class="number">1</span>], x[i], dt) +</span><br><span class="line">                  self.kinetic_energy(x[i]+dx, x[i+<span class="number">1</span>], dt) -</span><br><span class="line">                  self.kinetic_energy(x[i], x[i+<span class="number">1</span>], dt) + </span><br><span class="line">                  self.potential(x[i]+dx) -</span><br><span class="line">                  self.potential(x[i])</span><br><span class="line">                 ) * dt</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> ds &lt; <span class="number">0</span>: </span><br><span class="line">                x[i] = x[i] + dx</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                r = np.random.rand()</span><br><span class="line">                <span class="keyword">if</span> r &lt; np.exp(-ds):</span><br><span class="line">                    x[i] = x[i] + dx</span><br><span class="line">            sampled.append(x[i])</span><br><span class="line">            </span><br><span class="line">            self.sample_idx.append(i)</span><br><span class="line">        <span class="keyword">return</span> sampled, self.sample_idx</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">kinetic_energy</span>(<span class="params">self, x1, x2, dt</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.5</span> * (x2 - x1)**<span class="number">2</span> / dt**<span class="number">2</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">potential</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.5</span> * x**<span class="number">2</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">plot</span>(<span class="params">self</span>):</span><br><span class="line">        tmax = self.tmax</span><br><span class="line">        plt.vlines(self.t, ymin=-tmax, ymax=tmax, color=<span class="string">&#x27;k&#x27;</span>, linestyles=<span class="string">&#x27;dotted&#x27;</span>, alpha=<span class="number">0.9</span>)</span><br><span class="line">        dt = self.t[<span class="number">1</span>] - self.t[<span class="number">0</span>]</span><br><span class="line">        xi = np.random.uniform(-<span class="number">1</span>, <span class="number">1</span>, self.nt)</span><br><span class="line">        xi[<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">        xi = np.cumsum(xi)</span><br><span class="line">        xi[-<span class="number">1</span>] = <span class="number">0</span></span><br><span class="line">        plt.plot(self.t, xi)</span><br><span class="line">        plt.ylabel(<span class="string">r&#x27;x $\rightarrow$&#x27;</span>, loc=<span class="string">&#x27;center&#x27;</span>)</span><br><span class="line">        plt.xlabel(<span class="string">r&#x27;t $\rightarrow$&#x27;</span>, loc=<span class="string">&#x27;center&#x27;</span>)</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Quantum Field Theory</tag>
+        <tag>Path Integrals</tag>
+        <tag>Path Integrals Monte Carlo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title></title>
+    <url>/2024/06/25/Phys/SK_model/Append/</url>
+    <content><![CDATA[<h1 id="Append"><a href="#Append" class="headerlink" title="Append"></a>Append</h1><h2 id="Hessian"><a href="#Hessian" class="headerlink" title="Hessian"></a>Hessian</h2><p>Hessian矩阵在极值点的稳定性分析中起着关键作用，具体涉及以下几个方面：</p>
+<h3 id="Hessian矩阵的定义"><a href="#Hessian矩阵的定义" class="headerlink" title="Hessian矩阵的定义"></a>Hessian矩阵的定义</h3><p>Hessian矩阵是由二阶偏导数组成的方阵，表示函数在某一点的二阶导数信息。对于一个多变量函数 ( f(x_1, x_2, \ldots, x_n) )，Hessian矩阵 ( H ) 定义为：</p>
+<p>[<br>H = \begin{bmatrix}<br>\frac{\partial^2 f}{\partial x_1^2} &amp; \frac{\partial^2 f}{\partial x_1 \partial x_2} &amp; \cdots &amp; \frac{\partial^2 f}{\partial x_1 \partial x_n} \\<br>\frac{\partial^2 f}{\partial x_2 \partial x_1} &amp; \frac{\partial^2 f}{\partial x_2^2} &amp; \cdots &amp; \frac{\partial^2 f}{\partial x_2 \partial x_n} \\<br>\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\<br>\frac{\partial^2 f}{\partial x_n \partial x_1} &amp; \frac{\partial^2 f}{\partial x_n \partial x_2} &amp; \cdots &amp; \frac{\partial^2 f}{\partial x_n^2}<br>\end{bmatrix}<br>]</p>
+<h3 id="极值点与Hessian矩阵"><a href="#极值点与Hessian矩阵" class="headerlink" title="极值点与Hessian矩阵"></a>极值点与Hessian矩阵</h3><p>在某一点 ( x_0 )，如果 ( \nabla f(x_0) = 0 )，则 ( x_0 ) 是一个驻点，可能是极大值点、极小值点或鞍点。Hessian矩阵 ( H(x_0) ) 在这个驻点的性质可以帮助确定这个驻点的类型。</p>
+<h3 id="Hessian矩阵的正定性与负定性"><a href="#Hessian矩阵的正定性与负定性" class="headerlink" title="Hessian矩阵的正定性与负定性"></a>Hessian矩阵的正定性与负定性</h3><ol>
+<li><p><strong>正定矩阵与局部极小值</strong>:</p>
+<ul>
+<li>一个正定矩阵的所有特征值都是正的。</li>
+<li>对于任何非零向量 ( v )，有 ( v^T H v &gt; 0 )。</li>
+<li>如果在驻点 ( x_0 )，Hessian矩阵 ( H(x_0) ) 是正定的，那么在 ( x_0 ) 附近，函数 ( f ) 的曲率向上，类似于一个碗的形状。对于任何微小的偏离 ( x_0 ) 的向量 ( v )，二阶泰勒展开式的二次项 ( \frac{1}{2} v^T H v ) 会贡献一个正值，因此 ( f(x_0 + v) &gt; f(x_0) )，即 ( x_0 ) 是局部极小值点。</li>
+</ul>
+</li>
+<li><p><strong>负定矩阵与局部极大值</strong>:</p>
+<ul>
+<li>一个负定矩阵的所有特征值都是负的。</li>
+<li>对于任何非零向量 ( v )，有 ( v^T H v &lt; 0 )。</li>
+<li>如果在驻点 ( x_0 )，Hessian矩阵 ( H(x_0) ) 是负定的，那么在 ( x_0 ) 附近，函数 ( f ) 的曲率向下，类似于一个倒置的碗的形状。对于任何微小的偏离 ( x_0 ) 的向量 ( v )，二阶泰勒展开式的二次项 ( \frac{1}{2} v^T H v ) 会贡献一个负值，因此 ( f(x_0 + v) &lt; f(x_0) )，即 ( x_0 ) 是局部极大值点。</li>
+</ul>
+</li>
+<li><p><strong>混合正负特征值与鞍点</strong>:</p>
+<ul>
+<li>如果Hessian矩阵 ( H(x_0) ) 既有正特征值也有负特征值，那么它既不正定也不负定。</li>
+<li>在这种情况下，存在一些方向 ( v_1 ) 使得 ( v_1^T H v_1 &gt; 0 )，同时存在其他方向 ( v_2 ) 使得 ( v_2^T H v_2 &lt; 0 )。</li>
+<li>如果在驻点 ( x_0 )，Hessian矩阵 ( H(x_0) ) 既不正定也不负定，那么在 ( x_0 ) 附近，函数 ( f ) 会在某些方向上向上弯曲（极小值行为），而在其他方向上向下弯曲（极大值行为）。这意味着 ( x_0 ) 不是局部极值点，而是一个鞍点，类似于马鞍的形状，在某些方向上是极小值，在另一些方向上是极大值。</li>
+</ul>
+</li>
+</ol>
+<h3 id="实际应用"><a href="#实际应用" class="headerlink" title="实际应用"></a>实际应用</h3><p>在优化问题中，Hessian矩阵用于评估驻点的稳定性和类型。在机器学习和深度学习中，Hessian矩阵用于分析损失函数的曲率和优化算法的收敛性。</p>
+<p>总结来说，Hessian矩阵通过其正定性或负定性帮助我们区分驻点的类型，从而判断这些点是极大值点、极小值点还是鞍点，这对于理解函数的局部行为和稳定性非常重要。</p>
+]]></content>
+  </entry>
+  <entry>
+    <title>Sherrington-Kirkpatrick Model</title>
+    <url>/2022/11/20/Phys/SK_model/SK_model/</url>
+    <content><![CDATA[<p>利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。目的是掌握和熟悉复本方法的使用。</p>
+<p>Reference:</p>
+<ul>
+<li>Statistical Physics of Spin Glasses and Information Processing. Nishimori</li>
+<li><a href="https://hzshan.github.io/replica_method_in_SK_model.pdf">Replica calculations for the SK model</a>笔误有点多</li>
+</ul>
+<p>Link:</p>
+<ul>
+<li><a href="/2022/11/12/Phys/Hopfield/Hopfield/" title="Hopfield Model">Hopfield Model</a></li>
+<li><a href="/2022/11/13/Phys/replica/replica/" title="Replica">Replica</a>
+</li>
+</ul>
+<span id="more"></span>
+<h1 id="Sherrington-Kirkpatrick-Model"><a href="#Sherrington-Kirkpatrick-Model" class="headerlink" title="Sherrington-Kirkpatrick Model"></a>Sherrington-Kirkpatrick Model</h1><script type="math/tex; mode=display">\begin{align}
+H=&\sum_{i<j} J_{i j} S_i S_j-h \sum_i S_i \label{1}\\
+P\left(J_{i j}\right)=&\frac{1}{J} \sqrt{\frac{N}{2 \pi}} \exp \left(-\frac{N}{2 J^2}\left(J_{i j}-\frac{J_0}{N}\right)^2\right)\\
+\end{align}</script><script type="math/tex; mode=display">\begin{align}
+\text{mean}(J)=&\frac{J_0}{N} \\
+\text{variance}(J)=&\frac{J^2}{N}
+\end{align}</script><p>其中$S, J$都是变量。考虑是在quneched状态。热力学平均是指对$S$的平均，记为$\langle\cdot\rangle$；构型平均是对相互作用参数$J$的平均，记为$[\cdot ]$。自由能写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+[F(\boldsymbol{s})]=-\frac{1}{\beta}[\ln Z(\boldsymbol{s})]=-\frac{1}{\beta}\left[\ln \sum_{\{\boldsymbol{s}\}} \exp (-\beta H(\boldsymbol{s}))\right]
+\end{align}</script><h1 id="Calculating-the-free-energy-with-replica-method"><a href="#Calculating-the-free-energy-with-replica-method" class="headerlink" title="Calculating the free energy with replica method"></a>Calculating the free energy with replica method</h1><p>由复本对称知：</p>
+<script type="math/tex; mode=display">\begin{align}
+[\ln Z(s)]=\lim_{n\to 0}\frac{[Z^n]-1}{n}\label{4}
+\end{align}</script><p>结合$\eqref{1}$，$[Z^n]$可写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\left[Z^n\right]=\int \prod_{i<j} d J_{i j} P\left(J_{i j}\right) \sum_{\left\{\boldsymbol{s}^\alpha, \boldsymbol{s}^\beta, \ldots, \boldsymbol{s}^n\right\}} \exp \left(-\beta \sum_{i<j} J_{i j} \sum_{\alpha=1}^n S_i^\alpha S_j^\alpha+\beta h \sum_{i=1}^N \sum_{\alpha=1}^n S_i^\alpha\right)
+\end{align}</script><p>直接对$J$进行积分：</p>
+<figure class="highlight mathematica"><table><tr><td class="code"><pre><span class="line"><span class="variable">P</span> <span class="operator">=</span> <span class="number">1</span><span class="operator">/</span><span class="variable">J</span> <span class="built_in">Sqrt</span><span class="punctuation">[</span><span class="variable">NN</span><span class="operator">/</span><span class="punctuation">(</span><span class="number">2</span> <span class="built_in">Pi</span><span class="punctuation">)</span><span class="punctuation">]</span> <span class="built_in">Exp</span><span class="punctuation">[</span><span class="operator">-</span><span class="variable">NN</span><span class="operator">/</span><span class="punctuation">(</span><span class="number">2</span> <span class="variable">j</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">)</span> <span class="punctuation">(</span><span class="variable">jij</span> <span class="operator">-</span> <span class="variable">j0</span><span class="operator">/</span><span class="variable">NN</span><span class="punctuation">)</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">]</span><span class="operator">;</span></span><br><span class="line"><span class="built_in">Integrate</span><span class="punctuation">[</span></span><br><span class="line">  <span class="variable">P</span> <span class="built_in">Exp</span><span class="punctuation">[</span><span class="number">1</span><span class="operator">/</span><span class="variable">NN</span> <span class="punctuation">(</span><span class="operator">-</span><span class="variable">\[Beta]</span> <span class="variable">jij</span> <span class="variable">si</span> <span class="variable">sj</span> <span class="operator">+</span> <span class="variable">\[Beta]</span> <span class="variable">h</span> <span class="variable">si</span><span class="punctuation">)</span><span class="punctuation">]</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">jij</span><span class="operator">,</span> <span class="operator">-</span><span class="built_in">Infinity</span><span class="operator">,</span> </span><br><span class="line">   <span class="built_in">Infinity</span><span class="punctuation">&#125;</span><span class="punctuation">]</span> <span class="operator">//</span> <span class="built_in">FullSimplify</span></span><br></pre></td></tr></table></figure>
+<script type="math/tex; mode=display">\begin{align}
+\left[Z^n\right]=C_1 \sum_{\left\{\boldsymbol{s}^\alpha, \boldsymbol{s}^\beta, \ldots, \boldsymbol{s}^n\right\}} \exp \left\{\frac{1}{N} \sum_{i<j}\left(\frac{1}{2} \beta^2 J^2 \sum_{\alpha, \beta} S_i^\alpha S_j^\alpha S_i^\beta S_j^\beta+\beta J_0 \sum_\alpha S_i^\alpha S_j^\alpha\right)+\beta h \sum_{i=1}^N \sum_{\alpha=1}^n S_i^\alpha\right\} .
+\end{align}</script><p>对其中一项进行拆分：</p>
+<script type="math/tex; mode=display">\begin{align}
+\sum_{\alpha, \beta} S_i^\alpha S_j^\alpha S_i^\beta S_j^\beta=2 \sum_{\alpha<\beta} S_i^\alpha S_j^\alpha S_i^\beta S_j^\beta+\sum_\alpha\left(S_i^\alpha S_j^\alpha\right)^2=2 \sum_{\alpha<\beta} S_i^\alpha S_j^\alpha S_i^\beta S_j^\beta+n
+\end{align}</script><p>因此有：</p>
+<script type="math/tex; mode=display">\begin{align}
+{\left[Z^n\right] } & =C_1 \sum_{\left\{s^\alpha, s^\beta, \ldots, s^n\right\}} \exp \left\{\frac{1}{N} \sum_{i<j}\left(\frac{1}{2} \beta^2 J^2\left(2 \sum_{\alpha<\beta} S_i^\alpha S_j^\alpha S_i^\beta S_j^\beta+n\right)+\beta J_0 \sum_\alpha S_i^\alpha S_j^\alpha\right)+\beta h \sum_{i=1}^N \sum_{\alpha=1}^n S_i^\alpha\right\} \\
+& =C_1 \sum_{\left\{s^\alpha, s^\beta, \ldots, s^n\right\}} \exp \left\{\frac{1}{N} \sum_{i<j}\left(\frac{1}{2} \beta^2 J^2 n+\frac{1}{2} \beta^2 J^2\left(2 \sum_{\alpha<\beta} S_i^\alpha S_j^\alpha S_i^\beta S_j^\beta\right)+\beta J_0 \sum_\alpha S_i^\alpha S_j^\alpha\right)+\beta h \sum_{i=1}^N \sum_{\alpha=1}^n S_i^\alpha\right\} \\
+& =C_1 \exp \left(\frac{(N-1) \beta^2 J^2 n}{4}\right) \sum_{\left\{s^\alpha, s^\beta, \ldots, s^n\right\}} \exp \left\{\frac{1}{N} \sum_{i<j}\left(\beta^2 J^2 \sum_{\alpha<\beta} S_i^\alpha S_j^\alpha S_i^\beta S_j^\beta+\beta J_0 \sum_\alpha S_i^\alpha S_j^\alpha\right)+\beta h \sum_{i=1}^N \sum_{\alpha=1}^n S_i^\alpha\right\}\label{9}
+\end{align}</script><p>采用近似$\exp \left(\frac{(N-1) \beta^2 J^2 n}{4}\right) \approx\exp \left(\frac{N \beta^2 J^2 n}{4}\right)$，接下来关注$\eqref{9}$第二项中第一部分：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{1}{N} \sum_{i<j} \beta^2 J^2 \sum_{\alpha<\beta} S_i^\alpha S_j^\alpha S_i^\beta S_j^\beta & =\frac{\beta^2 J^2}{2 N}\left(\sum_{\alpha<\beta}\left(\sum_i S_i^\alpha S_i^\beta\right)^2-\sum_i \sum_{\alpha<\beta} S_i^\alpha S_i^\alpha S_i^\beta S_i^\beta\right) \\
+& =\frac{\beta^2 J^2}{2 N} \sum_{\alpha<\beta}\left(\sum_i S_i^\alpha S_i^\beta\right)^2-\frac{\beta^2 J^2}{2 N} \sum_i \sum_{\alpha<\beta} 1 \label{9_1}
+\end{align}</script><p>将常数项加入前面的系数，接下来分析$\eqref{9}$第二项中第二部分：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{\beta J_0}{N} \sum_{i<j} \sum_\alpha S_i^\alpha S_j^\alpha=\frac{\beta J_0}{2 N} \sum_\alpha\left(\sum_i S_i^\alpha\right)^2-\frac{\beta J_0}{2 N} \sum_i \sum_\alpha 1 \label{9_2}
+\end{align}</script><p>同样处理常数项目，结合$\eqref{9}\eqref{9_1}\eqref{9_2}$，得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+\left[Z^n\right]=C_2 \exp \left(\frac{N \beta^2 J^2 n}{4}\right) \sum_{\left\{s^\alpha, s^\beta, \ldots, s^n\right\}} \exp \left\{\frac{\beta^2 J^2}{2 N} \sum_{\alpha<\beta}\left(\sum_i S_i^\alpha S_i^\beta\right)^2+\frac{\beta J_0}{2 N} \sum_\alpha\left(\sum_i S_i^\alpha\right)^2+\beta h \sum_{i=1}^N \sum_{\alpha=1}^n S_i^\alpha\right\} \label{10}
+\end{align}</script><p>需要将$\eqref{10}$指数中的平方项转变为线性，使用Hubbard-Stratonovich 替换：</p>
+<script type="math/tex; mode=display">\begin{align}
+\exp \left(\frac{y^2}{2}\right)=\int_{-\infty}^{\infty} \frac{d x}{\sqrt{2 \pi}} \exp \left(-\frac{x^2}{2}\right) \exp (x y)\label{11}
+\end{align}</script><p>可得：</p>
+<script type="math/tex; mode=display">
+\begin{gather}
+\exp \frac{\beta^2 J^2}{2 N}\left(\sum_i S_i^\alpha S_i^\beta\right)^2=\int_{-\infty}^{\infty} \frac{N d q_{\alpha \beta}}{\sqrt{2 \pi}} \exp \left(-\beta^2 J^2 N \frac{q_{\alpha \beta}^2}{2}+\beta^2 J^2 q_{\alpha \beta} \sum_i S_i^\alpha S_i^\beta\right) \\
+\exp \frac{\beta J_0}{2 N}\left(\sum_i S_i^\alpha\right)^2=\int_{-\infty}^{\infty} \frac{N d m_\alpha}{\sqrt{2 \pi}} \exp \left(-\beta J_0 N m_\alpha^2+\beta J_0 m_\alpha \sum_i S_i^\alpha\right) 
+\end{gather}</script><p>再将结果代入$\eqref{10}$，然后得到结果：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+& {\left[Z^n\right]=} C_4 \exp \left(\frac{N \beta^2 J^2 n}{4}\right) \int_{-\infty}^{\infty} \prod_{\alpha<\beta} d q_{\alpha \beta} \prod_\alpha d m_\alpha \\
+& \exp \left(-\frac{\beta^2 J^2 N}{2} \sum_{\alpha<\beta} q_{\alpha \beta}^2-\frac{\beta J_0 N}{2} \sum_\alpha m_\alpha^2\right) \\
+& \sum_{\left\{s^\alpha, s^\beta, \ldots, s^n\right\}} \exp \left(\beta^2 J^2 \sum_{\alpha<\beta} q_{\alpha \beta} \sum_i S_i^\alpha S_i^\beta+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) \sum_i S_i^\alpha\right) 
+\end{aligned} \label{14}
+\end{equation}</script><p>对于$\eqref{14}$最后一项，改写为：</p>
+<script type="math/tex; mode=display">
+\prod_{i=1}^N \sum_{\left\{s_i^\alpha, s_i^\beta, \ldots, s_i^n\right)} \exp \left(\beta^2 J^2 \sum_{\alpha<\beta} q_{\alpha \beta} S_i^\alpha S_i^\beta+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) S_i^\alpha\right)</script><p>由于对于任意$i$，有$s_i=\pm 1$，这样对于不同的$i$是没有差别的：</p>
+<script type="math/tex; mode=display">\begin{align}
+\left\{\sum_{\left\{s_i^\alpha, s_i^\beta, \ldots, s_i^n\right)} \exp \left(\beta^2 J^2 \sum_{\alpha<\beta} q_{\alpha \beta} S^\alpha S^\beta+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) S^\alpha\right)\right\}^N \equiv \exp \left\{N \log \sum_{\left\{s_i^\alpha, s_i^\beta, \ldots, s_i^n\right)} \exp \left(L\left(\left\{q_{\alpha \beta}, m_\alpha\right\}\right)\right)\right\} \label{18}
+\end{align}</script><p>其中定义：</p>
+<script type="math/tex; mode=display">\begin{align}
+L\left(\left\{q_{\alpha \beta}, m_\alpha\right\}\right):=\beta^2 J^2 \sum_{\alpha<\beta} q_{\alpha \beta} S^\alpha S^\beta+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) S^\alpha \label{19}
+\end{align}</script><p>将$\eqref{18}\eqref{19}$代入$\eqref{14}$：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\begin{aligned}
+\left[Z^n\right]=& C_4 \exp \left(\frac{N \beta^2 J^2 n}{4}\right) \int_{-\infty}^{\infty} \prod_{\alpha<\beta} d q_{\alpha \beta} \prod_\alpha d m_\alpha \\
+& \exp \left\{-\frac{\beta^2 J^2 N}{2} \sum_{\alpha<\beta} q_{\alpha \beta}^2-\frac{\beta J_0 N}{2} \sum_\alpha m_\alpha^2+N \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right)} \exp (L)\right\} 
+\end{aligned} \label{20}
+\end{equation}</script><p>由于热力学极限有${N\to\infty}$，采用Laplace近似可知（进行该近似其是会出现一个常数项，这里没有写出，因为直接扔掉也对结果没有影响），结果取决于与指数上最大值的那个点：</p>
+<script type="math/tex; mode=display">
+\begin{gather}
+E:=-\frac{\beta^2 J^2 N}{2} \sum_{\alpha<\beta} q_{\alpha \beta}^2-\frac{\beta J_0 N}{2} \sum_\alpha m_\alpha^2+N \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp (L) \label{22}\\
+\left\{q_{\alpha \beta}^{\star}, m_\alpha^{\star}\right\}=\arg \max _{\left\{q_{\alpha \beta}, m_\alpha\right\}} E 
+\end{gather}</script><p>因此$\eqref{14}$转变为：</p>
+<script type="math/tex; mode=display">\begin{align}
+{\left[Z^n\right] } & =C_4 \exp \left\{\frac{N \beta^2 J^2 n}{4}-\frac{\beta^2 J^2 N}{2} \sum_{\alpha<\beta}\left(q_{\alpha \beta}^{\star}\right)^2-\frac{\beta J_0 N}{2} \sum_\alpha\left(m_\alpha^{\star}\right)^2+N \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp (L)\right\} \label{24}\\
+& =C_4 \exp \left\{N n\left(\frac{\beta^2 J^2}{4}-\frac{\beta^2 J^2}{2 n} \sum_{\alpha<\beta}\left(q_{\alpha \beta}^{\star}\right)^2-\frac{\beta J_0}{2 n} \sum_\alpha\left(m_\alpha^{\star}\right)^2+\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp (L)\right)\right\} \label{25}
+\end{align}</script><font color="blue">在进行到$\eqref{24}$时候已经黔宾黩武，从定义$\eqref{19}$中可以看出$L$包含$q,m$。此时处理已经很麻烦了，需要近似。</font>
+
+<p>同时采用复本极限$n \rightarrow 0$，将$\eqref{25}$进行展开：</p>
+<script type="math/tex; mode=display">\begin{align}
+\left[Z^n\right] \approx 1+N n\left\{\frac{\beta^2 J^2}{4}-\frac{\beta^2 J^2}{2 n} \sum_{\alpha<\beta}\left(q_{\alpha \beta}^{\star}\right)^2-\frac{\beta J_0}{2 n} \sum_\alpha\left(m_\alpha^{\star}\right)^2+\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp (L)\right\} \label{26}
+\end{align}</script><p>最后将$\eqref{26}$代回复本技巧$\eqref{4}$中：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+\frac{[\log Z]}{N} & =\lim _{n \rightarrow 0} \frac{\left[Z^n\right]-1}{N n} \\
+& =\lim _{n \rightarrow 0}\left\{\frac{\beta^2 J^2}{4}-\frac{\beta^2 J^2}{2 n} \sum_{\alpha<\beta}\left(q_{\alpha \beta}^{\star}\right)^2-\frac{\beta J_0}{2 n} \sum_\alpha\left(m_\alpha^{\star}\right)^2+\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp (L)\right\} \label{28}
+\end{align}</script><p>最后需要确定$\left\{q_{\alpha \beta}^{\star}, m_\alpha^{\star}\right\}$的表达式，使用$\frac{\partial}{\partial q_{\alpha \beta}} E=\frac{\partial}{\partial m_\alpha} E=0$，从$\eqref{22}$中得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+q_{\alpha \beta}^{\star}=& \frac{1}{\beta^2 J^2} \frac{\partial}{\partial q_{\alpha \beta}} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp (L)=\frac{1}{\beta^2 J^2} \frac{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp (L) \beta^2 J^2}{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp (L)} S^\alpha S^\beta . \\
+=& \frac{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} S^\alpha S^\beta \exp (L)}{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp (L)} \\
+m_\alpha^{\star}=&\frac{1}{\beta J_0} \frac{\partial}{\partial m_\alpha} \log \sum_{\left\{s_i^\alpha, s_i^\beta, \ldots, s_i^n\right)} \exp (L)=\frac{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} S^\alpha \exp (L)}{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp (L)} .
+\end{align}</script><h2 id="q-alpha-beta-and-m-alpha-as-order-parameters"><a href="#q-alpha-beta-and-m-alpha-as-order-parameters" class="headerlink" title="$q_{\alpha \beta}$ and $m_\alpha$ as order parameters"></a>$q_{\alpha \beta}$ and $m_\alpha$ as order parameters</h2><p>可以改写为（<font color="blue">并不是直接通过上面的过程的得出，只是先把结论摆出来</font>）：</p>
+<script type="math/tex; mode=display">\begin{align}
+q_{\alpha \beta}=\left[\frac{\sum_{\left\{s^\alpha, s^s, \ldots, s^n\right\}} S_i^\alpha S_i^\beta \exp \left(-\beta \sum_{\gamma=1}^n H_\gamma\right)}{\sum_{\left\{s^\alpha, s^\beta, \ldots, s^n\right\}} \exp \left(-\beta \sum_{\gamma=1}^n H_\gamma\right)}\right] \equiv\left[\left\langle S_i^\alpha S_i^\beta\right\rangle\right] \label{32}
+\end{align}</script><p>其中：</p>
+<script type="math/tex; mode=display">\begin{align}
+H_\gamma=&\sum_{i<j} J_{i j}^2\beta S_i^\gamma S_j^\gamma-h \sum_i S_i^\gamma \label{33}\\
+m_\alpha=&\left[\left\langle S_i^\alpha\right\rangle\right] \label{34}
+\end{align}</script><h1 id="Replica-symmetric-solution"><a href="#Replica-symmetric-solution" class="headerlink" title="Replica-symmetric solution"></a>Replica-symmetric solution</h1><p>对于$\eqref{24}$已经提到，需要处理里面的$q_{\alpha\beta}$与$m_\alpha$的问题。现在直接简单粗暴的假设：</p>
+<script type="math/tex; mode=display">\begin{align}
+\forall\alpha,\beta\quad q_{\alpha\beta}=q,m_\alpha=m \label{RS}
+\end{align}</script><p>将$\eqref{28}$近似之后的结果写为;</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{[\log Z]}{N} & =\lim _{n \rightarrow 0}\left\{\frac{\beta^2 J^2}{4}-\frac{\beta^2 J^2(n-1)}{4} q^2-\frac{\beta J_0}{2} m^2+\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp \left(L_{q_{\alpha \beta}=q, m_\alpha=m}\right)\right\} \label{35} \\
+& =\frac{\beta^2 J^2}{4}\left(1+q^2\right)-\frac{\beta J_0}{2} m^2+\lim _{n \rightarrow 0} \frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp \left(L_{q_\alpha \beta}=q, m_\alpha=m\right) \label{36}
+\end{align}</script><p>将其中$L$项具体写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{1}{n} \log \sum_{\left\{s_i^\alpha, s_i^\beta, \ldots, s_i^n\right)} \exp \left(L_{q_{\alpha \beta}=q, m_\alpha=m}\right)=\frac{1}{n}\log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp \left(\beta^2 J^2 q \sum_{\alpha<\beta} S^\alpha S^\beta+\beta\left(J_0 m+h\right) \sum_\alpha S^\alpha\right)
+\end{align}</script><p>引入变量$\hat{z}$，结合$\eqref{11}$将$S^\alpha S^\beta$线性化：</p>
+<script type="math/tex; mode=display">\begin{align}
+p(\hat{z})=\sqrt{\frac{1}{2 \pi}} \exp \left(-\frac{\hat{z}^2}{2}\right)
+\end{align}</script><script type="math/tex; mode=display">
+\begin{align}
+& \frac{1}{n} \log \sum_{\left\{s_i^\alpha, s_i^\beta, \ldots, s_i^n\right)} \exp \left(\beta^2 J^2 \sum_{\alpha<\beta} q_{\alpha \beta} S^\alpha S^\beta+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) S^\alpha\right) \\
+= & \frac{1}{n} \log \sum_{\left\{s_i^\alpha, s_i^\beta, \ldots, s_i^n\right)} \int d z p(z) \exp \left(\beta J \sqrt{q} \hat{z} \sum_\alpha S^\alpha-\frac{n}{2} \beta^2 J^2 q+\beta\left(J_0 m+h\right) \sum_\alpha S^\alpha\right) \\
+= & \frac{1}{n} \log\left[ \exp \left(-\frac{n}{2} \beta^2 J^2 q\right) \int d z p(\hat{z}) \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp \left(\sum_\alpha S^\alpha\left(\beta J \sqrt{q} \hat{z}+\beta\left(J_0 m+h\right)\right)\right)\right] \\
+= & \frac{1}{n} \log\left[ \exp \left(-\frac{n}{2} \beta^2 J^2 q\right) \int D z \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp \left(\sum_\alpha S^\alpha\left(\beta J \sqrt{q} z+\beta\left(J_0 m+h\right)\right)\right)\right] \\
+= & \frac{1}{n} \log\left[ \exp \left(-\frac{n}{2} \beta^2 J^2 q\right) \int D z \prod_{\gamma=1}^n \sum_{S^\gamma= \pm 1} \exp \left(S^\gamma\left(\beta J \sqrt{q} z+\beta\left(J_0 m+h\right)\right)\right)\right] \\
+= & \frac{1}{n} \log\left[ \exp \left(-\frac{n}{2} \beta^2 J^2 q\right) \int D z  \left\{2 \cosh \left(\beta J \sqrt{q} z+\beta\left(J_0 m+h\right)\right)\right\}^n\right] \label{38_1} \\
+= & \frac{1}{n} \log\left[ \exp \left(-\frac{n}{2} \beta^2 J^2 q\right) \int D z \exp \left(n \log 2 \cosh \left(\beta J \sqrt{q} z+\beta\left(J_0 m+h\right)\right)\right) \right] \\
+= &  \left(-\frac{1}{2} \beta^2 J^2 q\right)+\frac{1}{n} \log\left[ \int D z \exp \left(n \log 2 \cosh \left(\beta J \sqrt{q} z+\beta\left(J_0 m+h\right)\right)\right) \right]\label{39} \\
+\end{align}</script><p>对其中$n$进行极小值展开，<font color="red">这里其是存在一些问题更清晰的应该将求极限的操作放在后面进行，并且将另一个$n$分离出来，不过问题不大只会造成理解困难。</font></p>
+<script type="math/tex; mode=display">\begin{align}
+&\approx \left(-\frac{1}{2} \beta^2 J^2 q\right)+\frac{1}{n} \log \left\{1+n \int D z \log 2 \cosh \left(\beta J \sqrt{q} z+\beta\left(J_0 m+h\right)\right)\right\} \\
+&\approx \left(-\frac{1}{2} \beta^2 J^2 q\right)+\int D z \log 2 \cosh \left(\beta J \sqrt{q} z+\beta\left(J_0 m+h\right)\right)\label{41}
+\end{align}</script><p>定义：</p>
+<script type="math/tex; mode=display">\begin{align}
+\tilde{H}(z):=J \sqrt{q} z+J_0 m+h  \label{42}
+\end{align}</script><p>结合$\eqref{41}\eqref{42}$将$\eqref{36}$写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{[\log Z]}{N}=\frac{\beta^2 J^2}{4}(1-q)^2-\frac{\beta J_0}{2} m^2+\int D z \log 2 \cosh (\beta \tilde{H}(z)) \label{44}
+\end{align}</script><p>通过$\partial_q \frac{[\log Z]}{N}=\partial_m \frac{[\log Z]}{N}=0$获得极值点（计算$q$的时候需要分布积分处理一下）：</p>
+<figure class="highlight mathematica"><table><tr><td class="code"><pre><span class="line"><span class="variable">PP</span> <span class="operator">=</span> <span class="built_in">Sqrt</span><span class="punctuation">[</span><span class="variable">\[Beta]</span><span class="operator">^</span><span class="number">2</span> <span class="variable">j</span><span class="operator">^</span><span class="number">2</span> <span class="variable">q</span><span class="operator">/</span><span class="punctuation">(</span><span class="number">2</span> <span class="built_in">Pi</span><span class="punctuation">)</span><span class="punctuation">]</span> <span class="built_in">Exp</span><span class="punctuation">[</span><span class="operator">-</span><span class="variable">z</span><span class="operator">^</span><span class="number">2</span><span class="operator">/</span><span class="number">2</span> <span class="variable">\[Beta]</span><span class="operator">^</span><span class="number">2</span> <span class="variable">j</span><span class="operator">^</span><span class="number">2</span> <span class="variable">q</span><span class="punctuation">]</span><span class="operator">;</span></span><br><span class="line"></span><br><span class="line"><span class="variable">HH</span> <span class="operator">=</span> <span class="variable">j</span> <span class="built_in">Sqrt</span><span class="punctuation">[</span><span class="variable">q</span><span class="punctuation">]</span> <span class="variable">z</span> <span class="operator">+</span> <span class="variable">j0</span> <span class="variable">m</span> <span class="operator">+</span> <span class="variable">h</span><span class="operator">;</span></span><br><span class="line"><span class="variable">ZZ</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="variable">\[Beta]</span><span class="operator">^</span><span class="number">2</span> <span class="variable">j</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">)</span><span class="operator">/</span><span class="number">4</span> <span class="punctuation">(</span><span class="number">1</span> <span class="operator">-</span> <span class="variable">q</span><span class="punctuation">)</span><span class="operator">^</span><span class="number">2</span> <span class="operator">-</span> <span class="punctuation">(</span><span class="variable">\[Beta]</span> <span class="variable">j0</span><span class="punctuation">)</span><span class="operator">/</span><span class="number">2</span> <span class="variable">m</span><span class="operator">^</span><span class="number">2</span> <span class="operator">+</span> </span><br><span class="line">   <span class="built_in">Inactivate</span><span class="punctuation">[</span></span><br><span class="line">    <span class="built_in">Integrate</span><span class="punctuation">[</span><span class="variable">PP</span> <span class="built_in">Log</span><span class="punctuation">[</span><span class="number">2</span> <span class="built_in">Cosh</span><span class="punctuation">[</span><span class="variable">\[Beta]</span> <span class="variable">HH</span><span class="punctuation">]</span><span class="punctuation">]</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">z</span><span class="operator">,</span> <span class="operator">-</span><span class="built_in">Infinity</span><span class="operator">,</span> <span class="built_in">Infinity</span><span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="punctuation">]</span><span class="operator">;</span></span><br><span class="line"><span class="built_in">D</span><span class="punctuation">[</span><span class="variable">ZZ</span><span class="operator">,</span> <span class="variable">m</span><span class="punctuation">]</span> <span class="operator">//</span> <span class="built_in">TraditionalForm</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">D</span><span class="punctuation">[</span><span class="built_in">Tanh</span><span class="punctuation">[</span><span class="variable">\[Beta]</span> <span class="variable">HH</span><span class="punctuation">]</span><span class="operator">,</span> <span class="variable">z</span><span class="punctuation">]</span> <span class="operator">//</span> <span class="built_in">FullSimplify</span></span><br></pre></td></tr></table></figure>
+<script type="math/tex; mode=display">
+\begin{gather}
+m=\int D z \tanh \beta \tilde{H}(z) \label{45}\\
+q=1-\int D z \operatorname{sech}^2 \beta \tilde{H}(z)=\int D z \tanh ^2 \beta \tilde{H}(z) \label{46}
+\end{gather}</script><h1 id="Replica-symmetry-breaking-and-the-Parisi-solution"><a href="#Replica-symmetry-breaking-and-the-Parisi-solution" class="headerlink" title="Replica symmetry breaking and the Parisi solution"></a>Replica symmetry breaking and the Parisi solution</h1><h2 id="Problem-with-the-symmetric-results-negative-entropy-at-low-temperature"><a href="#Problem-with-the-symmetric-results-negative-entropy-at-low-temperature" class="headerlink" title="Problem with the symmetric results: negative entropy at low temperature"></a>Problem with the symmetric results: negative entropy at low temperature</h2><p>进行这样的假设$J_0=h=0$，有 $\tilde{H}(z)=J \sqrt{q} z$；并且有零温极限$\beta\to \infty$，此时$q\to 1$。但还是需要更$q$与$\beta$的线性结果，将$\eqref{46}$在这个条件下进行零温近似：</p>
+<script type="math/tex; mode=display">\begin{align}
+\lim _{\beta \rightarrow \infty} \int D z \operatorname{sech}^2 \beta \tilde{H}(z)&=\int D z \frac{2}{\beta J} \delta(\beta J z)\\
+&=\sqrt{\frac{2}{\pi}} \frac{T}{J} 
+\end{align}</script><p>考虑到$\int d x\operatorname{sech}^2 \beta x=\frac{2}{\beta}$，等价于$\int d x\frac{2}{\beta}\delta(x)$。</p>
+<p>因此有：</p>
+<script type="math/tex; mode=display">\begin{align}
+q=1-\frac{T}{J} \sqrt{\frac{2}{\pi}} \label{q_limit}
+\end{align}</script><p>计算自由能：</p>
+<script type="math/tex; mode=display">\begin{align}
+[f]\beta=-\frac{[\log Z]}{N}=-\frac{\beta^2 J^2}{4}(1-q)^2-\int D z \log 2 \cosh (\beta J \sqrt{q} z) \label{48}
+\end{align}</script><p>其中$[f]$表示构型平均。将$\eqref{q_limit}$代入$\eqref{48}$最后一项：</p>
+<script type="math/tex; mode=display">\begin{align}
+\int D z \log 2 \cosh (\beta J \sqrt{q} z) & =2 \int_0^{\infty} D z \log 2 \cosh (\beta J \sqrt{q} z) \\
+& =2 \int_0^{\infty} D z \log 2 \frac{\exp (-\beta J \sqrt{q} z)+\exp (\beta J \sqrt{q} z)}{2} \\
+& \approx 2 \int_0^{\infty} D z \log 2 \frac{\exp (\beta J \sqrt{q} z)}{2} \\
+&=\frac{2 \beta J \sqrt{q}}{\sqrt{2\pi}}
+\end{align}</script><p>$\sqrt{q}$已经是$1$附近的小量，因此结合$\eqref{q_limit}$有$\sqrt{q}\approx q=1-\frac{T}{J} \sqrt{\frac{2}{\pi}}$：</p>
+<script type="math/tex; mode=display">\begin{align}
+\int D z \log 2 \cosh (\beta J \sqrt{q} z)
+&=\frac{2 \beta J}{\sqrt{2\pi}}\left(1-\frac{T}{J} \sqrt{\frac{2}{\pi}}\right) \\
+&= \sqrt{\frac{2}{\pi}}\beta J-\frac{2}{\pi}
+\end{align}</script><p>从$\eqref{48}$自由能有：</p>
+<script type="math/tex; mode=display">\begin{align}
+[f] \approx -\sqrt{\frac{2}{\pi}}J + \frac{2 T}{\pi}
+\end{align}</script><p>利用关系$S=-\frac{\partial F}{\partial T}$，得到熵为：</p>
+<script type="math/tex; mode=display">\begin{align}
+S=-\frac{2}{\pi}
+\end{align}</script><p>显然负熵是没有含义的，这来源于假设的错误，需要引入复本对称破缺解决。</p>
+<h2 id="Stability-of-solutions"><a href="#Stability-of-solutions" class="headerlink" title="Stability of solutions"></a>Stability of solutions</h2><p>利用一阶梯度为零的方法寻找极值，这存在一个问题：找到的解是否稳定？利用Hassian矩阵分析稳定性，并且假定$h=0$。注记：</p>
+<script type="math/tex; mode=display">\begin{align}
+y^{\alpha \beta}:=\beta J q_{\alpha \beta}, x^\alpha=\sqrt{\beta J_0} m_\alpha
+\end{align}</script><p>改写$\eqref{28}$：</p>
+<script type="math/tex; mode=display">\begin{align}
+[f]=-\frac{\beta J^2}{4}-\lim _{n \rightarrow 0} \frac{1}{\beta n}\left\{-\sum_{\alpha<\beta} \frac{1}{2}\left(y^{\alpha \beta}\right)^2-\sum_\alpha \frac{1}{2}\left(x^\alpha\right)^2+\log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp \left(\beta J \sum_{\alpha<\beta} y^{\alpha \beta} S^\alpha S^\beta+\sqrt{\beta J_0} \sum_\alpha x^\alpha S^\alpha\right)\right\}
+\end{align}</script><p>结合之前的复本近似假设，认为不同的值是微扰之后的结果$x^\alpha=x+\epsilon^\alpha, y^{\alpha \beta}=y+\eta^{\alpha \beta}$，则$\eqref{19}$：</p>
+<script type="math/tex; mode=display">\begin{align}
+& L_0:=\beta J y \sum_{\alpha<\beta} S^\alpha S^\beta+\sqrt{\beta J_0} x \sum_\alpha S^\alpha \\
+& \langle f\rangle_{L^0}=\frac{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} e^{L_0\left(\left\{S^\alpha, S^\beta, \ldots, S^n\right\}\right)} f}{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} e^{L_0\left(\left\{S^\alpha, S^\beta, \ldots, S^n\right\}\right)} } 
+\end{align}</script><h1 id="The-Parisi-solution"><a href="#The-Parisi-solution" class="headerlink" title="The Parisi solution"></a>The Parisi solution</h1><h2 id="Multi-step-replica-symmetry-breaking-RSB"><a href="#Multi-step-replica-symmetry-breaking-RSB" class="headerlink" title="Multi-step replica symmetry breaking (RSB)"></a>Multi-step replica symmetry breaking (RSB)</h2><p>在复本对称假设$\eqref{RS}$中$q_{\alpha\beta}$与$m_{\alpha\beta}$并不依赖于$\alpha\beta$，为了打破对称需要考虑$q$矩阵的结构。现在考虑 n-RSB 的矩阵，首先对于 1-RSB有$m_1&lt;n$，例如当$n=6,m_1=3$时候，$q$矩阵有（对角线为零的原因在于，当$\alpha=\beta$时候没有定义）：</p>
+<script type="math/tex; mode=display">\begin{align}
+\left(\begin{array}{ccc|ccc}
+0 & q_1 & q_1 & & & \\
+q_1 & 0 & q_1 & & q_0 & \\
+q_1 & q_1 & 0 & & & \\
+\hline & & & 0 & q_1 & q_1 \\
+& q_0 & & q_1 & 0 & q_1 \\
+& & & q_1 & q_1 & 0
+\end{array}\right)\label{1-RSB}
+\end{align}</script><p>可以执行相同的迭代操作，将粒度不断细化，例如再进行对称破缺$\eqref{1-RSB}$左上角的块变为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\begin{array}{ccc|ccc}
+0 & q_2 & q_2 & & & \\
+q_2 & 0 & q_2 & & q_1 & \\
+q_2 & q_2 & 0 & & & \\
+\hline & & & 0 & q_2 & q_2 \\
+& q_1 & & q_2 & 0 & q_2 \\
+& & & q_2 & q_2 & 0
+\end{array} \label{2-RSB}
+\end{align}</script><p>同时应当满足条件：</p>
+<script type="math/tex; mode=display">\begin{align}
+n \geq m_1 \geq m_2 \geq \ldots \geq 1
+\end{align}</script><p>定义函数：</p>
+<script type="math/tex; mode=display">\begin{align}
+q(x)=q_i \quad\left(m_{i+1} \leq x \leq m_i\right)
+\end{align}</script><p>进行复本对称的极限变换$n\to 0$，将不等关系进行任意的翻转<font color="red">（令人费解的反号）</font>：</p>
+<script type="math/tex; mode=display">\begin{align}
+0 \leq m_1 \leq m_2 . . \leq 1
+\end{align}</script><h2 id="First-step-RSB"><a href="#First-step-RSB" class="headerlink" title="First step RSB"></a>First step RSB</h2><p>再次回到计算$\left[Z^n\right]$，结合$\eqref{19}$，在$J_0=h=0$的假设下，将$\eqref{1-RSB}$融入进去有：</p>
+<script type="math/tex; mode=display">\begin{align}
+\sum_{\alpha<\beta} q_{\alpha \beta} S^\alpha S^\beta=\frac{1}{2}\left\{q_0\left(\sum_\alpha^n S^\alpha\right)^2+\left(q_1-q_0\right) \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2-n q_1\right\} \label{67}
+\end{align}</script><p>其中$B_b$ 表示 $b$-th block。第一项是没有进行复本破缺的，第二项是表示一阶复本破缺，第三项将对角线的贡献排除。同样的，对于$\eqref{28}$有：</p>
+<script type="math/tex; mode=display">\begin{align}
+\lim _{n \rightarrow 0} \frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^2=\lim _{n \rightarrow 0} \frac{1}{n}\left\{n^2 q_0^2+\frac{n}{m_1} m_1^2\left(q_1^2-q_0^2\right)-n q_1^2\right\}=\left(m_1-1\right) q_1^2-m_1 q_0^2 \label{68}
+\end{align}</script><p>此时已经将自由能中含有$q_{\alpha\beta}$的地方进行替换，接下来分析$\eqref{28}$。首先将$\eqref{68}$代入：</p>
+<script type="math/tex; mode=display">\begin{align}
+\beta\left[f_{1 R S B}\right]=\frac{\beta^2 J^2}{4}\left\{\left(m_1-1\right) q_1^2-m_1 q_0^2-1\right\}+\frac{\beta J_0}{2} m^2-\frac{1}{n} \log \sum_{\left\{S^\alpha, S^3, \ldots, S^n\right\}} \exp \left(L_{1 R S B}\right) \label{70}
+\end{align}</script><p>再将$\eqref{67}$代入$\eqref{19}$：</p>
+<script type="math/tex; mode=display">
+\begin{gather}
+L\left(\left\{q_{\alpha \beta}, m_\alpha\right\}\right):=\beta^2 J^2 \sum_{\alpha<\beta} q_{\alpha \beta} S^\alpha S^\beta+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) S^\alpha \label{71} \\
+\Rightarrow L_{1 R S B}=\frac{\beta^2 J^2}{2}\left\{q_0\left(\sum_\alpha^n S^\alpha\right)^2+\left(q_1-q_0\right) \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2-n q_1\right\}+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) S^\alpha \label{72}
+\end{gather}</script><p>由于里面有$\left(\sum_\alpha^n S^\alpha\right)^2$和$\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2$，需要将平方项变为线性项，同样使用$\eqref{11}$的办法：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& \frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp \left(L_{1 R S B}\right) \\
+& =\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right)} \int D u \exp \left(\beta J \sqrt{q_0} u \sum_\alpha S^\alpha-\frac{n}{2} \beta^2 J^2 q_1+\sum_\alpha S^\alpha \beta\left(J_0 m+h\right)+\left(q_1-q_0\right)\frac{\beta^2 J^2}{2} \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2\right) \\
+& =-\frac{1}{2} \beta^2 J^2 q_1+\underbrace{\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right)} \int D u \exp \left(\sum_\alpha S^\alpha\left(\beta J \sqrt{q_0} u+\beta\left(J_0 m+h\right)\right)+\left(q_1-q_0\right)\frac{\beta^2 J^2}{2} \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2\right)}_{\Delta} \label{72_2}
+\end{align}</script><p>引入$v_b$线性化$\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2$：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& \frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots,\right\}} \int D u \prod_{b=1}^{n / m_1}\left(\int D v_b\right) \exp \left(\sum_\alpha S^\alpha \beta J \sqrt{q_0} u+\sum_\alpha S^\alpha \beta\left(J_0 m+h\right)+\beta J \sqrt{q_1-q_0} \sum_{b=1}^{n / m_1} v_b \sum_{\alpha \in B_b}^{m_1} S^\alpha\right) \\
+= & \frac{1}{n} \log \int D u \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \prod_{b=1}^{n / m_1}\left\{\int v e \exp \left(\sum_\alpha S^\alpha \beta\left(J_0 m+h+\beta J \sqrt{q_0} u\right)\right) \exp \left(\beta J \sqrt{q_1-q_0} v \sum_{\alpha \in B_b}^{m_1} S^\alpha\right)\right\} \\
+= & \frac{1}{n} \log \int D u \prod_{b=1}^{n / m_1}\left\{\int D v_b \sum_{\left\{S^\alpha\right\} \in B_b} \exp \left(\sum_{\left\{S^\alpha\right\} \in B_b} S^\alpha\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v_b\right)\right)\right\} \\
+= & \frac{1}{n} \log \int D u \prod_{b=1}^{n / m_1}\left\{\int D v_b\left\{\sum_{S= \pm 1} \exp \left(S \beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v_b\right)\right)\right\}^{m_1}\right\} \\
+= & \frac{1}{n} \log \int D u\left\{\int v\left\{\sum_{S= \pm 1} \exp \left(S \beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}^{n / m_1} \\
+= & \frac{1}{n} \log \int D u\left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}^{n / m_1} \\
+= & \frac{1}{n} \log \int D u \exp \left\{\frac{n}{m_1} \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}\right\} \\
+\approx & \frac{1}{n} \log \left\{1+\frac{n}{m_1} \int D u \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}\right\} \text { expand exponent around } 0 \\
+\approx & \frac{1}{n} \frac{n}{m_1} \int D u \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\} \text { expand exponent around } 1 \\
+= & \log 2+\frac{1}{m_1} \int D u \log \left\{\int D v\left\{\cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\} \text { pull the factor of } 2 \text { out } \label{82}
+\end{align}</script><p>令：</p>
+<script type="math/tex; mode=display">\begin{align}
+\Xi=\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right) \label{86}
+\end{align}</script><p>有：</p>
+<script type="math/tex; mode=display">\begin{align}
+\Delta=\log 2+\frac{1}{m_1} \int D u \log \left\{\int D v\{\cosh \Xi\}^{m_1}\right\} \label{87}
+\end{align}</script><p>结合$\eqref{72_2}\eqref{87}$将$\eqref{70}$写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\beta\left[f_{1 R S B}\right]=\frac{\beta^2 J^2}{4}\left\{\left(m_1-1\right) q_1^2-m_1 q_0^2+2 q_1-1\right\}+\frac{\beta J_0}{2} m^2-\log 2-\frac{1}{m_1} \int D u \log \left\{\int D v\{\cosh \Xi\}^{m_1}\right\} .
+\end{align}</script><p>得到极值点为：</p>
+<script type="math/tex; mode=display">\begin{gather}
+m^*=\int D u \frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}} \\
+q_0^* =\int D u\left(\frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}}\right)^2 \\ 
+q_1^* =\int D u \frac{\int D v\{\cosh \Xi\}^{m_1}\{\tanh \Xi\}^2}{\int D v\{\cosh \Xi\}^{m_1}} 
+\end{gather}</script><h2 id="Full-RSB-Solution"><a href="#Full-RSB-Solution" class="headerlink" title="Full RSB Solution"></a>Full RSB Solution</h2><p>由于熵还是负数，接下来进行更高阶的复本对称破缺（k-RSB）计算$\eqref{28}$。与一阶复本对称$\eqref{67}$类似:</p>
+<script type="math/tex; mode=display">\begin{align} 
+\sum_{\alpha \neq \beta} q_{\alpha \beta}^l & =q_0^l n^2+\left(q_1^l-q_0^l\right) m_1^2 \cdot \frac{n}{m_1}+\left(q_2^l-q_1^l\right) m_2^2 \cdot \frac{m_1}{m_2} \cdot \frac{n}{m_1}+\cdots-q_K^l \cdot n \\ & =n \sum_{j=0}^K\left(m_j-m_{j+1}\right) q_j^l \label{3.37}
+\end{align}</script><p>其中$l$是任意整数，$m_0=n,m_{K+1}=1$，在极限情况${n\to 0}$下，使用$m_j-m_{j+1}\to -d x$，可以得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^l \rightarrow-\int_0^1 q^l(x) \mathrm{d} x \label{3.38}
+\end{align}</script><p>在$J_0 =0, h=0$的条件下，结合$E=-\frac{\partial \log Z}{\partial \beta}$与$\eqref{28}$，其中$\frac{\partial \exp L}{\partial \beta}$由于会出来$\sum_{\{S\}}S^\alpha S^\beta=0$被消去，可得：</p>
+<script type="math/tex; mode=display">\begin{align}
+E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2\right) \rightarrow-\frac{\beta J^2}{2}\left(1-\int_0^1 q^2(x) \mathrm{d} x\right) 
+\end{align}</script><font color="red">stop</font>
+
+
+
+
+
+
+<p>The internal energy for $J_0=0, h=0$ is given by differentiation of the free energy (2.17) by $\beta \mathrm{as}^2$</p>
+<p>The magnetic susceptibility can be written down from the second derivative of (2.17) by $h$ as</p>
+<script type="math/tex; mode=display">
+\chi=\beta\left(1+\frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}\right) \rightarrow \beta\left(1-\int_0^1 q(x) \mathrm{d} x\right) .</script><p>It needs some calculations to derive the free energy in the full RSB scheme. Details are given in Appendix B. The final expression of the free energy (2.17) is</p>
+<script type="math/tex; mode=display">
+\beta f=-\frac{\beta^2 J^2}{4}\left\{1+\int_0^1 q(x)^2 \mathrm{~d} x-2 q(1)\right\}-\int \mathrm{D} u f_0(0, \sqrt{q(0)} u) .</script><p>Here $f_0$ satisfies the Parisi equation</p>
+<script type="math/tex; mode=display">
+\frac{\partial f_0(x, h)}{\partial x}=-\frac{J^2}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\}</script><p>to be solved under the initial condition $f_0(1, h)=\log 2 \cosh \beta h$.<br>3.3.2 Order parameter near the critical point</p>
+<p>It is in general very difficult to find a solution to the extremization condition of the free energy (3.41) with respect to the order function $q(x)$. It is nevertheless possible to derive some explicit results by the Landau expansion when the temperature is close to the critical point and consequently $q(x)$ is small. Let us briefly explain the essence of this procedure.</p>
+<p>When $J_0=h=0$, the expansion of the free energy (2.17) to fourth order in $q_{\alpha \beta}$ turns out to be</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\beta f= & \lim _{n \rightarrow 0} \frac{1}{n}\left\{\frac{1}{4}\left(\frac{T^2}{T_{\mathrm{f}}^2}-1\right) \operatorname{Tr} Q^2-\frac{1}{6} \operatorname{Tr} Q^3\right. \\
+& \left.-\frac{1}{8} \operatorname{Tr} Q^4+\frac{1}{4} \sum_{\alpha \neq \beta \neq \gamma} Q_{\alpha \beta}^2 Q_{\alpha \gamma}^2-\frac{1}{12} \sum_{\alpha \neq \beta} Q_{\alpha \beta}^4\right\},
+\end{aligned}</script><p>where we have dropped $q$-independent terms. The operator Tr here denotes the diagonal sum in the replica space. We have introduced the notation $Q_{\alpha \beta}=$</p>
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Spin Glass</tag>
+        <tag>Replica Method</tag>
+        <tag>Sherrington-Kirkpatrick Model</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model</title>
     <url>/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/</url>
     <content><![CDATA[ <font color="red">这篇文章并未读完，更多的内容在于知识上的补充</font>
@@ -2222,6 +2564,7 @@ K_c & =\frac{\ln (1+\sqrt{2})}{2} \approx 0.4407
 <ul>
 <li><a href="https://campus.swarma.org/course/4913/study">Hopfield模型的统计物理视频</a></li>
 <li><a href="https://www.science.org/doi/10.1126/science.1073287">Analytic and Algorithmic Solution of Random Satisfiability Problems</a></li>
+<li><a href="https://www.pnas.org/doi/full/10.1073/pnas.0703685104">Gibbs states and the set of solutions of random constraint satisfaction problems</a></li>
 </ul>
 <span id="more"></span>
 <h1 id="Average"><a href="#Average" class="headerlink" title="Average"></a>Average</h1><p>淬火平均（quenched average）：</p>
@@ -2320,12 +2663,41 @@ f & =\frac{\left\langle\Delta F_i e^{-y \Delta F_i}\right\rangle}{\left\langle e
 &= \sum_{\alpha}Z^m_\alpha
 \end{align}</script><p>利用Laplace近似，$\eqref{laplace}写为$：</p>
 <script type="math/tex; mode=display">\begin{align}
--\beta m \phi(\beta, m)=\max _{s, \epsilon}\{\Sigma(s, \epsilon)+m(s-\beta \epsilon)\}
+-\beta m \phi(\beta, m)=\max _{s, \epsilon}\{\Sigma(s, \epsilon)+m(s-\beta \epsilon)\} \label{913}
 \end{align}</script><p>其中将自由能写为熵和能量的依赖关系$-\beta f= s-\beta\epsilon$。</p>
-<p>如果看能量的关系，将熵固定，有关系：</p>
+<p>如果看能量的关系，将$\eqref{913}$中熵固定，有关系：</p>
 <script type="math/tex; mode=display">\begin{align}
 \phi_\epsilon(y)=\max _\epsilon\{\Sigma(\epsilon)-y \epsilon\} .
 \end{align}</script><p>$\Sigma(\epsilon)$表示在能量密度为$\epsilon$的情况下，集团的数目。以K-SAT问题为例，其中$\epsilon$表示能量（如果全部满足则$\epsilon=0$，存在不满足的情况时则$\epsilon&gt;0$）；$\Sigma(\epsilon)$表示在该能量的情况下有多少个解的数目，当$\lim \epsilon\to 0$的时候就表示全部满足的解的数目。</p>
+<h3 id="Entropic-Cavity"><a href="#Entropic-Cavity" class="headerlink" title="Entropic Cavity"></a>Entropic Cavity</h3><p>将$\eqref{913}$中能量固定，得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+\phi(m) = \max_{s}\{\Sigma(s)+ms\}
+\end{align}</script><p>并且有勒让德变化关系：</p>
+<script type="math/tex; mode=display">\begin{align}
+s=&\frac{\partial \phi(m)}{\partial m}\\
+\Sigma(s)&=\phi(m)-ms
+\end{align}</script><p><img src="/2022/11/13/Phys/replica/replica/ms.png" alt="ms"></p>
+<p>上图中的小图斜率为$-m=\frac{\partial \Sigma(s)}{\partial s}$，只有$0\leq m$的部分有意义，随着熵$s$增大广义熵$\Sigma$开始减少，对于优化问题对应含义为：当组合优化问题中（例如k-SAT问题）一个特定问题（给定参数）的解的数量增加时候（$s$增加），则组合优化问题（没有指定具体参数）存在这样解的问题数量将会减少（$\Sigma$变小）；小图中$m=0$的点，对应上面讨论的$\epsilon=0$的情况，即问题只需满足有解条件。大图是$m$与k-SAT问题中$\alpha$的关系，当问题比较容易的时候($\leq\alpha_c$)$m=1$，随着问题的难度增加（$\alpha$变大），$m$开始变小，逐渐出现小图中的的关系，当达到一定程度（$=\alpha_c$）的时候成为是否有解的阈值。</p>
+<p><img src="/2022/11/13/Phys/replica/replica/sigma_alpha.png" alt="sigma-alpha"></p>
+<p>上图中两条曲线是两条相变线。$m=1$的红线是动力学相变线，遍历性开始破缺，从此线开始问题对应的解的数量开始变少，例如蒙卡模拟临界慢化；$m=0$是熵为$0$的线，分别基态与激发态，判别是否有解。</p>
+<h3 id="1RSB"><a href="#1RSB" class="headerlink" title="1RSB"></a>1RSB</h3><p>之前已经将Cavity  用于计算一个构型的自由能，接下来将其引入复本技巧中，计算不同构型自由能之间的耦合。</p>
+<script type="math/tex; mode=display">\begin{align}
+P\left(m_{i \rightarrow a}\right)=\frac{1}{\mathcal{Z}_{i \rightarrow a}} \prod_{b \in \partial i \backslash a} \int \mathrm{d} \hat{m}_{b \rightarrow i} \delta\left(m_{i \rightarrow a}-\mathcal{F}\left(\left\{\hat{m}_{b \rightarrow a}\right\}\right)\right) Z_{i \rightarrow a}^m
+\end{align}</script><p>其中必须考虑一个构型自由能变化，导致对其它自由能构型的扰动，这一项用$Z_{i \rightarrow a}^m$表示。<font color="red">可以尝试使用变分导出。</font></p>
+<p>当$m=1$的时候，$\eqref{913}$有:</p>
+<script type="math/tex; mode=display">\begin{align}
+\phi(\beta,m=1)=\epsilon-\frac{\Sigma(s,\epsilon)+s}{\beta}=\epsilon-Ts_\text{tot}
+\end{align}</script><p>其中$s_\text{tot}=\Sigma+s$是总解的数目，$\Sigma$为构型数目，$s$为一个构型中解的数目，两者相乘则得到$s_\text{tot}$。这个公式说明了 Cavity的方法在1阶复本破缺的情况下适用的原因。</p>
+<p>接下来讨论冻结（Frozen）的情况，也即是每一个构型只有一个解的情况，此时$s=0$：</p>
+<script type="math/tex; mode=display">\begin{align}
+e^{-N \beta m \phi(\beta, m)}=\sum_\alpha e^{-N \beta m f_\alpha}=\sum_\alpha e^{-N \beta m \epsilon_\alpha}=e^{-N \beta m f_{\mathrm{RS}}(\beta m)}
+\end{align}</script><p>存在冻结温度$s_\text{RS}(\beta_s)=0$，此时有$m=\frac{\beta_s}{\beta}=1$。$m$的含义为$1-m=\sum_\alpha\overline{\omega_\alpha^2}$，其中$\omega$为构型权重，更多的参考<a href="https://www.semanticscholar.org/paper/Storage-capacity-of-memory-networks-with-binary-Krauth-M%C3%A9zard/。5c7af8e28ed12cbfb07cbbcfb001919f6a081d5a">Storage capacity of memory networks with binary<br>couplings</a>。</p>
+<font color="red">阅读这篇文献。</font>
+
+<h2 id="More-Steps-of-Replica-Symmetry-Breaking"><a href="#More-Steps-of-Replica-Symmetry-Breaking" class="headerlink" title="More Steps of Replica Symmetry Breaking"></a>More Steps of Replica Symmetry Breaking</h2><p>由于使用了空腔方法，在具备长程关联的情况下将会变得不精确。解正确的必要条件是spin glass susceptibility $\chi_{\text {SG }}$没有发散:</p>
+<script type="math/tex; mode=display">\begin{align}
+\chi_{\mathrm{SG}}=\frac{1}{N} \sum_{i, j} \overline{\left(\left\langle\sigma_i \sigma_j\right\rangle-\left\langle\sigma_i\right\rangle\left\langle\sigma_j\right\rangle\right)^2}
+\end{align}</script><p>其中$\langle\cdot\rangle$是热力学平均，上划线是无序平均。当这个条件不满足的时候，需要引入更高阶的复本对称。</p>
 <h1 id="Optimization"><a href="#Optimization" class="headerlink" title="Optimization"></a>Optimization</h1><p>参考 Spin Glass Theory and Beyound 书籍。</p>
 <h1 id="Append"><a href="#Append" class="headerlink" title="Append"></a>Append</h1><h2 id="勒让德变换"><a href="#勒让德变换" class="headerlink" title="勒让德变换"></a>勒让德变换</h2><p>勒让德变换（Legendre transform）是一种数学工具，用于在物理学和数学中将一个函数转换为其共轭变量的函数。它在经典力学、热力学、统计力学以及最优化问题中有重要应用。勒让德变换能够将一个变量的依赖关系转化为另一变量的依赖关系，从而简化问题的求解。</p>
 <h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>设 $f(x)$ 是一个实函数，其导数 $f’(x)$ 单调且严格递增，这样 $f’(x)$ 的反函数 $x = (f’)^{-1}(p)$ 存在。勒让德变换将函数 $f(x)$ 转换为一个新函数 $g(p)$，其中 $p$ 是 $f(x)$ 的导数 $p = f’(x)$。勒让德变换定义为：</p>
