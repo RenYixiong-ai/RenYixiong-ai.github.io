@@ -341,67 +341,6 @@ p\left(C_i \mid C_1, \ldots, C_{i-1}, \mathcal{P}\right)&=\operatorname{softmax}
       </tags>
   </entry>
   <entry>
-    <title>Deconstructing Denoising Diffusion Models for Self-Supervised Learning</title>
-    <url>/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/</url>
-    <content><![CDATA[<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。</p>
-<p>这点和全连接神经网络十分相似，当层数过多的时候，只有输入层附近的几层与输出层附近的几层是关键的，中间几层处于液化状态（可以随意选取，不会影响最终的结果）。</p>
-<span id="more"></span>
-<p>现有的预训练DDM在生成任务上表现十分优异，然而留下一个开放问题：这些用于生成任务的预训练模型，其是否同样获得表征能力。</p>
-<h1 id="Deconstructing-Denoising-Diffusion-Models"><a href="#Deconstructing-Denoising-Diffusion-Models" class="headerlink" title="Deconstructing Denoising Diffusion Models"></a>Deconstructing Denoising Diffusion Models</h1><p>作者发现主要的关键因素是tokenizer，其表现了低维的潜空间。但是不难发现，潜变量并不是tokenizer独有的，standard VAE, a patch-wise VAE, a patch-wise AE, and a patch-wise PCA encoder 均有潜变量。</p>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig1.png" alt="fig1"></p>
-<p>解构的路线分为三个步骤：</p>
-<ul>
-<li>首先将Diffusion Transformer(DiT)架构，变为自监督模型</li>
-<li>逐步拆解toenizer</li>
-<li>尽可能尝试还原模型，将其变为一个经典的Denoising Autoencoder(DAE)</li>
-</ul>
-<h2 id="Reorienting-DDM-for-Self-supervised-Learning"><a href="#Reorienting-DDM-for-Self-supervised-Learning" class="headerlink" title="Reorienting DDM for Self-supervised Learning"></a>Reorienting DDM for Self-supervised Learning</h2><p>DDM的概念本质上是从DAE的概念上生成的，依旧是用于图像生成，一些设计并不适合自监督学习，一些是并不必要的（例如提升图像生成质量）。</p>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig2.png" alt="fig2"></p>
-<ol>
-<li><p>Remove class-conditioning<br>标签在图像生成上很重要，但是不符合自监督学习的要求，因此移除标签。此举使得准确性提升，但是图像质量（FID）下降。</p>
-</li>
-<li><p>Deconstruct <font color="red">VQGAN</font></p>
-</li>
-<li>Replace noise schedule<br>不需要逐步添加噪声，可以一步直接加入噪声</li>
-</ol>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig3.png" alt="fig3"></p>
-<h2 id="Deconstructing-the-Tokenizer"><a href="#Deconstructing-the-Tokenizer" class="headerlink" title="Deconstructing the Tokenizer"></a>Deconstructing the Tokenizer</h2><p>接下来解构tokenizer，将会用到下面四种自编码器，每一种自编码器都是前面一种的简化。</p>
-<ul>
-<li><p>Convolutional VAE \<br>损失函数如下：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\|x-g(f(x))\|^2+\mathbb{K} \mathbb{L}[f(x) \mid \mathcal{N}]
-\end{equation}</script><p>其中$f(\cdot)$是编码函数$g(\cdot)$是解码函数，$x$是输入值，VAE是深度卷积神经网络。</p>
-</li>
-<li><p>Patch-wise VAE \<br>选用线性的函数作为编码解码器（全连接网络），损失函数设置如下：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\left\|x-U^T V x\right\|^2+\mathbb{K} \mathbb{L}[V x \mid \mathcal{N}]
-\end{equation}</script><p>$U,V$是矩阵。</p>
-</li>
-<li><p>Patch-wise AE \<br>进一步简化，删除正则化项：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\left\|x-U^T V x\right\|^2
-\end{equation}</script></li>
-<li><p>Patch-wise PCA \<br>PCA 可以看成是一种特殊的 AE，损失函数为：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\left\|x-V^T V x\right\|^2
-\end{equation}</script></li>
-</ul>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig4.png" alt="fig4"></p>
-<p>可以从上表中看出，表现性能都差不多，并且计算KL散度也不是很重要。甚至PCA工作的更好</p>
-<h2 id="Toward-Classical-Denoising-Autoencoders"><a href="#Toward-Classical-Denoising-Autoencoders" class="headerlink" title="Toward Classical Denoising Autoencoders"></a>Toward Classical Denoising Autoencoders</h2><p>逐步减去 PCA-based DDM 与经典DAE之间的差距。<br><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig5.png" alt="fig5"></p>
-<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig6.png" alt="fig6"></p>
-<p>从最后的实验结果看出，对潜变量空间加入噪音对结果的影响更大。因此说明对模型训练起关键作用的是少数几个参数。</p>
-<font color="red">应该是我没有读懂该文章的实验思路，在我的理解下，潜变量应该是浓缩了更多信息的空间，对其加噪音本来就会比对原像素空间其更大的影响。另一方面，这种论证方法，我并不认为十分研究，应该有更多的理论分析保证。</font>]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Diffusion Models</tag>
-        <tag>Denoising Diffusion Models</tag>
-        <tag>Self-Supervised Learning</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>KAN: Kolmogorov–Arnold Networks</title>
     <url>/2024/05/08/DL/Kolmogorov%E2%80%93Arnold_Networks/Kolmogorov%E2%80%93Arnold_Networks/</url>
     <content><![CDATA[<p>文献地址：</p>
@@ -513,6 +452,67 @@ b_{i, n}(t) &= C_n^i(1-t)^{n-i} t^i \quad i=0,1, \ldots, n \quad t \in[0,1] \lab
       <tags>
         <tag>Kolmogorov–Arnold Networks</tag>
         <tag>Physics</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Deconstructing Denoising Diffusion Models for Self-Supervised Learning</title>
+    <url>/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/</url>
+    <content><![CDATA[<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。</p>
+<p>这点和全连接神经网络十分相似，当层数过多的时候，只有输入层附近的几层与输出层附近的几层是关键的，中间几层处于液化状态（可以随意选取，不会影响最终的结果）。</p>
+<span id="more"></span>
+<p>现有的预训练DDM在生成任务上表现十分优异，然而留下一个开放问题：这些用于生成任务的预训练模型，其是否同样获得表征能力。</p>
+<h1 id="Deconstructing-Denoising-Diffusion-Models"><a href="#Deconstructing-Denoising-Diffusion-Models" class="headerlink" title="Deconstructing Denoising Diffusion Models"></a>Deconstructing Denoising Diffusion Models</h1><p>作者发现主要的关键因素是tokenizer，其表现了低维的潜空间。但是不难发现，潜变量并不是tokenizer独有的，standard VAE, a patch-wise VAE, a patch-wise AE, and a patch-wise PCA encoder 均有潜变量。</p>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig1.png" alt="fig1"></p>
+<p>解构的路线分为三个步骤：</p>
+<ul>
+<li>首先将Diffusion Transformer(DiT)架构，变为自监督模型</li>
+<li>逐步拆解toenizer</li>
+<li>尽可能尝试还原模型，将其变为一个经典的Denoising Autoencoder(DAE)</li>
+</ul>
+<h2 id="Reorienting-DDM-for-Self-supervised-Learning"><a href="#Reorienting-DDM-for-Self-supervised-Learning" class="headerlink" title="Reorienting DDM for Self-supervised Learning"></a>Reorienting DDM for Self-supervised Learning</h2><p>DDM的概念本质上是从DAE的概念上生成的，依旧是用于图像生成，一些设计并不适合自监督学习，一些是并不必要的（例如提升图像生成质量）。</p>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig2.png" alt="fig2"></p>
+<ol>
+<li><p>Remove class-conditioning<br>标签在图像生成上很重要，但是不符合自监督学习的要求，因此移除标签。此举使得准确性提升，但是图像质量（FID）下降。</p>
+</li>
+<li><p>Deconstruct <font color="red">VQGAN</font></p>
+</li>
+<li>Replace noise schedule<br>不需要逐步添加噪声，可以一步直接加入噪声</li>
+</ol>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig3.png" alt="fig3"></p>
+<h2 id="Deconstructing-the-Tokenizer"><a href="#Deconstructing-the-Tokenizer" class="headerlink" title="Deconstructing the Tokenizer"></a>Deconstructing the Tokenizer</h2><p>接下来解构tokenizer，将会用到下面四种自编码器，每一种自编码器都是前面一种的简化。</p>
+<ul>
+<li><p>Convolutional VAE \<br>损失函数如下：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\|x-g(f(x))\|^2+\mathbb{K} \mathbb{L}[f(x) \mid \mathcal{N}]
+\end{equation}</script><p>其中$f(\cdot)$是编码函数$g(\cdot)$是解码函数，$x$是输入值，VAE是深度卷积神经网络。</p>
+</li>
+<li><p>Patch-wise VAE \<br>选用线性的函数作为编码解码器（全连接网络），损失函数设置如下：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\left\|x-U^T V x\right\|^2+\mathbb{K} \mathbb{L}[V x \mid \mathcal{N}]
+\end{equation}</script><p>$U,V$是矩阵。</p>
+</li>
+<li><p>Patch-wise AE \<br>进一步简化，删除正则化项：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\left\|x-U^T V x\right\|^2
+\end{equation}</script></li>
+<li><p>Patch-wise PCA \<br>PCA 可以看成是一种特殊的 AE，损失函数为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\left\|x-V^T V x\right\|^2
+\end{equation}</script></li>
+</ul>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig4.png" alt="fig4"></p>
+<p>可以从上表中看出，表现性能都差不多，并且计算KL散度也不是很重要。甚至PCA工作的更好</p>
+<h2 id="Toward-Classical-Denoising-Autoencoders"><a href="#Toward-Classical-Denoising-Autoencoders" class="headerlink" title="Toward Classical Denoising Autoencoders"></a>Toward Classical Denoising Autoencoders</h2><p>逐步减去 PCA-based DDM 与经典DAE之间的差距。<br><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig5.png" alt="fig5"></p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig6.png" alt="fig6"></p>
+<p>从最后的实验结果看出，对潜变量空间加入噪音对结果的影响更大。因此说明对模型训练起关键作用的是少数几个参数。</p>
+<font color="red">应该是我没有读懂该文章的实验思路，在我的理解下，潜变量应该是浓缩了更多信息的空间，对其加噪音本来就会比对原像素空间其更大的影响。另一方面，这种论证方法，我并不认为十分研究，应该有更多的理论分析保证。</font>]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Diffusion Models</tag>
+        <tag>Denoising Diffusion Models</tag>
+        <tag>Self-Supervised Learning</tag>
       </tags>
   </entry>
   <entry>
@@ -2122,36 +2122,7 @@ Z(\beta) \simeq\left(\frac{m}{2 \pi \hbar \Delta \tau}\right)^{M N d / 2} \int d
   <entry>
     <title></title>
     <url>/2024/06/25/Phys/SK_model/Append/</url>
-    <content><![CDATA[<h1 id="Append"><a href="#Append" class="headerlink" title="Append"></a>Append</h1><h2 id="Hessian"><a href="#Hessian" class="headerlink" title="Hessian"></a>Hessian</h2><p>Hessian矩阵在极值点的稳定性分析中起着关键作用，具体涉及以下几个方面：</p>
-<h3 id="Hessian矩阵的定义"><a href="#Hessian矩阵的定义" class="headerlink" title="Hessian矩阵的定义"></a>Hessian矩阵的定义</h3><p>Hessian矩阵是由二阶偏导数组成的方阵，表示函数在某一点的二阶导数信息。对于一个多变量函数 ( f(x_1, x_2, \ldots, x_n) )，Hessian矩阵 ( H ) 定义为：</p>
-<p>[<br>H = \begin{bmatrix}<br>\frac{\partial^2 f}{\partial x_1^2} &amp; \frac{\partial^2 f}{\partial x_1 \partial x_2} &amp; \cdots &amp; \frac{\partial^2 f}{\partial x_1 \partial x_n} \\<br>\frac{\partial^2 f}{\partial x_2 \partial x_1} &amp; \frac{\partial^2 f}{\partial x_2^2} &amp; \cdots &amp; \frac{\partial^2 f}{\partial x_2 \partial x_n} \\<br>\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\<br>\frac{\partial^2 f}{\partial x_n \partial x_1} &amp; \frac{\partial^2 f}{\partial x_n \partial x_2} &amp; \cdots &amp; \frac{\partial^2 f}{\partial x_n^2}<br>\end{bmatrix}<br>]</p>
-<h3 id="极值点与Hessian矩阵"><a href="#极值点与Hessian矩阵" class="headerlink" title="极值点与Hessian矩阵"></a>极值点与Hessian矩阵</h3><p>在某一点 ( x_0 )，如果 ( \nabla f(x_0) = 0 )，则 ( x_0 ) 是一个驻点，可能是极大值点、极小值点或鞍点。Hessian矩阵 ( H(x_0) ) 在这个驻点的性质可以帮助确定这个驻点的类型。</p>
-<h3 id="Hessian矩阵的正定性与负定性"><a href="#Hessian矩阵的正定性与负定性" class="headerlink" title="Hessian矩阵的正定性与负定性"></a>Hessian矩阵的正定性与负定性</h3><ol>
-<li><p><strong>正定矩阵与局部极小值</strong>:</p>
-<ul>
-<li>一个正定矩阵的所有特征值都是正的。</li>
-<li>对于任何非零向量 ( v )，有 ( v^T H v &gt; 0 )。</li>
-<li>如果在驻点 ( x_0 )，Hessian矩阵 ( H(x_0) ) 是正定的，那么在 ( x_0 ) 附近，函数 ( f ) 的曲率向上，类似于一个碗的形状。对于任何微小的偏离 ( x_0 ) 的向量 ( v )，二阶泰勒展开式的二次项 ( \frac{1}{2} v^T H v ) 会贡献一个正值，因此 ( f(x_0 + v) &gt; f(x_0) )，即 ( x_0 ) 是局部极小值点。</li>
-</ul>
-</li>
-<li><p><strong>负定矩阵与局部极大值</strong>:</p>
-<ul>
-<li>一个负定矩阵的所有特征值都是负的。</li>
-<li>对于任何非零向量 ( v )，有 ( v^T H v &lt; 0 )。</li>
-<li>如果在驻点 ( x_0 )，Hessian矩阵 ( H(x_0) ) 是负定的，那么在 ( x_0 ) 附近，函数 ( f ) 的曲率向下，类似于一个倒置的碗的形状。对于任何微小的偏离 ( x_0 ) 的向量 ( v )，二阶泰勒展开式的二次项 ( \frac{1}{2} v^T H v ) 会贡献一个负值，因此 ( f(x_0 + v) &lt; f(x_0) )，即 ( x_0 ) 是局部极大值点。</li>
-</ul>
-</li>
-<li><p><strong>混合正负特征值与鞍点</strong>:</p>
-<ul>
-<li>如果Hessian矩阵 ( H(x_0) ) 既有正特征值也有负特征值，那么它既不正定也不负定。</li>
-<li>在这种情况下，存在一些方向 ( v_1 ) 使得 ( v_1^T H v_1 &gt; 0 )，同时存在其他方向 ( v_2 ) 使得 ( v_2^T H v_2 &lt; 0 )。</li>
-<li>如果在驻点 ( x_0 )，Hessian矩阵 ( H(x_0) ) 既不正定也不负定，那么在 ( x_0 ) 附近，函数 ( f ) 会在某些方向上向上弯曲（极小值行为），而在其他方向上向下弯曲（极大值行为）。这意味着 ( x_0 ) 不是局部极值点，而是一个鞍点，类似于马鞍的形状，在某些方向上是极小值，在另一些方向上是极大值。</li>
-</ul>
-</li>
-</ol>
-<h3 id="实际应用"><a href="#实际应用" class="headerlink" title="实际应用"></a>实际应用</h3><p>在优化问题中，Hessian矩阵用于评估驻点的稳定性和类型。在机器学习和深度学习中，Hessian矩阵用于分析损失函数的曲率和优化算法的收敛性。</p>
-<p>总结来说，Hessian矩阵通过其正定性或负定性帮助我们区分驻点的类型，从而判断这些点是极大值点、极小值点还是鞍点，这对于理解函数的局部行为和稳定性非常重要。</p>
-]]></content>
+    <content><![CDATA[]]></content>
   </entry>
   <entry>
     <title>Sherrington-Kirkpatrick Model</title>
@@ -2165,7 +2136,8 @@ Z(\beta) \simeq\left(\frac{m}{2 \pi \hbar \Delta \tau}\right)^{M N d / 2} \int d
 <p>Link:</p>
 <ul>
 <li><a href="/2022/11/12/Phys/Hopfield/Hopfield/" title="Hopfield Model">Hopfield Model</a></li>
-<li><a href="/2022/11/13/Phys/replica/replica/" title="Replica">Replica</a>
+<li><a href="/2022/11/13/Phys/replica/replica/" title="Replica">Replica</a></li>
+<li><a href="/2022/11/20/Phys/SK_model/SK_model1/" title="The Parisi solution of Sherrington-Kirkpatrick Model">The Parisi solution of Sherrington-Kirkpatrick Model</a>
 </li>
 </ul>
 <span id="more"></span>
@@ -2344,7 +2316,71 @@ y^{\alpha \beta}:=\beta J q_{\alpha \beta}, x^\alpha=\sqrt{\beta J_0} m_\alpha
 <script type="math/tex; mode=display">\begin{align}
 & L_0:=\beta J y \sum_{\alpha<\beta} S^\alpha S^\beta+\sqrt{\beta J_0} x \sum_\alpha S^\alpha \\
 & \langle f\rangle_{L^0}=\frac{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} e^{L_0\left(\left\{S^\alpha, S^\beta, \ldots, S^n\right\}\right)} f}{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} e^{L_0\left(\left\{S^\alpha, S^\beta, \ldots, S^n\right\}\right)} } 
-\end{align}</script><h1 id="The-Parisi-solution"><a href="#The-Parisi-solution" class="headerlink" title="The Parisi solution"></a>The Parisi solution</h1><h2 id="Multi-step-replica-symmetry-breaking-RSB"><a href="#Multi-step-replica-symmetry-breaking-RSB" class="headerlink" title="Multi-step replica symmetry breaking (RSB)"></a>Multi-step replica symmetry breaking (RSB)</h2><p>在复本对称假设$\eqref{RS}$中$q_{\alpha\beta}$与$m_{\alpha\beta}$并不依赖于$\alpha\beta$，为了打破对称需要考虑$q$矩阵的结构。现在考虑 n-RSB 的矩阵，首先对于 1-RSB有$m_1&lt;n$，例如当$n=6,m_1=3$时候，$q$矩阵有（对角线为零的原因在于，当$\alpha=\beta$时候没有定义）：</p>
+\end{align}</script><font color="red">需要完善</font>
+
+<h1 id="Append"><a href="#Append" class="headerlink" title="Append"></a>Append</h1><h2 id="Hessian"><a href="#Hessian" class="headerlink" title="Hessian"></a>Hessian</h2><p>Hessian矩阵在极值点的稳定性分析中起着关键作用，具体涉及以下几个方面：</p>
+<h3 id="Hessian矩阵的定义"><a href="#Hessian矩阵的定义" class="headerlink" title="Hessian矩阵的定义"></a>Hessian矩阵的定义</h3><p>Hessian矩阵是由二阶偏导数组成的方阵，表示函数在某一点的二阶导数信息。对于一个多变量函数 $f(x_1, x_2, \ldots, x_n)$，Hessian矩阵 $H$ 定义为：</p>
+<script type="math/tex; mode=display">
+H = \begin{bmatrix}
+\frac{\partial^2 f}{\partial x_1^2} & \frac{\partial^2 f}{\partial x_1 \partial x_2} & \cdots & \frac{\partial^2 f}{\partial x_1 \partial x_n} \\
+\frac{\partial^2 f}{\partial x_2 \partial x_1} & \frac{\partial^2 f}{\partial x_2^2} & \cdots & \frac{\partial^2 f}{\partial x_2 \partial x_n} \\
+\vdots & \vdots & \ddots & \vdots \\
+\frac{\partial^2 f}{\partial x_n \partial x_1} & \frac{\partial^2 f}{\partial x_n \partial x_2} & \cdots & \frac{\partial^2 f}{\partial x_n^2}
+\end{bmatrix}</script><h3 id="极值点与Hessian矩阵"><a href="#极值点与Hessian矩阵" class="headerlink" title="极值点与Hessian矩阵"></a>极值点与Hessian矩阵</h3><p>在某一点 $x_0$，如果 $\nabla f(x_0) = 0$，则 $x_0$ 是一个驻点，可能是极大值点、极小值点或鞍点。Hessian矩阵 $H(x_0)$ 在这个驻点的性质可以帮助确定这个驻点的类型。</p>
+<h3 id="Hessian矩阵的正定性与负定性"><a href="#Hessian矩阵的正定性与负定性" class="headerlink" title="Hessian矩阵的正定性与负定性"></a>Hessian矩阵的正定性与负定性</h3><ol>
+<li><p><strong>正定矩阵与局部极小值</strong>:</p>
+<ul>
+<li>一个正定矩阵的所有特征值都是正的。</li>
+<li>对于任何非零向量 $v$，有 $v^T H v &gt; 0$。</li>
+<li>如果在驻点 $x_0$，Hessian矩阵 $H(x_0)$ 是正定的，那么在 $x_0$ 附近，函数 $f$ 的曲率向上，类似于一个碗的形状。对于任何微小的偏离 $x_0$ 的向量 $v$，二阶泰勒展开式的二次项 $\frac{1}{2} v^T H v$ 会贡献一个正值，因此 $f(x_0 + v) &gt; f(x_0)$，即 $x_0$ 是局部极小值点。</li>
+</ul>
+</li>
+<li><p><strong>负定矩阵与局部极大值</strong>:</p>
+<ul>
+<li>一个负定矩阵的所有特征值都是负的。</li>
+<li>对于任何非零向量 $v$，有 $v^T H v &lt; 0$。</li>
+<li>如果在驻点 $x_0$，Hessian矩阵 $H(x_0)$ 是负定的，那么在 $x_0$ 附近，函数 $f$ 的曲率向下，类似于一个倒置的碗的形状。对于任何微小的偏离 $x_0$ 的向量 $v$，二阶泰勒展开式的二次项 $\frac{1}{2} v^T H v$ 会贡献一个负值，因此 $f(x_0 + v) &lt; f(x_0)$，即 $x_0$ 是局部极大值点。</li>
+</ul>
+</li>
+<li><p><strong>混合正负特征值与鞍点</strong>:</p>
+<ul>
+<li>如果Hessian矩阵 $H(x_0)$ 既有正特征值也有负特征值，那么它既不正定也不负定。</li>
+<li>在这种情况下，存在一些方向 $v_1$ 使得 $v_1^T H v_1 &gt; 0$，同时存在其他方向 $v_2$ 使得 $v_2^T H v_2 &lt; 0$。</li>
+<li>如果在驻点 $x_0$，Hessian矩阵 $H(x_0)$ 既不正定也不负定，那么在 $x_0$ 附近，函数 $f$ 会在某些方向上向上弯曲（极小值行为），而在其他方向上向下弯曲（极大值行为）。这意味着 $x_0$ 不是局部极值点，而是一个鞍点，类似于马鞍的形状，在某些方向上是极小值，在另一些方向上是极大值。</li>
+</ul>
+</li>
+</ol>
+<h3 id="实际应用"><a href="#实际应用" class="headerlink" title="实际应用"></a>实际应用</h3><p>在优化问题中，Hessian矩阵用于评估驻点的稳定性和类型。在机器学习和深度学习中，Hessian矩阵用于分析损失函数的曲率和优化算法的收敛性。</p>
+<p>总结来说，Hessian矩阵通过其正定性或负定性帮助我们区分驻点的类型，从而判断这些点是极大值点、极小值点还是鞍点，这对于理解函数的局部行为和稳定性非常重要。</p>
+<h2 id="exp-left-frac-partial-partial-h-right-形式算子含义"><a href="#exp-left-frac-partial-partial-h-right-形式算子含义" class="headerlink" title="$\exp\left(\frac{\partial}{\partial h}\right)$形式算子含义"></a>$\exp\left(\frac{\partial}{\partial h}\right)$形式算子含义</h2><p>(\exp\left(\frac{\partial}{\partial h}\right)) 是一个形式算子（formal operator），它的作用可以理解为将函数沿着其变量 $h$ 方向移动一个单位距离。要理解这一点，我们需要结合泰勒级数展开和算子的作用进行说明。</p>
+<h3 id="泰勒级数展开"><a href="#泰勒级数展开" class="headerlink" title="泰勒级数展开"></a>泰勒级数展开</h3><p>考虑一个函数 $f(h)$，在 $h$ 处的泰勒展开可以表示为：</p>
+<script type="math/tex; mode=display">f(h + a) = \sum_{n=0}^{\infty} \frac{a^n}{n!} \frac{\partial^n f(h)}{\partial h^n}</script><p>这个展开式表示的是函数 $f(h)$ 在 $h$ 点处的 $a$ 位移。特别地，当 $a = 1$ 时：</p>
+<script type="math/tex; mode=display">f(h + 1) = \sum_{n=0}^{\infty} \frac{1^n}{n!} \frac{\partial^n f(h)}{\partial h^n} = \sum_{n=0}^{\infty} \frac{1}{n!} \frac{\partial^n f(h)}{\partial h^n}</script><h3 id="形式算子-exp-left-frac-partial-partial-h-right"><a href="#形式算子-exp-left-frac-partial-partial-h-right" class="headerlink" title="形式算子 $\exp\left(\frac{\partial}{\partial h}\right)$"></a>形式算子 $\exp\left(\frac{\partial}{\partial h}\right)$</h3><p>形式算子 $\exp\left(\frac{\partial}{\partial h}\right)$ 的定义基于它的泰勒级数展开：</p>
+<script type="math/tex; mode=display">\exp\left(\frac{\partial}{\partial h}\right) = \sum_{n=0}^{\infty} \frac{1}{n!} \left( \frac{\partial}{\partial h} \right)^n</script><p>当这个算子作用在函数 $f(h)$ 上时，它会应用上述展开式：</p>
+<script type="math/tex; mode=display">\exp\left(\frac{\partial}{\partial h}\right) f(h) = \sum_{n=0}^{\infty} \frac{1}{n!} \left( \frac{\partial}{\partial h} \right)^n f(h)</script><p>这实际上与泰勒展开式中 $a = 1$ 的情况一致：</p>
+<script type="math/tex; mode=display">\exp\left(\frac{\partial}{\partial h}\right) f(h) = \sum_{n=0}^{\infty} \frac{1}{n!} \frac{\partial^n f(h)}{\partial h^n} = f(h + 1)</script><h3 id="具体说明"><a href="#具体说明" class="headerlink" title="具体说明"></a>具体说明</h3><ol>
+<li><p><strong>泰勒展开表示位移</strong>：泰勒级数展开表示函数在其定义点的某一位移。例如，$f(h + a)$ 是函数 $f(h)$ 在 $h$ 点处的 $a$ 位移。</p>
+</li>
+<li><p><strong>算子的作用</strong>：$\exp\left(\frac{\partial}{\partial h}\right)$ 作为一个形式算子，其作用相当于将函数沿着其变量 $h$ 方向移动一个单位。因为它的作用与泰勒展开的结果一致，当 $a = 1$ 时，正好表示向前移动一个单位距离。</p>
+</li>
+<li><p><strong>形式算子的求和性质</strong>：通过展开 $\exp\left(\frac{\partial}{\partial h}\right)$ 的泰勒级数，我们实际上是在累加所有阶数的导数项，这与泰勒级数本身的形式完全吻合，确保了我们得到的结果是函数在 $h$ 处的一个单位位移。</p>
+</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>$\exp\left(\frac{\partial}{\partial h}\right)$ 形式算子的作用可以理解为利用泰勒级数展开的特性，将函数 $f(h)$ 沿变量 $h$ 的方向移动一个单位距离。这种理解源于泰勒展开中的每一项都对应于函数的一个导数项，而形式算子的展开正好与泰勒展开的累加形式一致，从而实现了位移的效果。</p>
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Spin Glass</tag>
+        <tag>Replica Method</tag>
+        <tag>Sherrington-Kirkpatrick Model</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Parisi solution of Sherrington-Kirkpatrick Model</title>
+    <url>/2022/11/20/Phys/SK_model/SK_model1/</url>
+    <content><![CDATA[<h1 id="Multi-step-replica-symmetry-breaking-RSB"><a href="#Multi-step-replica-symmetry-breaking-RSB" class="headerlink" title="Multi-step replica symmetry breaking (RSB)"></a>Multi-step replica symmetry breaking (RSB)</h1><p>在复本对称假设$\eqref{RS}$中$q_{\alpha\beta}$与$m_{\alpha\beta}$并不依赖于$\alpha\beta$，为了打破对称需要考虑$q$矩阵的结构。现在考虑 n-RSB 的矩阵，首先对于 1-RSB有$m_1&lt;n$，例如当$n=6,m_1=3$时候，$q$矩阵有（对角线为零的原因在于，当$\alpha=\beta$时候没有定义）：</p>
 <script type="math/tex; mode=display">\begin{align}
 \left(\begin{array}{ccc|ccc}
 0 & q_1 & q_1 & & & \\
@@ -2373,7 +2409,7 @@ q(x)=q_i \quad\left(m_{i+1} \leq x \leq m_i\right)
 \end{align}</script><p>进行复本对称的极限变换$n\to 0$，将不等关系进行任意的翻转<font color="red">（令人费解的反号）</font>：</p>
 <script type="math/tex; mode=display">\begin{align}
 0 \leq m_1 \leq m_2 . . \leq 1
-\end{align}</script><h2 id="First-step-RSB"><a href="#First-step-RSB" class="headerlink" title="First step RSB"></a>First step RSB</h2><p>再次回到计算$\left[Z^n\right]$，结合$\eqref{19}$，在$J_0=h=0$的假设下，将$\eqref{1-RSB}$融入进去有：</p>
+\end{align}</script><h1 id="First-step-RSB"><a href="#First-step-RSB" class="headerlink" title="First step RSB"></a>First step RSB</h1><p>再次回到计算$\left[Z^n\right]$，结合$\eqref{19}$，在$J_0=h=0$的假设下，将$\eqref{1-RSB}$融入进去有：</p>
 <script type="math/tex; mode=display">\begin{align}
 \sum_{\alpha<\beta} q_{\alpha \beta} S^\alpha S^\beta=\frac{1}{2}\left\{q_0\left(\sum_\alpha^n S^\alpha\right)^2+\left(q_1-q_0\right) \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2-n q_1\right\} \label{67}
 \end{align}</script><p>其中$B_b$ 表示 $b$-th block。第一项是没有进行复本破缺的，第二项是表示一阶复本破缺，第三项将对角线的贡献排除。同样的，对于$\eqref{28}$有：</p>
@@ -2420,38 +2456,19 @@ L\left(\left\{q_{\alpha \beta}, m_\alpha\right\}\right):=\beta^2 J^2 \sum_{\alph
 m^*=\int D u \frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}} \\
 q_0^* =\int D u\left(\frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}}\right)^2 \\ 
 q_1^* =\int D u \frac{\int D v\{\cosh \Xi\}^{m_1}\{\tanh \Xi\}^2}{\int D v\{\cosh \Xi\}^{m_1}} 
-\end{gather}</script><h2 id="Full-RSB-Solution"><a href="#Full-RSB-Solution" class="headerlink" title="Full RSB Solution"></a>Full RSB Solution</h2><p>由于熵还是负数，接下来进行更高阶的复本对称破缺（k-RSB）计算$\eqref{28}$。与一阶复本对称$\eqref{67}$类似:</p>
+\end{gather}</script><h1 id="Full-RSB-Solution"><a href="#Full-RSB-Solution" class="headerlink" title="Full RSB Solution"></a>Full RSB Solution</h1><p>由于熵还是负数，接下来进行更高阶的复本对称破缺（k-RSB）计算$\eqref{28}$。与一阶复本对称$\eqref{67}$类似:</p>
 <script type="math/tex; mode=display">\begin{align} 
 \sum_{\alpha \neq \beta} q_{\alpha \beta}^l & =q_0^l n^2+\left(q_1^l-q_0^l\right) m_1^2 \cdot \frac{n}{m_1}+\left(q_2^l-q_1^l\right) m_2^2 \cdot \frac{m_1}{m_2} \cdot \frac{n}{m_1}+\cdots-q_K^l \cdot n \\ & =n \sum_{j=0}^K\left(m_j-m_{j+1}\right) q_j^l \label{3.37}
 \end{align}</script><p>其中$l$是任意整数，$m_0=n,m_{K+1}=1$，在极限情况${n\to 0}$下，使用$m_j-m_{j+1}\to -d x$，可以得到：</p>
 <script type="math/tex; mode=display">\begin{align}
 \frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^l \rightarrow-\int_0^1 q^l(x) \mathrm{d} x \label{3.38}
-\end{align}</script><p>在$J_0 =0, h=0$的条件下，结合$E=-\frac{\partial \log Z}{\partial \beta}$与$\eqref{28}$，其中$\frac{\partial \exp L}{\partial \beta}$由于会出来$\sum_{\{S\}}S^\alpha S^\beta=0$被消去，可得：</p>
-<script type="math/tex; mode=display">\begin{align}
-E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2\right) \rightarrow-\frac{\beta J^2}{2}\left(1-\int_0^1 q^2(x) \mathrm{d} x\right) 
-\end{align}</script><font color="red">stop</font>
+\end{align}</script><p>在$J_0 =0, h=0$的条件下，结合$E=-\frac{\partial \log Z}{\partial \beta}$、$\chi=-\frac{\partial^2 F}{\partial h^2}$与$\eqref{28}$，可得：</p>
+<font color="red">没有证明</font>
 
-
-
-
-
-
-<p>The internal energy for $J_0=0, h=0$ is given by differentiation of the free energy (2.17) by $\beta \mathrm{as}^2$</p>
-<p>The magnetic susceptibility can be written down from the second derivative of (2.17) by $h$ as</p>
-<script type="math/tex; mode=display">
-\chi=\beta\left(1+\frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}\right) \rightarrow \beta\left(1-\int_0^1 q(x) \mathrm{d} x\right) .</script><p>It needs some calculations to derive the free energy in the full RSB scheme. Details are given in Appendix B. The final expression of the free energy (2.17) is</p>
-<script type="math/tex; mode=display">
-\beta f=-\frac{\beta^2 J^2}{4}\left\{1+\int_0^1 q(x)^2 \mathrm{~d} x-2 q(1)\right\}-\int \mathrm{D} u f_0(0, \sqrt{q(0)} u) .</script><p>Here $f_0$ satisfies the Parisi equation</p>
-<script type="math/tex; mode=display">
-\frac{\partial f_0(x, h)}{\partial x}=-\frac{J^2}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\}</script><p>to be solved under the initial condition $f_0(1, h)=\log 2 \cosh \beta h$.<br>3.3.2 Order parameter near the critical point</p>
-<p>It is in general very difficult to find a solution to the extremization condition of the free energy (3.41) with respect to the order function $q(x)$. It is nevertheless possible to derive some explicit results by the Landau expansion when the temperature is close to the critical point and consequently $q(x)$ is small. Let us briefly explain the essence of this procedure.</p>
-<p>When $J_0=h=0$, the expansion of the free energy (2.17) to fourth order in $q_{\alpha \beta}$ turns out to be</p>
-<script type="math/tex; mode=display">
-\begin{aligned}
-\beta f= & \lim _{n \rightarrow 0} \frac{1}{n}\left\{\frac{1}{4}\left(\frac{T^2}{T_{\mathrm{f}}^2}-1\right) \operatorname{Tr} Q^2-\frac{1}{6} \operatorname{Tr} Q^3\right. \\
-& \left.-\frac{1}{8} \operatorname{Tr} Q^4+\frac{1}{4} \sum_{\alpha \neq \beta \neq \gamma} Q_{\alpha \beta}^2 Q_{\alpha \gamma}^2-\frac{1}{12} \sum_{\alpha \neq \beta} Q_{\alpha \beta}^4\right\},
-\end{aligned}</script><p>where we have dropped $q$-independent terms. The operator Tr here denotes the diagonal sum in the replica space. We have introduced the notation $Q_{\alpha \beta}=$</p>
-]]></content>
+<script type="math/tex; mode=display">\begin{gather}
+E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2\right) \rightarrow-\frac{\beta J^2}{2}\left(1-\int_0^1 q^2(x) \mathrm{d} x\right) \\
+\chi=\beta\left(1+\frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}\right) \rightarrow \beta\left(1-\int_0^1 q(x) \mathrm{d} x\right)
+\end{gather}</script>]]></content>
       <categories>
         <category>Physics</category>
       </categories>

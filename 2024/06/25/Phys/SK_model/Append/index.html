@@ -22,15 +22,13 @@
     var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":-1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="AppendHessianHessian矩阵在极值点的稳定性分析中起着关键作用，具体涉及以下几个方面： Hessian矩阵的定义Hessian矩阵是由二阶偏导数组成的方阵，表示函数在某一点的二阶导数信息。对于一个多变量函数 ( f(x_1, x_2, \ldots, x_n) )，Hessian矩阵 ( H ) 定义为： [H &#x3D; \begin{bmatrix}\frac{\partial^2 f">
-<meta property="og:type" content="article">
+  <meta property="og:type" content="article">
 <meta property="og:title" content="Yixiong&#39;s Blog">
 <meta property="og:url" content="https://renyixiong-ai.github.io/2024/06/25/Phys/SK_model/Append/index.html">
 <meta property="og:site_name" content="Yixiong&#39;s Blog">
-<meta property="og:description" content="AppendHessianHessian矩阵在极值点的稳定性分析中起着关键作用，具体涉及以下几个方面： Hessian矩阵的定义Hessian矩阵是由二阶偏导数组成的方阵，表示函数在某一点的二阶导数信息。对于一个多变量函数 ( f(x_1, x_2, \ldots, x_n) )，Hessian矩阵 ( H ) 定义为： [H &#x3D; \begin{bmatrix}\frac{\partial^2 f">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2024-06-25T01:22:11.001Z">
-<meta property="article:modified_time" content="2024-06-25T01:53:05.335Z">
+<meta property="article:modified_time" content="2024-06-26T03:38:26.649Z">
 <meta property="article:author" content="Ren Yixiong">
 <meta name="twitter:card" content="summary">
 
@@ -212,10 +210,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2024-06-25 09:22:11 / Modified: 09:53:05" itemprop="dateCreated datePublished" datetime="2024-06-25T09:22:11+08:00">2024-06-25</time>
+              <time title="Created: 2024-06-25 09:22:11" itemprop="dateCreated datePublished" datetime="2024-06-25T09:22:11+08:00">2024-06-25</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-06-26 11:38:26" itemprop="dateModified" datetime="2024-06-26T11:38:26+08:00">2024-06-26</time>
+              </span>
 
           
             <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
@@ -230,14 +234,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.6k</span>
+              <span>0</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
+              <span>1 mins.</span>
             </span>
 
         </div>
@@ -249,36 +253,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Append"><a href="#Append" class="headerlink" title="Append"></a>Append</h1><h2 id="Hessian"><a href="#Hessian" class="headerlink" title="Hessian"></a>Hessian</h2><p>Hessian矩阵在极值点的稳定性分析中起着关键作用，具体涉及以下几个方面：</p>
-<h3 id="Hessian矩阵的定义"><a href="#Hessian矩阵的定义" class="headerlink" title="Hessian矩阵的定义"></a>Hessian矩阵的定义</h3><p>Hessian矩阵是由二阶偏导数组成的方阵，表示函数在某一点的二阶导数信息。对于一个多变量函数 ( f(x_1, x_2, \ldots, x_n) )，Hessian矩阵 ( H ) 定义为：</p>
-<p>[<br>H = \begin{bmatrix}<br>\frac{\partial^2 f}{\partial x_1^2} &amp; \frac{\partial^2 f}{\partial x_1 \partial x_2} &amp; \cdots &amp; \frac{\partial^2 f}{\partial x_1 \partial x_n} \\<br>\frac{\partial^2 f}{\partial x_2 \partial x_1} &amp; \frac{\partial^2 f}{\partial x_2^2} &amp; \cdots &amp; \frac{\partial^2 f}{\partial x_2 \partial x_n} \\<br>\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\<br>\frac{\partial^2 f}{\partial x_n \partial x_1} &amp; \frac{\partial^2 f}{\partial x_n \partial x_2} &amp; \cdots &amp; \frac{\partial^2 f}{\partial x_n^2}<br>\end{bmatrix}<br>]</p>
-<h3 id="极值点与Hessian矩阵"><a href="#极值点与Hessian矩阵" class="headerlink" title="极值点与Hessian矩阵"></a>极值点与Hessian矩阵</h3><p>在某一点 ( x_0 )，如果 ( \nabla f(x_0) = 0 )，则 ( x_0 ) 是一个驻点，可能是极大值点、极小值点或鞍点。Hessian矩阵 ( H(x_0) ) 在这个驻点的性质可以帮助确定这个驻点的类型。</p>
-<h3 id="Hessian矩阵的正定性与负定性"><a href="#Hessian矩阵的正定性与负定性" class="headerlink" title="Hessian矩阵的正定性与负定性"></a>Hessian矩阵的正定性与负定性</h3><ol>
-<li><p><strong>正定矩阵与局部极小值</strong>:</p>
-<ul>
-<li>一个正定矩阵的所有特征值都是正的。</li>
-<li>对于任何非零向量 ( v )，有 ( v^T H v &gt; 0 )。</li>
-<li>如果在驻点 ( x_0 )，Hessian矩阵 ( H(x_0) ) 是正定的，那么在 ( x_0 ) 附近，函数 ( f ) 的曲率向上，类似于一个碗的形状。对于任何微小的偏离 ( x_0 ) 的向量 ( v )，二阶泰勒展开式的二次项 ( \frac{1}{2} v^T H v ) 会贡献一个正值，因此 ( f(x_0 + v) &gt; f(x_0) )，即 ( x_0 ) 是局部极小值点。</li>
-</ul>
-</li>
-<li><p><strong>负定矩阵与局部极大值</strong>:</p>
-<ul>
-<li>一个负定矩阵的所有特征值都是负的。</li>
-<li>对于任何非零向量 ( v )，有 ( v^T H v &lt; 0 )。</li>
-<li>如果在驻点 ( x_0 )，Hessian矩阵 ( H(x_0) ) 是负定的，那么在 ( x_0 ) 附近，函数 ( f ) 的曲率向下，类似于一个倒置的碗的形状。对于任何微小的偏离 ( x_0 ) 的向量 ( v )，二阶泰勒展开式的二次项 ( \frac{1}{2} v^T H v ) 会贡献一个负值，因此 ( f(x_0 + v) &lt; f(x_0) )，即 ( x_0 ) 是局部极大值点。</li>
-</ul>
-</li>
-<li><p><strong>混合正负特征值与鞍点</strong>:</p>
-<ul>
-<li>如果Hessian矩阵 ( H(x_0) ) 既有正特征值也有负特征值，那么它既不正定也不负定。</li>
-<li>在这种情况下，存在一些方向 ( v_1 ) 使得 ( v_1^T H v_1 &gt; 0 )，同时存在其他方向 ( v_2 ) 使得 ( v_2^T H v_2 &lt; 0 )。</li>
-<li>如果在驻点 ( x_0 )，Hessian矩阵 ( H(x_0) ) 既不正定也不负定，那么在 ( x_0 ) 附近，函数 ( f ) 会在某些方向上向上弯曲（极小值行为），而在其他方向上向下弯曲（极大值行为）。这意味着 ( x_0 ) 不是局部极值点，而是一个鞍点，类似于马鞍的形状，在某些方向上是极小值，在另一些方向上是极大值。</li>
-</ul>
-</li>
-</ol>
-<h3 id="实际应用"><a href="#实际应用" class="headerlink" title="实际应用"></a>实际应用</h3><p>在优化问题中，Hessian矩阵用于评估驻点的稳定性和类型。在机器学习和深度学习中，Hessian矩阵用于分析损失函数的曲率和优化算法的收敛性。</p>
-<p>总结来说，Hessian矩阵通过其正定性或负定性帮助我们区分驻点的类型，从而判断这些点是极大值点、极小值点还是鞍点，这对于理解函数的局部行为和稳定性非常重要。</p>
-
+        
     </div>
 
     
@@ -355,7 +330,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Append"><span class="nav-number">1.</span> <span class="nav-text">Append</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Hessian"><span class="nav-number">1.1.</span> <span class="nav-text">Hessian</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hessian%E7%9F%A9%E9%98%B5%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">1.1.1.</span> <span class="nav-text">Hessian矩阵的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%81%E5%80%BC%E7%82%B9%E4%B8%8EHessian%E7%9F%A9%E9%98%B5"><span class="nav-number">1.1.2.</span> <span class="nav-text">极值点与Hessian矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Hessian%E7%9F%A9%E9%98%B5%E7%9A%84%E6%AD%A3%E5%AE%9A%E6%80%A7%E4%B8%8E%E8%B4%9F%E5%AE%9A%E6%80%A7"><span class="nav-number">1.1.3.</span> <span class="nav-text">Hessian矩阵的正定性与负定性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8"><span class="nav-number">1.1.4.</span> <span class="nav-text">实际应用</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -369,7 +343,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -435,12 +409,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">151k</span>
+    <span title="Symbols count total">150k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">4:35</span>
+    <span title="Reading time total">4:33</span>
 </div>
 
         

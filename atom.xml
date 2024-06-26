@@ -6,7 +6,7 @@
   <link href="https://renyixiong-ai.github.io/atom.xml" rel="self"/>
   
   <link href="https://renyixiong-ai.github.io/"/>
-  <updated>2024-06-25T01:53:05.335Z</updated>
+  <updated>2024-06-26T03:38:26.649Z</updated>
   <id>https://renyixiong-ai.github.io/</id>
   
   <author>
@@ -21,15 +21,8 @@
     <link href="https://renyixiong-ai.github.io/2024/06/25/Phys/SK_model/Append/"/>
     <id>https://renyixiong-ai.github.io/2024/06/25/Phys/SK_model/Append/</id>
     <published>2024-06-25T01:22:11.001Z</published>
-    <updated>2024-06-25T01:53:05.335Z</updated>
+    <updated>2024-06-26T03:38:26.649Z</updated>
     
-    <content type="html"><![CDATA[<h1 id="Append"><a href="#Append" class="headerlink" title="Append"></a>Append</h1><h2 id="Hessian"><a href="#Hessian" class="headerlink" title="Hessian"></a>Hessian</h2><p>Hessian矩阵在极值点的稳定性分析中起着关键作用，具体涉及以下几个方面：</p><h3 id="Hessian矩阵的定义"><a href="#Hessian矩阵的定义" class="headerlink" title="Hessian矩阵的定义"></a>Hessian矩阵的定义</h3><p>Hessian矩阵是由二阶偏导数组成的方阵，表示函数在某一点的二阶导数信息。对于一个多变量函数 ( f(x_1, x_2, \ldots, x_n) )，Hessian矩阵 ( H ) 定义为：</p><p>[<br>H = \begin{bmatrix}<br>\frac{\partial^2 f}{\partial x_1^2} &amp; \frac{\partial^2 f}{\partial x_1 \partial x_2} &amp; \cdots &amp; \frac{\partial^2 f}{\partial x_1 \partial x_n} \\<br>\frac{\partial^2 f}{\partial x_2 \partial x_1} &amp; \frac{\partial^2 f}{\partial x_2^2} &amp; \cdots &amp; \frac{\partial^2 f}{\partial x_2 \partial x_n} \\<br>\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\<br>\frac{\partial^2 f}{\partial x_n \partial x_1} &amp; \frac{\partial^2 f}{\partial x_n \partial x_2} &amp; \cdots &amp; \frac{\partial^2 f}{\partial x_n^2}<br>\end{bmatrix}<br>]</p><h3 id="极值点与Hessian矩阵"><a href="#极值点与Hessian矩阵" class="headerlink" title="极值点与Hessian矩阵"></a>极值点与Hessian矩阵</h3><p>在某一点 ( x_0 )，如果 ( \nabla f(x_0) = 0 )，则 ( x_0 ) 是一个驻点，可能是极大值点、极小值点或鞍点。Hessian矩阵 ( H(x_0) ) 在这个驻点的性质可以帮助确定这个驻点的类型。</p><h3 id="Hessian矩阵的正定性与负定性"><a href="#Hessian矩阵的正定性与负定性" class="headerlink" title="Hessian矩阵的正定性与负定性"></a>Hessian矩阵的正定性与负定性</h3><ol><li><p><strong>正定矩阵与局部极小值</strong>:</p><ul><li>一个正定矩阵的所有特征值都是正的。</li><li>对于任何非零向量 ( v )，有 ( v^T H v &gt; 0 )。</li><li>如果在驻点 ( x_0 )，Hessian矩阵 ( H(x_0) ) 是正定的，那么在 ( x_0 ) 附近，函数 ( f ) 的曲率向上，类似于一个碗的形状。对于任何微小的偏离 ( x_0 ) 的向量 ( v )，二阶泰勒展开式的二次项 ( \frac{1}{2} v^T H v ) 会贡献一个正值，因此 ( f(x_0 + v) &gt; f(x_0) )，即 ( x_0 ) 是局部极小值点。</li></ul></li><li><p><strong>负定矩阵与局部极大值</strong>:</p><ul><li>一个负定矩阵的所有特征值都是负的。</li><li>对于任何非零向量 ( v )，有 ( v^T H v &lt; 0 )。</li><li>如果在驻点 ( x_0 )，Hessian矩阵 ( H(x_0) ) 是负定的，那么在 ( x_0 ) 附近，函数 ( f ) 的曲率向下，类似于一个倒置的碗的形状。对于任何微小的偏离 ( x_0 ) 的向量 ( v )，二阶泰勒展开式的二次项 ( \frac{1}{2} v^T H v ) 会贡献一个负值，因此 ( f(x_0 + v) &lt; f(x_0) )，即 ( x_0 ) 是局部极大值点。</li></ul></li><li><p><strong>混合正负特征值与鞍点</strong>:</p><ul><li>如果Hessian矩阵 ( H(x_0) ) 既有正特征值也有负特征值，那么它既不正定也不负定。</li><li>在这种情况下，存在一些方向 ( v_1 ) 使得 ( v_1^T H v_1 &gt; 0 )，同时存在其他方向 ( v_2 ) 使得 ( v_2^T H v_2 &lt; 0 )。</li><li>如果在驻点 ( x_0 )，Hessian矩阵 ( H(x_0) ) 既不正定也不负定，那么在 ( x_0 ) 附近，函数 ( f ) 会在某些方向上向上弯曲（极小值行为），而在其他方向上向下弯曲（极大值行为）。这意味着 ( x_0 ) 不是局部极值点，而是一个鞍点，类似于马鞍的形状，在某些方向上是极小值，在另一些方向上是极大值。</li></ul></li></ol><h3 id="实际应用"><a href="#实际应用" class="headerlink" title="实际应用"></a>实际应用</h3><p>在优化问题中，Hessian矩阵用于评估驻点的稳定性和类型。在机器学习和深度学习中，Hessian矩阵用于分析损失函数的曲率和优化算法的收敛性。</p><p>总结来说，Hessian矩阵通过其正定性或负定性帮助我们区分驻点的类型，从而判断这些点是极大值点、极小值点还是鞍点，这对于理解函数的局部行为和稳定性非常重要。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;Append&quot;&gt;&lt;a href=&quot;#Append&quot; class=&quot;headerlink&quot; title=&quot;Append&quot;&gt;&lt;/a&gt;Append&lt;/h1&gt;&lt;h2 id=&quot;Hessian&quot;&gt;&lt;a href=&quot;#Hessian&quot; class=&quot;headerlink&quot; ti</summary>
-      
     
     
     
