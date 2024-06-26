@@ -341,6 +341,67 @@ p\left(C_i \mid C_1, \ldots, C_{i-1}, \mathcal{P}\right)&=\operatorname{softmax}
       </tags>
   </entry>
   <entry>
+    <title>Deconstructing Denoising Diffusion Models for Self-Supervised Learning</title>
+    <url>/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/</url>
+    <content><![CDATA[<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。</p>
+<p>这点和全连接神经网络十分相似，当层数过多的时候，只有输入层附近的几层与输出层附近的几层是关键的，中间几层处于液化状态（可以随意选取，不会影响最终的结果）。</p>
+<span id="more"></span>
+<p>现有的预训练DDM在生成任务上表现十分优异，然而留下一个开放问题：这些用于生成任务的预训练模型，其是否同样获得表征能力。</p>
+<h1 id="Deconstructing-Denoising-Diffusion-Models"><a href="#Deconstructing-Denoising-Diffusion-Models" class="headerlink" title="Deconstructing Denoising Diffusion Models"></a>Deconstructing Denoising Diffusion Models</h1><p>作者发现主要的关键因素是tokenizer，其表现了低维的潜空间。但是不难发现，潜变量并不是tokenizer独有的，standard VAE, a patch-wise VAE, a patch-wise AE, and a patch-wise PCA encoder 均有潜变量。</p>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig1.png" alt="fig1"></p>
+<p>解构的路线分为三个步骤：</p>
+<ul>
+<li>首先将Diffusion Transformer(DiT)架构，变为自监督模型</li>
+<li>逐步拆解toenizer</li>
+<li>尽可能尝试还原模型，将其变为一个经典的Denoising Autoencoder(DAE)</li>
+</ul>
+<h2 id="Reorienting-DDM-for-Self-supervised-Learning"><a href="#Reorienting-DDM-for-Self-supervised-Learning" class="headerlink" title="Reorienting DDM for Self-supervised Learning"></a>Reorienting DDM for Self-supervised Learning</h2><p>DDM的概念本质上是从DAE的概念上生成的，依旧是用于图像生成，一些设计并不适合自监督学习，一些是并不必要的（例如提升图像生成质量）。</p>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig2.png" alt="fig2"></p>
+<ol>
+<li><p>Remove class-conditioning<br>标签在图像生成上很重要，但是不符合自监督学习的要求，因此移除标签。此举使得准确性提升，但是图像质量（FID）下降。</p>
+</li>
+<li><p>Deconstruct <font color="red">VQGAN</font></p>
+</li>
+<li>Replace noise schedule<br>不需要逐步添加噪声，可以一步直接加入噪声</li>
+</ol>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig3.png" alt="fig3"></p>
+<h2 id="Deconstructing-the-Tokenizer"><a href="#Deconstructing-the-Tokenizer" class="headerlink" title="Deconstructing the Tokenizer"></a>Deconstructing the Tokenizer</h2><p>接下来解构tokenizer，将会用到下面四种自编码器，每一种自编码器都是前面一种的简化。</p>
+<ul>
+<li><p>Convolutional VAE \<br>损失函数如下：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\|x-g(f(x))\|^2+\mathbb{K} \mathbb{L}[f(x) \mid \mathcal{N}]
+\end{equation}</script><p>其中$f(\cdot)$是编码函数$g(\cdot)$是解码函数，$x$是输入值，VAE是深度卷积神经网络。</p>
+</li>
+<li><p>Patch-wise VAE \<br>选用线性的函数作为编码解码器（全连接网络），损失函数设置如下：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\left\|x-U^T V x\right\|^2+\mathbb{K} \mathbb{L}[V x \mid \mathcal{N}]
+\end{equation}</script><p>$U,V$是矩阵。</p>
+</li>
+<li><p>Patch-wise AE \<br>进一步简化，删除正则化项：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\left\|x-U^T V x\right\|^2
+\end{equation}</script></li>
+<li><p>Patch-wise PCA \<br>PCA 可以看成是一种特殊的 AE，损失函数为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\left\|x-V^T V x\right\|^2
+\end{equation}</script></li>
+</ul>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig4.png" alt="fig4"></p>
+<p>可以从上表中看出，表现性能都差不多，并且计算KL散度也不是很重要。甚至PCA工作的更好</p>
+<h2 id="Toward-Classical-Denoising-Autoencoders"><a href="#Toward-Classical-Denoising-Autoencoders" class="headerlink" title="Toward Classical Denoising Autoencoders"></a>Toward Classical Denoising Autoencoders</h2><p>逐步减去 PCA-based DDM 与经典DAE之间的差距。<br><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig5.png" alt="fig5"></p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig6.png" alt="fig6"></p>
+<p>从最后的实验结果看出，对潜变量空间加入噪音对结果的影响更大。因此说明对模型训练起关键作用的是少数几个参数。</p>
+<font color="red">应该是我没有读懂该文章的实验思路，在我的理解下，潜变量应该是浓缩了更多信息的空间，对其加噪音本来就会比对原像素空间其更大的影响。另一方面，这种论证方法，我并不认为十分研究，应该有更多的理论分析保证。</font>]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Diffusion Models</tag>
+        <tag>Denoising Diffusion Models</tag>
+        <tag>Self-Supervised Learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>KAN: Kolmogorov–Arnold Networks</title>
     <url>/2024/05/08/DL/Kolmogorov%E2%80%93Arnold_Networks/Kolmogorov%E2%80%93Arnold_Networks/</url>
     <content><![CDATA[<p>文献地址：</p>
@@ -452,67 +513,6 @@ b_{i, n}(t) &= C_n^i(1-t)^{n-i} t^i \quad i=0,1, \ldots, n \quad t \in[0,1] \lab
       <tags>
         <tag>Kolmogorov–Arnold Networks</tag>
         <tag>Physics</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Deconstructing Denoising Diffusion Models for Self-Supervised Learning</title>
-    <url>/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/</url>
-    <content><![CDATA[<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。</p>
-<p>这点和全连接神经网络十分相似，当层数过多的时候，只有输入层附近的几层与输出层附近的几层是关键的，中间几层处于液化状态（可以随意选取，不会影响最终的结果）。</p>
-<span id="more"></span>
-<p>现有的预训练DDM在生成任务上表现十分优异，然而留下一个开放问题：这些用于生成任务的预训练模型，其是否同样获得表征能力。</p>
-<h1 id="Deconstructing-Denoising-Diffusion-Models"><a href="#Deconstructing-Denoising-Diffusion-Models" class="headerlink" title="Deconstructing Denoising Diffusion Models"></a>Deconstructing Denoising Diffusion Models</h1><p>作者发现主要的关键因素是tokenizer，其表现了低维的潜空间。但是不难发现，潜变量并不是tokenizer独有的，standard VAE, a patch-wise VAE, a patch-wise AE, and a patch-wise PCA encoder 均有潜变量。</p>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig1.png" alt="fig1"></p>
-<p>解构的路线分为三个步骤：</p>
-<ul>
-<li>首先将Diffusion Transformer(DiT)架构，变为自监督模型</li>
-<li>逐步拆解toenizer</li>
-<li>尽可能尝试还原模型，将其变为一个经典的Denoising Autoencoder(DAE)</li>
-</ul>
-<h2 id="Reorienting-DDM-for-Self-supervised-Learning"><a href="#Reorienting-DDM-for-Self-supervised-Learning" class="headerlink" title="Reorienting DDM for Self-supervised Learning"></a>Reorienting DDM for Self-supervised Learning</h2><p>DDM的概念本质上是从DAE的概念上生成的，依旧是用于图像生成，一些设计并不适合自监督学习，一些是并不必要的（例如提升图像生成质量）。</p>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig2.png" alt="fig2"></p>
-<ol>
-<li><p>Remove class-conditioning<br>标签在图像生成上很重要，但是不符合自监督学习的要求，因此移除标签。此举使得准确性提升，但是图像质量（FID）下降。</p>
-</li>
-<li><p>Deconstruct <font color="red">VQGAN</font></p>
-</li>
-<li>Replace noise schedule<br>不需要逐步添加噪声，可以一步直接加入噪声</li>
-</ol>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig3.png" alt="fig3"></p>
-<h2 id="Deconstructing-the-Tokenizer"><a href="#Deconstructing-the-Tokenizer" class="headerlink" title="Deconstructing the Tokenizer"></a>Deconstructing the Tokenizer</h2><p>接下来解构tokenizer，将会用到下面四种自编码器，每一种自编码器都是前面一种的简化。</p>
-<ul>
-<li><p>Convolutional VAE \<br>损失函数如下：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\|x-g(f(x))\|^2+\mathbb{K} \mathbb{L}[f(x) \mid \mathcal{N}]
-\end{equation}</script><p>其中$f(\cdot)$是编码函数$g(\cdot)$是解码函数，$x$是输入值，VAE是深度卷积神经网络。</p>
-</li>
-<li><p>Patch-wise VAE \<br>选用线性的函数作为编码解码器（全连接网络），损失函数设置如下：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\left\|x-U^T V x\right\|^2+\mathbb{K} \mathbb{L}[V x \mid \mathcal{N}]
-\end{equation}</script><p>$U,V$是矩阵。</p>
-</li>
-<li><p>Patch-wise AE \<br>进一步简化，删除正则化项：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\left\|x-U^T V x\right\|^2
-\end{equation}</script></li>
-<li><p>Patch-wise PCA \<br>PCA 可以看成是一种特殊的 AE，损失函数为：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\left\|x-V^T V x\right\|^2
-\end{equation}</script></li>
-</ul>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig4.png" alt="fig4"></p>
-<p>可以从上表中看出，表现性能都差不多，并且计算KL散度也不是很重要。甚至PCA工作的更好</p>
-<h2 id="Toward-Classical-Denoising-Autoencoders"><a href="#Toward-Classical-Denoising-Autoencoders" class="headerlink" title="Toward Classical Denoising Autoencoders"></a>Toward Classical Denoising Autoencoders</h2><p>逐步减去 PCA-based DDM 与经典DAE之间的差距。<br><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig5.png" alt="fig5"></p>
-<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig6.png" alt="fig6"></p>
-<p>从最后的实验结果看出，对潜变量空间加入噪音对结果的影响更大。因此说明对模型训练起关键作用的是少数几个参数。</p>
-<font color="red">应该是我没有读懂该文章的实验思路，在我的理解下，潜变量应该是浓缩了更多信息的空间，对其加噪音本来就会比对原像素空间其更大的影响。另一方面，这种论证方法，我并不认为十分研究，应该有更多的理论分析保证。</font>]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Diffusion Models</tag>
-        <tag>Denoising Diffusion Models</tag>
-        <tag>Self-Supervised Learning</tag>
       </tags>
   </entry>
   <entry>
@@ -2120,11 +2120,6 @@ Z(\beta) \simeq\left(\frac{m}{2 \pi \hbar \Delta \tau}\right)^{M N d / 2} \int d
       </tags>
   </entry>
   <entry>
-    <title></title>
-    <url>/2024/06/25/Phys/SK_model/Append/</url>
-    <content><![CDATA[]]></content>
-  </entry>
-  <entry>
     <title>Sherrington-Kirkpatrick Model</title>
     <url>/2022/11/20/Phys/SK_model/SK_model/</url>
     <content><![CDATA[<p>利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。目的是掌握和熟悉复本方法的使用。</p>
@@ -2380,7 +2375,24 @@ H = \begin{bmatrix}
   <entry>
     <title>The Parisi solution of Sherrington-Kirkpatrick Model</title>
     <url>/2022/11/20/Phys/SK_model/SK_model1/</url>
-    <content><![CDATA[<h1 id="Multi-step-replica-symmetry-breaking-RSB"><a href="#Multi-step-replica-symmetry-breaking-RSB" class="headerlink" title="Multi-step replica symmetry breaking (RSB)"></a>Multi-step replica symmetry breaking (RSB)</h1><p>在复本对称假设$\eqref{RS}$中$q_{\alpha\beta}$与$m_{\alpha\beta}$并不依赖于$\alpha\beta$，为了打破对称需要考虑$q$矩阵的结构。现在考虑 n-RSB 的矩阵，首先对于 1-RSB有$m_1&lt;n$，例如当$n=6,m_1=3$时候，$q$矩阵有（对角线为零的原因在于，当$\alpha=\beta$时候没有定义）：</p>
+    <content><![CDATA[<p>利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。该章节主要介绍 Parisi 解。</p>
+<p>Reference:</p>
+<ul>
+<li>Statistical Physics of Spin Glasses and Information Processing. Nishimori</li>
+<li><a href="https://hzshan.github.io/replica_method_in_SK_model.pdf">Replica calculations for the SK model</a>笔误有点多</li>
+</ul>
+<p>Link:</p>
+<ul>
+<li><a href="/2022/11/12/Phys/Hopfield/Hopfield/" title="Hopfield Model">Hopfield Model</a></li>
+<li><a href="/2022/11/13/Phys/replica/replica/" title="Replica">Replica</a></li>
+<li><a href="/2022/11/20/Phys/SK_model/SK_model/" title="Sherrington-Kirkpatrick Model">Sherrington-Kirkpatrick Model</a>
+</li>
+</ul>
+<span id="more"></span>
+<p>根据</p>
+<script type="math/tex; mode=display">\begin{align}
+-\beta[f]= & \lim _{n \rightarrow 0} \frac{\left[Z^n\right]-1}{n N}=\lim _{n \rightarrow 0}\left\{-\frac{\beta^2 J^2}{4 n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^2-\frac{\beta J_0}{2 n} \sum_\alpha m_\alpha^2+\frac{1}{4} \beta^2 J^2+\frac{1}{n} \log \operatorname{Tr} \mathrm{e}^L\right\} \label{2.17}
+\end{align}</script><h1 id="Multi-step-replica-symmetry-breaking-RSB"><a href="#Multi-step-replica-symmetry-breaking-RSB" class="headerlink" title="Multi-step replica symmetry breaking (RSB)"></a>Multi-step replica symmetry breaking (RSB)</h1><p>在复本对称假设$\eqref{RS}$中$q_{\alpha\beta}$与$m_{\alpha\beta}$并不依赖于$\alpha\beta$，为了打破对称需要考虑$q$矩阵的结构。现在考虑 n-RSB 的矩阵，首先对于 1-RSB有$m_1&lt;n$，例如当$n=6,m_1=3$时候，$q$矩阵有（对角线为零的原因在于，当$\alpha=\beta$时候没有定义）：</p>
 <script type="math/tex; mode=display">\begin{align}
 \left(\begin{array}{ccc|ccc}
 0 & q_1 & q_1 & & & \\
@@ -2468,7 +2480,81 @@ q_1^* =\int D u \frac{\int D v\{\cosh \Xi\}^{m_1}\{\tanh \Xi\}^2}{\int D v\{\cos
 <script type="math/tex; mode=display">\begin{gather}
 E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2\right) \rightarrow-\frac{\beta J^2}{2}\left(1-\int_0^1 q^2(x) \mathrm{d} x\right) \\
 \chi=\beta\left(1+\frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}\right) \rightarrow \beta\left(1-\int_0^1 q(x) \mathrm{d} x\right)
-\end{gather}</script>]]></content>
+\end{gather}</script><h2 id="parisi-equation"><a href="#parisi-equation" class="headerlink" title="parisi equation"></a>parisi equation</h2><p>接下来需要将高阶复本破缺技巧应用在自由能$\eqref{2.17}$，和计算一阶复本对称的操作一样，首先计算$q_0$然后计算第一次分块$q_1$的贡献并且排除$q_0$的影响，以此类推，在主对角线上是$q_K$。首先计算如下项：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+G & =\operatorname{Tr} \exp \left(\frac{1}{2} \sum_{\alpha, \beta=1}^n q_{\alpha \beta} S^\alpha S^\beta+h \sum_\alpha^n S^\alpha\right) \\
+& =\left.\exp \left(\frac{1}{2} \sum_{\alpha, \beta} q_{\alpha \beta} \frac{\partial^2}{\partial h_\alpha \partial h_\beta}\right) \prod_\alpha 2 \cosh h_\alpha\right|_{h_\alpha=h}  \label{B.1}
+\end{align}</script><p>这里将$q_{\alpha\beta}$贡献的项目视为$h$项的偏移，因此使用$\exp(\frac{\partial^2}{\partial h_\alpha \partial h_\beta})$的形式表示这个偏移量。如果使用复本对称的假设，则：</p>
+<script type="math/tex; mode=display">\begin{align}
+G=\exp \left(\frac{q}{2} \frac{\partial^2}{\partial h^2}\right)(2 \cosh h)^n \label{B.2}
+\end{align}</script><p>其中使用到：</p>
+<script type="math/tex; mode=display">
+\left.\sum_\alpha \frac{\partial f\left(h_1, \ldots, h_n\right)}{\partial h_\alpha}\right|_{h_\alpha=h}=\frac{\partial f(h, \ldots, h)}{\partial h}</script><p>从$\eqref{67}$中可以看出，当时的思想是从复本对称假设出发，然后将整个矩阵分为几部分（取决于$\frac{n}{m}$大小），在主对角线的块上为一阶复本对称$q_1$；那么同样的二阶复本对称可以将每一个一阶复本对称的块分为几部分，然后将主对角线的块作为二阶复本$q_2$；这个流程以此类推。现在可以反过来，从$K$阶复本逐渐变为$0$阶级复本：</p>
+<ol>
+<li>对于$K-1$阶复本有$\left(q_K-q_{K-1}\right) I\left(m_K\right)$，表示$\left(m_K \times m_K\right)$大小。</li>
+<li>生长出$(K-2)$复本，将$K$阶复本通过$\operatorname{Diag}_{K-1}$扩张$\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-1}\left[I\left(m_K\right)\right]$，然后$K-2$阶写为$\left(q_{K-1}-q_{K-2}\right) I\left(m_{K-1}\right)$矩阵的大小为$\left(m_{K-1} \times m_{K-1}\right)$。整体为:<script type="math/tex; mode=display">\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-1}\left[I\left(m_K\right)\right]+\left(q_{K-1}-q_{K-2}\right) I\left(m_{K-1}\right)</script></li>
+<li>重复步骤2，得到$K-3$复本。矩阵的大小为$\left(m_{K-2} \times m_{K-2}\right)$<script type="math/tex; mode=display">\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-2}\left[I\left(m_K\right)\right]+\left(q_{K-1}-q_{K-2}\right) \operatorname{Diag}_{K-2}\left[I\left(m_{K-1}\right)\right]+\left(q_{K-2}-q_{K-3}\right)I\left(m_{K-2}\right)</script></li>
+</ol>
+<p>在清楚以上步骤之后，接下来首先处理$\left(m_K \times m_K\right)$大小矩阵$\operatorname{Tr}$，并将结果标注为$g(m_K,h)$，由于这是复本破缺的最后一次，因此这个矩阵元是复本对称的，由$\eqref{B.2}$得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+g\left(m_K, h\right)=\exp \left\{\frac{1}{2}\left(q_K-q_{K-1}\right) \frac{\partial^2}{\partial h^2}\right\}(2 \cosh h)^{m_K} \label{B.4}
+\end{align}</script><p>对于$K-1$阶，是考虑将$g\left(m_K, h\right)$复制到对角部分，然后每一个元素相加$q_{K-1}-q_{K-2}$，从$\eqref{B.2}$可以得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+g\left(m_{K-1}, h\right)=\exp \left\{\frac{1}{2}\left(q_{K-1}-q_{K-2}\right) \frac{\partial^2}{\partial h^2}\right\}\left[g\left(m_K, h\right)\right]^{m_{K-1} / m_K} \label{B.5}
+\end{align}</script><p>一直重复这个过程，直到复本对称项：</p>
+<script type="math/tex; mode=display">\begin{align}
+G=g(n, h)=\exp \left\{\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right\}\left[g\left(m_1, h\right)\right]^{n / m_1}  \label{B.6}
+\end{align}</script><p>考虑到极限$n\to 0$下有$m_j-m_{j-1}=-\mathrm{d}x$，将$\eqref{B.5}$写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+g(x+\mathrm{d} x, h)=\exp \left\{-\frac{1}{2} \mathrm{~d} q(x) \frac{\partial^2}{\partial h^2}\right\} g(x, h)^{1+\mathrm{d} \log x} \label{B.7}
+\end{align}</script><p>对于$\eqref{B.4}$，当$K\to \infty$有$m_k \to 1$，因为存在$g(1,h)=2\cosh h$。将$\eqref{B.7}$转化为微分形式（对$\mathrm{d}q$与$\mathrm{d}x$进行展开）：</p>
+<script type="math/tex; mode=display">
+\frac{\partial g}{\partial x}=-\frac{1}{2} \frac{\mathrm{d} q}{\mathrm{~d} x} \frac{\partial^2 g}{\partial h^2}+\frac{1}{x} g \log g</script><p>利用注记$f_0(x, h)=(1 / x) \log g(x, h)$改写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{\partial f_0}{\partial x}=-\frac{1}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\} \label{B.8}
+\end{align}</script><p>分析$\eqref{B.6}$的极限情况，根据之前的讨论知道，当$n\to 0$的时候，$m_1\to0$：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{1}{n} \log \operatorname{Tr} \mathrm{e}^L &= \left. \exp \left(\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right) \frac{1}{x} \log g(x, h)\right|_{x, h \rightarrow 0} \\
+& =\left.\exp \left(\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right) f_0(0, h)\right|_{h \rightarrow 0} \\
+& =\int \mathrm{D} u f_0(0, \sqrt{q(0)} u) \label{B.10}
+\end{align}</script><p>结合$\eqref{3.38},\eqref{B.10}$将$\eqref{2.17}$写为<font color="red">$q(1)$这一项怎么来的？</font>：</p>
+<script type="math/tex; mode=display">\begin{align}
+\beta f=-\frac{\beta^2 J^2}{4}\left\{1+\int_0^1 q(x)^2 \mathrm{~d} x-2 q(1)\right\}-\int \mathrm{D} u f_0(0, \sqrt{q(0)} u) \label{3.41}
+\end{align}</script><p>其中$f_0$应当满足 Parisi equation，即$\eqref{B.9}$:</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{\partial f_0(x, h)}{\partial x}=-\frac{J^2}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\} \label{3.42} 
+\end{align}</script><p>有 $f_0(1, h)=\log 2 \cosh \beta h$。</p>
+<font color="red">stop</font>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]></content>
       <categories>
         <category>Physics</category>
       </categories>
@@ -2476,6 +2562,8 @@ E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2
         <tag>Spin Glass</tag>
         <tag>Replica Method</tag>
         <tag>Sherrington-Kirkpatrick Model</tag>
+        <tag>Parisi solution</tag>
+        <tag>Replica Symmetry Breaking</tag>
       </tags>
   </entry>
   <entry>

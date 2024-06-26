@@ -22,19 +22,21 @@
     var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":-1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="Multi-step replica symmetry breaking (RSB)在复本对称假设$\eqref{RS}$中$q_{\alpha\beta}$与$m_{\alpha\beta}$并不依赖于$\alpha\beta$，为了打破对称需要考虑$q$矩阵的结构。现在考虑 n-RSB 的矩阵，首先对于 1-RSB有$m_1&lt;n$，例如当$n&#x3D;6,m_1&#x3D;3$时候，$q$矩阵有（对角线为">
+  <meta name="description" content="利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。该章节主要介绍 Parisi 解。 Reference:  Statistical Physics of Spin Glasses and Information Processing. Nishimori Replica calculations for the SK model笔误有点多  Link:  Hopfi">
 <meta property="og:type" content="article">
 <meta property="og:title" content="The Parisi solution of Sherrington-Kirkpatrick Model">
 <meta property="og:url" content="https://renyixiong-ai.github.io/2022/11/20/Phys/SK_model/SK_model1/index.html">
 <meta property="og:site_name" content="Yixiong&#39;s Blog">
-<meta property="og:description" content="Multi-step replica symmetry breaking (RSB)在复本对称假设$\eqref{RS}$中$q_{\alpha\beta}$与$m_{\alpha\beta}$并不依赖于$\alpha\beta$，为了打破对称需要考虑$q$矩阵的结构。现在考虑 n-RSB 的矩阵，首先对于 1-RSB有$m_1&lt;n$，例如当$n&#x3D;6,m_1&#x3D;3$时候，$q$矩阵有（对角线为">
+<meta property="og:description" content="利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。该章节主要介绍 Parisi 解。 Reference:  Statistical Physics of Spin Glasses and Information Processing. Nishimori Replica calculations for the SK model笔误有点多  Link:  Hopfi">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-11-20T13:38:00.000Z">
-<meta property="article:modified_time" content="2024-06-26T03:43:21.923Z">
+<meta property="article:modified_time" content="2024-06-26T10:50:34.798Z">
 <meta property="article:author" content="Ren Yixiong">
 <meta property="article:tag" content="Spin Glass">
 <meta property="article:tag" content="Replica Method">
 <meta property="article:tag" content="Sherrington-Kirkpatrick Model">
+<meta property="article:tag" content="Parisi solution">
+<meta property="article:tag" content="Replica Symmetry Breaking">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://renyixiong-ai.github.io/2022/11/20/Phys/SK_model/SK_model1/">
@@ -223,7 +225,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-06-26 11:43:21" itemprop="dateModified" datetime="2024-06-26T11:43:21+08:00">2024-06-26</time>
+                <time title="Modified: 2024-06-26 18:50:34" itemprop="dateModified" datetime="2024-06-26T18:50:34+08:00">2024-06-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -248,14 +250,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>954</span>
+              <span>1.5k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>2 mins.</span>
+              <span>3 mins.</span>
             </span>
 
         </div>
@@ -267,7 +269,24 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="Multi-step-replica-symmetry-breaking-RSB"><a href="#Multi-step-replica-symmetry-breaking-RSB" class="headerlink" title="Multi-step replica symmetry breaking (RSB)"></a>Multi-step replica symmetry breaking (RSB)</h1><p>在复本对称假设$\eqref{RS}$中$q_{\alpha\beta}$与$m_{\alpha\beta}$并不依赖于$\alpha\beta$，为了打破对称需要考虑$q$矩阵的结构。现在考虑 n-RSB 的矩阵，首先对于 1-RSB有$m_1&lt;n$，例如当$n=6,m_1=3$时候，$q$矩阵有（对角线为零的原因在于，当$\alpha=\beta$时候没有定义）：</p>
+        <p>利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。该章节主要介绍 Parisi 解。</p>
+<p>Reference:</p>
+<ul>
+<li>Statistical Physics of Spin Glasses and Information Processing. Nishimori</li>
+<li><a target="_blank" rel="noopener" href="https://hzshan.github.io/replica_method_in_SK_model.pdf">Replica calculations for the SK model</a>笔误有点多</li>
+</ul>
+<p>Link:</p>
+<ul>
+<li><a href="/2022/11/12/Phys/Hopfield/Hopfield/" title="Hopfield Model">Hopfield Model</a></li>
+<li><a href="/2022/11/13/Phys/replica/replica/" title="Replica">Replica</a></li>
+<li><a href="/2022/11/20/Phys/SK_model/SK_model/" title="Sherrington-Kirkpatrick Model">Sherrington-Kirkpatrick Model</a>
+</li>
+</ul>
+<span id="more"></span>
+<p>根据</p>
+<script type="math/tex; mode=display">\begin{align}
+-\beta[f]= & \lim _{n \rightarrow 0} \frac{\left[Z^n\right]-1}{n N}=\lim _{n \rightarrow 0}\left\{-\frac{\beta^2 J^2}{4 n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^2-\frac{\beta J_0}{2 n} \sum_\alpha m_\alpha^2+\frac{1}{4} \beta^2 J^2+\frac{1}{n} \log \operatorname{Tr} \mathrm{e}^L\right\} \label{2.17}
+\end{align}</script><h1 id="Multi-step-replica-symmetry-breaking-RSB"><a href="#Multi-step-replica-symmetry-breaking-RSB" class="headerlink" title="Multi-step replica symmetry breaking (RSB)"></a>Multi-step replica symmetry breaking (RSB)</h1><p>在复本对称假设$\eqref{RS}$中$q_{\alpha\beta}$与$m_{\alpha\beta}$并不依赖于$\alpha\beta$，为了打破对称需要考虑$q$矩阵的结构。现在考虑 n-RSB 的矩阵，首先对于 1-RSB有$m_1&lt;n$，例如当$n=6,m_1=3$时候，$q$矩阵有（对角线为零的原因在于，当$\alpha=\beta$时候没有定义）：</p>
 <script type="math/tex; mode=display">\begin{align}
 \left(\begin{array}{ccc|ccc}
 0 & q_1 & q_1 & & & \\
@@ -355,7 +374,81 @@ q_1^* =\int D u \frac{\int D v\{\cosh \Xi\}^{m_1}\{\tanh \Xi\}^2}{\int D v\{\cos
 <script type="math/tex; mode=display">\begin{gather}
 E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2\right) \rightarrow-\frac{\beta J^2}{2}\left(1-\int_0^1 q^2(x) \mathrm{d} x\right) \\
 \chi=\beta\left(1+\frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}\right) \rightarrow \beta\left(1-\int_0^1 q(x) \mathrm{d} x\right)
-\end{gather}</script>
+\end{gather}</script><h2 id="parisi-equation"><a href="#parisi-equation" class="headerlink" title="parisi equation"></a>parisi equation</h2><p>接下来需要将高阶复本破缺技巧应用在自由能$\eqref{2.17}$，和计算一阶复本对称的操作一样，首先计算$q_0$然后计算第一次分块$q_1$的贡献并且排除$q_0$的影响，以此类推，在主对角线上是$q_K$。首先计算如下项：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+G & =\operatorname{Tr} \exp \left(\frac{1}{2} \sum_{\alpha, \beta=1}^n q_{\alpha \beta} S^\alpha S^\beta+h \sum_\alpha^n S^\alpha\right) \\
+& =\left.\exp \left(\frac{1}{2} \sum_{\alpha, \beta} q_{\alpha \beta} \frac{\partial^2}{\partial h_\alpha \partial h_\beta}\right) \prod_\alpha 2 \cosh h_\alpha\right|_{h_\alpha=h}  \label{B.1}
+\end{align}</script><p>这里将$q_{\alpha\beta}$贡献的项目视为$h$项的偏移，因此使用$\exp(\frac{\partial^2}{\partial h_\alpha \partial h_\beta})$的形式表示这个偏移量。如果使用复本对称的假设，则：</p>
+<script type="math/tex; mode=display">\begin{align}
+G=\exp \left(\frac{q}{2} \frac{\partial^2}{\partial h^2}\right)(2 \cosh h)^n \label{B.2}
+\end{align}</script><p>其中使用到：</p>
+<script type="math/tex; mode=display">
+\left.\sum_\alpha \frac{\partial f\left(h_1, \ldots, h_n\right)}{\partial h_\alpha}\right|_{h_\alpha=h}=\frac{\partial f(h, \ldots, h)}{\partial h}</script><p>从$\eqref{67}$中可以看出，当时的思想是从复本对称假设出发，然后将整个矩阵分为几部分（取决于$\frac{n}{m}$大小），在主对角线的块上为一阶复本对称$q_1$；那么同样的二阶复本对称可以将每一个一阶复本对称的块分为几部分，然后将主对角线的块作为二阶复本$q_2$；这个流程以此类推。现在可以反过来，从$K$阶复本逐渐变为$0$阶级复本：</p>
+<ol>
+<li>对于$K-1$阶复本有$\left(q_K-q_{K-1}\right) I\left(m_K\right)$，表示$\left(m_K \times m_K\right)$大小。</li>
+<li>生长出$(K-2)$复本，将$K$阶复本通过$\operatorname{Diag}_{K-1}$扩张$\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-1}\left[I\left(m_K\right)\right]$，然后$K-2$阶写为$\left(q_{K-1}-q_{K-2}\right) I\left(m_{K-1}\right)$矩阵的大小为$\left(m_{K-1} \times m_{K-1}\right)$。整体为:<script type="math/tex; mode=display">\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-1}\left[I\left(m_K\right)\right]+\left(q_{K-1}-q_{K-2}\right) I\left(m_{K-1}\right)</script></li>
+<li>重复步骤2，得到$K-3$复本。矩阵的大小为$\left(m_{K-2} \times m_{K-2}\right)$<script type="math/tex; mode=display">\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-2}\left[I\left(m_K\right)\right]+\left(q_{K-1}-q_{K-2}\right) \operatorname{Diag}_{K-2}\left[I\left(m_{K-1}\right)\right]+\left(q_{K-2}-q_{K-3}\right)I\left(m_{K-2}\right)</script></li>
+</ol>
+<p>在清楚以上步骤之后，接下来首先处理$\left(m_K \times m_K\right)$大小矩阵$\operatorname{Tr}$，并将结果标注为$g(m_K,h)$，由于这是复本破缺的最后一次，因此这个矩阵元是复本对称的，由$\eqref{B.2}$得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+g\left(m_K, h\right)=\exp \left\{\frac{1}{2}\left(q_K-q_{K-1}\right) \frac{\partial^2}{\partial h^2}\right\}(2 \cosh h)^{m_K} \label{B.4}
+\end{align}</script><p>对于$K-1$阶，是考虑将$g\left(m_K, h\right)$复制到对角部分，然后每一个元素相加$q_{K-1}-q_{K-2}$，从$\eqref{B.2}$可以得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+g\left(m_{K-1}, h\right)=\exp \left\{\frac{1}{2}\left(q_{K-1}-q_{K-2}\right) \frac{\partial^2}{\partial h^2}\right\}\left[g\left(m_K, h\right)\right]^{m_{K-1} / m_K} \label{B.5}
+\end{align}</script><p>一直重复这个过程，直到复本对称项：</p>
+<script type="math/tex; mode=display">\begin{align}
+G=g(n, h)=\exp \left\{\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right\}\left[g\left(m_1, h\right)\right]^{n / m_1}  \label{B.6}
+\end{align}</script><p>考虑到极限$n\to 0$下有$m_j-m_{j-1}=-\mathrm{d}x$，将$\eqref{B.5}$写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+g(x+\mathrm{d} x, h)=\exp \left\{-\frac{1}{2} \mathrm{~d} q(x) \frac{\partial^2}{\partial h^2}\right\} g(x, h)^{1+\mathrm{d} \log x} \label{B.7}
+\end{align}</script><p>对于$\eqref{B.4}$，当$K\to \infty$有$m_k \to 1$，因为存在$g(1,h)=2\cosh h$。将$\eqref{B.7}$转化为微分形式（对$\mathrm{d}q$与$\mathrm{d}x$进行展开）：</p>
+<script type="math/tex; mode=display">
+\frac{\partial g}{\partial x}=-\frac{1}{2} \frac{\mathrm{d} q}{\mathrm{~d} x} \frac{\partial^2 g}{\partial h^2}+\frac{1}{x} g \log g</script><p>利用注记$f_0(x, h)=(1 / x) \log g(x, h)$改写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{\partial f_0}{\partial x}=-\frac{1}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\} \label{B.8}
+\end{align}</script><p>分析$\eqref{B.6}$的极限情况，根据之前的讨论知道，当$n\to 0$的时候，$m_1\to0$：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{1}{n} \log \operatorname{Tr} \mathrm{e}^L &= \left. \exp \left(\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right) \frac{1}{x} \log g(x, h)\right|_{x, h \rightarrow 0} \\
+& =\left.\exp \left(\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right) f_0(0, h)\right|_{h \rightarrow 0} \\
+& =\int \mathrm{D} u f_0(0, \sqrt{q(0)} u) \label{B.10}
+\end{align}</script><p>结合$\eqref{3.38},\eqref{B.10}$将$\eqref{2.17}$写为<font color="red">$q(1)$这一项怎么来的？</font>：</p>
+<script type="math/tex; mode=display">\begin{align}
+\beta f=-\frac{\beta^2 J^2}{4}\left\{1+\int_0^1 q(x)^2 \mathrm{~d} x-2 q(1)\right\}-\int \mathrm{D} u f_0(0, \sqrt{q(0)} u) \label{3.41}
+\end{align}</script><p>其中$f_0$应当满足 Parisi equation，即$\eqref{B.9}$:</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{\partial f_0(x, h)}{\partial x}=-\frac{J^2}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\} \label{3.42} 
+\end{align}</script><p>有 $f_0(1, h)=\log 2 \cosh \beta h$。</p>
+<font color="red">stop</font>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     </div>
 
     
@@ -367,6 +460,8 @@ E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2
               <a href="/tags/Spin-Glass/" rel="tag"># Spin Glass</a>
               <a href="/tags/Replica-Method/" rel="tag"># Replica Method</a>
               <a href="/tags/Sherrington-Kirkpatrick-Model/" rel="tag"># Sherrington-Kirkpatrick Model</a>
+              <a href="/tags/Parisi-solution/" rel="tag"># Parisi solution</a>
+              <a href="/tags/Replica-Symmetry-Breaking/" rel="tag"># Replica Symmetry Breaking</a>
           </div>
 
         
@@ -440,7 +535,7 @@ E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Multi-step-replica-symmetry-breaking-RSB"><span class="nav-number">1.</span> <span class="nav-text">Multi-step replica symmetry breaking (RSB)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#First-step-RSB"><span class="nav-number">2.</span> <span class="nav-text">First step RSB</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Full-RSB-Solution"><span class="nav-number">3.</span> <span class="nav-text">Full RSB Solution</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Multi-step-replica-symmetry-breaking-RSB"><span class="nav-number">1.</span> <span class="nav-text">Multi-step replica symmetry breaking (RSB)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#First-step-RSB"><span class="nav-number">2.</span> <span class="nav-text">First step RSB</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Full-RSB-Solution"><span class="nav-number">3.</span> <span class="nav-text">Full RSB Solution</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#parisi-equation"><span class="nav-number">3.1.</span> <span class="nav-text">parisi equation</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -454,7 +549,7 @@ E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -465,7 +560,7 @@ E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">46</span>
+        <span class="site-state-item-count">48</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -520,12 +615,12 @@ E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">150k</span>
+    <span title="Symbols count total">151k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">4:33</span>
+    <span title="Reading time total">4:34</span>
 </div>
 
         

@@ -20,15 +20,6 @@
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/2024/06/25/Phys/SK_model/Append/</loc>
-    
-    <lastmod>2024-06-26</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/</loc>
     
     <lastmod>2024-06-23</lastmod>
@@ -343,20 +334,6 @@
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/tags/Kolmogorov%E2%80%93Arnold-Networks/</loc>
-    <lastmod>2024-06-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Physics/</loc>
-    <lastmod>2024-06-26</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://renyixiong-ai.github.io/tags/Diffusion-Models/</loc>
     <lastmod>2024-06-26</lastmod>
     <changefreq>weekly</changefreq>
@@ -372,6 +349,20 @@
   
   <url>
     <loc>https://renyixiong-ai.github.io/tags/Self-Supervised-Learning/</loc>
+    <lastmod>2024-06-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Kolmogorov%E2%80%93Arnold-Networks/</loc>
+    <lastmod>2024-06-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Physics/</loc>
     <lastmod>2024-06-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -540,6 +531,20 @@
   
   <url>
     <loc>https://renyixiong-ai.github.io/tags/Sherrington-Kirkpatrick-Model/</loc>
+    <lastmod>2024-06-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Parisi-solution/</loc>
+    <lastmod>2024-06-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Replica-Symmetry-Breaking/</loc>
     <lastmod>2024-06-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
