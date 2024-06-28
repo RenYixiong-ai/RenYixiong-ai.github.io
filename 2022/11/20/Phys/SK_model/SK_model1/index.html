@@ -22,15 +22,16 @@
     var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":-1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。该章节主要介绍 Parisi 解。 Reference:  Statistical Physics of Spin Glasses and Information Processing. Nishimori Replica calculations for the SK model笔误有点多  Link:  Hopfi">
+  <meta name="description" content="利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。该章节主要介绍 Parisi 解。 Reference:  Statistical Physics of Spin Glasses and Information Processing. Nishimori Replica calculations for the SK model笔误有点多 RS and RSB so">
 <meta property="og:type" content="article">
 <meta property="og:title" content="The Parisi solution of Sherrington-Kirkpatrick Model">
 <meta property="og:url" content="https://renyixiong-ai.github.io/2022/11/20/Phys/SK_model/SK_model1/index.html">
 <meta property="og:site_name" content="Yixiong&#39;s Blog">
-<meta property="og:description" content="利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。该章节主要介绍 Parisi 解。 Reference:  Statistical Physics of Spin Glasses and Information Processing. Nishimori Replica calculations for the SK model笔误有点多  Link:  Hopfi">
+<meta property="og:description" content="利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。该章节主要介绍 Parisi 解。 Reference:  Statistical Physics of Spin Glasses and Information Processing. Nishimori Replica calculations for the SK model笔误有点多 RS and RSB so">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/20/Phys/SK_model/SK_model1/phase.png">
 <meta property="article:published_time" content="2022-11-20T13:38:00.000Z">
-<meta property="article:modified_time" content="2024-06-26T10:50:34.798Z">
+<meta property="article:modified_time" content="2024-06-28T03:46:20.660Z">
 <meta property="article:author" content="Ren Yixiong">
 <meta property="article:tag" content="Spin Glass">
 <meta property="article:tag" content="Replica Method">
@@ -38,6 +39,7 @@
 <meta property="article:tag" content="Parisi solution">
 <meta property="article:tag" content="Replica Symmetry Breaking">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2022/11/20/Phys/SK_model/SK_model1/phase.png">
 
 <link rel="canonical" href="https://renyixiong-ai.github.io/2022/11/20/Phys/SK_model/SK_model1/">
 
@@ -225,7 +227,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-06-26 18:50:34" itemprop="dateModified" datetime="2024-06-26T18:50:34+08:00">2024-06-26</time>
+                <time title="Modified: 2024-06-28 11:46:20" itemprop="dateModified" datetime="2024-06-28T11:46:20+08:00">2024-06-28</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -274,6 +276,7 @@
 <ul>
 <li>Statistical Physics of Spin Glasses and Information Processing. Nishimori</li>
 <li><a target="_blank" rel="noopener" href="https://hzshan.github.io/replica_method_in_SK_model.pdf">Replica calculations for the SK model</a>笔误有点多</li>
+<li><a target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/pii/S0378437199000242">RS and RSB solutions for SK model with spin-S</a></li>
 </ul>
 <p>Link:</p>
 <ul>
@@ -362,7 +365,8 @@ L\left(\left\{q_{\alpha \beta}, m_\alpha\right\}\right):=\beta^2 J^2 \sum_{\alph
 m^*=\int D u \frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}} \\
 q_0^* =\int D u\left(\frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}}\right)^2 \\ 
 q_1^* =\int D u \frac{\int D v\{\cosh \Xi\}^{m_1}\{\tanh \Xi\}^2}{\int D v\{\cosh \Xi\}^{m_1}} 
-\end{gather}</script><h1 id="Full-RSB-Solution"><a href="#Full-RSB-Solution" class="headerlink" title="Full RSB Solution"></a>Full RSB Solution</h1><p>由于熵还是负数，接下来进行更高阶的复本对称破缺（k-RSB）计算$\eqref{28}$。与一阶复本对称$\eqref{67}$类似:</p>
+\end{gather}</script><p><img src="/2022/11/20/Phys/SK_model/SK_model1/phase.png" alt="phase diagram"><br><a href="./phase_diagram.nb">mathematica代码</a>与<a href="./phase.py">python代码</a></p>
+<h1 id="Full-RSB-Solution"><a href="#Full-RSB-Solution" class="headerlink" title="Full RSB Solution"></a>Full RSB Solution</h1><p>由于熵还是负数，接下来进行更高阶的复本对称破缺（k-RSB）计算$\eqref{28}$。与一阶复本对称$\eqref{67}$类似:</p>
 <script type="math/tex; mode=display">\begin{align} 
 \sum_{\alpha \neq \beta} q_{\alpha \beta}^l & =q_0^l n^2+\left(q_1^l-q_0^l\right) m_1^2 \cdot \frac{n}{m_1}+\left(q_2^l-q_1^l\right) m_2^2 \cdot \frac{m_1}{m_2} \cdot \frac{n}{m_1}+\cdots-q_K^l \cdot n \\ & =n \sum_{j=0}^K\left(m_j-m_{j+1}\right) q_j^l \label{3.37}
 \end{align}</script><p>其中$l$是任意整数，$m_0=n,m_{K+1}=1$，在极限情况${n\to 0}$下，使用$m_j-m_{j+1}\to -d x$，可以得到：</p>

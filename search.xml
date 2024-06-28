@@ -2380,6 +2380,7 @@ H = \begin{bmatrix}
 <ul>
 <li>Statistical Physics of Spin Glasses and Information Processing. Nishimori</li>
 <li><a href="https://hzshan.github.io/replica_method_in_SK_model.pdf">Replica calculations for the SK model</a>笔误有点多</li>
+<li><a href="https://www.sciencedirect.com/science/article/pii/S0378437199000242">RS and RSB solutions for SK model with spin-S</a></li>
 </ul>
 <p>Link:</p>
 <ul>
@@ -2468,7 +2469,8 @@ L\left(\left\{q_{\alpha \beta}, m_\alpha\right\}\right):=\beta^2 J^2 \sum_{\alph
 m^*=\int D u \frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}} \\
 q_0^* =\int D u\left(\frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}}\right)^2 \\ 
 q_1^* =\int D u \frac{\int D v\{\cosh \Xi\}^{m_1}\{\tanh \Xi\}^2}{\int D v\{\cosh \Xi\}^{m_1}} 
-\end{gather}</script><h1 id="Full-RSB-Solution"><a href="#Full-RSB-Solution" class="headerlink" title="Full RSB Solution"></a>Full RSB Solution</h1><p>由于熵还是负数，接下来进行更高阶的复本对称破缺（k-RSB）计算$\eqref{28}$。与一阶复本对称$\eqref{67}$类似:</p>
+\end{gather}</script><p><img src="/2022/11/20/Phys/SK_model/SK_model1/phase.png" alt="phase diagram"><br><a href="./phase_diagram.nb">mathematica代码</a>与<a href="./phase.py">python代码</a></p>
+<h1 id="Full-RSB-Solution"><a href="#Full-RSB-Solution" class="headerlink" title="Full RSB Solution"></a>Full RSB Solution</h1><p>由于熵还是负数，接下来进行更高阶的复本对称破缺（k-RSB）计算$\eqref{28}$。与一阶复本对称$\eqref{67}$类似:</p>
 <script type="math/tex; mode=display">\begin{align} 
 \sum_{\alpha \neq \beta} q_{\alpha \beta}^l & =q_0^l n^2+\left(q_1^l-q_0^l\right) m_1^2 \cdot \frac{n}{m_1}+\left(q_2^l-q_1^l\right) m_2^2 \cdot \frac{m_1}{m_2} \cdot \frac{n}{m_1}+\cdots-q_K^l \cdot n \\ & =n \sum_{j=0}^K\left(m_j-m_{j+1}\right) q_j^l \label{3.37}
 \end{align}</script><p>其中$l$是任意整数，$m_0=n,m_{K+1}=1$，在极限情况${n\to 0}$下，使用$m_j-m_{j+1}\to -d x$，可以得到：</p>
