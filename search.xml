@@ -94,6 +94,21 @@ c\neq& b \label{test2} \\
       </tags>
   </entry>
   <entry>
+    <title>Hexo 使用指南</title>
+    <url>/2024/06/25/CS/hexo/hexo/</url>
+    <content><![CDATA[<p>主要用于实现我对 Hexo 各种奇奇怪怪的需求。</p>
+<span id="more"></span>
+<h1 id="视频嵌入"><a href="#视频嵌入" class="headerlink" title="视频嵌入"></a>视频嵌入</h1><h2 id="Hexo-中嵌入-Bilibili-视频"><a href="#Hexo-中嵌入-Bilibili-视频" class="headerlink" title="Hexo 中嵌入 Bilibili 视频"></a>Hexo 中嵌入 Bilibili 视频</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;iframe src=&quot;//player.bilibili.com/player.html?aid=你的视频AID&amp;bvid=你的视频BVID&amp;cid=你的视频CID&amp;page=1&quot; scrolling=&quot;no&quot; border=&quot;0&quot; frameborder=&quot;no&quot; framespacing=&quot;0&quot; allowfullscreen=&quot;true&quot; width=&quot;640&quot; height=&quot;480&quot;&gt; &lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="Hexo-中嵌入-Toutube-视频"><a href="#Hexo-中嵌入-Toutube-视频" class="headerlink" title="Hexo 中嵌入 Toutube 视频"></a>Hexo 中嵌入 Toutube 视频</h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&lt;iframe width=&quot;560&quot; height=&quot;315&quot; src=&quot;https://www.youtube.com/embed/你的视频ID&quot; frameborder=&quot;0&quot; allow=&quot;accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture&quot; allowfullscreen&gt;&lt;/iframe&gt;</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>Hexo</category>
+      </categories>
+      <tags>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning</title>
     <url>/2024/06/01/DL/DRL_COM/DRL_COM/</url>
     <content><![CDATA[<p>The application of deep reinforcement learning to combinatorial optimization methods.</p>
@@ -2527,35 +2542,28 @@ g(x+\mathrm{d} x, h)=\exp \left\{-\frac{1}{2} \mathrm{~d} q(x) \frac{\partial^2}
 <script type="math/tex; mode=display">\begin{align}
 \frac{\partial f_0(x, h)}{\partial x}=-\frac{J^2}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\} \label{3.42} 
 \end{align}</script><p>有 $f_0(1, h)=\log 2 \cosh \beta h$。</p>
-<font color="red">stop</font>
+<h2 id="Order-parameter-near-the-critical-point"><a href="#Order-parameter-near-the-critical-point" class="headerlink" title="Order parameter near the critical point"></a>Order parameter near the critical point</h2><p>虽然求解$\eqref{3.41}$十分困难，但是在临界点附近的性质是可以研究的。</p>
+<p>在$J_0=h=0$的条件下，$\eqref{2.17}$展为4阶可以是：</p>
+<font color="red">未经计算，直接抄的，并且十分简略</font>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<script type="math/tex; mode=display">
+\begin{align}
+\beta f= & \lim _{n \rightarrow 0} \frac{1}{n}\left\{\frac{1}{4}\left(\frac{T^2}{T_{\mathrm{f}}^2}-1\right) \operatorname{Tr} Q^2-\frac{1}{6} \operatorname{Tr} Q^3 - \frac{1}{8} \operatorname{Tr} Q^4+\frac{1}{4} \sum_{\alpha \neq \beta \neq \gamma} Q_{\alpha \beta}^2 Q_{\alpha \gamma}^2-\frac{1}{12} \sum_{\alpha \neq \beta} Q_{\alpha \beta}^4\right\},
+\end{align}</script><p>其中$Q_{\alpha\beta}=(\beta J)^2 q_{\alpha\beta}$，令$\theta=\frac{T_f-T}{T_f}$并且考虑复本极限$n\to 0$有：</p>
+<script type="math/tex; mode=display">
+\beta f=\frac{1}{2} \int_0^1 \mathrm{~d} x\left\{|\theta| q^2(x)-\frac{1}{3} x q^3(x)-q(x) \int_0^x q^2(y) \mathrm{d} y+\frac{1}{6} q^4(x)\right\}</script><p>对$q(x)$求导：</p>
+<script type="math/tex; mode=display">
+2|\theta| q(x)-x q^2(x)-\int_0^x q^2(y) \mathrm{d} y-2 q(x) \int_x^1 q(y) \mathrm{d} y+\frac{2}{3} q^3(x)=0</script><p>持续求微分得到结果：</p>
+<script type="math/tex; mode=display">
+|\theta|-x q(x)-\int_x^1 q(y) \mathrm{d} y+q^2(x)=0 \quad \text { or } \quad q^{\prime}(x)=0</script><script type="math/tex; mode=display">
+q(x)=\frac{x}{2} \quad \text { or } \quad q^{\prime}(x)=0</script><p>最后得到的解与$|\theta|$有关：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& q(x)=\frac{x}{2} \quad\left(0 \leq x \leq x_1=2 q(1)\right) \\
+& q(x)=q(1) \quad\left(x_1 \leq x \leq 1\right) \\
+& q(1)=|\theta|+\mathcal{O}\left(\theta^2\right) 
+\end{align}</script><p>当接近相变点时，$q(x=0)$。</p>
+<p><img src="/2022/11/20/Phys/SK_model/SK_model1/q_x.png" alt="$q(x)$"></p>
 ]]></content>
       <categories>
         <category>Physics</category>

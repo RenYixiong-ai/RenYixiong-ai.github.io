@@ -30,8 +30,9 @@
 <meta property="og:description" content="利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。该章节主要介绍 Parisi 解。 Reference:  Statistical Physics of Spin Glasses and Information Processing. Nishimori Replica calculations for the SK model笔误有点多 RS and RSB so">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/20/Phys/SK_model/SK_model1/phase.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/20/Phys/SK_model/SK_model1/q_x.png">
 <meta property="article:published_time" content="2022-11-20T13:38:00.000Z">
-<meta property="article:modified_time" content="2024-06-28T03:46:20.660Z">
+<meta property="article:modified_time" content="2024-06-28T09:18:10.324Z">
 <meta property="article:author" content="Ren Yixiong">
 <meta property="article:tag" content="Spin Glass">
 <meta property="article:tag" content="Replica Method">
@@ -227,7 +228,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2024-06-28 11:46:20" itemprop="dateModified" datetime="2024-06-28T11:46:20+08:00">2024-06-28</time>
+                <time title="Modified: 2024-06-28 17:18:10" itemprop="dateModified" datetime="2024-06-28T17:18:10+08:00">2024-06-28</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -423,35 +424,28 @@ g(x+\mathrm{d} x, h)=\exp \left\{-\frac{1}{2} \mathrm{~d} q(x) \frac{\partial^2}
 <script type="math/tex; mode=display">\begin{align}
 \frac{\partial f_0(x, h)}{\partial x}=-\frac{J^2}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\} \label{3.42} 
 \end{align}</script><p>有 $f_0(1, h)=\log 2 \cosh \beta h$。</p>
-<font color="red">stop</font>
+<h2 id="Order-parameter-near-the-critical-point"><a href="#Order-parameter-near-the-critical-point" class="headerlink" title="Order parameter near the critical point"></a>Order parameter near the critical point</h2><p>虽然求解$\eqref{3.41}$十分困难，但是在临界点附近的性质是可以研究的。</p>
+<p>在$J_0=h=0$的条件下，$\eqref{2.17}$展为4阶可以是：</p>
+<font color="red">未经计算，直接抄的，并且十分简略</font>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<script type="math/tex; mode=display">
+\begin{align}
+\beta f= & \lim _{n \rightarrow 0} \frac{1}{n}\left\{\frac{1}{4}\left(\frac{T^2}{T_{\mathrm{f}}^2}-1\right) \operatorname{Tr} Q^2-\frac{1}{6} \operatorname{Tr} Q^3 - \frac{1}{8} \operatorname{Tr} Q^4+\frac{1}{4} \sum_{\alpha \neq \beta \neq \gamma} Q_{\alpha \beta}^2 Q_{\alpha \gamma}^2-\frac{1}{12} \sum_{\alpha \neq \beta} Q_{\alpha \beta}^4\right\},
+\end{align}</script><p>其中$Q_{\alpha\beta}=(\beta J)^2 q_{\alpha\beta}$，令$\theta=\frac{T_f-T}{T_f}$并且考虑复本极限$n\to 0$有：</p>
+<script type="math/tex; mode=display">
+\beta f=\frac{1}{2} \int_0^1 \mathrm{~d} x\left\{|\theta| q^2(x)-\frac{1}{3} x q^3(x)-q(x) \int_0^x q^2(y) \mathrm{d} y+\frac{1}{6} q^4(x)\right\}</script><p>对$q(x)$求导：</p>
+<script type="math/tex; mode=display">
+2|\theta| q(x)-x q^2(x)-\int_0^x q^2(y) \mathrm{d} y-2 q(x) \int_x^1 q(y) \mathrm{d} y+\frac{2}{3} q^3(x)=0</script><p>持续求微分得到结果：</p>
+<script type="math/tex; mode=display">
+|\theta|-x q(x)-\int_x^1 q(y) \mathrm{d} y+q^2(x)=0 \quad \text { or } \quad q^{\prime}(x)=0</script><script type="math/tex; mode=display">
+q(x)=\frac{x}{2} \quad \text { or } \quad q^{\prime}(x)=0</script><p>最后得到的解与$|\theta|$有关：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& q(x)=\frac{x}{2} \quad\left(0 \leq x \leq x_1=2 q(1)\right) \\
+& q(x)=q(1) \quad\left(x_1 \leq x \leq 1\right) \\
+& q(1)=|\theta|+\mathcal{O}\left(\theta^2\right) 
+\end{align}</script><p>当接近相变点时，$q(x=0)$。</p>
+<p><img src="/2022/11/20/Phys/SK_model/SK_model1/q_x.png" alt="$q(x)$"></p>
 
     </div>
 
@@ -539,7 +533,7 @@ g(x+\mathrm{d} x, h)=\exp \left\{-\frac{1}{2} \mathrm{~d} q(x) \frac{\partial^2}
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Multi-step-replica-symmetry-breaking-RSB"><span class="nav-number">1.</span> <span class="nav-text">Multi-step replica symmetry breaking (RSB)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#First-step-RSB"><span class="nav-number">2.</span> <span class="nav-text">First step RSB</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Full-RSB-Solution"><span class="nav-number">3.</span> <span class="nav-text">Full RSB Solution</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#parisi-equation"><span class="nav-number">3.1.</span> <span class="nav-text">parisi equation</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Multi-step-replica-symmetry-breaking-RSB"><span class="nav-number">1.</span> <span class="nav-text">Multi-step replica symmetry breaking (RSB)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#First-step-RSB"><span class="nav-number">2.</span> <span class="nav-text">First step RSB</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Full-RSB-Solution"><span class="nav-number">3.</span> <span class="nav-text">Full RSB Solution</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#parisi-equation"><span class="nav-number">3.1.</span> <span class="nav-text">parisi equation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Order-parameter-near-the-critical-point"><span class="nav-number">3.2.</span> <span class="nav-text">Order parameter near the critical point</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -553,18 +547,18 @@ g(x+\mathrm{d} x, h)=\exp \left\{-\frac{1}{2} \mathrm{~d} q(x) \frac{\partial^2}
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">6</span>
         <span class="site-state-item-name">categories</span>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">48</span>
+        <span class="site-state-item-count">49</span>
         <span class="site-state-item-name">tags</span></a>
       </div>
   </nav>
@@ -619,12 +613,12 @@ g(x+\mathrm{d} x, h)=\exp \left\{-\frac{1}{2} \mathrm{~d} q(x) \frac{\partial^2}
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">151k</span>
+    <span title="Symbols count total">152k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">4:34</span>
+    <span title="Reading time total">4:36</span>
 </div>
 
         
