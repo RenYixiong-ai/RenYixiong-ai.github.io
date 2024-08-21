@@ -6,7 +6,7 @@
   <link href="https://renyixiong-ai.github.io/atom.xml" rel="self"/>
   
   <link href="https://renyixiong-ai.github.io/"/>
-  <updated>2024-06-28T04:09:02.708Z</updated>
+  <updated>2024-08-21T05:07:11.857Z</updated>
   <id>https://renyixiong-ai.github.io/</id>
   
   <author>
@@ -15,6 +15,97 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Machine learning renormalization group for statistical physics</title>
+    <link href="https://renyixiong-ai.github.io/2024/08/21/ai4sci/MLRG/MLRG/"/>
+    <id>https://renyixiong-ai.github.io/2024/08/21/ai4sci/MLRG/MLRG/</id>
+    <published>2024-08-21T04:00:00.000Z</published>
+    <updated>2024-08-21T05:07:11.857Z</updated>
+    
+    <content type="html"><![CDATA[<p>通过构建三个网络学习实空间重整化过程中的参数变化。</p><p>Reference:</p><ul><li><a href="https://doi.org/10.1088/2632-2153/ad0101">Machine learning renormalization group for statistical physics</a></li></ul><span id="more"></span><h1 id="Network"><a href="#Network" class="headerlink" title="Network"></a>Network</h1><p><img src="/2024/08/21/ai4sci/MLRG/MLRG/architecture.png" alt="architecture of algorithm"></p><p>一共有三个网络，其中两个是 RBM，另一个是深度网络。这两个 RBM 分别表示重整化前与重整化后的模型，可以给出波尔兹曼分布。在重整化变换前后分布应当是不变的，因此通过KL散度衡量这两个网络之间的距离，然而衡量KL散度存在困难，使用CD散度进行替代。</p><p>那么这两个网络之间的重整化参数是如何确定的呢？这里引入了三个网络 moderator，用以将第一个网络参数转化为第第二个网络的参数，是学习重整化流的主要网络。</p><h1 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h1><p>算法流程为：</p><ol><li>通过参数J进行采样（HMC），得到一些用于训练的 sample。</li><li>J 作为 fine-grained RBM 的参数。</li><li>这些sample输入 fine-grained RBM，产生根据其概率分布的sample1。</li><li>通过 Moderator 将 J 变化为 J’，输入进 corase-grained RBM。</li><li>将 sample1 输入 corase-grained RBM，产生根据其概率分布的sample2。</li><li>根据sample2和sample1之间的概率分布区别作为loss。</li><li>利用loss训练 Moderator。</li><li>将 J’ 作为下一次循环的 J。</li></ol><h1 id="RG"><a href="#RG" class="headerlink" title="RG"></a>RG</h1><p><img src="/2024/08/21/ai4sci/MLRG/MLRG/lattice.png" alt="lattice"></p><p>这里的重整化变换见上图中的阴影部分，a、b分别表示变换前后，绿色格点是sample的位置，蓝色和红色表示相互作用J。</p><p><img src="/2024/08/21/ai4sci/MLRG/MLRG/tensor.png" alt="tensor"></p><p>这里存在一个问题，两个不同的网络结构，相互作用是如何进行转化的？上图将这个相互用进行分解，将自旋、对称性、相互作用系数进行分解。</p><h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="/2024/08/21/ai4sci/MLRG/MLRG/result.png" alt="result"></p><p>绘制出 RG flow，并且能够准确找到鞍点。</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;通过构建三个网络学习实空间重整化过程中的参数变化。&lt;/p&gt;
+&lt;p&gt;Reference:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://doi.org/10.1088/2632-2153/ad0101&quot;&gt;Machine learning renormalization group for statistical physics&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="AI for Science" scheme="https://renyixiong-ai.github.io/categories/AI-for-Science/"/>
+    
+    
+    <category term="Reinforcement Learning" scheme="https://renyixiong-ai.github.io/tags/Reinforcement-Learning/"/>
+    
+    <category term="Spin Glass" scheme="https://renyixiong-ai.github.io/tags/Spin-Glass/"/>
+    
+    <category term="Combinatorial Optimization Methods" scheme="https://renyixiong-ai.github.io/tags/Combinatorial-Optimization-Methods/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Analytic and Algorithmic Solution of Random Satisfiability Problems</title>
+    <link href="https://renyixiong-ai.github.io/2024/07/09/Phys/science_3831989/RSP/"/>
+    <id>https://renyixiong-ai.github.io/2024/07/09/Phys/science_3831989/RSP/</id>
+    <published>2024-07-09T02:37:00.000Z</published>
+    <updated>2024-07-09T04:17:21.963Z</updated>
+    
+    <content type="html"><![CDATA[<p>Parisi关于组合优化问题的分析。</p><p>reference:</p><ul><li><a href="https://www.jstor.org/stable/3831989">Analytic and Algorithmic Solution of Random Satisfiability Problems</a></li></ul><span id="more"></span><p>关于组合优化问题关心两类求解算法、理论分析，第二类理论分析具体为一类组合优化问题在不同实例的情况下，有哪些共性特征。</p><p>考虑热力学极限$\alpha=M/N$，其中$N$是变量数，$M$是子句数目，其中$\alpha$是一个恒定值。将其转化为统计物理问题，$N$个布尔变量用二值$s$表示，每个子句$a$包含$k$个变量（K-SAT问题）即$k$个自旋相互作用，相互作用强度$J\in\{-1,1\}$通过子句中的$\neg$决定，将所有子句进行加和：</p><script type="math/tex; mode=display">\begin{align}H=\sum_a \prod_k \frac{1+J_a s_k}{2^k}\end{align}</script><p>最终$H$的值表示违反的关系的个数，当全部满足的时候$H=0$。定义零温下的自由能关系：</p><script type="math/tex; mode=display">\exp(-Ny\Phi(y))=\int\mathbb{d}w \exp(N[\Sigma(e)-ye])</script><p>其中$e$表示自由能，$\Sigma$为对应自由能量的熵。为了计算$\Phi$，使用空腔的方法。</p><p>$\begin{aligned}<br>\min _{s_2, \ldots, s_K}\left(H-\frac{1}{2} \sum_{j=2}^K h_j s_j\right) =-\frac{1}{2}\left[a_J\left(h_2, \ldots, h_K\right)+s_1 u_J\left(h_2, \ldots, h_K\right)\right]<br>\end{aligned}$</p><p><img src="/2024/07/09/Phys/science_3831989/RSP/fig1.png" alt="Cavity"><br>上图为表示空腔的因子图。</p><p><img src="/2024/07/09/Phys/science_3831989/RSP/fig2.png" alt="phase diagram"></p><p>相图可以用如上的结果表示，红线代表平均每个变量不满足的几率；绿线代表遍历性破缺线条；蓝线表示解的熵线。</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;Parisi关于组合优化问题的分析。&lt;/p&gt;
+&lt;p&gt;reference:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.jstor.org/stable/3831989&quot;&gt;Analytic and Algorithmic Solution of Random Satisfiability Problems&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="Physics" scheme="https://renyixiong-ai.github.io/categories/Physics/"/>
+    
+    
+    <category term="Spin Glass" scheme="https://renyixiong-ai.github.io/tags/Spin-Glass/"/>
+    
+    <category term="Combinatorial Optimization Methods" scheme="https://renyixiong-ai.github.io/tags/Combinatorial-Optimization-Methods/"/>
+    
+    <category term="Boltzmann Machine" scheme="https://renyixiong-ai.github.io/tags/Boltzmann-Machine/"/>
+    
+    <category term="Replica Method" scheme="https://renyixiong-ai.github.io/tags/Replica-Method/"/>
+    
+    <category term="Replica Symmetry Breaking" scheme="https://renyixiong-ai.github.io/tags/Replica-Symmetry-Breaking/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Replica in Random Matrix</title>
+    <link href="https://renyixiong-ai.github.io/2024/07/03/Phys/replica/replica_math/"/>
+    <id>https://renyixiong-ai.github.io/2024/07/03/Phys/replica/replica_math/</id>
+    <published>2024-07-03T13:37:00.000Z</published>
+    <updated>2024-07-04T08:57:56.126Z</updated>
+    
+    <content type="html"><![CDATA[<span id="more"></span><h3 id="Stieltjes变换概述"><a href="#Stieltjes变换概述" class="headerlink" title="Stieltjes变换概述"></a>Stieltjes变换概述</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>Stieltjes变换是一个用于分析和研究实数轴上测度（或函数）性质的工具。对于一个实数轴上的测度 (\mu)，它的Stieltjes变换 ( G(z) ) 定义为：</p><p>[ G(z) = \int_{-\infty}^{\infty} \frac{d\mu(x)}{x - z} ]</p><p>其中，( z ) 是复平面上的一个点，且不在实数轴上的支撑集（即测度 (\mu) 为零的区域）内。</p><p>对于一个函数 ( f(x) ) 来说，如果我们把它视为测度的密度函数，则Stieltjes变换可以写成：</p><p>[ G(z) = \int_{-\infty}^{\infty} \frac{f(x) \, dx}{x - z} ]</p><h4 id="逆变换"><a href="#逆变换" class="headerlink" title="逆变换"></a>逆变换</h4><p>Stieltjes变换的逆变换用于从变换后的函数恢复原始测度或密度函数。对于谱密度 ( \rho(x) )，我们有：</p><p>[ \rho(x) = \lim_{\epsilon \to 0^+} \frac{1}{\pi} \Im[G(x + i\epsilon)] ]</p><p>其中，( \Im[G(x + i\epsilon)] ) 表示 ( G(z) ) 在 ( z = x + i\epsilon ) 处的虚部。</p><h3 id="应用示例：Wigner矩阵的谱密度"><a href="#应用示例：Wigner矩阵的谱密度" class="headerlink" title="应用示例：Wigner矩阵的谱密度"></a>应用示例：Wigner矩阵的谱密度</h3><h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>Wigner矩阵是一个对称的随机矩阵，其元素是独立同分布的随机变量。设 ( W ) 是一个 ( N \times N ) 的Wigner矩阵，其元素 ( W_{ij} ) 满足以下条件：</p><ul><li>( W_{ij} = W_{ji} )</li><li>对于 ( i \neq j )， ( W_{ij} ) 是均值为零、方差为 ( \frac{1}{N} ) 的独立随机变量</li><li>对角元素 ( W_{ii} ) 是均值为零、方差为 ( \frac{2}{N} ) 的独立随机变量</li></ul><p>Wigner半圆定律描述了在 ( N \to \infty ) 的极限下，Wigner矩阵的特征值分布趋向于一个半圆分布。</p><h4 id="自洽方程推导"><a href="#自洽方程推导" class="headerlink" title="自洽方程推导"></a>自洽方程推导</h4><p>随机矩阵 ( W ) 的Stieltjes变换 ( G(z) ) 定义为：<br>[ G_N(z) = \frac{1}{N} \sum_{i=1}^N \frac{1}{\lambda_i - z} ]</p><p>在大尺寸极限下， ( G_N(z) ) 的期望值趋向于一个确定的值 ( G(z) )，满足自洽方程：<br>[ G(z) = \frac{1}{-z - G(z)} ]</p><p>这个方程通过以下步骤推导：</p><ol><li>将Stieltjes变换定义为矩阵的特征值求和。</li><li>利用矩阵的迹和逆矩阵的关系，展开逆矩阵。</li><li>在大尺寸极限下，假设矩阵元素足够小，进行平均场近似。</li><li>得到自洽方程，并通过二次方程求解。</li></ol><h4 id="解析自洽方程"><a href="#解析自洽方程" class="headerlink" title="解析自洽方程"></a>解析自洽方程</h4><p>解自洽方程 ( G(z) = \frac{1}{-z - G(z)} )：<br>[ G(z)^2 + zG(z) + 1 = 0 ]</p><p>解得：<br>[ G(z) = \frac{-z \pm \sqrt{z^2 - 4}}{2} ]</p><p>选择满足 ( \Im[G(z)] \geq 0 ) 的分支：<br>[ G(z) = \frac{-z + \sqrt{z^2 - 4}}{2} ]</p><h4 id="恢复谱密度"><a href="#恢复谱密度" class="headerlink" title="恢复谱密度"></a>恢复谱密度</h4><p>根据逆Stieltjes变换公式，谱密度 ( \rho(x) ) 为：<br>[ \rho(x) = \frac{1}{\pi} \text{Im}[G(x + i\epsilon)] ]</p><p>代入 ( G(z) ) 的表达式，计算得：<br>[ \rho(x) = \frac{1}{2\pi} \sqrt{4 - x^2} ]</p><p>这正是Wigner半圆分布的谱密度。</p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Stieltjes变换在随机矩阵理论中是一个强大的工具，特别适用于谱密度的计算。通过Stieltjes变换，可以将实数轴上的谱密度问题转化为复平面上的解析问题，利用其逆变换可以从复平面上的函数恢复原始的谱密度，从而简化了复杂的计算过程。</p><font color="red">stop</font>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;span id=&quot;more&quot;&gt;&lt;/span&gt;
+&lt;h3 id=&quot;Stieltjes变换概述&quot;&gt;&lt;a href=&quot;#Stieltjes变换概述&quot; class=&quot;headerlink&quot; title=&quot;Stieltjes变换概述&quot;&gt;&lt;/a&gt;Stieltjes变换概述&lt;/h3&gt;&lt;h4 i</summary>
+      
+    
+    
+    
+    <category term="Physics" scheme="https://renyixiong-ai.github.io/categories/Physics/"/>
+    
+    
+    <category term="Spin Glass" scheme="https://renyixiong-ai.github.io/tags/Spin-Glass/"/>
+    
+    <category term="Replica Method" scheme="https://renyixiong-ai.github.io/tags/Replica-Method/"/>
+    
+    <category term="Random Matrix" scheme="https://renyixiong-ai.github.io/tags/Random-Matrix/"/>
+    
+  </entry>
   
   <entry>
     <title>Hexo 使用指南</title>
@@ -530,81 +621,6 @@
     <category term="TRPO" scheme="https://renyixiong-ai.github.io/tags/TRPO/"/>
     
     <category term="Policy Gradients" scheme="https://renyixiong-ai.github.io/tags/Policy-Gradients/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Neural Network Diffusion</title>
-    <link href="https://renyixiong-ai.github.io/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/"/>
-    <id>https://renyixiong-ai.github.io/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/</id>
-    <published>2024-03-03T16:00:00.000Z</published>
-    <updated>2024-04-15T03:37:33.513Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>这篇文章的主要任务是，利用Diffusion Model生成具备高表现能力的神经网络参数。</p><p>利用 autoencoder 和 laten diffusion model 两个主要部件，其中autoencoder将网络参数进行提取，diffusion model再进行训练，然后再将训练好的模型进行解码。</p><span id="more"></span><p>将神经网络的训练与扩散逆过程进行对比：</p><ol><li>都是从随机到一个特定的分布。</li><li>高质量的图像与具备很好表现的网络参数，可以退化为一个简单分布。</li></ol><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/fig1.png" alt="diffusion model VS model parameters"></p><p>本文提出parameter generation, 叫做 neural network diffusion (p-diff, p stands for parameter)。</p><p>首先用已经训练好的模型参数，训练自编码器。<br>然后用标准latent diffusion model 从随机噪声中合成编码后的表示。最后，利用训练完的diffusion model，通过已经训练过的自编码器去生成新的参数。</p><h1 id="Nerual-Network-Diffusion"><a href="#Nerual-Network-Diffusion" class="headerlink" title="Nerual Network Diffusion"></a>Nerual Network Diffusion</h1><h2 id="Preliminaries-of-diffusion-models"><a href="#Preliminaries-of-diffusion-models" class="headerlink" title="Preliminaries of diffusion models"></a>Preliminaries of diffusion models</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/NND.png" alt="Train LDM"></p><p>前向过程在不断的增加噪声，后向过程在猜测噪声分布。训练目标是计算分布的KL散度，尽可能的小。</p><p>上图中，LDM表示latent diffusion model，训练编码后的表示。前向过程为：从已经表示的分布增加噪声，逐步成为随机噪声分布；后向过程为，从随机噪声出发逐步预测噪声进行去噪，得到原始的表达。</p><h2 id="Parameter-autoencoder"><a href="#Parameter-autoencoder" class="headerlink" title="Parameter autoencoder"></a>Parameter autoencoder</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/autoencoder.png" alt="AutoEncoder"></p><p>利用训练好的数据，进行编码训练。</p><h2 id="Inference"><a href="#Inference" class="headerlink" title="Inference"></a>Inference</h2><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/inference.png" alt="Inference"></p><p>使用DDPM进行优化。</p><h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/result.png" alt="result"></p><p>从结果来看部分数据集上最优，其它大部分也与最优表现持平。</p><p>该模型是否仅仅记住了训练好的模型参数，而非生成了新的模型参数？从结果来看，生成的模型要高于输入训练的模型，可见其是学习到了一些内容。</p>]]></content>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;Introduction&quot;&gt;&lt;a href=&quot;#Introduction&quot; class=&quot;headerlink&quot; title=&quot;Introduction&quot;&gt;&lt;/a&gt;Introduction&lt;/h1&gt;&lt;p&gt;这篇文章的主要任务是，利用Diffusion Model生成具备高表现能力的神经网络参数。&lt;/p&gt;
-&lt;p&gt;利用 autoencoder 和 laten diffusion model 两个主要部件，其中autoencoder将网络参数进行提取，diffusion model再进行训练，然后再将训练好的模型进行解码。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Machine Learning" scheme="https://renyixiong-ai.github.io/categories/Machine-Learning/"/>
-    
-    
-    <category term="Diffusion Model" scheme="https://renyixiong-ai.github.io/tags/Diffusion-Model/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ViT and ViViT</title>
-    <link href="https://renyixiong-ai.github.io/2024/02/29/DL/ViT_ViViT/ViT_ViViT/"/>
-    <id>https://renyixiong-ai.github.io/2024/02/29/DL/ViT_ViViT/ViT_ViViT/</id>
-    <published>2024-02-29T06:00:00.000Z</published>
-    <updated>2024-04-15T03:36:03.778Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>将 Transformer 架构加入视觉领域，ViT与ViViT是分别是将该架构加入图片分类与视频分类领域，是该方向的两篇代表作。</p><ul><li>ViT: AN IMAGE IS WORTH 16X16 WORDS: TRANSFORMERS FOR IMAGE RECOGNITION AT SCALE</li><li>ViViT: ViViT: A Video Vision Transformer</li></ul><span id="more"></span><h1 id="Vision-Transformer-ViT"><a href="#Vision-Transformer-ViT" class="headerlink" title="Vision Transformer(ViT)"></a>Vision Transformer(ViT)</h1><p>ViT尽可能的遵循原始<a href="https://arxiv.org/abs/1706.03762">Transformer</a>。</p><p><img src="/2024/02/29/DL/ViT_ViViT/ViT_ViViT/ViT.png" alt="ViT structure"></p><p>标准的 Transformer 的输入是一维序列，因此首先需要将二维的图像整形为一维的序列。将其作为整体，称作patch，输入到Transformer进行 embedding。</p><p>位置编码直接相加进path embedding。</p><p>Trandformer Encoder架构为：</p><p><img src="/2024/02/29/DL/ViT_ViViT/ViT_ViViT/transformer_encoder.png" alt="Trandformer Encoder"></p><p>数学公式总结为：</p><script type="math/tex; mode=display">\begin{align}z_0 &= [x_\text{class}; x_p^1 E;x_p^2 E;\cdots ;x_p^N E]+E_\text{pos}\quad E\in \mathcal R^{(p^2\cdot C)\times D},E_{pos}\in \mathcal R^{(N+1)\times D} \\z'_l &= MSA(LN(z_{l-1}))+z_{l-1} \quad l=1\cdots L \\z_l &= MLP(LN(z'_l))+z'_l \quad l=1\cdots L \\y &= LN(z_L^0)\end{align}</script><p>其中$C$是通道数，$D$是样本数，$p^2$是分块之后的数量，MSA是multiheaded selfattention，MLP是多层感知机，LN是 Layernorm，并且$z_0^0=x_\text{class}$</p><h1 id="Video-Vision-Transformer-ViViT"><a href="#Video-Vision-Transformer-ViViT" class="headerlink" title="Video Vision Transformer(ViViT)"></a>Video Vision Transformer(ViViT)</h1><p>基于图像，进一步整合时空的Transformer结构。能够对视频进行有效的处理。</p><p><img src="/2024/02/29/DL/ViT_ViViT/ViT_ViViT/ViViT.png" alt="ViViT"></p><p>除了ViT提出的patch embedding，在处理时空信息上本文提出了Tubelet embedding。</p><p><img src="/2024/02/29/DL/ViT_ViViT/ViT_ViViT/tubelet_embedding.png" alt="Tubelet embedding"></p><p>其在时间信息上同样进行编码，组成一个包含部分时间与部分空间信息的embedding。这样就成功让Transformer可以输入时间与空间信息，接下来需要处理的是patch embedding 与 tubelet embedding 两部分信息如何输入进 transformer。虽然其同为编码信息，但是时间和空间的信息如何有效的耦合就是新的问题。这篇文章提出了四种架构。</p><h2 id="Spation-temporal-attendtion"><a href="#Spation-temporal-attendtion" class="headerlink" title="Spation-temporal attendtion"></a>Spation-temporal attendtion</h2><p>直接认为两者地位等价，作为相同的token进行输入。显然则会导致输入的信息过于庞大，这是最吃资源的一种。</p><h2 id="Factorised-encoder"><a href="#Factorised-encoder" class="headerlink" title="Factorised encoder"></a>Factorised encoder</h2><p><img src="/2024/02/29/DL/ViT_ViViT/ViT_ViViT/factorised_encoder.png" alt="Factorised"></p><p>这种方案包含两层encoder，第一层将在同一个tubelet 附近的 patch进行encoder，然后下一步将其在时间上进行encoder。</p><h2 id="Factorised-self-attention"><a href="#Factorised-self-attention" class="headerlink" title="Factorised self-attention"></a>Factorised self-attention</h2><p><img src="/2024/02/29/DL/ViT_ViViT/ViT_ViViT/Factorised_self-attention.png" alt="Factorised self-attention"></p><p>与第一种方案一样，同样认为等价的地位，但只进行self-attention操作。首先先处理空间，然后是时间。</p><h2 id="Factorised-dot-product-attention"><a href="#Factorised-dot-product-attention" class="headerlink" title="Factorised dot-product attention"></a>Factorised dot-product attention</h2><p><img src="/2024/02/29/DL/ViT_ViViT/ViT_ViViT/Factorised%20dot-product%20attention.png" alt="Factorised dot-product attention"></p><p>分别处理时间与空间上的embedding，然后拼接再作为一个整体。</p>]]></content>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h1&gt;&lt;p&gt;将 Transformer 架构加入视觉领域，ViT与ViViT是分别是将该架构加入图片分类与视频分类领域，是该方向的两篇代表作。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;ViT: AN IMAGE IS WORTH 16X16 WORDS: TRANSFORMERS FOR IMAGE RECOGNITION AT SCALE&lt;/li&gt;
-&lt;li&gt;ViViT: ViViT: A Video Vision Transformer&lt;/li&gt;
-&lt;/ul&gt;</summary>
-    
-    
-    
-    <category term="Machine Learning" scheme="https://renyixiong-ai.github.io/categories/Machine-Learning/"/>
-    
-    
-    <category term="ViT" scheme="https://renyixiong-ai.github.io/tags/ViT/"/>
-    
-    <category term="ViViT" scheme="https://renyixiong-ai.github.io/tags/ViViT/"/>
-    
-    <category term="Transform" scheme="https://renyixiong-ai.github.io/tags/Transform/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Sora原理分析</title>
-    <link href="https://renyixiong-ai.github.io/2024/02/28/DL/sora/sora/"/>
-    <id>https://renyixiong-ai.github.io/2024/02/28/DL/sora/sora/</id>
-    <published>2024-02-28T14:15:00.000Z</published>
-    <updated>2024-04-15T03:33:13.570Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p><a href="https://openai.com/research/video-generation-models-as-world-simulators">sora</a>完成了文本生成视频的任务，其中视频的时长与连贯性都有非常惊艳的效果，不仅将视频时长拓展到了60S的水平，而且即使视频中发生物品遮挡，在之后也能成功接上，视频整体非常连贯。</p><p>感谢<a href="https://datawhaler.feishu.cn/wiki/FA8UwCrsNiEO0gkh9Uici8RUn5f">Datawhale开源社区</a>提供相关资源。</p><span id="more"></span><h1 id="Vision-Transformer"><a href="#Vision-Transformer" class="headerlink" title="Vision Transformer"></a>Vision Transformer</h1><p>基于官网的介绍：</p><blockquote><p>We leverage a transformer architecture that operates on spacetime patches of video and image latent codes.</p></blockquote><p>可见sora的基本架构来源于Transform，这里需要先介绍该领域的经典模型<a href="https://arxiv.org/pdf/2010.11929.pdf">Vision Transformer(ViT)</a>。</p><p>Transform 是广泛应用于 NLP 的架构，会将不同的 token 以序列方式进行处理。在 CV 上，也有很多将 Transform 引入的尝试，ViT 基本将原生的架构引入视觉领域。</p><p><img src="/2024/02/28/DL/sora/sora/ViT.png" alt="ViT"></p><p>首先图片不能直接将像素作为一个基本单位作为一个token，这样输入规模将会过大。需要进行分割，将整张图片进行分割，左下角将整张图片分为9个部分，每个部分作为基本的单位，然后将位置信息直接相加，称为 Patch ，接下来将其线性化，输入到Transform Encoder。</p><h1 id="Video-Vision-Transformer"><a href="#Video-Vision-Transformer" class="headerlink" title="Video Vision Transformer"></a>Video Vision Transformer</h1><blockquote><p>At a high level, we turn videos into patches by first compressing videos into a lower-dimensional latent space, and subsequently decomposing the representation into spacetime patches.</p></blockquote><p>将视频同样进行切块的技术，考虑之前的文章<a href="https://arxiv.org/pdf/2103.15691.pdf">ViViT: A Video Vision Transformer(ViViT)</a></p><p><img src="/2024/02/28/DL/sora/sora/fig1.png" alt="Turning visual data into patches"></p><p>针对于时间部分，同样是划分为小部分块，称为 tuplet。然后以一定序列的方式进行编码，一维化输入到 Transform。</p><p><img src="/2024/02/28/DL/sora/sora/tuplet.png" alt="Tuplet"></p><p>训练过程为：</p><p><img src="/2024/02/28/DL/sora/sora/ViViT.png" alt="ViViT"></p><h1 id="Scaling-transformers-for-video-generation"><a href="#Scaling-transformers-for-video-generation" class="headerlink" title="Scaling transformers for video generation"></a>Scaling transformers for video generation</h1><p>整个训练过称为 diffusion model</p><p><img src="/2024/02/28/DL/sora/sora/diffusion_model.png" alt="diffusion_model"></p>]]></content>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h1&gt;&lt;p&gt;&lt;a href=&quot;https://openai.com/research/video-generation-models-as-world-simulators&quot;&gt;sora&lt;/a&gt;完成了文本生成视频的任务，其中视频的时长与连贯性都有非常惊艳的效果，不仅将视频时长拓展到了60S的水平，而且即使视频中发生物品遮挡，在之后也能成功接上，视频整体非常连贯。&lt;/p&gt;
-&lt;p&gt;感谢&lt;a href=&quot;https://datawhaler.feishu.cn/wiki/FA8UwCrsNiEO0gkh9Uici8RUn5f&quot;&gt;Datawhale开源社区&lt;/a&gt;提供相关资源。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Machine Learning" scheme="https://renyixiong-ai.github.io/categories/Machine-Learning/"/>
-    
-    
-    <category term="Transform" scheme="https://renyixiong-ai.github.io/tags/Transform/"/>
-    
-    <category term="Sora" scheme="https://renyixiong-ai.github.io/tags/Sora/"/>
     
   </entry>
   

@@ -1059,6 +1059,227 @@ B & =\frac{1}{2 \sigma_2^2}\int_x p_1(x)\left(x-\mu_2\right)^2 d x \\
       </tags>
   </entry>
   <entry>
+    <title>Boltzmann Machine</title>
+    <url>/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/</url>
+    <content><![CDATA[<p>波尔兹曼机是物理模型，同时也是早期的机器学习模型。</p>
+<p>Reference:</p>
+<ul>
+<li><a href="https://campus.swarma.org/course/4543/study">神经网络的统计力学 — 受限制玻尔兹曼机的统计力学</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="Boltzmann-Machine"><a href="#Boltzmann-Machine" class="headerlink" title="Boltzmann Machine"></a>Boltzmann Machine</h1><p><span id="fig1"></span></p>
+<p><img src="/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/BMwithRBM.png" alt="BM with RBM"></p>
+<p>上图(a)为玻尔兹曼机，类似于Ising模型，但是任意两个节点之间均含有连接。</p>
+<script type="math/tex; mode=display">\begin{align}
+E(\boldsymbol{\sigma})=-\sum_i h_i \sigma_i-\sum_{i<j} w_{i j} \sigma_i \sigma_j \label{Ising}
+\end{align}</script><p>其中$\sigma_i= \pm 1$是节点$i$的取值，$w_{i j}$是任意两个节点之间的链接权重，$h_i$为外磁场项（可以理解为偏置项）。构型的波尔兹曼分布为：</p>
+<script type="math/tex; mode=display">\begin{align}
+p(\boldsymbol{\sigma})=\frac{1}{Z} e^{-\beta E(\sigma)}
+\end{align}</script><p>其中$Z=\sum_\sigma e^{-\beta E(\sigma)}$为配分函数。给定数据，数据表现形式通过$\sigma$表现，目标是设计权重$w_{ij}$，使得对应构型的概率分布（波尔兹曼分布）较大；类似与Hopfield模型，可以通过输入部分构型，还原出整体的构型。这个任务本质上就是逆 Ising 问题（Inverse Ising Problem）。</p>
+<p>为了讨论方便，这里假设 $h_i=0\quad \forall i$。当然，比较直接的权重设计方案是 Hebbian rule，但是这个并不是最优的结果。以下使用极大似然估计方法。</p>
+<script type="math/tex; mode=display">
+\begin{align}
+L(\boldsymbol{\theta} \mid\{\boldsymbol{\sigma}\}) & =\left\langle\log \left(p_{\boldsymbol{\theta}}(\boldsymbol{\sigma})\right)\right\rangle_{\text {data }} \\
+& =-\langle E(\boldsymbol{\sigma}, \boldsymbol{\theta})\rangle_{\text {data }}-\log Z(\boldsymbol{\theta}) \\
+& =\sum_{i=1}^N h_i\left\langle\sigma_i\right\rangle_{\text {data }}+\sum_{i<j} w_{i j}\left\langle\sigma_i \sigma_j\right\rangle_{\text {data }}-\log Z(\boldsymbol{\theta})
+\end{align}</script><p>其中$\langle\ldots\rangle_{\text {data }}$ 表示对数据求平均，$\boldsymbol{\theta}$ 表示模型参数 $\{\boldsymbol{W}, \boldsymbol{h}\}$，计算$L(\boldsymbol{\theta} \mid\{\boldsymbol{\sigma}\})$ 梯度：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+\frac{\partial L}{\partial h_i} & =\left\langle\sigma_i\right\rangle_{\text {data }}-\left\langle\sigma_i\right\rangle_{\text {model }}  \\
+\frac{\partial L}{\partial w_{i j}} & =\left\langle\sigma_i \sigma_j\right\rangle_{\text {data }}-\left\langle\sigma_i \sigma_j\right\rangle_{\text {model }}
+\end{align}</script><p>其中$\langle\ldots\rangle_{\text {model }}$ 表示模型平均，表示的模型的热力学平均，是一个加权平均，穷举计算法耗时太长，直接计算是不现实的，可以认为是一个重要性抽样，从而使用蒙卡的方案计算。模型参数的梯度更新可以写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\Delta h_i & =\eta \frac{\partial L}{\partial h_i}=\eta\left(\left\langle\sigma_i\right\rangle_{\text {data }}-\left\langle\sigma_i\right\rangle_{\mathrm{model}}\right)  \\
+\Delta w_{i j} & =\eta \frac{\partial L}{\partial w_{i j}}=\eta\left(\left\langle\sigma_i \sigma_j\right\rangle_{\text {data }}-\left\langle\sigma_i \sigma_j\right\rangle_{\mathrm{model}}\right)
+\end{align}</script><p>其中$\eta$表示学习率。第一部分是数据的平均值，可以通过对数据进行平均计算；第二部分是模型的平均值，这部分计算如之前的描述，只能采用MCMC方法等重要性抽样方法才能计算（两点关联可以转化为点$\frac{\partial\left\langle\sigma_i\right\rangle_{\text {model }}}{\partial h_j}=\left\langle\sigma_i \sigma_j\right\rangle_{\text {model }}-\left\langle\sigma_i\right\rangle_{\text {model }}\left\langle\sigma_j\right\rangle_{\text {model }}$），然而由于模型的$h_j$与$w_{ij}$每一步都会发生变化，意味着每一次更新参数就需要重新进行一次重要性抽样，这显然是不能接受的。</p>
+<p>如果存在更高关联，例如三阶：</p>
+<script type="math/tex; mode=display">\begin{align}
+E(\boldsymbol{\sigma})=-\sum_i h_i \sigma_i-\sum_{i<j} w_{i j} \sigma_i \sigma_j-\sum_{i<j<k}\kappa_{ijk}\sigma_i\sigma_j\sigma_k 
+\end{align}</script><p>如何将这些关联以另一种形式展现，从而避免计算上的复杂性，这里引入一个隐变量$s$。</p>
+<p><span id="fig2"></span></p>
+<p><img src="/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/hidden.png" alt="Hidden"></p>
+<script type="math/tex; mode=display">\begin{align}
+E(\boldsymbol{\sigma},s)=-\sum_i h_i \sigma_i-\sum_{i<j} w_{i j} \sigma_i \sigma_j-s\sum_{i}\sigma_i k_i
+\end{align}</script><p>其中$k_i$表示$\sigma_i$与隐变量之间的强度。可知其波尔兹曼分布为：</p>
+<script type="math/tex; mode=display">\begin{align}
+P(\boldsymbol{\sigma},s) &\sim \exp\left(E(\boldsymbol{\sigma},s)\right) \\
+P(\boldsymbol{\sigma}) &=\sum_{s}\exp\left(E(\boldsymbol{\sigma},s)\right) \\
+&\sim \exp\left(-\sum_i h_i \sigma_i-\sum_{i<j} w_{i j} \sigma_i \sigma_j\right)2\cosh\left(\sum_i\sigma_i k_i\right) \\
+&= \exp\left(-\sum_i h_i \sigma_i-\sum_{i<j} w_{i j} \sigma_i \sigma_j\right)\exp\left( \ln\left[ 2\cosh\left(\sum_i\sigma_i k_i\right) \right] \right)
+\end{align}</script><p>可以将$\ln\left[ 2\cosh\left(\sum_i\sigma_i k_i\right) \right]$展开，从而得到高阶项:</p>
+<script type="math/tex; mode=display">
+\log (2 \cosh (x))=\log
+   (2)+\frac{x^2}{2}-\frac{x^4}{12}+O\left(x^6\right)</script><p>上面只是引入一个隐变量，更普遍的是具有更多隐变量<a href="#fig1">图中(b)</a>，这样会使得模型表达能力提升。对应的能量为：</p>
+<script type="math/tex; mode=display">\begin{align}
+E(\boldsymbol{\sigma},s)=-\sum_i h_i \sigma_i-\sum_{i<j} w_{i j} \sigma_i \sigma_j-\sum_{i,a}k_{ia}\sigma_i s_a-\sum_{a<b}\gamma_{ab}s_a s_b
+\end{align}</script><p>需要学习的模型参数除了$\eqref{Ising}$中提到的$w$与$h$以外，还需要学习$k_{a b}$与$\gamma_{a b}$两个参数：</p>
+<p>$\begin{aligned}<br>&amp; \Delta k_{a b}=\eta\left(\left\langle\sigma_i s_a\right\rangle_{\text {data }}-\left\langle\sigma_i s_a\right\rangle_{\text {model }}\right) \\<br>&amp; \Delta \gamma_{a b}=\eta\left(\left\langle s_a s_b\right\rangle_{\text {data }}-\left\langle s_a s_b\right\rangle_{\text {model }}\right)<br>\end{aligned}$</p>
+<p>由于$s$是隐变量，并不能直接直接得到，但是可以得到其概率值，例如通过 Sigmoid 函数：</p>
+<script type="math/tex; mode=display">\begin{align}
+P(s_a=1|\mathbf{\sigma})=\text{sigmoid}\left( -\sum_{i,a}k_{ia}\sigma_i-\sum_{a<b}\gamma_{ab}s_b \right)
+\end{align}</script><p>可以看到上面的计算过程中使用到了其它隐变量$s$，这里不得不进行近似，使用伯努力采样赋予$s$值；依据这个过程将所有的隐变量概率以及具体的值计算出来。</p>
+<p>可以看到在加入隐变量值后，计算CD散度需要更多的蒙卡模拟从而得到模型平均。这是一个十分费时的过程。</p>
+<h1 id="Restricted-Boltzmann-Machine"><a href="#Restricted-Boltzmann-Machine" class="headerlink" title="Restricted Boltzmann Machine"></a>Restricted Boltzmann Machine</h1><p>为了解决计算模型平均花费很多时间，将一些关联项进行省略，包含可见变量之间的相互作用以及隐变量之间的相互作用项，将这个模型称之为受限玻尔兹曼机。</p>
+<p><span id="fig3"></span></p>
+<p><img src="/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/RBM.png" alt="BM with RBM"></p>
+<script type="math/tex; mode=display">\begin{align}
+E(\boldsymbol{\sigma}, \boldsymbol{s})=-\sum_{i, a} \sigma_i w_{i a} s_a-\sum_i \phi_i \sigma_i-\sum_a h_a s_a
+\end{align}</script><p>其中$\sigma$与$s$为可见变量与隐变量，其余参数为相互作用强度与偏置项。波尔兹曼分布为：</p>
+<script type="math/tex; mode=display">\begin{align}
+p(\boldsymbol{\sigma}, \boldsymbol{s})=\frac{1}{Z} e^{-\beta E(\boldsymbol{\sigma}, s)}
+\end{align}</script><p>其中$Z=\sum_{\sigma, s} e^{-\beta E(\sigma, s)}$，并且假设$\beta=1$，将其作用吸收进相互作用参数中。</p>
+<p>将相同类型的节点之间的相互作用断开，好处在于可以实现近独立分布。只需要知道可见节点（隐藏节点）就可以推断出隐藏节点（可见节点）的概率分布，相同类型节点之间是独立的。</p>
+<script type="math/tex; mode=display">
+\begin{align}
+p\left(\sigma_i \mid \boldsymbol{s}\right) & =\frac{\sum_{\left\{\sigma_j: j \neq i\right\}} p(\boldsymbol{\sigma}, \boldsymbol{s})}{\sum_\sigma p(\boldsymbol{\sigma}, \boldsymbol{s})} \\
+& =\frac{e^{\sigma_i\left(\phi_i+\sum_a w_{i a} s_a\right)}}{e^{\sigma_i\left(\phi_i+\sum_a w_{i a} s_a\right)}+e^{-\sigma_i\left(\phi_i+\sum_a w_{i a} s_a\right)}} \\
+& =\frac{1}{1+e^{-2 \sigma_i\left(\phi_i+\sum_a w_{i a} s_a\right)}} \\
+p\left(s_a \mid \boldsymbol{\sigma}\right) & =\frac{\sum_{\left\{s_b: b \neq a\right\}} p(\boldsymbol{\sigma}, \boldsymbol{s})}{\sum_s p(\boldsymbol{\sigma}, \boldsymbol{s})} \\
+& =\frac{e^{s_a\left(h_a+\sum_i w_{i a} \sigma_i\right)}}{e^{s_a\left(h_a+\sum_i w_{i a} \sigma_i\right)}+e^{-s_a\left(h_a+\sum_i w_{i a} \sigma_i\right)}} \\
+& =\frac{1}{1+e^{-2 s_a\left(h_a+\sum_i w_{i a} \sigma_i\right)}} 
+\end{align}</script><p>计算权重的方法与玻尔兹曼机类似，同样使用极大似然估计。</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{L}(\boldsymbol{\theta} \mid\{\boldsymbol{\sigma}\}) & =\left\langle\log \left(p_{\boldsymbol{\theta}}(\boldsymbol{\sigma})\right)\right\rangle_{\text {data }} \\
+& =-\langle E(\boldsymbol{\sigma}, \boldsymbol{\theta})\rangle_{\text {data }}-\log Z(\{\boldsymbol{\theta}\})
+\end{align}</script><p>$\boldsymbol{\theta}$ 表示参数 $\{\boldsymbol{W}, \boldsymbol{\phi}, \boldsymbol{h}\}$，</p>
+<p>参数的梯度为：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& \frac{\partial \mathcal{L}\left(\left\{w_{i a}, \phi_i, h_a\right\}\right)}{\partial w_{i a}}=\left\langle\sigma_i s_a\right\rangle_{\text {data }}-\left\langle\sigma_i s_a\right\rangle_{\text {model }} \\
+& \frac{\partial \mathcal{L}\left(\left\{w_{i a}, \phi_i, h_a\right\}\right)}{\partial \phi_i}=\left\langle\sigma_i\right\rangle_{\text {data }}-\left\langle\sigma_i\right\rangle_{\text {model }} \\
+& \frac{\partial \mathcal{L}\left(\left\{w_{i a}, \phi_i, h_a\right\}\right)}{\partial h_a}=\left\langle s_a\right\rangle_{\text {data }}-\left\langle s_a\right\rangle_{\text {model }} 
+\end{align}</script><h1 id="Free-Energy-Calculation"><a href="#Free-Energy-Calculation" class="headerlink" title="Free Energy Calculation"></a>Free Energy Calculation</h1><script type="math/tex; mode=display">\begin{align}
+p(\boldsymbol{\sigma}) & =\sum_s p(\boldsymbol{\sigma}, \boldsymbol{s}) \\
+& =\frac{1}{Z} \sum_s e^{\sum_a\left(\sum_i \beta \sigma_i w_{i a}+\beta h_a\right) s_a+\sum_i \beta \sigma_i \phi_i} \\
+& =\frac{1}{Z} e^{\sum_i \beta \sigma_i \phi_i} \sum_s \prod_a e^{\left(\sum_i \beta \sigma_i w_{i a}+\beta h_a\right) s_a} \\
+& =\frac{1}{Z} \prod_i e^{\beta \sigma_i \phi_i} \prod_a \sum_{s_a} e^{\left(\sum_i \beta \sigma_i w_{i a}+\beta h_a\right) s_a} \\
+& =\frac{1}{Z} \prod_i e^{\beta \sigma_i \phi_i} \prod_a\left[2 \cosh \left(\beta \boldsymbol{w}_a \boldsymbol{\sigma}+\beta h_a\right)\right],
+\end{align}</script><font color="green">可见cavity 计算是将复杂计算转化为因子图迭代的过程，这是一种巧妙的近似，它的适用范围不限于计算自由能。</font>
+
+<p>画出因子图：<br><img src="/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/cavity.png" alt="factor graph"></p>
+<p>factor node表示$2\cosh (\beta\mathbf{w_a}\mathbf{\sigma}+\beta h_a)$，variable node 表示$\sigma_i$。可以得到cavity迭代方程为：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& P_{i \rightarrow a}\left(\sigma_i\right)=\frac{1}{Z_{i \rightarrow a}} e^{\phi_i \sigma_i} \prod_{b \in \partial i \backslash a} \mu_{b \rightarrow i}\left(\sigma_i\right) ; \\
+& \mu_{b \rightarrow i}\left(\sigma_i\right)=\sum_{\left\{\sigma_j \mid j \in \partial b \backslash i\right\}} 2 \cosh \left(\boldsymbol{w}_b \sigma+h_b\right) \prod_{j \in \partial b \backslash i} P_{j \rightarrow b}\left(\sigma_j\right),
+\end{align}</script><p>其中 $Z_{i \rightarrow a}=e^{\phi_i} \prod_{b \in \partial i \backslash a} \mu_{b \rightarrow i}(+1)+e^{-\phi_i} \prod_{b \in \partial i \backslash a} \mu_{b \rightarrow i}(-1)$，虽然已经近似处理，但是求解这个迭代方程需要$O\left(2^{N-1}\right)$的时间复杂度，因此还需要进一步近似。</p>
+<p>定义 $\mathcal{U}_{b \rightarrow i} \equiv \sum_{j \in \partial b \backslash i} w_{j b} \sigma_j$，根据中心极限定理（central limit theorem (CLT)）在$N$ 较大的情况下 $\mathcal{U}_{b \rightarrow i}$应该服从高斯分布，因此$\mathcal{U}_{b \rightarrow i}$的均值和方差写为：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+G_{b \rightarrow i} & =\left\langle\mathcal{U}_{b \rightarrow i}\right\rangle_{\left\{\sigma_j \mid j \in \partial b \backslash i\right\}}=\sum_{j \in \partial b \backslash i} w_{j b} m_{j \rightarrow b}  \label{G}\\
+\Xi_{b \rightarrow i}^2 & =\left\langle\mathcal{U}_{b \rightarrow i}^2\right\rangle_{\left\{\sigma_j \mid j \in \partial b \backslash i\right\}}-\left\langle\mathcal{U}_{b \rightarrow i}\right\rangle_{\left\{\sigma_j \mid j \in \partial b \backslash i\right\}}^2 \\
+& \simeq \sum_{j \in \partial b \backslash i} w_{j b}^2\left(1-m_{j \rightarrow b}^2\right)\\
+m_{j \rightarrow b} &\equiv \sum_{\sigma_j} \sigma_j P_{j \rightarrow b}\left(\sigma_j\right)
+\end{align}</script><p>因此 $\mu_{b \rightarrow i}\left(\sigma_i\right)$ 利用高斯积分可以近似写为：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\mu_{b \rightarrow i}\left(\sigma_i\right) & =2 \int D t \cosh \left(G_{b \rightarrow i}+\sqrt{\Xi_{b \rightarrow i}^2} t+h_b+w_{i b} \sigma_i\right) \\
+& =2 e^{\frac{\Xi_{b \rightarrow i}^2}{2}} \cosh \left(G_{b \rightarrow i}+h_b+w_{i b} \sigma_i\right),
+\end{aligned}</script><p>其中 $D t \equiv e^{-t^2 / 2} / \sqrt{2 \pi} d t$。接下来计算$m_{j \rightarrow b}$即变量节点的概率：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+m_{j \rightarrow b} & =\sum_{\sigma_j} \sigma_j P_{j \rightarrow b}\left(\sigma_j\right) \\
+& =\frac{\sum_{\sigma_i} \sigma_i e^{\phi_i \sigma_i} \prod_{b \in \partial i \backslash a} \mu_{b \rightarrow i}\left(\sigma_i\right)}{\sum_{\sigma_i} e^{\phi_i \sigma_i} \prod_{b \in \partial i \backslash a} \mu_{b \rightarrow i}\left(\sigma_i\right)} \label{10.15}\\
+& =\tanh \left(\phi_i+\sum_{b \in \partial i \backslash a} u_{b \rightarrow i}\right) ; \\
+u_{b \rightarrow i} & =\frac{1}{2} \ln \frac{\mu_{b \rightarrow i}(+1)}{\mu_{b \rightarrow i}(-1)}=\frac{1}{2} \ln \frac{\cosh \left(h_b+G_{b \rightarrow i}+w_{i b}\right)}{\cosh \left(h_b+G_{b \rightarrow i}-w_{i b}\right)}\label{u}
+\end{align}</script><p>从$\eqref{G},\eqref{10.15},\eqref{u}$得到自洽迭代方程。</p>
+<p>对于自由能为：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+F & =\sum_i F_i-(N-1) \sum_a F_a \\
+F_i & =-\ln Z_i=-\ln \left(e^{\phi_i} \prod_{b \in \partial i} \mu_{b \rightarrow i}(+1)+e^{-\phi_i} \prod_{b \in \partial i} \mu_{b \rightarrow i}(-1)\right) \\
+F_a & =-\ln Z_a=-\ln \left(2 e^{\frac{\Xi_a^2}{2}} \cosh \left(G_a+h_a\right)\right)
+\end{align}</script><font color="red">end</font>
+
+
+<p>where . Inserting this result into the cavity probability $P_{i \rightarrow a}\left(\sigma_i\right)$, we obtain the cavity magnetization</p>
+<p>where $u_{b \rightarrow i}$ is the cavity bias (see Chap. 2). $m_{i \rightarrow a}$ represents the massage passing from variable node $i$ to factor node $a$, and $u_{b \rightarrow i}$ denotes the massage passing from factor node $b$ to variable node $i$. Iterating Eq. (10.15) can reach the fixed point. Then, the Bethe free energy can be calculated as follows:</p>
+<p>where $F_i$ and $F_a$ are local free energies of variable node $i$ and factor node $a$, respectively, $\Xi_a=\sum_{j \in \partial a} w_{j a}^2\left(1-m_{j \rightarrow a}^2\right)$, and $G_a=\sum_{j \in \partial a} w_{j a} m_{j \rightarrow a}$. The computation of $F_a$ is similar to that of $\mu_{a \rightarrow i}$. Here, we show an experiment result of the free energy computation via the Bethe approximation (Fig. 10.4).</p>
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Spin Glass</tag>
+        <tag>Boltzmann Machine</tag>
+        <tag>Replica Method</tag>
+        <tag>Energy-based Model</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Boltzmann Machine Append</title>
+    <url>/2022/11/30/Phys/Boltzmann_machine_phy/append/</url>
+    <content><![CDATA[<h1 id="逆Ising问题及其求解方法"><a href="#逆Ising问题及其求解方法" class="headerlink" title="逆Ising问题及其求解方法"></a>逆Ising问题及其求解方法</h1><h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>逆Ising问题涉及从观测数据中推断Ising模型的参数。Ising模型是一种简单的数学模型，用于描述磁性材料中的自旋系统。解决逆Ising问题的方法包括极大似然估计（MLE）、蒙特卡罗方法（MCMC）、平均场近似、伪似然估计（PLE）以及对比散度（CD）。</p>
+<h2 id="极大似然估计（MLE）"><a href="#极大似然估计（MLE）" class="headerlink" title="极大似然估计（MLE）"></a>极大似然估计（MLE）</h2><h3 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h3><ol>
+<li><p><strong>定义Hamiltonian</strong>:</p>
+<script type="math/tex; mode=display">
+H(\mathbf{s}) = -\sum_{i<j} J_{ij} s_i s_j</script></li>
+<li><p><strong>定义配分函数</strong>:</p>
+<script type="math/tex; mode=display">
+Z = \sum_{\mathbf{s}} e^{-H(\mathbf{s})}</script></li>
+<li><p><strong>定义似然函数</strong>:</p>
+<script type="math/tex; mode=display">
+L(J) = \prod_{k=1}^{N} P(\mathbf{s}^{(k)}|J) = \prod_{k=1}^{N} \frac{e^{-H(\mathbf{s}^{(k)})}}{Z}</script></li>
+<li><p><strong>取对数似然函数</strong>:</p>
+<script type="math/tex; mode=display">
+\log L(J) = -\sum_{k=1}^{N} H(\mathbf{s}^{(k)}) - N \log Z</script></li>
+<li><p><strong>优化对数似然函数</strong>:<br>使用数值优化方法（如梯度下降）最大化对数似然函数。</p>
+</li>
+</ol>
+<h3 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize</span><br><span class="line"></span><br><span class="line"><span class="comment"># 观测数据</span></span><br><span class="line">data = np.array([[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>], [-<span class="number">1</span>, <span class="number">1</span>], [-<span class="number">1</span>, -<span class="number">1</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义Hamiltonian</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">hamiltonian</span>(<span class="params">J, s</span>):</span><br><span class="line">    <span class="keyword">return</span> -J * s[<span class="number">0</span>] * s[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义配分函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">partition_function</span>(<span class="params">J</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span> * (np.exp(J) + np.exp(-J))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义对数似然函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">log_likelihood</span>(<span class="params">J, data</span>):</span><br><span class="line">    logL = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> data:</span><br><span class="line">        logL += -hamiltonian(J, s)</span><br><span class="line">    logL -= <span class="built_in">len</span>(data) * np.log(partition_function(J))</span><br><span class="line">    <span class="keyword">return</span> -logL  <span class="comment"># 最小化负对数似然</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始猜测</span></span><br><span class="line">initial_J = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 优化参数</span></span><br><span class="line">result = minimize(log_likelihood, initial_J, args=(data,))</span><br><span class="line">optimal_J = result.x[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;MLE Estimated J: <span class="subst">&#123;optimal_J&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="蒙特卡罗方法（MCMC）"><a href="#蒙特卡罗方法（MCMC）" class="headerlink" title="蒙特卡罗方法（MCMC）"></a>蒙特卡罗方法（MCMC）</h2><h3 id="步骤-1"><a href="#步骤-1" class="headerlink" title="步骤"></a>步骤</h3><ol>
+<li><strong>初始化模型参数</strong>。</li>
+<li><strong>生成样本</strong>：<br>使用MCMC方法（如Metropolis-Hastings或Gibbs采样）生成自旋配置样本。</li>
+<li><strong>计算统计量</strong>：<br>基于生成的样本，计算系统的期望统计量。</li>
+<li><strong>更新参数</strong>：<br>使用梯度方法或其他优化技术调整模型参数。</li>
+<li><strong>重复步骤2-4</strong>，直到参数收敛。</li>
+</ol>
+<h3 id="示例代码-1"><a href="#示例代码-1" class="headerlink" title="示例代码"></a>示例代码</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 观测数据</span></span><br><span class="line">data = np.array([[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>], [-<span class="number">1</span>, <span class="number">1</span>], [-<span class="number">1</span>, -<span class="number">1</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化参数</span></span><br><span class="line">J = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 吉布斯采样函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gibbs_sample</span>(<span class="params">J, num_samples, burn_in</span>):</span><br><span class="line">    samples = []</span><br><span class="line">    s = np.random.choice([-<span class="number">1</span>, <span class="number">1</span>], size=<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(num_samples + burn_in):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">            prob = <span class="number">1</span> / (<span class="number">1</span> + np.exp(-<span class="number">2</span> * J * s[<span class="number">1</span> - i]))</span><br><span class="line">            s[i] = <span class="number">1</span> <span class="keyword">if</span> np.random.rand() &lt; prob <span class="keyword">else</span> -<span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> _ &gt;= burn_in:</span><br><span class="line">            samples.append(s.copy())</span><br><span class="line">    <span class="keyword">return</span> np.array(samples)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算期望统计量</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_statistics</span>(<span class="params">samples</span>):</span><br><span class="line">    correlations = np.mean(samples[:, <span class="number">0</span>] * samples[:, <span class="number">1</span>])</span><br><span class="line">    <span class="keyword">return</span> correlations</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新参数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">update_parameters</span>(<span class="params">J, samples, data</span>):</span><br><span class="line">    data_corr = np.mean(data[:, <span class="number">0</span>] * data[:, <span class="number">1</span>])</span><br><span class="line">    sample_corr = calculate_statistics(samples)</span><br><span class="line">    learning_rate = <span class="number">0.1</span></span><br><span class="line">    J += learning_rate * (data_corr - sample_corr)</span><br><span class="line">    <span class="keyword">return</span> J</span><br><span class="line"></span><br><span class="line"><span class="comment"># 蒙特卡罗迭代</span></span><br><span class="line">num_iterations = <span class="number">100</span></span><br><span class="line">num_samples = <span class="number">1000</span></span><br><span class="line">burn_in = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(num_iterations):</span><br><span class="line">    samples = gibbs_sample(J, num_samples, burn_in)</span><br><span class="line">    J = update_parameters(J, samples, data)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;Iteration <span class="subst">&#123;_&#125;</span>: J = <span class="subst">&#123;J&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Estimated J: <span class="subst">&#123;J&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="平均场近似（Mean-Field-Approximation）"><a href="#平均场近似（Mean-Field-Approximation）" class="headerlink" title="平均场近似（Mean Field Approximation）"></a>平均场近似（Mean Field Approximation）</h2><h3 id="步骤-2"><a href="#步骤-2" class="headerlink" title="步骤"></a>步骤</h3><ol>
+<li><strong>定义Hamiltonian</strong>。</li>
+<li><strong>引入平均场近似</strong>：<br>每个自旋的影响被近似为一个平均场。</li>
+<li><strong>计算自旋期望值</strong>：<br>根据平均场计算自旋的期望值。</li>
+<li><strong>迭代求解</strong>：<br>通过迭代更新每个自旋的期望值和相互作用参数。</li>
+<li><strong>更新相互作用参数</strong>：<br>调整相互作用参数使得模型生成的期望值与观测数据的期望值匹配。</li>
+</ol>
+<h3 id="示例代码-2"><a href="#示例代码-2" class="headerlink" title="示例代码"></a>示例代码</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 观测数据</span></span><br><span class="line">data = np.array([[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>], [-<span class="number">1</span>, <span class="number">1</span>], [-<span class="number">1</span>, -<span class="number">1</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化参数</span></span><br><span class="line">J = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算观测数据的期望值</span></span><br><span class="line">mean_s1 = np.mean(data[:, <span class="number">0</span>])</span><br><span class="line">mean_s2 = np.mean(data[:, <span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义迭代函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">mean_field_iteration</span>(<span class="params">J, mean_s1, mean_s2, max_iter=<span class="number">100</span>, tol=<span class="number">1e-5</span></span>):</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(max_iter):</span><br><span class="line">        h1 = J * mean_s2</span><br><span class="line">        h2 = J * mean_s1</span><br><span class="line">        new_mean_s1 = np.tanh(h1)</span><br><span class="line">        new_mean_s2 = np.tanh(h2)</span><br><span class="line">        <span class="keyword">if</span> np.<span class="built_in">abs</span>(new_mean_s1 - mean_s1) &lt; tol <span class="keyword">and</span> np.<span class="built_in">abs</span>(new_mean_s2 - mean_s2) &lt; tol:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        mean_s1, mean_s2 = new_mean_s1, new_mean_s2</span><br><span class="line">    <span class="keyword">return</span> mean_s1, mean_s2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 迭代求解期望值</span></span><br><span class="line">mean_s1, mean_s2 = mean_field_iteration(J, mean_s1, mean_s2)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新相互作用参数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">update_parameters</span>(<span class="params">J, mean_s1, mean_s2, data</span>):</span><br><span class="line">    observed_corr = np.mean(data[:, <span class="number">0</span>] * data[:, <span class="number">1</span>])</span><br><span class="line">    model_corr = mean_s1 * mean_s2</span><br><span class="line">    learning_rate = <span class="number">0.1</span></span><br><span class="line">    J += learning_rate * (observed_corr - model_corr)</span><br><span class="line">    <span class="keyword">return</span> J</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新参数</span></span><br><span class="line">J = update_parameters(J, mean_s1, mean_s2, data)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Estimated J: <span class="subst">&#123;J&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="伪似然估计（PLE）"><a href="#伪似然估计（PLE）" class="headerlink" title="伪似然估计（PLE）"></a>伪似然估计（PLE）</h2><h3 id="步骤-3"><a href="#步骤-3" class="headerlink" title="步骤"></a>步骤</h3><ol>
+<li><strong>定义条件概率</strong>：<script type="math/tex; mode=display">\begin{align}
+P(s_i | \mathbf{s}_{\setminus i}) = \frac{e^{s_i h_i}}{e^{h_i} + e^{-h_i}}
+\end{align}</script></li>
+<li><strong>定义伪似然函数</strong>：<script type="math/tex; mode=display">\begin{align}
+PL(J) = \prod_{i=1}^n \prod_{k=1}^N P(s_i^{(k)} | \mathbf{s}_{\setminus i}^{(k)})
+\end{align}</script></li>
+<li><strong>取对数伪似然函数</strong>：<script type="math/tex; mode=display">\begin{align}
+\log PL(J) = \sum_{i=1}^n \sum_{k=1}^N \log P(s_i^{(k)} | \mathbf{s}_{\setminus i}^{(k)})
+\end{align}</script></li>
+<li><strong>优化对数伪似然函数</strong>：<br>使用数值优化方法（如梯度下降）最大化对数伪似然函数。</li>
+</ol>
+<h3 id="示例代码-3"><a href="#示例代码-3" class="headerlink" title="示例代码"></a>示例代码</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize</span><br><span class="line"></span><br><span class="line"><span class="comment"># 观测数据</span></span><br><span class="line">data = np.array([[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>], [-<span class="number">1</span>, <span class="number">1</span>], [-<span class="number">1</span>, -<span class="number">1</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义条件概率</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">conditional_probability</span>(<span class="params">s_i, s_j, J</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> / (<span class="number">1</span> + np.exp(-<span class="number">2</span> * J * s_i * s_j))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义对数伪似然函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">log_pseudolikelihood</span>(<span class="params">J, data</span>):</span><br><span class="line">    logPL = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> data:</span><br><span class="line">        logPL += np.log(conditional_probability(s[<span class="number">0</span>], s[<span class="number">1</span>], J)) + np.log(conditional_probability(s[<span class="number">1</span>], s[<span class="number">0</span>], J))</span><br><span class="line">    <span class="keyword">return</span> -logPL  <span class="comment"># 最小化负对数伪似然</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始猜测</span></span><br><span class="line">initial_J = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 优化参数</span></span><br><span class="line">result = minimize(log_pseudolikelihood, initial_J, args=(data,))</span><br><span class="line">optimal_J = result.x[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Optimal J: <span class="subst">&#123;optimal_J&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="对比散度（CD）"><a href="#对比散度（CD）" class="headerlink" title="对比散度（CD）"></a>对比散度（CD）</h2><h3 id="步骤-4"><a href="#步骤-4" class="headerlink" title="步骤"></a>步骤</h3><ol>
+<li><strong>定义能量函数</strong>：<script type="math/tex; mode=display">\begin{align}
+E(\mathbf{s}) = -\sum_{i<j} J_{ij} s_i s_j
+\end{align}</script></li>
+<li><strong>初始化模型参数</strong>。</li>
+<li><strong>正向采样（Positive Phase）</strong>：<br>从观测数据中采样，计算数据分布下的期望值。</li>
+<li><strong>负向采样（Negative Phase）</strong>：<br>使用Gibbs采样从模型分布中生成样本，计算模型分布下的期望值。</li>
+<li><strong>更新参数</strong>：<br>根据正向采样和负向采样的期望值差异，更新相互作用参数。</li>
+<li><strong>迭代</strong>，直到参数收敛。</li>
+</ol>
+<h3 id="示例代码-4"><a href="#示例代码-4" class="headerlink" title="示例代码"></a>示例代码</h3><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 观测数据</span></span><br><span class="line">data = np.array([[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>], [-<span class="number">1</span>, <span class="number">1</span>], [-<span class="number">1</span>, -<span class="number">1</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化参数</span></span><br><span class="line">J = <span class="number">0.1</span></span><br><span class="line">learning_rate = <span class="number">0.1</span></span><br><span class="line">num_iterations = <span class="number">100</span></span><br><span class="line">num_samples = <span class="number">1000</span></span><br><span class="line">burn_in = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算观测数据的期望值</span></span><br><span class="line">mean_s1s2_data = np.mean(data[:, <span class="number">0</span>] * data[:, <span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 吉布斯采样函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gibbs_sample</span>(<span class="params">J, num_samples, burn_in</span>):</span><br><span class="line">    samples = []</span><br><span class="line">    s = np.random.choice([-<span class="number">1</span>, <span class="number">1</span>], size=<span class="number">2</span>)  <span class="comment"># 初始自旋配置</span></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(num_samples + burn_in):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">            prob = <span class="number">1</span> / (<span class="number">1</span> + np.exp(-<span class="number">2</span> * J * s[<span class="number">1</span> - i]))</span><br><span class="line">            s[i] = <span class="number">1</span> <span class="keyword">if</span> np.random.rand() &lt; prob <span class="keyword">else</span> -<span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> _ &gt;= burn_in:</span><br><span class="line">            samples.append(s.copy())</span><br><span class="line">    <span class="keyword">return</span> np.array(samples)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算模型分布的期望值</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_model_expectation</span>(<span class="params">J, num_samples, burn_in</span>):</span><br><span class="line">    samples = gibbs_sample(J, num_samples, burn_in)</span><br><span class="line">    mean_s1s2_model = np.mean(samples[:, <span class="number">0</span>] * samples[:, <span class="number">1</span>])</span><br><span class="line">    <span class="keyword">return</span> mean_s1s2_model</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对比散度更新</span></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(num_iterations):</span><br><span class="line">    mean_s1s2_model = calculate_model_expectation(J, num_samples, burn_in)</span><br><span class="line">    J += learning_rate * (mean_s1s2_data - mean_s1s2_model)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;Iteration <span class="subst">&#123;_&#125;</span>: J = <span class="subst">&#123;J&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;CD Estimated J: <span class="subst">&#123;J&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>逆Ising问题涉及从观测数据中推断Ising模型的相互作用参数。本文介绍了五种求解方法：极大似然估计（MLE）、蒙特卡罗方法（MCMC）、平均场近似、伪似然估计（PLE）以及对比散度（CD）。每种方法都有其优缺点，选择合适的方法取决于具体问题的规模、数据特性和计算资源。</p>
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Spin Glass</tag>
+        <tag>Boltzmann Machine</tag>
+        <tag>Replica Method</tag>
+        <tag>Energy-based Model</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Machine-learning-assisted Monte Carlo fails at sampling computationally hard problems</title>
     <url>/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/</url>
     <content><![CDATA[<p>展示利用机器学习提升的MC在一些模型中的失败：</p>
@@ -1393,8 +1614,8 @@ q_{\rho \sigma}=\frac{1}{N} \sum_i S_i^\rho S_i^\sigma
       </categories>
       <tags>
         <tag>Spin Glass</tag>
-        <tag>Hopfield Model</tag>
         <tag>Replica Method</tag>
+        <tag>Hopfield Model</tag>
       </tags>
   </entry>
   <entry>
@@ -1562,8 +1783,8 @@ C \stackrel{\text { def }}{=} \sqrt{\frac{2}{\pi r \alpha}} e^{-\frac{m^2}{2 \al
       </categories>
       <tags>
         <tag>Spin Glass</tag>
-        <tag>Hopfield Model</tag>
         <tag>Replica Method</tag>
+        <tag>Hopfield Model</tag>
       </tags>
   </entry>
   <entry>
@@ -1672,8 +1893,8 @@ Z^n=&\operatorname{Tr} \exp \left[ \frac{\beta}{2 N} \sum_{a, i, j, \mu \in B, v
       </categories>
       <tags>
         <tag>Spin Glass</tag>
-        <tag>Hopfield Model</tag>
         <tag>Replica Method</tag>
+        <tag>Hopfield Model</tag>
       </tags>
   </entry>
   <entry>
@@ -2135,6 +2356,195 @@ Z(\beta) \simeq\left(\frac{m}{2 \pi \hbar \Delta \tau}\right)^{M N d / 2} \int d
       </tags>
   </entry>
   <entry>
+    <title>The Parisi solution of Sherrington-Kirkpatrick Model</title>
+    <url>/2022/11/20/Phys/SK_model/SK_model1/</url>
+    <content><![CDATA[<p>利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。该章节主要介绍 Parisi 解。</p>
+<p>Reference:</p>
+<ul>
+<li>Statistical Physics of Spin Glasses and Information Processing. Nishimori</li>
+<li><a href="https://hzshan.github.io/replica_method_in_SK_model.pdf">Replica calculations for the SK model</a>笔误有点多</li>
+<li><a href="https://www.sciencedirect.com/science/article/pii/S0378437199000242">RS and RSB solutions for SK model with spin-S</a></li>
+</ul>
+<p>Link:</p>
+<ul>
+<li><a href="/2022/11/12/Phys/Hopfield/Hopfield/" title="Hopfield Model">Hopfield Model</a></li>
+<li><a href="/2022/11/13/Phys/replica/replica/" title="Replica">Replica</a></li>
+<li><a href="/2022/11/20/Phys/SK_model/SK_model/" title="Sherrington-Kirkpatrick Model">Sherrington-Kirkpatrick Model</a>
+</li>
+</ul>
+<span id="more"></span>
+<p>根据</p>
+<script type="math/tex; mode=display">\begin{align}
+-\beta[f]= & \lim _{n \rightarrow 0} \frac{\left[Z^n\right]-1}{n N}=\lim _{n \rightarrow 0}\left\{-\frac{\beta^2 J^2}{4 n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^2-\frac{\beta J_0}{2 n} \sum_\alpha m_\alpha^2+\frac{1}{4} \beta^2 J^2+\frac{1}{n} \log \operatorname{Tr} \mathrm{e}^L\right\} \label{2.17}
+\end{align}</script><h1 id="Multi-step-replica-symmetry-breaking-RSB"><a href="#Multi-step-replica-symmetry-breaking-RSB" class="headerlink" title="Multi-step replica symmetry breaking (RSB)"></a>Multi-step replica symmetry breaking (RSB)</h1><p>在复本对称假设$\eqref{RS}$中$q_{\alpha\beta}$与$m_{\alpha\beta}$并不依赖于$\alpha\beta$，为了打破对称需要考虑$q$矩阵的结构。现在考虑 n-RSB 的矩阵，首先对于 1-RSB有$m_1&lt;n$，例如当$n=6,m_1=3$时候，$q$矩阵有（对角线为零的原因在于，当$\alpha=\beta$时候没有定义）：</p>
+<script type="math/tex; mode=display">\begin{align}
+\left(\begin{array}{ccc|ccc}
+0 & q_1 & q_1 & & & \\
+q_1 & 0 & q_1 & & q_0 & \\
+q_1 & q_1 & 0 & & & \\
+\hline & & & 0 & q_1 & q_1 \\
+& q_0 & & q_1 & 0 & q_1 \\
+& & & q_1 & q_1 & 0
+\end{array}\right)\label{1-RSB}
+\end{align}</script><p>可以执行相同的迭代操作，将粒度不断细化，例如再进行对称破缺$\eqref{1-RSB}$左上角的块变为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\begin{array}{ccc|ccc}
+0 & q_2 & q_2 & & & \\
+q_2 & 0 & q_2 & & q_1 & \\
+q_2 & q_2 & 0 & & & \\
+\hline & & & 0 & q_2 & q_2 \\
+& q_1 & & q_2 & 0 & q_2 \\
+& & & q_2 & q_2 & 0
+\end{array} \label{2-RSB}
+\end{align}</script><p>同时应当满足条件：</p>
+<script type="math/tex; mode=display">\begin{align}
+n \geq m_1 \geq m_2 \geq \ldots \geq 1
+\end{align}</script><p>定义函数：</p>
+<script type="math/tex; mode=display">\begin{align}
+q(x)=q_i \quad\left(m_{i+1} \leq x \leq m_i\right)
+\end{align}</script><p>进行复本对称的极限变换$n\to 0$，将不等关系进行任意的翻转<font color="red">（令人费解的反号）</font>：</p>
+<script type="math/tex; mode=display">\begin{align}
+0 \leq m_1 \leq m_2 . . \leq 1
+\end{align}</script><h1 id="First-step-RSB"><a href="#First-step-RSB" class="headerlink" title="First step RSB"></a>First step RSB</h1><p>再次回到计算$\left[Z^n\right]$，结合$\eqref{19}$，在$J_0=h=0$的假设下，将$\eqref{1-RSB}$融入进去有：</p>
+<script type="math/tex; mode=display">\begin{align}
+\sum_{\alpha<\beta} q_{\alpha \beta} S^\alpha S^\beta=\frac{1}{2}\left\{q_0\left(\sum_\alpha^n S^\alpha\right)^2+\left(q_1-q_0\right) \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2-n q_1\right\} \label{67}
+\end{align}</script><p>其中$B_b$ 表示 $b$-th block。第一项是没有进行复本破缺的，第二项是表示一阶复本破缺，第三项将对角线的贡献排除。同样的，对于$\eqref{28}$有：</p>
+<script type="math/tex; mode=display">\begin{align}
+\lim _{n \rightarrow 0} \frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^2=\lim _{n \rightarrow 0} \frac{1}{n}\left\{n^2 q_0^2+\frac{n}{m_1} m_1^2\left(q_1^2-q_0^2\right)-n q_1^2\right\}=\left(m_1-1\right) q_1^2-m_1 q_0^2 \label{68}
+\end{align}</script><p>此时已经将自由能中含有$q_{\alpha\beta}$的地方进行替换，接下来分析$\eqref{28}$。首先将$\eqref{68}$代入：</p>
+<script type="math/tex; mode=display">\begin{align}
+\beta\left[f_{1 R S B}\right]=\frac{\beta^2 J^2}{4}\left\{\left(m_1-1\right) q_1^2-m_1 q_0^2-1\right\}+\frac{\beta J_0}{2} m^2-\frac{1}{n} \log \sum_{\left\{S^\alpha, S^3, \ldots, S^n\right\}} \exp \left(L_{1 R S B}\right) \label{70}
+\end{align}</script><p>再将$\eqref{67}$代入$\eqref{19}$：</p>
+<script type="math/tex; mode=display">
+\begin{gather}
+L\left(\left\{q_{\alpha \beta}, m_\alpha\right\}\right):=\beta^2 J^2 \sum_{\alpha<\beta} q_{\alpha \beta} S^\alpha S^\beta+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) S^\alpha \label{71} \\
+\Rightarrow L_{1 R S B}=\frac{\beta^2 J^2}{2}\left\{q_0\left(\sum_\alpha^n S^\alpha\right)^2+\left(q_1-q_0\right) \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2-n q_1\right\}+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) S^\alpha \label{72}
+\end{gather}</script><p>由于里面有$\left(\sum_\alpha^n S^\alpha\right)^2$和$\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2$，需要将平方项变为线性项，同样使用$\eqref{11}$的办法：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& \frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp \left(L_{1 R S B}\right) \\
+& =\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right)} \int D u \exp \left(\beta J \sqrt{q_0} u \sum_\alpha S^\alpha-\frac{n}{2} \beta^2 J^2 q_1+\sum_\alpha S^\alpha \beta\left(J_0 m+h\right)+\left(q_1-q_0\right)\frac{\beta^2 J^2}{2} \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2\right) \\
+& =-\frac{1}{2} \beta^2 J^2 q_1+\underbrace{\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right)} \int D u \exp \left(\sum_\alpha S^\alpha\left(\beta J \sqrt{q_0} u+\beta\left(J_0 m+h\right)\right)+\left(q_1-q_0\right)\frac{\beta^2 J^2}{2} \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2\right)}_{\Delta} \label{72_2}
+\end{align}</script><p>引入$v_b$线性化$\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2$：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& \frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots,\right\}} \int D u \prod_{b=1}^{n / m_1}\left(\int D v_b\right) \exp \left(\sum_\alpha S^\alpha \beta J \sqrt{q_0} u+\sum_\alpha S^\alpha \beta\left(J_0 m+h\right)+\beta J \sqrt{q_1-q_0} \sum_{b=1}^{n / m_1} v_b \sum_{\alpha \in B_b}^{m_1} S^\alpha\right) \\
+= & \frac{1}{n} \log \int D u \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \prod_{b=1}^{n / m_1}\left\{\int v e \exp \left(\sum_\alpha S^\alpha \beta\left(J_0 m+h+\beta J \sqrt{q_0} u\right)\right) \exp \left(\beta J \sqrt{q_1-q_0} v \sum_{\alpha \in B_b}^{m_1} S^\alpha\right)\right\} \\
+= & \frac{1}{n} \log \int D u \prod_{b=1}^{n / m_1}\left\{\int D v_b \sum_{\left\{S^\alpha\right\} \in B_b} \exp \left(\sum_{\left\{S^\alpha\right\} \in B_b} S^\alpha\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v_b\right)\right)\right\} \\
+= & \frac{1}{n} \log \int D u \prod_{b=1}^{n / m_1}\left\{\int D v_b\left\{\sum_{S= \pm 1} \exp \left(S \beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v_b\right)\right)\right\}^{m_1}\right\} \\
+= & \frac{1}{n} \log \int D u\left\{\int v\left\{\sum_{S= \pm 1} \exp \left(S \beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}^{n / m_1} \\
+= & \frac{1}{n} \log \int D u\left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}^{n / m_1} \\
+= & \frac{1}{n} \log \int D u \exp \left\{\frac{n}{m_1} \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}\right\} \\
+\approx & \frac{1}{n} \log \left\{1+\frac{n}{m_1} \int D u \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}\right\} \text { expand exponent around } 0 \\
+\approx & \frac{1}{n} \frac{n}{m_1} \int D u \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\} \text { expand exponent around } 1 \\
+= & \log 2+\frac{1}{m_1} \int D u \log \left\{\int D v\left\{\cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\} \text { pull the factor of } 2 \text { out } \label{82}
+\end{align}</script><p>令：</p>
+<script type="math/tex; mode=display">\begin{align}
+\Xi=\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right) \label{86}
+\end{align}</script><p>有：</p>
+<script type="math/tex; mode=display">\begin{align}
+\Delta=\log 2+\frac{1}{m_1} \int D u \log \left\{\int D v\{\cosh \Xi\}^{m_1}\right\} \label{87}
+\end{align}</script><p>结合$\eqref{72_2}\eqref{87}$将$\eqref{70}$写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\beta\left[f_{1 R S B}\right]=\frac{\beta^2 J^2}{4}\left\{\left(m_1-1\right) q_1^2-m_1 q_0^2+2 q_1-1\right\}+\frac{\beta J_0}{2} m^2-\log 2-\frac{1}{m_1} \int D u \log \left\{\int D v\{\cosh \Xi\}^{m_1}\right\} .
+\end{align}</script><p>得到极值点为：</p>
+<script type="math/tex; mode=display">\begin{gather}
+m^*=\int D u \frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}} \\
+q_0^* =\int D u\left(\frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}}\right)^2 \\ 
+q_1^* =\int D u \frac{\int D v\{\cosh \Xi\}^{m_1}\{\tanh \Xi\}^2}{\int D v\{\cosh \Xi\}^{m_1}} 
+\end{gather}</script><p><img src="/2022/11/20/Phys/SK_model/SK_model1/phase.png" alt="phase diagram"><br><a href="./phase_diagram.nb">mathematica代码</a>与<a href="./phase.py">python代码</a></p>
+<h1 id="Full-RSB-Solution"><a href="#Full-RSB-Solution" class="headerlink" title="Full RSB Solution"></a>Full RSB Solution</h1><p>由于熵还是负数，接下来进行更高阶的复本对称破缺（k-RSB）计算$\eqref{28}$。与一阶复本对称$\eqref{67}$类似:</p>
+<script type="math/tex; mode=display">\begin{align} 
+\sum_{\alpha \neq \beta} q_{\alpha \beta}^l & =q_0^l n^2+\left(q_1^l-q_0^l\right) m_1^2 \cdot \frac{n}{m_1}+\left(q_2^l-q_1^l\right) m_2^2 \cdot \frac{m_1}{m_2} \cdot \frac{n}{m_1}+\cdots-q_K^l \cdot n \\ & =n \sum_{j=0}^K\left(m_j-m_{j+1}\right) q_j^l \label{3.37}
+\end{align}</script><p>其中$l$是任意整数，$m_0=n,m_{K+1}=1$，在极限情况${n\to 0}$下，使用$m_j-m_{j+1}\to -d x$，可以得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^l \rightarrow-\int_0^1 q^l(x) \mathrm{d} x \label{3.38}
+\end{align}</script><p>在$J_0 =0, h=0$的条件下，结合$E=-\frac{\partial \log Z}{\partial \beta}$、$\chi=-\frac{\partial^2 F}{\partial h^2}$与$\eqref{28}$，可得：</p>
+<font color="red">没有证明</font>
+
+<script type="math/tex; mode=display">\begin{gather}
+E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2\right) \rightarrow-\frac{\beta J^2}{2}\left(1-\int_0^1 q^2(x) \mathrm{d} x\right) \\
+\chi=\beta\left(1+\frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}\right) \rightarrow \beta\left(1-\int_0^1 q(x) \mathrm{d} x\right)
+\end{gather}</script><h2 id="parisi-equation"><a href="#parisi-equation" class="headerlink" title="parisi equation"></a>parisi equation</h2><p>接下来需要将高阶复本破缺技巧应用在自由能$\eqref{2.17}$，和计算一阶复本对称的操作一样，首先计算$q_0$然后计算第一次分块$q_1$的贡献并且排除$q_0$的影响，以此类推，在主对角线上是$q_K$。首先计算如下项：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+G & =\operatorname{Tr} \exp \left(\frac{1}{2} \sum_{\alpha, \beta=1}^n q_{\alpha \beta} S^\alpha S^\beta+h \sum_\alpha^n S^\alpha\right) \\
+& =\left.\exp \left(\frac{1}{2} \sum_{\alpha, \beta} q_{\alpha \beta} \frac{\partial^2}{\partial h_\alpha \partial h_\beta}\right) \prod_\alpha 2 \cosh h_\alpha\right|_{h_\alpha=h}  \label{B.1}
+\end{align}</script><p>这里将$q_{\alpha\beta}$贡献的项目视为$h$项的偏移，因此使用$\exp(\frac{\partial^2}{\partial h_\alpha \partial h_\beta})$的形式表示这个偏移量。如果使用复本对称的假设，则：</p>
+<script type="math/tex; mode=display">\begin{align}
+G=\exp \left(\frac{q}{2} \frac{\partial^2}{\partial h^2}\right)(2 \cosh h)^n \label{B.2}
+\end{align}</script><p>其中使用到：</p>
+<script type="math/tex; mode=display">
+\left.\sum_\alpha \frac{\partial f\left(h_1, \ldots, h_n\right)}{\partial h_\alpha}\right|_{h_\alpha=h}=\frac{\partial f(h, \ldots, h)}{\partial h}</script><p>从$\eqref{67}$中可以看出，当时的思想是从复本对称假设出发，然后将整个矩阵分为几部分（取决于$\frac{n}{m}$大小），在主对角线的块上为一阶复本对称$q_1$；那么同样的二阶复本对称可以将每一个一阶复本对称的块分为几部分，然后将主对角线的块作为二阶复本$q_2$；这个流程以此类推。现在可以反过来，从$K$阶复本逐渐变为$0$阶级复本：</p>
+<ol>
+<li>对于$K-1$阶复本有$\left(q_K-q_{K-1}\right) I\left(m_K\right)$，表示$\left(m_K \times m_K\right)$大小。</li>
+<li>生长出$(K-2)$复本，将$K$阶复本通过$\operatorname{Diag}_{K-1}$扩张$\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-1}\left[I\left(m_K\right)\right]$，然后$K-2$阶写为$\left(q_{K-1}-q_{K-2}\right) I\left(m_{K-1}\right)$矩阵的大小为$\left(m_{K-1} \times m_{K-1}\right)$。整体为:<script type="math/tex; mode=display">\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-1}\left[I\left(m_K\right)\right]+\left(q_{K-1}-q_{K-2}\right) I\left(m_{K-1}\right)</script></li>
+<li>重复步骤2，得到$K-3$复本。矩阵的大小为$\left(m_{K-2} \times m_{K-2}\right)$<script type="math/tex; mode=display">\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-2}\left[I\left(m_K\right)\right]+\left(q_{K-1}-q_{K-2}\right) \operatorname{Diag}_{K-2}\left[I\left(m_{K-1}\right)\right]+\left(q_{K-2}-q_{K-3}\right)I\left(m_{K-2}\right)</script></li>
+</ol>
+<p>在清楚以上步骤之后，接下来首先处理$\left(m_K \times m_K\right)$大小矩阵$\operatorname{Tr}$，并将结果标注为$g(m_K,h)$，由于这是复本破缺的最后一次，因此这个矩阵元是复本对称的，由$\eqref{B.2}$得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+g\left(m_K, h\right)=\exp \left\{\frac{1}{2}\left(q_K-q_{K-1}\right) \frac{\partial^2}{\partial h^2}\right\}(2 \cosh h)^{m_K} \label{B.4}
+\end{align}</script><p>对于$K-1$阶，是考虑将$g\left(m_K, h\right)$复制到对角部分，然后每一个元素相加$q_{K-1}-q_{K-2}$，从$\eqref{B.2}$可以得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+g\left(m_{K-1}, h\right)=\exp \left\{\frac{1}{2}\left(q_{K-1}-q_{K-2}\right) \frac{\partial^2}{\partial h^2}\right\}\left[g\left(m_K, h\right)\right]^{m_{K-1} / m_K} \label{B.5}
+\end{align}</script><p>一直重复这个过程，直到复本对称项：</p>
+<script type="math/tex; mode=display">\begin{align}
+G=g(n, h)=\exp \left\{\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right\}\left[g\left(m_1, h\right)\right]^{n / m_1}  \label{B.6}
+\end{align}</script><p>考虑到极限$n\to 0$下有$m_j-m_{j-1}=-\mathrm{d}x$，将$\eqref{B.5}$写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+g(x+\mathrm{d} x, h)=\exp \left\{-\frac{1}{2} \mathrm{~d} q(x) \frac{\partial^2}{\partial h^2}\right\} g(x, h)^{1+\mathrm{d} \log x} \label{B.7}
+\end{align}</script><p>对于$\eqref{B.4}$，当$K\to \infty$有$m_k \to 1$，因为存在$g(1,h)=2\cosh h$。将$\eqref{B.7}$转化为微分形式（对$\mathrm{d}q$与$\mathrm{d}x$进行展开）：</p>
+<script type="math/tex; mode=display">
+\frac{\partial g}{\partial x}=-\frac{1}{2} \frac{\mathrm{d} q}{\mathrm{~d} x} \frac{\partial^2 g}{\partial h^2}+\frac{1}{x} g \log g</script><p>利用注记$f_0(x, h)=(1 / x) \log g(x, h)$改写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{\partial f_0}{\partial x}=-\frac{1}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\} \label{B.8}
+\end{align}</script><p>分析$\eqref{B.6}$的极限情况，根据之前的讨论知道，当$n\to 0$的时候，$m_1\to0$：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{1}{n} \log \operatorname{Tr} \mathrm{e}^L &= \left. \exp \left(\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right) \frac{1}{x} \log g(x, h)\right|_{x, h \rightarrow 0} \\
+& =\left.\exp \left(\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right) f_0(0, h)\right|_{h \rightarrow 0} \\
+& =\int \mathrm{D} u f_0(0, \sqrt{q(0)} u) \label{B.10}
+\end{align}</script><p>结合$\eqref{3.38},\eqref{B.10}$将$\eqref{2.17}$写为<font color="red">$q(1)$这一项怎么来的？</font>：</p>
+<script type="math/tex; mode=display">\begin{align}
+\beta f=-\frac{\beta^2 J^2}{4}\left\{1+\int_0^1 q(x)^2 \mathrm{~d} x-2 q(1)\right\}-\int \mathrm{D} u f_0(0, \sqrt{q(0)} u) \label{3.41}
+\end{align}</script><p>其中$f_0$应当满足 Parisi equation，即$\eqref{B.9}$:</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{\partial f_0(x, h)}{\partial x}=-\frac{J^2}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\} \label{3.42} 
+\end{align}</script><p>有 $f_0(1, h)=\log 2 \cosh \beta h$。</p>
+<h2 id="Order-parameter-near-the-critical-point"><a href="#Order-parameter-near-the-critical-point" class="headerlink" title="Order parameter near the critical point"></a>Order parameter near the critical point</h2><p>虽然求解$\eqref{3.41}$十分困难，但是在临界点附近的性质是可以研究的。</p>
+<p>在$J_0=h=0$的条件下，$\eqref{2.17}$展为4阶可以是：</p>
+<font color="red">未经计算，直接抄的，并且十分简略</font>
+
+<script type="math/tex; mode=display">
+\begin{align}
+\beta f= & \lim _{n \rightarrow 0} \frac{1}{n}\left\{\frac{1}{4}\left(\frac{T^2}{T_{\mathrm{f}}^2}-1\right) \operatorname{Tr} Q^2-\frac{1}{6} \operatorname{Tr} Q^3 - \frac{1}{8} \operatorname{Tr} Q^4+\frac{1}{4} \sum_{\alpha \neq \beta \neq \gamma} Q_{\alpha \beta}^2 Q_{\alpha \gamma}^2-\frac{1}{12} \sum_{\alpha \neq \beta} Q_{\alpha \beta}^4\right\},
+\end{align}</script><p>其中$Q_{\alpha\beta}=(\beta J)^2 q_{\alpha\beta}$，令$\theta=\frac{T_f-T}{T_f}$并且考虑复本极限$n\to 0$有：</p>
+<script type="math/tex; mode=display">
+\beta f=\frac{1}{2} \int_0^1 \mathrm{~d} x\left\{|\theta| q^2(x)-\frac{1}{3} x q^3(x)-q(x) \int_0^x q^2(y) \mathrm{d} y+\frac{1}{6} q^4(x)\right\}</script><p>对$q(x)$求导：</p>
+<script type="math/tex; mode=display">
+2|\theta| q(x)-x q^2(x)-\int_0^x q^2(y) \mathrm{d} y-2 q(x) \int_x^1 q(y) \mathrm{d} y+\frac{2}{3} q^3(x)=0</script><p>持续求微分得到结果：</p>
+<script type="math/tex; mode=display">
+|\theta|-x q(x)-\int_x^1 q(y) \mathrm{d} y+q^2(x)=0 \quad \text { or } \quad q^{\prime}(x)=0</script><script type="math/tex; mode=display">
+q(x)=\frac{x}{2} \quad \text { or } \quad q^{\prime}(x)=0</script><p>最后得到的解与$|\theta|$有关：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& q(x)=\frac{x}{2} \quad\left(0 \leq x \leq x_1=2 q(1)\right) \\
+& q(x)=q(1) \quad\left(x_1 \leq x \leq 1\right) \\
+& q(1)=|\theta|+\mathcal{O}\left(\theta^2\right) 
+\end{align}</script><p>当接近相变点时，$q(x=0)$。</p>
+<p><img src="/2022/11/20/Phys/SK_model/SK_model1/q_x.png" alt="$q(x)$"></p>
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Spin Glass</tag>
+        <tag>Replica Method</tag>
+        <tag>Sherrington-Kirkpatrick Model</tag>
+        <tag>Parisi solution</tag>
+        <tag>Replica Symmetry Breaking</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Sherrington-Kirkpatrick Model</title>
     <url>/2022/11/20/Phys/SK_model/SK_model/</url>
     <content><![CDATA[<p>利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。目的是掌握和熟悉复本方法的使用。</p>
@@ -2385,195 +2795,6 @@ H = \begin{bmatrix}
         <tag>Spin Glass</tag>
         <tag>Replica Method</tag>
         <tag>Sherrington-Kirkpatrick Model</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>The Parisi solution of Sherrington-Kirkpatrick Model</title>
-    <url>/2022/11/20/Phys/SK_model/SK_model1/</url>
-    <content><![CDATA[<p>利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。该章节主要介绍 Parisi 解。</p>
-<p>Reference:</p>
-<ul>
-<li>Statistical Physics of Spin Glasses and Information Processing. Nishimori</li>
-<li><a href="https://hzshan.github.io/replica_method_in_SK_model.pdf">Replica calculations for the SK model</a>笔误有点多</li>
-<li><a href="https://www.sciencedirect.com/science/article/pii/S0378437199000242">RS and RSB solutions for SK model with spin-S</a></li>
-</ul>
-<p>Link:</p>
-<ul>
-<li><a href="/2022/11/12/Phys/Hopfield/Hopfield/" title="Hopfield Model">Hopfield Model</a></li>
-<li><a href="/2022/11/13/Phys/replica/replica/" title="Replica">Replica</a></li>
-<li><a href="/2022/11/20/Phys/SK_model/SK_model/" title="Sherrington-Kirkpatrick Model">Sherrington-Kirkpatrick Model</a>
-</li>
-</ul>
-<span id="more"></span>
-<p>根据</p>
-<script type="math/tex; mode=display">\begin{align}
--\beta[f]= & \lim _{n \rightarrow 0} \frac{\left[Z^n\right]-1}{n N}=\lim _{n \rightarrow 0}\left\{-\frac{\beta^2 J^2}{4 n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^2-\frac{\beta J_0}{2 n} \sum_\alpha m_\alpha^2+\frac{1}{4} \beta^2 J^2+\frac{1}{n} \log \operatorname{Tr} \mathrm{e}^L\right\} \label{2.17}
-\end{align}</script><h1 id="Multi-step-replica-symmetry-breaking-RSB"><a href="#Multi-step-replica-symmetry-breaking-RSB" class="headerlink" title="Multi-step replica symmetry breaking (RSB)"></a>Multi-step replica symmetry breaking (RSB)</h1><p>在复本对称假设$\eqref{RS}$中$q_{\alpha\beta}$与$m_{\alpha\beta}$并不依赖于$\alpha\beta$，为了打破对称需要考虑$q$矩阵的结构。现在考虑 n-RSB 的矩阵，首先对于 1-RSB有$m_1&lt;n$，例如当$n=6,m_1=3$时候，$q$矩阵有（对角线为零的原因在于，当$\alpha=\beta$时候没有定义）：</p>
-<script type="math/tex; mode=display">\begin{align}
-\left(\begin{array}{ccc|ccc}
-0 & q_1 & q_1 & & & \\
-q_1 & 0 & q_1 & & q_0 & \\
-q_1 & q_1 & 0 & & & \\
-\hline & & & 0 & q_1 & q_1 \\
-& q_0 & & q_1 & 0 & q_1 \\
-& & & q_1 & q_1 & 0
-\end{array}\right)\label{1-RSB}
-\end{align}</script><p>可以执行相同的迭代操作，将粒度不断细化，例如再进行对称破缺$\eqref{1-RSB}$左上角的块变为：</p>
-<script type="math/tex; mode=display">\begin{align}
-\begin{array}{ccc|ccc}
-0 & q_2 & q_2 & & & \\
-q_2 & 0 & q_2 & & q_1 & \\
-q_2 & q_2 & 0 & & & \\
-\hline & & & 0 & q_2 & q_2 \\
-& q_1 & & q_2 & 0 & q_2 \\
-& & & q_2 & q_2 & 0
-\end{array} \label{2-RSB}
-\end{align}</script><p>同时应当满足条件：</p>
-<script type="math/tex; mode=display">\begin{align}
-n \geq m_1 \geq m_2 \geq \ldots \geq 1
-\end{align}</script><p>定义函数：</p>
-<script type="math/tex; mode=display">\begin{align}
-q(x)=q_i \quad\left(m_{i+1} \leq x \leq m_i\right)
-\end{align}</script><p>进行复本对称的极限变换$n\to 0$，将不等关系进行任意的翻转<font color="red">（令人费解的反号）</font>：</p>
-<script type="math/tex; mode=display">\begin{align}
-0 \leq m_1 \leq m_2 . . \leq 1
-\end{align}</script><h1 id="First-step-RSB"><a href="#First-step-RSB" class="headerlink" title="First step RSB"></a>First step RSB</h1><p>再次回到计算$\left[Z^n\right]$，结合$\eqref{19}$，在$J_0=h=0$的假设下，将$\eqref{1-RSB}$融入进去有：</p>
-<script type="math/tex; mode=display">\begin{align}
-\sum_{\alpha<\beta} q_{\alpha \beta} S^\alpha S^\beta=\frac{1}{2}\left\{q_0\left(\sum_\alpha^n S^\alpha\right)^2+\left(q_1-q_0\right) \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2-n q_1\right\} \label{67}
-\end{align}</script><p>其中$B_b$ 表示 $b$-th block。第一项是没有进行复本破缺的，第二项是表示一阶复本破缺，第三项将对角线的贡献排除。同样的，对于$\eqref{28}$有：</p>
-<script type="math/tex; mode=display">\begin{align}
-\lim _{n \rightarrow 0} \frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^2=\lim _{n \rightarrow 0} \frac{1}{n}\left\{n^2 q_0^2+\frac{n}{m_1} m_1^2\left(q_1^2-q_0^2\right)-n q_1^2\right\}=\left(m_1-1\right) q_1^2-m_1 q_0^2 \label{68}
-\end{align}</script><p>此时已经将自由能中含有$q_{\alpha\beta}$的地方进行替换，接下来分析$\eqref{28}$。首先将$\eqref{68}$代入：</p>
-<script type="math/tex; mode=display">\begin{align}
-\beta\left[f_{1 R S B}\right]=\frac{\beta^2 J^2}{4}\left\{\left(m_1-1\right) q_1^2-m_1 q_0^2-1\right\}+\frac{\beta J_0}{2} m^2-\frac{1}{n} \log \sum_{\left\{S^\alpha, S^3, \ldots, S^n\right\}} \exp \left(L_{1 R S B}\right) \label{70}
-\end{align}</script><p>再将$\eqref{67}$代入$\eqref{19}$：</p>
-<script type="math/tex; mode=display">
-\begin{gather}
-L\left(\left\{q_{\alpha \beta}, m_\alpha\right\}\right):=\beta^2 J^2 \sum_{\alpha<\beta} q_{\alpha \beta} S^\alpha S^\beta+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) S^\alpha \label{71} \\
-\Rightarrow L_{1 R S B}=\frac{\beta^2 J^2}{2}\left\{q_0\left(\sum_\alpha^n S^\alpha\right)^2+\left(q_1-q_0\right) \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2-n q_1\right\}+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) S^\alpha \label{72}
-\end{gather}</script><p>由于里面有$\left(\sum_\alpha^n S^\alpha\right)^2$和$\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2$，需要将平方项变为线性项，同样使用$\eqref{11}$的办法：</p>
-<script type="math/tex; mode=display">
-\begin{align}
-& \frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp \left(L_{1 R S B}\right) \\
-& =\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right)} \int D u \exp \left(\beta J \sqrt{q_0} u \sum_\alpha S^\alpha-\frac{n}{2} \beta^2 J^2 q_1+\sum_\alpha S^\alpha \beta\left(J_0 m+h\right)+\left(q_1-q_0\right)\frac{\beta^2 J^2}{2} \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2\right) \\
-& =-\frac{1}{2} \beta^2 J^2 q_1+\underbrace{\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right)} \int D u \exp \left(\sum_\alpha S^\alpha\left(\beta J \sqrt{q_0} u+\beta\left(J_0 m+h\right)\right)+\left(q_1-q_0\right)\frac{\beta^2 J^2}{2} \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2\right)}_{\Delta} \label{72_2}
-\end{align}</script><p>引入$v_b$线性化$\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2$：</p>
-<script type="math/tex; mode=display">
-\begin{align}
-& \frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots,\right\}} \int D u \prod_{b=1}^{n / m_1}\left(\int D v_b\right) \exp \left(\sum_\alpha S^\alpha \beta J \sqrt{q_0} u+\sum_\alpha S^\alpha \beta\left(J_0 m+h\right)+\beta J \sqrt{q_1-q_0} \sum_{b=1}^{n / m_1} v_b \sum_{\alpha \in B_b}^{m_1} S^\alpha\right) \\
-= & \frac{1}{n} \log \int D u \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \prod_{b=1}^{n / m_1}\left\{\int v e \exp \left(\sum_\alpha S^\alpha \beta\left(J_0 m+h+\beta J \sqrt{q_0} u\right)\right) \exp \left(\beta J \sqrt{q_1-q_0} v \sum_{\alpha \in B_b}^{m_1} S^\alpha\right)\right\} \\
-= & \frac{1}{n} \log \int D u \prod_{b=1}^{n / m_1}\left\{\int D v_b \sum_{\left\{S^\alpha\right\} \in B_b} \exp \left(\sum_{\left\{S^\alpha\right\} \in B_b} S^\alpha\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v_b\right)\right)\right\} \\
-= & \frac{1}{n} \log \int D u \prod_{b=1}^{n / m_1}\left\{\int D v_b\left\{\sum_{S= \pm 1} \exp \left(S \beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v_b\right)\right)\right\}^{m_1}\right\} \\
-= & \frac{1}{n} \log \int D u\left\{\int v\left\{\sum_{S= \pm 1} \exp \left(S \beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}^{n / m_1} \\
-= & \frac{1}{n} \log \int D u\left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}^{n / m_1} \\
-= & \frac{1}{n} \log \int D u \exp \left\{\frac{n}{m_1} \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}\right\} \\
-\approx & \frac{1}{n} \log \left\{1+\frac{n}{m_1} \int D u \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}\right\} \text { expand exponent around } 0 \\
-\approx & \frac{1}{n} \frac{n}{m_1} \int D u \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\} \text { expand exponent around } 1 \\
-= & \log 2+\frac{1}{m_1} \int D u \log \left\{\int D v\left\{\cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\} \text { pull the factor of } 2 \text { out } \label{82}
-\end{align}</script><p>令：</p>
-<script type="math/tex; mode=display">\begin{align}
-\Xi=\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right) \label{86}
-\end{align}</script><p>有：</p>
-<script type="math/tex; mode=display">\begin{align}
-\Delta=\log 2+\frac{1}{m_1} \int D u \log \left\{\int D v\{\cosh \Xi\}^{m_1}\right\} \label{87}
-\end{align}</script><p>结合$\eqref{72_2}\eqref{87}$将$\eqref{70}$写为：</p>
-<script type="math/tex; mode=display">\begin{align}
-\beta\left[f_{1 R S B}\right]=\frac{\beta^2 J^2}{4}\left\{\left(m_1-1\right) q_1^2-m_1 q_0^2+2 q_1-1\right\}+\frac{\beta J_0}{2} m^2-\log 2-\frac{1}{m_1} \int D u \log \left\{\int D v\{\cosh \Xi\}^{m_1}\right\} .
-\end{align}</script><p>得到极值点为：</p>
-<script type="math/tex; mode=display">\begin{gather}
-m^*=\int D u \frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}} \\
-q_0^* =\int D u\left(\frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}}\right)^2 \\ 
-q_1^* =\int D u \frac{\int D v\{\cosh \Xi\}^{m_1}\{\tanh \Xi\}^2}{\int D v\{\cosh \Xi\}^{m_1}} 
-\end{gather}</script><p><img src="/2022/11/20/Phys/SK_model/SK_model1/phase.png" alt="phase diagram"><br><a href="./phase_diagram.nb">mathematica代码</a>与<a href="./phase.py">python代码</a></p>
-<h1 id="Full-RSB-Solution"><a href="#Full-RSB-Solution" class="headerlink" title="Full RSB Solution"></a>Full RSB Solution</h1><p>由于熵还是负数，接下来进行更高阶的复本对称破缺（k-RSB）计算$\eqref{28}$。与一阶复本对称$\eqref{67}$类似:</p>
-<script type="math/tex; mode=display">\begin{align} 
-\sum_{\alpha \neq \beta} q_{\alpha \beta}^l & =q_0^l n^2+\left(q_1^l-q_0^l\right) m_1^2 \cdot \frac{n}{m_1}+\left(q_2^l-q_1^l\right) m_2^2 \cdot \frac{m_1}{m_2} \cdot \frac{n}{m_1}+\cdots-q_K^l \cdot n \\ & =n \sum_{j=0}^K\left(m_j-m_{j+1}\right) q_j^l \label{3.37}
-\end{align}</script><p>其中$l$是任意整数，$m_0=n,m_{K+1}=1$，在极限情况${n\to 0}$下，使用$m_j-m_{j+1}\to -d x$，可以得到：</p>
-<script type="math/tex; mode=display">\begin{align}
-\frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^l \rightarrow-\int_0^1 q^l(x) \mathrm{d} x \label{3.38}
-\end{align}</script><p>在$J_0 =0, h=0$的条件下，结合$E=-\frac{\partial \log Z}{\partial \beta}$、$\chi=-\frac{\partial^2 F}{\partial h^2}$与$\eqref{28}$，可得：</p>
-<font color="red">没有证明</font>
-
-<script type="math/tex; mode=display">\begin{gather}
-E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2\right) \rightarrow-\frac{\beta J^2}{2}\left(1-\int_0^1 q^2(x) \mathrm{d} x\right) \\
-\chi=\beta\left(1+\frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}\right) \rightarrow \beta\left(1-\int_0^1 q(x) \mathrm{d} x\right)
-\end{gather}</script><h2 id="parisi-equation"><a href="#parisi-equation" class="headerlink" title="parisi equation"></a>parisi equation</h2><p>接下来需要将高阶复本破缺技巧应用在自由能$\eqref{2.17}$，和计算一阶复本对称的操作一样，首先计算$q_0$然后计算第一次分块$q_1$的贡献并且排除$q_0$的影响，以此类推，在主对角线上是$q_K$。首先计算如下项：</p>
-<script type="math/tex; mode=display">
-\begin{align}
-G & =\operatorname{Tr} \exp \left(\frac{1}{2} \sum_{\alpha, \beta=1}^n q_{\alpha \beta} S^\alpha S^\beta+h \sum_\alpha^n S^\alpha\right) \\
-& =\left.\exp \left(\frac{1}{2} \sum_{\alpha, \beta} q_{\alpha \beta} \frac{\partial^2}{\partial h_\alpha \partial h_\beta}\right) \prod_\alpha 2 \cosh h_\alpha\right|_{h_\alpha=h}  \label{B.1}
-\end{align}</script><p>这里将$q_{\alpha\beta}$贡献的项目视为$h$项的偏移，因此使用$\exp(\frac{\partial^2}{\partial h_\alpha \partial h_\beta})$的形式表示这个偏移量。如果使用复本对称的假设，则：</p>
-<script type="math/tex; mode=display">\begin{align}
-G=\exp \left(\frac{q}{2} \frac{\partial^2}{\partial h^2}\right)(2 \cosh h)^n \label{B.2}
-\end{align}</script><p>其中使用到：</p>
-<script type="math/tex; mode=display">
-\left.\sum_\alpha \frac{\partial f\left(h_1, \ldots, h_n\right)}{\partial h_\alpha}\right|_{h_\alpha=h}=\frac{\partial f(h, \ldots, h)}{\partial h}</script><p>从$\eqref{67}$中可以看出，当时的思想是从复本对称假设出发，然后将整个矩阵分为几部分（取决于$\frac{n}{m}$大小），在主对角线的块上为一阶复本对称$q_1$；那么同样的二阶复本对称可以将每一个一阶复本对称的块分为几部分，然后将主对角线的块作为二阶复本$q_2$；这个流程以此类推。现在可以反过来，从$K$阶复本逐渐变为$0$阶级复本：</p>
-<ol>
-<li>对于$K-1$阶复本有$\left(q_K-q_{K-1}\right) I\left(m_K\right)$，表示$\left(m_K \times m_K\right)$大小。</li>
-<li>生长出$(K-2)$复本，将$K$阶复本通过$\operatorname{Diag}_{K-1}$扩张$\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-1}\left[I\left(m_K\right)\right]$，然后$K-2$阶写为$\left(q_{K-1}-q_{K-2}\right) I\left(m_{K-1}\right)$矩阵的大小为$\left(m_{K-1} \times m_{K-1}\right)$。整体为:<script type="math/tex; mode=display">\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-1}\left[I\left(m_K\right)\right]+\left(q_{K-1}-q_{K-2}\right) I\left(m_{K-1}\right)</script></li>
-<li>重复步骤2，得到$K-3$复本。矩阵的大小为$\left(m_{K-2} \times m_{K-2}\right)$<script type="math/tex; mode=display">\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-2}\left[I\left(m_K\right)\right]+\left(q_{K-1}-q_{K-2}\right) \operatorname{Diag}_{K-2}\left[I\left(m_{K-1}\right)\right]+\left(q_{K-2}-q_{K-3}\right)I\left(m_{K-2}\right)</script></li>
-</ol>
-<p>在清楚以上步骤之后，接下来首先处理$\left(m_K \times m_K\right)$大小矩阵$\operatorname{Tr}$，并将结果标注为$g(m_K,h)$，由于这是复本破缺的最后一次，因此这个矩阵元是复本对称的，由$\eqref{B.2}$得到：</p>
-<script type="math/tex; mode=display">\begin{align}
-g\left(m_K, h\right)=\exp \left\{\frac{1}{2}\left(q_K-q_{K-1}\right) \frac{\partial^2}{\partial h^2}\right\}(2 \cosh h)^{m_K} \label{B.4}
-\end{align}</script><p>对于$K-1$阶，是考虑将$g\left(m_K, h\right)$复制到对角部分，然后每一个元素相加$q_{K-1}-q_{K-2}$，从$\eqref{B.2}$可以得到：</p>
-<script type="math/tex; mode=display">\begin{align}
-g\left(m_{K-1}, h\right)=\exp \left\{\frac{1}{2}\left(q_{K-1}-q_{K-2}\right) \frac{\partial^2}{\partial h^2}\right\}\left[g\left(m_K, h\right)\right]^{m_{K-1} / m_K} \label{B.5}
-\end{align}</script><p>一直重复这个过程，直到复本对称项：</p>
-<script type="math/tex; mode=display">\begin{align}
-G=g(n, h)=\exp \left\{\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right\}\left[g\left(m_1, h\right)\right]^{n / m_1}  \label{B.6}
-\end{align}</script><p>考虑到极限$n\to 0$下有$m_j-m_{j-1}=-\mathrm{d}x$，将$\eqref{B.5}$写为：</p>
-<script type="math/tex; mode=display">\begin{align}
-g(x+\mathrm{d} x, h)=\exp \left\{-\frac{1}{2} \mathrm{~d} q(x) \frac{\partial^2}{\partial h^2}\right\} g(x, h)^{1+\mathrm{d} \log x} \label{B.7}
-\end{align}</script><p>对于$\eqref{B.4}$，当$K\to \infty$有$m_k \to 1$，因为存在$g(1,h)=2\cosh h$。将$\eqref{B.7}$转化为微分形式（对$\mathrm{d}q$与$\mathrm{d}x$进行展开）：</p>
-<script type="math/tex; mode=display">
-\frac{\partial g}{\partial x}=-\frac{1}{2} \frac{\mathrm{d} q}{\mathrm{~d} x} \frac{\partial^2 g}{\partial h^2}+\frac{1}{x} g \log g</script><p>利用注记$f_0(x, h)=(1 / x) \log g(x, h)$改写为：</p>
-<script type="math/tex; mode=display">\begin{align}
-\frac{\partial f_0}{\partial x}=-\frac{1}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\} \label{B.8}
-\end{align}</script><p>分析$\eqref{B.6}$的极限情况，根据之前的讨论知道，当$n\to 0$的时候，$m_1\to0$：</p>
-<script type="math/tex; mode=display">\begin{align}
-\frac{1}{n} \log \operatorname{Tr} \mathrm{e}^L &= \left. \exp \left(\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right) \frac{1}{x} \log g(x, h)\right|_{x, h \rightarrow 0} \\
-& =\left.\exp \left(\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right) f_0(0, h)\right|_{h \rightarrow 0} \\
-& =\int \mathrm{D} u f_0(0, \sqrt{q(0)} u) \label{B.10}
-\end{align}</script><p>结合$\eqref{3.38},\eqref{B.10}$将$\eqref{2.17}$写为<font color="red">$q(1)$这一项怎么来的？</font>：</p>
-<script type="math/tex; mode=display">\begin{align}
-\beta f=-\frac{\beta^2 J^2}{4}\left\{1+\int_0^1 q(x)^2 \mathrm{~d} x-2 q(1)\right\}-\int \mathrm{D} u f_0(0, \sqrt{q(0)} u) \label{3.41}
-\end{align}</script><p>其中$f_0$应当满足 Parisi equation，即$\eqref{B.9}$:</p>
-<script type="math/tex; mode=display">\begin{align}
-\frac{\partial f_0(x, h)}{\partial x}=-\frac{J^2}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\} \label{3.42} 
-\end{align}</script><p>有 $f_0(1, h)=\log 2 \cosh \beta h$。</p>
-<h2 id="Order-parameter-near-the-critical-point"><a href="#Order-parameter-near-the-critical-point" class="headerlink" title="Order parameter near the critical point"></a>Order parameter near the critical point</h2><p>虽然求解$\eqref{3.41}$十分困难，但是在临界点附近的性质是可以研究的。</p>
-<p>在$J_0=h=0$的条件下，$\eqref{2.17}$展为4阶可以是：</p>
-<font color="red">未经计算，直接抄的，并且十分简略</font>
-
-<script type="math/tex; mode=display">
-\begin{align}
-\beta f= & \lim _{n \rightarrow 0} \frac{1}{n}\left\{\frac{1}{4}\left(\frac{T^2}{T_{\mathrm{f}}^2}-1\right) \operatorname{Tr} Q^2-\frac{1}{6} \operatorname{Tr} Q^3 - \frac{1}{8} \operatorname{Tr} Q^4+\frac{1}{4} \sum_{\alpha \neq \beta \neq \gamma} Q_{\alpha \beta}^2 Q_{\alpha \gamma}^2-\frac{1}{12} \sum_{\alpha \neq \beta} Q_{\alpha \beta}^4\right\},
-\end{align}</script><p>其中$Q_{\alpha\beta}=(\beta J)^2 q_{\alpha\beta}$，令$\theta=\frac{T_f-T}{T_f}$并且考虑复本极限$n\to 0$有：</p>
-<script type="math/tex; mode=display">
-\beta f=\frac{1}{2} \int_0^1 \mathrm{~d} x\left\{|\theta| q^2(x)-\frac{1}{3} x q^3(x)-q(x) \int_0^x q^2(y) \mathrm{d} y+\frac{1}{6} q^4(x)\right\}</script><p>对$q(x)$求导：</p>
-<script type="math/tex; mode=display">
-2|\theta| q(x)-x q^2(x)-\int_0^x q^2(y) \mathrm{d} y-2 q(x) \int_x^1 q(y) \mathrm{d} y+\frac{2}{3} q^3(x)=0</script><p>持续求微分得到结果：</p>
-<script type="math/tex; mode=display">
-|\theta|-x q(x)-\int_x^1 q(y) \mathrm{d} y+q^2(x)=0 \quad \text { or } \quad q^{\prime}(x)=0</script><script type="math/tex; mode=display">
-q(x)=\frac{x}{2} \quad \text { or } \quad q^{\prime}(x)=0</script><p>最后得到的解与$|\theta|$有关：</p>
-<script type="math/tex; mode=display">
-\begin{align}
-& q(x)=\frac{x}{2} \quad\left(0 \leq x \leq x_1=2 q(1)\right) \\
-& q(x)=q(1) \quad\left(x_1 \leq x \leq 1\right) \\
-& q(1)=|\theta|+\mathcal{O}\left(\theta^2\right) 
-\end{align}</script><p>当接近相变点时，$q(x=0)$。</p>
-<p><img src="/2022/11/20/Phys/SK_model/SK_model1/q_x.png" alt="$q(x)$"></p>
-]]></content>
-      <categories>
-        <category>Physics</category>
-      </categories>
-      <tags>
-        <tag>Spin Glass</tag>
-        <tag>Replica Method</tag>
-        <tag>Sherrington-Kirkpatrick Model</tag>
-        <tag>Parisi solution</tag>
-        <tag>Replica Symmetry Breaking</tag>
       </tags>
   </entry>
   <entry>
@@ -2890,8 +3111,101 @@ e^{-N \beta m \phi(\beta, m)}=\sum_\alpha e^{-N \beta m f_\alpha}=\sum_\alpha e^
       </categories>
       <tags>
         <tag>Spin Glass</tag>
-        <tag>Hopfield Model</tag>
         <tag>Replica Method</tag>
+        <tag>Hopfield Model</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Replica in Random Matrix</title>
+    <url>/2024/07/03/Phys/replica/replica_math/</url>
+    <content><![CDATA[<span id="more"></span>
+<h3 id="Stieltjes变换概述"><a href="#Stieltjes变换概述" class="headerlink" title="Stieltjes变换概述"></a>Stieltjes变换概述</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>Stieltjes变换是一个用于分析和研究实数轴上测度（或函数）性质的工具。对于一个实数轴上的测度 (\mu)，它的Stieltjes变换 ( G(z) ) 定义为：</p>
+<p>[ G(z) = \int_{-\infty}^{\infty} \frac{d\mu(x)}{x - z} ]</p>
+<p>其中，( z ) 是复平面上的一个点，且不在实数轴上的支撑集（即测度 (\mu) 为零的区域）内。</p>
+<p>对于一个函数 ( f(x) ) 来说，如果我们把它视为测度的密度函数，则Stieltjes变换可以写成：</p>
+<p>[ G(z) = \int_{-\infty}^{\infty} \frac{f(x) \, dx}{x - z} ]</p>
+<h4 id="逆变换"><a href="#逆变换" class="headerlink" title="逆变换"></a>逆变换</h4><p>Stieltjes变换的逆变换用于从变换后的函数恢复原始测度或密度函数。对于谱密度 ( \rho(x) )，我们有：</p>
+<p>[ \rho(x) = \lim_{\epsilon \to 0^+} \frac{1}{\pi} \Im[G(x + i\epsilon)] ]</p>
+<p>其中，( \Im[G(x + i\epsilon)] ) 表示 ( G(z) ) 在 ( z = x + i\epsilon ) 处的虚部。</p>
+<h3 id="应用示例：Wigner矩阵的谱密度"><a href="#应用示例：Wigner矩阵的谱密度" class="headerlink" title="应用示例：Wigner矩阵的谱密度"></a>应用示例：Wigner矩阵的谱密度</h3><h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>Wigner矩阵是一个对称的随机矩阵，其元素是独立同分布的随机变量。设 ( W ) 是一个 ( N \times N ) 的Wigner矩阵，其元素 ( W_{ij} ) 满足以下条件：</p>
+<ul>
+<li>( W_{ij} = W_{ji} )</li>
+<li>对于 ( i \neq j )， ( W_{ij} ) 是均值为零、方差为 ( \frac{1}{N} ) 的独立随机变量</li>
+<li>对角元素 ( W_{ii} ) 是均值为零、方差为 ( \frac{2}{N} ) 的独立随机变量</li>
+</ul>
+<p>Wigner半圆定律描述了在 ( N \to \infty ) 的极限下，Wigner矩阵的特征值分布趋向于一个半圆分布。</p>
+<h4 id="自洽方程推导"><a href="#自洽方程推导" class="headerlink" title="自洽方程推导"></a>自洽方程推导</h4><p>随机矩阵 ( W ) 的Stieltjes变换 ( G(z) ) 定义为：<br>[ G_N(z) = \frac{1}{N} \sum_{i=1}^N \frac{1}{\lambda_i - z} ]</p>
+<p>在大尺寸极限下， ( G_N(z) ) 的期望值趋向于一个确定的值 ( G(z) )，满足自洽方程：<br>[ G(z) = \frac{1}{-z - G(z)} ]</p>
+<p>这个方程通过以下步骤推导：</p>
+<ol>
+<li>将Stieltjes变换定义为矩阵的特征值求和。</li>
+<li>利用矩阵的迹和逆矩阵的关系，展开逆矩阵。</li>
+<li>在大尺寸极限下，假设矩阵元素足够小，进行平均场近似。</li>
+<li>得到自洽方程，并通过二次方程求解。</li>
+</ol>
+<h4 id="解析自洽方程"><a href="#解析自洽方程" class="headerlink" title="解析自洽方程"></a>解析自洽方程</h4><p>解自洽方程 ( G(z) = \frac{1}{-z - G(z)} )：<br>[ G(z)^2 + zG(z) + 1 = 0 ]</p>
+<p>解得：<br>[ G(z) = \frac{-z \pm \sqrt{z^2 - 4}}{2} ]</p>
+<p>选择满足 ( \Im[G(z)] \geq 0 ) 的分支：<br>[ G(z) = \frac{-z + \sqrt{z^2 - 4}}{2} ]</p>
+<h4 id="恢复谱密度"><a href="#恢复谱密度" class="headerlink" title="恢复谱密度"></a>恢复谱密度</h4><p>根据逆Stieltjes变换公式，谱密度 ( \rho(x) ) 为：<br>[ \rho(x) = \frac{1}{\pi} \text{Im}[G(x + i\epsilon)] ]</p>
+<p>代入 ( G(z) ) 的表达式，计算得：<br>[ \rho(x) = \frac{1}{2\pi} \sqrt{4 - x^2} ]</p>
+<p>这正是Wigner半圆分布的谱密度。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Stieltjes变换在随机矩阵理论中是一个强大的工具，特别适用于谱密度的计算。通过Stieltjes变换，可以将实数轴上的谱密度问题转化为复平面上的解析问题，利用其逆变换可以从复平面上的函数恢复原始的谱密度，从而简化了复杂的计算过程。</p>
+<font color="red">stop</font>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Spin Glass</tag>
+        <tag>Replica Method</tag>
+        <tag>Random Matrix</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Analytic and Algorithmic Solution of Random Satisfiability Problems</title>
+    <url>/2024/07/09/Phys/science_3831989/RSP/</url>
+    <content><![CDATA[<p>Parisi关于组合优化问题的分析。</p>
+<p>reference:</p>
+<ul>
+<li><a href="https://www.jstor.org/stable/3831989">Analytic and Algorithmic Solution of Random Satisfiability Problems</a></li>
+</ul>
+<span id="more"></span>
+<p>关于组合优化问题关心两类求解算法、理论分析，第二类理论分析具体为一类组合优化问题在不同实例的情况下，有哪些共性特征。</p>
+<p>考虑热力学极限$\alpha=M/N$，其中$N$是变量数，$M$是子句数目，其中$\alpha$是一个恒定值。将其转化为统计物理问题，$N$个布尔变量用二值$s$表示，每个子句$a$包含$k$个变量（K-SAT问题）即$k$个自旋相互作用，相互作用强度$J\in\{-1,1\}$通过子句中的$\neg$决定，将所有子句进行加和：</p>
+<script type="math/tex; mode=display">\begin{align}
+H=\sum_a \prod_k \frac{1+J_a s_k}{2^k}
+\end{align}</script><p>最终$H$的值表示违反的关系的个数，当全部满足的时候$H=0$。定义零温下的自由能关系：</p>
+<script type="math/tex; mode=display">
+\exp(-Ny\Phi(y))=\int\mathbb{d}w \exp(N[\Sigma(e)-ye])</script><p>其中$e$表示自由能，$\Sigma$为对应自由能量的熵。为了计算$\Phi$，使用空腔的方法。</p>
+<p>$\begin{aligned}<br>\min _{s_2, \ldots, s_K}\left(H-\frac{1}{2} \sum_{j=2}^K h_j s_j\right) =-\frac{1}{2}\left[a_J\left(h_2, \ldots, h_K\right)+s_1 u_J\left(h_2, \ldots, h_K\right)\right]<br>\end{aligned}$</p>
+<p><img src="/2024/07/09/Phys/science_3831989/RSP/fig1.png" alt="Cavity"><br>上图为表示空腔的因子图。</p>
+<p><img src="/2024/07/09/Phys/science_3831989/RSP/fig2.png" alt="phase diagram"></p>
+<p>相图可以用如上的结果表示，红线代表平均每个变量不满足的几率；绿线代表遍历性破缺线条；蓝线表示解的熵线。</p>
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Spin Glass</tag>
+        <tag>Combinatorial Optimization Methods</tag>
+        <tag>Boltzmann Machine</tag>
+        <tag>Replica Method</tag>
+        <tag>Replica Symmetry Breaking</tag>
       </tags>
   </entry>
   <entry>
@@ -3184,6 +3498,45 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
         <tag>PPO</tag>
         <tag>TRPO</tag>
         <tag>Policy Gradients</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Machine learning renormalization group for statistical physics</title>
+    <url>/2024/08/21/ai4sci/MLRG/MLRG/</url>
+    <content><![CDATA[<p>通过构建三个网络学习实空间重整化过程中的参数变化。</p>
+<p>Reference:</p>
+<ul>
+<li><a href="https://doi.org/10.1088/2632-2153/ad0101">Machine learning renormalization group for statistical physics</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="Network"><a href="#Network" class="headerlink" title="Network"></a>Network</h1><p><img src="/2024/08/21/ai4sci/MLRG/MLRG/architecture.png" alt="architecture of algorithm"></p>
+<p>一共有三个网络，其中两个是 RBM，另一个是深度网络。这两个 RBM 分别表示重整化前与重整化后的模型，可以给出波尔兹曼分布。在重整化变换前后分布应当是不变的，因此通过KL散度衡量这两个网络之间的距离，然而衡量KL散度存在困难，使用CD散度进行替代。</p>
+<p>那么这两个网络之间的重整化参数是如何确定的呢？这里引入了三个网络 moderator，用以将第一个网络参数转化为第第二个网络的参数，是学习重整化流的主要网络。</p>
+<h1 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h1><p>算法流程为：</p>
+<ol>
+<li>通过参数J进行采样（HMC），得到一些用于训练的 sample。</li>
+<li>J 作为 fine-grained RBM 的参数。</li>
+<li>这些sample输入 fine-grained RBM，产生根据其概率分布的sample1。</li>
+<li>通过 Moderator 将 J 变化为 J’，输入进 corase-grained RBM。</li>
+<li>将 sample1 输入 corase-grained RBM，产生根据其概率分布的sample2。</li>
+<li>根据sample2和sample1之间的概率分布区别作为loss。</li>
+<li>利用loss训练 Moderator。</li>
+<li>将 J’ 作为下一次循环的 J。</li>
+</ol>
+<h1 id="RG"><a href="#RG" class="headerlink" title="RG"></a>RG</h1><p><img src="/2024/08/21/ai4sci/MLRG/MLRG/lattice.png" alt="lattice"></p>
+<p>这里的重整化变换见上图中的阴影部分，a、b分别表示变换前后，绿色格点是sample的位置，蓝色和红色表示相互作用J。</p>
+<p><img src="/2024/08/21/ai4sci/MLRG/MLRG/tensor.png" alt="tensor"></p>
+<p>这里存在一个问题，两个不同的网络结构，相互作用是如何进行转化的？上图将这个相互用进行分解，将自旋、对称性、相互作用系数进行分解。</p>
+<h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="/2024/08/21/ai4sci/MLRG/MLRG/result.png" alt="result"></p>
+<p>绘制出 RG flow，并且能够准确找到鞍点。</p>
+]]></content>
+      <categories>
+        <category>AI for Science</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Spin Glass</tag>
+        <tag>Combinatorial Optimization Methods</tag>
       </tags>
   </entry>
   <entry>

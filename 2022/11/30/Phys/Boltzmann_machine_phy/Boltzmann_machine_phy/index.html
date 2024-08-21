@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="NkKZQoWWke3m9VdST86r08CsQDi6fRUGsiYhl_bl6yc">
+  <meta name="msvalidate.01" content="07C0174F9E4B4B2C960172E0CDFB3DC9">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"manual","top_n_per_article":-1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="波尔兹曼机是物理模型，同时也是早期的机器学习模型。 Reference:  神经网络的统计力学 — 受限制玻尔兹曼机的统计力学">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Boltzmann Machine">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="波尔兹曼机是物理模型，同时也是早期的机器学习模型。 Reference:  神经网络的统计力学 — 受限制玻尔兹曼机的统计力学">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/BMwithRBM.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/hidden.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/RBM.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/cavity.png">
+<meta property="article:published_time" content="2022-11-30T13:37:00.000Z">
+<meta property="article:modified_time" content="2024-07-30T03:48:45.521Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Spin Glass">
+<meta property="article:tag" content="Boltzmann Machine">
+<meta property="article:tag" content="Replica Method">
+<meta property="article:tag" content="Energy-based Model">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/BMwithRBM.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Boltzmann Machine | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><link rel="alternate" href="/atom.xml" title="Yixiong's Blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Boltzmann Machine
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-30 21:37:00" itemprop="dateCreated datePublished" datetime="2022-11-30T21:37:00+08:00">2022-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2024-07-30 11:48:45" itemprop="dateModified" datetime="2024-07-30T11:48:45+08:00">2024-07-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="Views" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">Views: </span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>175</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>波尔兹曼机是物理模型，同时也是早期的机器学习模型。</p>
+<p>Reference:</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://campus.swarma.org/course/4543/study">神经网络的统计力学 — 受限制玻尔兹曼机的统计力学</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="Boltzmann-Machine"><a href="#Boltzmann-Machine" class="headerlink" title="Boltzmann Machine"></a>Boltzmann Machine</h1><p><span id="fig1"></span></p>
+<p><img src="/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/BMwithRBM.png" alt="BM with RBM"></p>
+<p>上图(a)为玻尔兹曼机，类似于Ising模型，但是任意两个节点之间均含有连接。</p>
+<script type="math/tex; mode=display">\begin{align}
+E(\boldsymbol{\sigma})=-\sum_i h_i \sigma_i-\sum_{i<j} w_{i j} \sigma_i \sigma_j \label{Ising}
+\end{align}</script><p>其中$\sigma_i= \pm 1$是节点$i$的取值，$w_{i j}$是任意两个节点之间的链接权重，$h_i$为外磁场项（可以理解为偏置项）。构型的波尔兹曼分布为：</p>
+<script type="math/tex; mode=display">\begin{align}
+p(\boldsymbol{\sigma})=\frac{1}{Z} e^{-\beta E(\sigma)}
+\end{align}</script><p>其中$Z=\sum_\sigma e^{-\beta E(\sigma)}$为配分函数。给定数据，数据表现形式通过$\sigma$表现，目标是设计权重$w_{ij}$，使得对应构型的概率分布（波尔兹曼分布）较大；类似与Hopfield模型，可以通过输入部分构型，还原出整体的构型。这个任务本质上就是逆 Ising 问题（Inverse Ising Problem）。</p>
+<p>为了讨论方便，这里假设 $h_i=0\quad \forall i$。当然，比较直接的权重设计方案是 Hebbian rule，但是这个并不是最优的结果。以下使用极大似然估计方法。</p>
+<script type="math/tex; mode=display">
+\begin{align}
+L(\boldsymbol{\theta} \mid\{\boldsymbol{\sigma}\}) & =\left\langle\log \left(p_{\boldsymbol{\theta}}(\boldsymbol{\sigma})\right)\right\rangle_{\text {data }} \\
+& =-\langle E(\boldsymbol{\sigma}, \boldsymbol{\theta})\rangle_{\text {data }}-\log Z(\boldsymbol{\theta}) \\
+& =\sum_{i=1}^N h_i\left\langle\sigma_i\right\rangle_{\text {data }}+\sum_{i<j} w_{i j}\left\langle\sigma_i \sigma_j\right\rangle_{\text {data }}-\log Z(\boldsymbol{\theta})
+\end{align}</script><p>其中$\langle\ldots\rangle_{\text {data }}$ 表示对数据求平均，$\boldsymbol{\theta}$ 表示模型参数 $\{\boldsymbol{W}, \boldsymbol{h}\}$，计算$L(\boldsymbol{\theta} \mid\{\boldsymbol{\sigma}\})$ 梯度：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+\frac{\partial L}{\partial h_i} & =\left\langle\sigma_i\right\rangle_{\text {data }}-\left\langle\sigma_i\right\rangle_{\text {model }}  \\
+\frac{\partial L}{\partial w_{i j}} & =\left\langle\sigma_i \sigma_j\right\rangle_{\text {data }}-\left\langle\sigma_i \sigma_j\right\rangle_{\text {model }}
+\end{align}</script><p>其中$\langle\ldots\rangle_{\text {model }}$ 表示模型平均，表示的模型的热力学平均，是一个加权平均，穷举计算法耗时太长，直接计算是不现实的，可以认为是一个重要性抽样，从而使用蒙卡的方案计算。模型参数的梯度更新可以写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\Delta h_i & =\eta \frac{\partial L}{\partial h_i}=\eta\left(\left\langle\sigma_i\right\rangle_{\text {data }}-\left\langle\sigma_i\right\rangle_{\mathrm{model}}\right)  \\
+\Delta w_{i j} & =\eta \frac{\partial L}{\partial w_{i j}}=\eta\left(\left\langle\sigma_i \sigma_j\right\rangle_{\text {data }}-\left\langle\sigma_i \sigma_j\right\rangle_{\mathrm{model}}\right)
+\end{align}</script><p>其中$\eta$表示学习率。第一部分是数据的平均值，可以通过对数据进行平均计算；第二部分是模型的平均值，这部分计算如之前的描述，只能采用MCMC方法等重要性抽样方法才能计算（两点关联可以转化为点$\frac{\partial\left\langle\sigma_i\right\rangle_{\text {model }}}{\partial h_j}=\left\langle\sigma_i \sigma_j\right\rangle_{\text {model }}-\left\langle\sigma_i\right\rangle_{\text {model }}\left\langle\sigma_j\right\rangle_{\text {model }}$），然而由于模型的$h_j$与$w_{ij}$每一步都会发生变化，意味着每一次更新参数就需要重新进行一次重要性抽样，这显然是不能接受的。</p>
+<p>如果存在更高关联，例如三阶：</p>
+<script type="math/tex; mode=display">\begin{align}
+E(\boldsymbol{\sigma})=-\sum_i h_i \sigma_i-\sum_{i<j} w_{i j} \sigma_i \sigma_j-\sum_{i<j<k}\kappa_{ijk}\sigma_i\sigma_j\sigma_k 
+\end{align}</script><p>如何将这些关联以另一种形式展现，从而避免计算上的复杂性，这里引入一个隐变量$s$。</p>
+<p><span id="fig2"></span></p>
+<p><img src="/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/hidden.png" alt="Hidden"></p>
+<script type="math/tex; mode=display">\begin{align}
+E(\boldsymbol{\sigma},s)=-\sum_i h_i \sigma_i-\sum_{i<j} w_{i j} \sigma_i \sigma_j-s\sum_{i}\sigma_i k_i
+\end{align}</script><p>其中$k_i$表示$\sigma_i$与隐变量之间的强度。可知其波尔兹曼分布为：</p>
+<script type="math/tex; mode=display">\begin{align}
+P(\boldsymbol{\sigma},s) &\sim \exp\left(E(\boldsymbol{\sigma},s)\right) \\
+P(\boldsymbol{\sigma}) &=\sum_{s}\exp\left(E(\boldsymbol{\sigma},s)\right) \\
+&\sim \exp\left(-\sum_i h_i \sigma_i-\sum_{i<j} w_{i j} \sigma_i \sigma_j\right)2\cosh\left(\sum_i\sigma_i k_i\right) \\
+&= \exp\left(-\sum_i h_i \sigma_i-\sum_{i<j} w_{i j} \sigma_i \sigma_j\right)\exp\left( \ln\left[ 2\cosh\left(\sum_i\sigma_i k_i\right) \right] \right)
+\end{align}</script><p>可以将$\ln\left[ 2\cosh\left(\sum_i\sigma_i k_i\right) \right]$展开，从而得到高阶项:</p>
+<script type="math/tex; mode=display">
+\log (2 \cosh (x))=\log
+   (2)+\frac{x^2}{2}-\frac{x^4}{12}+O\left(x^6\right)</script><p>上面只是引入一个隐变量，更普遍的是具有更多隐变量<a href="#fig1">图中(b)</a>，这样会使得模型表达能力提升。对应的能量为：</p>
+<script type="math/tex; mode=display">\begin{align}
+E(\boldsymbol{\sigma},s)=-\sum_i h_i \sigma_i-\sum_{i<j} w_{i j} \sigma_i \sigma_j-\sum_{i,a}k_{ia}\sigma_i s_a-\sum_{a<b}\gamma_{ab}s_a s_b
+\end{align}</script><p>需要学习的模型参数除了$\eqref{Ising}$中提到的$w$与$h$以外，还需要学习$k_{a b}$与$\gamma_{a b}$两个参数：</p>
+<p>$\begin{aligned}<br>&amp; \Delta k_{a b}=\eta\left(\left\langle\sigma_i s_a\right\rangle_{\text {data }}-\left\langle\sigma_i s_a\right\rangle_{\text {model }}\right) \\<br>&amp; \Delta \gamma_{a b}=\eta\left(\left\langle s_a s_b\right\rangle_{\text {data }}-\left\langle s_a s_b\right\rangle_{\text {model }}\right)<br>\end{aligned}$</p>
+<p>由于$s$是隐变量，并不能直接直接得到，但是可以得到其概率值，例如通过 Sigmoid 函数：</p>
+<script type="math/tex; mode=display">\begin{align}
+P(s_a=1|\mathbf{\sigma})=\text{sigmoid}\left( -\sum_{i,a}k_{ia}\sigma_i-\sum_{a<b}\gamma_{ab}s_b \right)
+\end{align}</script><p>可以看到上面的计算过程中使用到了其它隐变量$s$，这里不得不进行近似，使用伯努力采样赋予$s$值；依据这个过程将所有的隐变量概率以及具体的值计算出来。</p>
+<p>可以看到在加入隐变量值后，计算CD散度需要更多的蒙卡模拟从而得到模型平均。这是一个十分费时的过程。</p>
+<h1 id="Restricted-Boltzmann-Machine"><a href="#Restricted-Boltzmann-Machine" class="headerlink" title="Restricted Boltzmann Machine"></a>Restricted Boltzmann Machine</h1><p>为了解决计算模型平均花费很多时间，将一些关联项进行省略，包含可见变量之间的相互作用以及隐变量之间的相互作用项，将这个模型称之为受限玻尔兹曼机。</p>
+<p><span id="fig3"></span></p>
+<p><img src="/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/RBM.png" alt="BM with RBM"></p>
+<script type="math/tex; mode=display">\begin{align}
+E(\boldsymbol{\sigma}, \boldsymbol{s})=-\sum_{i, a} \sigma_i w_{i a} s_a-\sum_i \phi_i \sigma_i-\sum_a h_a s_a
+\end{align}</script><p>其中$\sigma$与$s$为可见变量与隐变量，其余参数为相互作用强度与偏置项。波尔兹曼分布为：</p>
+<script type="math/tex; mode=display">\begin{align}
+p(\boldsymbol{\sigma}, \boldsymbol{s})=\frac{1}{Z} e^{-\beta E(\boldsymbol{\sigma}, s)}
+\end{align}</script><p>其中$Z=\sum_{\sigma, s} e^{-\beta E(\sigma, s)}$，并且假设$\beta=1$，将其作用吸收进相互作用参数中。</p>
+<p>将相同类型的节点之间的相互作用断开，好处在于可以实现近独立分布。只需要知道可见节点（隐藏节点）就可以推断出隐藏节点（可见节点）的概率分布，相同类型节点之间是独立的。</p>
+<script type="math/tex; mode=display">
+\begin{align}
+p\left(\sigma_i \mid \boldsymbol{s}\right) & =\frac{\sum_{\left\{\sigma_j: j \neq i\right\}} p(\boldsymbol{\sigma}, \boldsymbol{s})}{\sum_\sigma p(\boldsymbol{\sigma}, \boldsymbol{s})} \\
+& =\frac{e^{\sigma_i\left(\phi_i+\sum_a w_{i a} s_a\right)}}{e^{\sigma_i\left(\phi_i+\sum_a w_{i a} s_a\right)}+e^{-\sigma_i\left(\phi_i+\sum_a w_{i a} s_a\right)}} \\
+& =\frac{1}{1+e^{-2 \sigma_i\left(\phi_i+\sum_a w_{i a} s_a\right)}} \\
+p\left(s_a \mid \boldsymbol{\sigma}\right) & =\frac{\sum_{\left\{s_b: b \neq a\right\}} p(\boldsymbol{\sigma}, \boldsymbol{s})}{\sum_s p(\boldsymbol{\sigma}, \boldsymbol{s})} \\
+& =\frac{e^{s_a\left(h_a+\sum_i w_{i a} \sigma_i\right)}}{e^{s_a\left(h_a+\sum_i w_{i a} \sigma_i\right)}+e^{-s_a\left(h_a+\sum_i w_{i a} \sigma_i\right)}} \\
+& =\frac{1}{1+e^{-2 s_a\left(h_a+\sum_i w_{i a} \sigma_i\right)}} 
+\end{align}</script><p>计算权重的方法与玻尔兹曼机类似，同样使用极大似然估计。</p>
+<script type="math/tex; mode=display">\begin{align}
+\mathcal{L}(\boldsymbol{\theta} \mid\{\boldsymbol{\sigma}\}) & =\left\langle\log \left(p_{\boldsymbol{\theta}}(\boldsymbol{\sigma})\right)\right\rangle_{\text {data }} \\
+& =-\langle E(\boldsymbol{\sigma}, \boldsymbol{\theta})\rangle_{\text {data }}-\log Z(\{\boldsymbol{\theta}\})
+\end{align}</script><p>$\boldsymbol{\theta}$ 表示参数 $\{\boldsymbol{W}, \boldsymbol{\phi}, \boldsymbol{h}\}$，</p>
+<p>参数的梯度为：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& \frac{\partial \mathcal{L}\left(\left\{w_{i a}, \phi_i, h_a\right\}\right)}{\partial w_{i a}}=\left\langle\sigma_i s_a\right\rangle_{\text {data }}-\left\langle\sigma_i s_a\right\rangle_{\text {model }} \\
+& \frac{\partial \mathcal{L}\left(\left\{w_{i a}, \phi_i, h_a\right\}\right)}{\partial \phi_i}=\left\langle\sigma_i\right\rangle_{\text {data }}-\left\langle\sigma_i\right\rangle_{\text {model }} \\
+& \frac{\partial \mathcal{L}\left(\left\{w_{i a}, \phi_i, h_a\right\}\right)}{\partial h_a}=\left\langle s_a\right\rangle_{\text {data }}-\left\langle s_a\right\rangle_{\text {model }} 
+\end{align}</script><h1 id="Free-Energy-Calculation"><a href="#Free-Energy-Calculation" class="headerlink" title="Free Energy Calculation"></a>Free Energy Calculation</h1><script type="math/tex; mode=display">\begin{align}
+p(\boldsymbol{\sigma}) & =\sum_s p(\boldsymbol{\sigma}, \boldsymbol{s}) \\
+& =\frac{1}{Z} \sum_s e^{\sum_a\left(\sum_i \beta \sigma_i w_{i a}+\beta h_a\right) s_a+\sum_i \beta \sigma_i \phi_i} \\
+& =\frac{1}{Z} e^{\sum_i \beta \sigma_i \phi_i} \sum_s \prod_a e^{\left(\sum_i \beta \sigma_i w_{i a}+\beta h_a\right) s_a} \\
+& =\frac{1}{Z} \prod_i e^{\beta \sigma_i \phi_i} \prod_a \sum_{s_a} e^{\left(\sum_i \beta \sigma_i w_{i a}+\beta h_a\right) s_a} \\
+& =\frac{1}{Z} \prod_i e^{\beta \sigma_i \phi_i} \prod_a\left[2 \cosh \left(\beta \boldsymbol{w}_a \boldsymbol{\sigma}+\beta h_a\right)\right],
+\end{align}</script><font color="green">可见cavity 计算是将复杂计算转化为因子图迭代的过程，这是一种巧妙的近似，它的适用范围不限于计算自由能。</font>
+
+<p>画出因子图：<br><img src="/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/cavity.png" alt="factor graph"></p>
+<p>factor node表示$2\cosh (\beta\mathbf{w_a}\mathbf{\sigma}+\beta h_a)$，variable node 表示$\sigma_i$。可以得到cavity迭代方程为：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& P_{i \rightarrow a}\left(\sigma_i\right)=\frac{1}{Z_{i \rightarrow a}} e^{\phi_i \sigma_i} \prod_{b \in \partial i \backslash a} \mu_{b \rightarrow i}\left(\sigma_i\right) ; \\
+& \mu_{b \rightarrow i}\left(\sigma_i\right)=\sum_{\left\{\sigma_j \mid j \in \partial b \backslash i\right\}} 2 \cosh \left(\boldsymbol{w}_b \sigma+h_b\right) \prod_{j \in \partial b \backslash i} P_{j \rightarrow b}\left(\sigma_j\right),
+\end{align}</script><p>其中 $Z_{i \rightarrow a}=e^{\phi_i} \prod_{b \in \partial i \backslash a} \mu_{b \rightarrow i}(+1)+e^{-\phi_i} \prod_{b \in \partial i \backslash a} \mu_{b \rightarrow i}(-1)$，虽然已经近似处理，但是求解这个迭代方程需要$O\left(2^{N-1}\right)$的时间复杂度，因此还需要进一步近似。</p>
+<p>定义 $\mathcal{U}_{b \rightarrow i} \equiv \sum_{j \in \partial b \backslash i} w_{j b} \sigma_j$，根据中心极限定理（central limit theorem (CLT)）在$N$ 较大的情况下 $\mathcal{U}_{b \rightarrow i}$应该服从高斯分布，因此$\mathcal{U}_{b \rightarrow i}$的均值和方差写为：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+G_{b \rightarrow i} & =\left\langle\mathcal{U}_{b \rightarrow i}\right\rangle_{\left\{\sigma_j \mid j \in \partial b \backslash i\right\}}=\sum_{j \in \partial b \backslash i} w_{j b} m_{j \rightarrow b}  \label{G}\\
+\Xi_{b \rightarrow i}^2 & =\left\langle\mathcal{U}_{b \rightarrow i}^2\right\rangle_{\left\{\sigma_j \mid j \in \partial b \backslash i\right\}}-\left\langle\mathcal{U}_{b \rightarrow i}\right\rangle_{\left\{\sigma_j \mid j \in \partial b \backslash i\right\}}^2 \\
+& \simeq \sum_{j \in \partial b \backslash i} w_{j b}^2\left(1-m_{j \rightarrow b}^2\right)\\
+m_{j \rightarrow b} &\equiv \sum_{\sigma_j} \sigma_j P_{j \rightarrow b}\left(\sigma_j\right)
+\end{align}</script><p>因此 $\mu_{b \rightarrow i}\left(\sigma_i\right)$ 利用高斯积分可以近似写为：</p>
+<script type="math/tex; mode=display">
+\begin{aligned}
+\mu_{b \rightarrow i}\left(\sigma_i\right) & =2 \int D t \cosh \left(G_{b \rightarrow i}+\sqrt{\Xi_{b \rightarrow i}^2} t+h_b+w_{i b} \sigma_i\right) \\
+& =2 e^{\frac{\Xi_{b \rightarrow i}^2}{2}} \cosh \left(G_{b \rightarrow i}+h_b+w_{i b} \sigma_i\right),
+\end{aligned}</script><p>其中 $D t \equiv e^{-t^2 / 2} / \sqrt{2 \pi} d t$。接下来计算$m_{j \rightarrow b}$即变量节点的概率：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+m_{j \rightarrow b} & =\sum_{\sigma_j} \sigma_j P_{j \rightarrow b}\left(\sigma_j\right) \\
+& =\frac{\sum_{\sigma_i} \sigma_i e^{\phi_i \sigma_i} \prod_{b \in \partial i \backslash a} \mu_{b \rightarrow i}\left(\sigma_i\right)}{\sum_{\sigma_i} e^{\phi_i \sigma_i} \prod_{b \in \partial i \backslash a} \mu_{b \rightarrow i}\left(\sigma_i\right)} \label{10.15}\\
+& =\tanh \left(\phi_i+\sum_{b \in \partial i \backslash a} u_{b \rightarrow i}\right) ; \\
+u_{b \rightarrow i} & =\frac{1}{2} \ln \frac{\mu_{b \rightarrow i}(+1)}{\mu_{b \rightarrow i}(-1)}=\frac{1}{2} \ln \frac{\cosh \left(h_b+G_{b \rightarrow i}+w_{i b}\right)}{\cosh \left(h_b+G_{b \rightarrow i}-w_{i b}\right)}\label{u}
+\end{align}</script><p>从$\eqref{G},\eqref{10.15},\eqref{u}$得到自洽迭代方程。</p>
+<p>对于自由能为：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+F & =\sum_i F_i-(N-1) \sum_a F_a \\
+F_i & =-\ln Z_i=-\ln \left(e^{\phi_i} \prod_{b \in \partial i} \mu_{b \rightarrow i}(+1)+e^{-\phi_i} \prod_{b \in \partial i} \mu_{b \rightarrow i}(-1)\right) \\
+F_a & =-\ln Z_a=-\ln \left(2 e^{\frac{\Xi_a^2}{2}} \cosh \left(G_a+h_a\right)\right)
+\end{align}</script><font color="red">end</font>
+
+
+<p>where . Inserting this result into the cavity probability $P_{i \rightarrow a}\left(\sigma_i\right)$, we obtain the cavity magnetization</p>
+<p>where $u_{b \rightarrow i}$ is the cavity bias (see Chap. 2). $m_{i \rightarrow a}$ represents the massage passing from variable node $i$ to factor node $a$, and $u_{b \rightarrow i}$ denotes the massage passing from factor node $b$ to variable node $i$. Iterating Eq. (10.15) can reach the fixed point. Then, the Bethe free energy can be calculated as follows:</p>
+<p>where $F_i$ and $F_a$ are local free energies of variable node $i$ and factor node $a$, respectively, $\Xi_a=\sum_{j \in \partial a} w_{j a}^2\left(1-m_{j \rightarrow a}^2\right)$, and $G_a=\sum_{j \in \partial a} w_{j a} m_{j \rightarrow a}$. The computation of $F_a$ is similar to that of $\mu_{a \rightarrow i}$. Here, we show an experiment result of the free energy computation via the Bethe approximation (Fig. 10.4).</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spin-Glass/" rel="tag"># Spin Glass</a>
+              <a href="/tags/Boltzmann-Machine/" rel="tag"># Boltzmann Machine</a>
+              <a href="/tags/Replica-Method/" rel="tag"># Replica Method</a>
+              <a href="/tags/Energy-based-Model/" rel="tag"># Energy-based Model</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/30/Phys/Boltzmann_machine_phy/append/" rel="prev" title="Boltzmann Machine Append">
+      <i class="fa fa-chevron-left"></i> Boltzmann Machine Append
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/01/19/DL/Score_matching_model/Score_matching_model/" rel="next" title="Score matching model">
+      Score matching model <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Boltzmann-Machine"><span class="nav-number">1.</span> <span class="nav-text">Boltzmann Machine</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Restricted-Boltzmann-Machine"><span class="nav-number">2.</span> <span class="nav-text">Restricted Boltzmann Machine</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Free-Energy-Calculation"><span class="nav-number">3.</span> <span class="nav-text">Free Energy Calculation</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">52</span>
+        <span class="site-state-item-name">tags</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/RenYixiong-ai" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;RenYixiong-ai" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:renyixiong@mail.ustc.edu.cn" title="E-Mail → mailto:renyixiong@mail.ustc.edu.cn" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://renyixiong-ai.github.io/" title="GitHub Page → https:&#x2F;&#x2F;renyixiong-ai.github.io&#x2F;"><i class="fab fa-github fa-fw"></i>GitHub Page</a>
+      </span>
+  </div>
+
+
+  <div class="">
+    <a target="_blank" class="social-link" href="/atom.xml" style="color: burlywood;">
+      <span class="icon">
+        <i class="fa fa-rss"></i>
+      </span>
+      <span class="label">RSS</span>
+    </a>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">155k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">4:41</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="Total Visitors">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="Total Views">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+          load: ['[tex]/mhchem'],
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+          packages: {'[+]': ['mhchem']},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
