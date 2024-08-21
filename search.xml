@@ -3119,53 +3119,34 @@ e^{-N \beta m \phi(\beta, m)}=\sum_\alpha e^{-N \beta m f_\alpha}=\sum_\alpha e^
     <title>Replica in Random Matrix</title>
     <url>/2024/07/03/Phys/replica/replica_math/</url>
     <content><![CDATA[<span id="more"></span>
-<h3 id="Stieltjes变换概述"><a href="#Stieltjes变换概述" class="headerlink" title="Stieltjes变换概述"></a>Stieltjes变换概述</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>Stieltjes变换是一个用于分析和研究实数轴上测度（或函数）性质的工具。对于一个实数轴上的测度 (\mu)，它的Stieltjes变换 ( G(z) ) 定义为：</p>
-<p>[ G(z) = \int_{-\infty}^{\infty} \frac{d\mu(x)}{x - z} ]</p>
-<p>其中，( z ) 是复平面上的一个点，且不在实数轴上的支撑集（即测度 (\mu) 为零的区域）内。</p>
-<p>对于一个函数 ( f(x) ) 来说，如果我们把它视为测度的密度函数，则Stieltjes变换可以写成：</p>
-<p>[ G(z) = \int_{-\infty}^{\infty} \frac{f(x) \, dx}{x - z} ]</p>
-<h4 id="逆变换"><a href="#逆变换" class="headerlink" title="逆变换"></a>逆变换</h4><p>Stieltjes变换的逆变换用于从变换后的函数恢复原始测度或密度函数。对于谱密度 ( \rho(x) )，我们有：</p>
-<p>[ \rho(x) = \lim_{\epsilon \to 0^+} \frac{1}{\pi} \Im[G(x + i\epsilon)] ]</p>
-<p>其中，( \Im[G(x + i\epsilon)] ) 表示 ( G(z) ) 在 ( z = x + i\epsilon ) 处的虚部。</p>
-<h3 id="应用示例：Wigner矩阵的谱密度"><a href="#应用示例：Wigner矩阵的谱密度" class="headerlink" title="应用示例：Wigner矩阵的谱密度"></a>应用示例：Wigner矩阵的谱密度</h3><h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>Wigner矩阵是一个对称的随机矩阵，其元素是独立同分布的随机变量。设 ( W ) 是一个 ( N \times N ) 的Wigner矩阵，其元素 ( W_{ij} ) 满足以下条件：</p>
+<h3 id="Stieltjes变换概述"><a href="#Stieltjes变换概述" class="headerlink" title="Stieltjes变换概述"></a>Stieltjes变换概述</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>Stieltjes变换是一个用于分析和研究实数轴上测度（或函数）性质的工具。对于一个实数轴上的测度 $\mu$，它的Stieltjes变换 $ G(z) $ 定义为：</p>
+<script type="math/tex; mode=display">G(z) = \int_{-\infty}^{\infty} \frac{d\mu(x)}{x - z}</script><p>其中，$ z $ 是复平面上的一个点，且不在实数轴上的支撑集（即测度 $\mu$ 为零的区域）内。</p>
+<p>对于一个函数 $ f(x) $ 来说，如果我们把它视为测度的密度函数，则Stieltjes变换可以写成：</p>
+<script type="math/tex; mode=display">G(z) = \int_{-\infty}^{\infty} \frac{f(x) \, dx}{x - z}</script><h4 id="逆变换"><a href="#逆变换" class="headerlink" title="逆变换"></a>逆变换</h4><p>Stieltjes变换的逆变换用于从变换后的函数恢复原始测度或密度函数。对于谱密度 $ \rho(x) $，我们有：</p>
+<script type="math/tex; mode=display">\rho(x) = \lim_{\epsilon \to 0^+} \frac{1}{\pi} \Im[G(x + i\epsilon)]</script><p>其中，$ \Im[G(x + i\epsilon)] $ 表示 $ G(z) $ 在 $ z = x + i\epsilon $ 处的虚部。</p>
+<h3 id="应用示例：Wigner矩阵的谱密度"><a href="#应用示例：Wigner矩阵的谱密度" class="headerlink" title="应用示例：Wigner矩阵的谱密度"></a>应用示例：Wigner矩阵的谱密度</h3><h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>Wigner矩阵是一个对称的随机矩阵，其元素是独立同分布的随机变量。设 $ W $ 是一个 $ N \times N $ 的Wigner矩阵，其元素 $ W_{ij} $ 满足以下条件：</p>
 <ul>
-<li>( W_{ij} = W_{ji} )</li>
-<li>对于 ( i \neq j )， ( W_{ij} ) 是均值为零、方差为 ( \frac{1}{N} ) 的独立随机变量</li>
-<li>对角元素 ( W_{ii} ) 是均值为零、方差为 ( \frac{2}{N} ) 的独立随机变量</li>
+<li>$ W_{ij} = W_{ji} $</li>
+<li>对于 $ i \neq j $， $ W_{ij} $ 是均值为零、方差为 $ \frac{1}{N} $ 的独立随机变量</li>
+<li>对角元素 $ W_{ii} $ 是均值为零、方差为 $ \frac{2}{N} $ 的独立随机变量</li>
 </ul>
-<p>Wigner半圆定律描述了在 ( N \to \infty ) 的极限下，Wigner矩阵的特征值分布趋向于一个半圆分布。</p>
-<h4 id="自洽方程推导"><a href="#自洽方程推导" class="headerlink" title="自洽方程推导"></a>自洽方程推导</h4><p>随机矩阵 ( W ) 的Stieltjes变换 ( G(z) ) 定义为：<br>[ G_N(z) = \frac{1}{N} \sum_{i=1}^N \frac{1}{\lambda_i - z} ]</p>
-<p>在大尺寸极限下， ( G_N(z) ) 的期望值趋向于一个确定的值 ( G(z) )，满足自洽方程：<br>[ G(z) = \frac{1}{-z - G(z)} ]</p>
-<p>这个方程通过以下步骤推导：</p>
+<p>Wigner半圆定律描述了在 $ N \to \infty $ 的极限下，Wigner矩阵的特征值分布趋向于一个半圆分布。</p>
+<h4 id="自洽方程推导"><a href="#自洽方程推导" class="headerlink" title="自洽方程推导"></a>自洽方程推导</h4><p>随机矩阵 $ W $ 的Stieltjes变换 $ G(z) $ 定义为：</p>
+<script type="math/tex; mode=display">G_N(z) = \frac{1}{N} \sum_{i=1}^N \frac{1}{\lambda_i - z}</script><p>在大尺寸极限下， $ G_N(z) $ 的期望值趋向于一个确定的值 $ G(z) $，满足自洽方程：</p>
+<script type="math/tex; mode=display">G(z) = \frac{1}{-z - G(z)}</script><p>这个方程通过以下步骤推导：</p>
 <ol>
 <li>将Stieltjes变换定义为矩阵的特征值求和。</li>
 <li>利用矩阵的迹和逆矩阵的关系，展开逆矩阵。</li>
 <li>在大尺寸极限下，假设矩阵元素足够小，进行平均场近似。</li>
 <li>得到自洽方程，并通过二次方程求解。</li>
 </ol>
-<h4 id="解析自洽方程"><a href="#解析自洽方程" class="headerlink" title="解析自洽方程"></a>解析自洽方程</h4><p>解自洽方程 ( G(z) = \frac{1}{-z - G(z)} )：<br>[ G(z)^2 + zG(z) + 1 = 0 ]</p>
-<p>解得：<br>[ G(z) = \frac{-z \pm \sqrt{z^2 - 4}}{2} ]</p>
-<p>选择满足 ( \Im[G(z)] \geq 0 ) 的分支：<br>[ G(z) = \frac{-z + \sqrt{z^2 - 4}}{2} ]</p>
-<h4 id="恢复谱密度"><a href="#恢复谱密度" class="headerlink" title="恢复谱密度"></a>恢复谱密度</h4><p>根据逆Stieltjes变换公式，谱密度 ( \rho(x) ) 为：<br>[ \rho(x) = \frac{1}{\pi} \text{Im}[G(x + i\epsilon)] ]</p>
-<p>代入 ( G(z) ) 的表达式，计算得：<br>[ \rho(x) = \frac{1}{2\pi} \sqrt{4 - x^2} ]</p>
-<p>这正是Wigner半圆分布的谱密度。</p>
+<h4 id="解析自洽方程"><a href="#解析自洽方程" class="headerlink" title="解析自洽方程"></a>解析自洽方程</h4><p>解自洽方程 $ G(z) = \frac{1}{-z - G(z)} $：</p>
+<script type="math/tex; mode=display">G(z)^2 + zG(z) + 1 = 0</script><p>解得：</p>
+<script type="math/tex; mode=display">G(z) = \frac{-z \pm \sqrt{z^2 - 4}}{2}</script><p>选择满足 $ \Im[G(z)] \geq 0 $ 的分支：</p>
+<script type="math/tex; mode=display">G(z) = \frac{-z + \sqrt{z^2 - 4}}{2}</script><h4 id="恢复谱密度"><a href="#恢复谱密度" class="headerlink" title="恢复谱密度"></a>恢复谱密度</h4><p>根据逆Stieltjes变换公式，谱密度 $ \rho(x) $ 为：</p>
+<script type="math/tex; mode=display">\rho(x) = \frac{1}{\pi} \text{Im}[G(x + i\epsilon)]</script><p>代入 $ G(z) $ 的表达式，计算得：</p>
+<script type="math/tex; mode=display">\rho(x) = \frac{1}{2\pi} \sqrt{4 - x^2}</script><p>这正是Wigner半圆分布的谱密度。</p>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Stieltjes变换在随机矩阵理论中是一个强大的工具，特别适用于谱密度的计算。通过Stieltjes变换，可以将实数轴上的谱密度问题转化为复平面上的解析问题，利用其逆变换可以从复平面上的函数恢复原始的谱密度，从而简化了复杂的计算过程。</p>
-<font color="red">stop</font>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ]]></content>
       <categories>
         <category>Physics</category>
