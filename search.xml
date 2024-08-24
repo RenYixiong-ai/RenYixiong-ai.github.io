@@ -5163,4 +5163,33 @@ E_v[\rho]=F_{\mathrm{HK}}[\rho]+\int \mathrm{d} \boldsymbol{r} \rho(\boldsymbol{
         <tag>Clasical dynamics</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Student of Games:Aunified learning algorithm forboth perfect andimperfect information games</title>
+    <url>/2024/08/24/RL/SoG/SoG/</url>
+    <content><![CDATA[<p>在之前的游戏引擎中存在仅适用于单一游戏的问题，虽然AlphaZero解决对于完全完美信息的通用性，但是对于扑克等依旧不存在通用算法。这篇文章提出一种新的通用算法Student of Games（SoG），该算法类似于AlphaZero通过自博弈的方式完成训练，同时拓展了适用边界——适用于非完全信息博弈，例如扑克。</p>
+<font color="red">这个算法结合了很多内容，并没有读懂</font>
+
+<p>Link:</p>
+<ul>
+<li><a href="https://www.science.org/doi/10.1126/sciadv.adg3256#supplementary-materials">Student of Games:Aunified learning algorithm forboth perfect andimperfect information games</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>对于完全完美信息博弈，在理论上存在最优策略，难点在于如何找到该策略。对于不完全信息博弈，是否存在最优策略呢？因为不知道别人的信息，自己作出的选择可能因为对方的信息得到截然不同的结果，因此在这种情况下如何判断不同策略之间哪一个是最优策略？解答这个问题，需要换一个角度从纳什均衡出发，如果存在一种策略使得处于纳什均衡，一旦脱离该策略，那么必然会使得其处于更糟糕的点，那么这个策略就是最优策略。<font color="red">但是可能存在多个均衡策略，哪一个策略是最优的呢？</font></p>
+<p>对于不完全信息博弈，已有的算法是<a href="https://proceedings.neurips.cc/paper/2007/file/08d98638c6fcd194a4b1e6992063e944-Paper.pdf">counterfactual regretminimiza tion (CFR)</a>，以及后续衍生的<a href="https://www.science.org/doi/10.1126/science.aam6960">DeepStack</a>算法。</p>
+<p>这篇文章结合了AlphaZero与DeepStack算法，与AlphaZero的区别在于自博弈的记录可以用于训练非完全信息博弈；与DeepStack的区别在于使用更少的domain knowledge，单个网络对于所有策略。与该算法接近的算法是<a href="https://arxiv.org/abs/2007.13544">Recurr entBelief-based Learning (ReBeL)</a></p>
+<h1 id="SoG-algorithm"><a href="#SoG-algorithm" class="headerlink" title="SoG algorithm"></a>SoG algorithm</h1><p><img src="/2024/08/24/RL/SoG/SoG/CVPN.png" alt="CVPN"></p>
+<p>将参数给入网络得到私有策略。</p>
+<p><img src="/2024/08/24/RL/SoG/SoG/GT-CFR.png" alt="GT-CFR"></p>
+<p>包含后悔值的搜索树。</p>
+<p><img src="/2024/08/24/RL/SoG/SoG/Train.png" alt="Train"></p>
+<p>上面是整个训练树，首先通过给定的参数$\beta$完成自博弈生成数据，</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Student of Games</tag>
+      </tags>
+  </entry>
 </search>
