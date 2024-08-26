@@ -5181,8 +5181,7 @@ E_v[\rho]=F_{\mathrm{HK}}[\rho]+\int \mathrm{d} \boldsymbol{r} \rho(\boldsymbol{
 <p>将参数给入网络得到私有策略。</p>
 <p><img src="/2024/08/24/RL/SoG/SoG/GT-CFR.png" alt="GT-CFR"></p>
 <p>包含后悔值的搜索树。</p>
-<p><img src="/2024/08/24/RL/SoG/SoG/Train.png" alt="Train"></p>
-<p>上面是整个训练树，首先通过给定的参数$\beta$完成自博弈生成数据，</p>
+<p><img src="/2024/08/24/RL/SoG/SoG/train.png" alt="Train"></p>
 ]]></content>
       <categories>
         <category>Machine Learning</category>
@@ -5190,6 +5189,45 @@ E_v[\rho]=F_{\mathrm{HK}}[\rho]+\int \mathrm{d} \boldsymbol{r} \rho(\boldsymbol{
       <tags>
         <tag>Reinforcement Learning</tag>
         <tag>Student of Games</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Injectivity of ReLU networks (perspectives from statistical physics)</title>
+    <url>/2024/08/25/DL/Injectivity_ReLU/InjecReLU/</url>
+    <content><![CDATA[<p>对于ReLU激活层单向性的分析，得到变化的上下界。</p>
+<p>Link:</p>
+<ul>
+<li><a href="https://arxiv.org/abs/2302.14112">Injectivity of ReLU networks: perspectives from statistical physics</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>在什么情况下，随机初始化的ReLU网络是单射性的？</p>
+<p>考虑一个单层的 ReLU 函数，这个映射为$\varphi_{\mathbf{W}}$：</p>
+<script type="math/tex; mode=display">
+\varphi_{\mathbf{W}}(\mathbf{x})_\mu=\sigma\left[\left(\frac{\mathbf{W} \mathbf{x}}{\sqrt{n}}\right)_\mu\right], \quad \mu=1, \cdots, m</script><p>其中 $n, m \geq 1$ ，$\mathbf{x} \in \mathbb{R}^n$ ，$\sigma(x):=\max (0, x)$ ，ReLU参数满足正态分布 $W_{\mu i} \stackrel{\text { i.i.d. }}{\sim} \mathcal{N}(0,1)$ 。</p>
+<p>已有研究指出在热力学极限下 $n \rightarrow \infty$ 、 $\frac{m}{n} \rightarrow \alpha&gt;0$ ，存在两个阈值 $\alpha_l&lt;\alpha_h$ 。当$\alpha&lt;\alpha_l$，ReLU函数是非单射性的；当$\alpha&gt;\alpha_h$，ReLU是单射性的。</p>
+<p>这篇文章的研究内容与之前的一致，采用统计物理方法（复本对称）。</p>
+<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><p>研究思路是通过将单射性问题，通过一个能量模型描述，然后这个能量模型在波尔兹曼分布下研究。这样该问题就转为一个物理问题。</p>
+<h2 id="Injectivity"><a href="#Injectivity" class="headerlink" title="Injectivity"></a>Injectivity</h2><p>首先需要解决如何描述单射性。提出概率 $p_{m, n}$ 用于表示映射$\varphi_{\mathbf{W}}$ 是单射性的概率：</p>
+<script type="math/tex; mode=display">
+p_{m, n}=\mathbb{P}_V\left[V \cap C_{m, n}=\{0\}\right]</script><p>其中 $V$ 是 $\mathbb{R}^m$ 的一个随即子空间， $C_{m, n}$ 是 $\mathbb{R}^m$ 中一组向量，并且这组向量中每一个向量元素为正的个数要小于$n$ 。</p>
+<p>通过这个操作，将描述单射性的问题，转化为数向量中为正的元素个数，可以定量描述了。</p>
+<h2 id="Statistical-physics-and-the-spherical-perceptron"><a href="#Statistical-physics-and-the-spherical-perceptron" class="headerlink" title="Statistical physics and the spherical perceptron"></a>Statistical physics and the spherical perceptron</h2><p>接下来的任务就是通过设计能量函数，将数正数的个数，变成为能量的表述形式。</p>
+<p>通过能量表示总的正元素个数：</p>
+<script type="math/tex; mode=display">
+E_{\mathbf{W}}(\mathbf{x}):=\sum_{\mu=1}^m \theta\left[(\mathbf{W} \mathbf{x})_\mu\right], \quad e_{\mathbf{W}}(\mathbf{x}):=\frac{E_{\mathbf{W}}(\mathbf{x})}{n}</script><p>其中 $\theta(x)=\mathbb{1}(x&gt;0)$ ， $\mathbf{x} \in \mathcal{S}^{n-1}$ ， $\mathcal{S}^{n-1}$ 是 $\mathbb{R}^n$ 上的单位球。根据之前的讨论$V \cap C_{m, n}=\{0\}$可以得到 $\mathbf{W} \mathbf{x} \in C_{m, n} \Leftrightarrow E_{\mathbf{W}}(\mathbf{x})&lt;n$，将 $p_{m, n}$重新写为：</p>
+<script type="math/tex; mode=display">
+p_{m, n}=\mathbb{P}_{\mathbf{W}}\left[\min _{\mathbf{x} \in \mathcal{S}^{n-1}} E_{\mathbf{W}}(\mathbf{x}) \geq n\right]</script><h2 id="Thermal-relaxation-the-Gibbs–Boltzmann-distribution"><a href="#Thermal-relaxation-the-Gibbs–Boltzmann-distribution" class="headerlink" title="Thermal relaxation: the Gibbs–Boltzmann distribution"></a>Thermal relaxation: the Gibbs–Boltzmann distribution</h2><p>有了能量，接下来将其写为波尔兹曼分布：</p>
+<script type="math/tex; mode=display">
+\mathrm{d} \mathbb{P}_{\beta, \mathbf{W}}(\mathbf{x}):=\frac{1}{\mathcal{Z}_n(\mathbf{W}, \beta)} e^{-\beta E_{\mathbf{W}}(\mathbf{x})} \mu_n(\mathrm{~d} \mathbf{x}) . \quad\left(\mathbf{x} \in \mathcal{S}^{n-1}\right)</script><p>其中$beta$为逆温度，$\beta=0$ 那就是球面上的平均测量， $\beta \rightarrow \infty$则是能量最小值部分。</p>
+<p>同时写出其自由能：</p>
+<script type="math/tex; mode=display">
+\Phi_n(\mathbf{W}, \beta):=\frac{1}{n} \log \mathcal{Z}_n(\mathbf{W}, \beta)=\frac{1}{n} \log \int_{\mathcal{S}^{n-1}} \mu_n(\mathrm{~d} \mathbf{x}) e^{-\beta E_{\mathbf{W}}(\mathbf{x})}</script><h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p>这部分就是通过副本对称破缺讨论了。</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Spin Glass</tag>
       </tags>
   </entry>
 </search>

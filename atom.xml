@@ -6,7 +6,7 @@
   <link href="https://renyixiong-ai.github.io/atom.xml" rel="self"/>
   
   <link href="https://renyixiong-ai.github.io/"/>
-  <updated>2024-08-24T17:55:25.565Z</updated>
+  <updated>2024-08-26T02:11:18.302Z</updated>
   <id>https://renyixiong-ai.github.io/</id>
   
   <author>
@@ -17,13 +17,38 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>Injectivity of ReLU networks (perspectives from statistical physics)</title>
+    <link href="https://renyixiong-ai.github.io/2024/08/25/DL/Injectivity_ReLU/InjecReLU/"/>
+    <id>https://renyixiong-ai.github.io/2024/08/25/DL/Injectivity_ReLU/InjecReLU/</id>
+    <published>2024-08-25T09:30:00.000Z</published>
+    <updated>2024-08-26T02:11:18.302Z</updated>
+    
+    <content type="html"><![CDATA[<p>对于ReLU激活层单向性的分析，得到变化的上下界。</p><p>Link:</p><ul><li><a href="https://arxiv.org/abs/2302.14112">Injectivity of ReLU networks: perspectives from statistical physics</a></li></ul><span id="more"></span><h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>在什么情况下，随机初始化的ReLU网络是单射性的？</p><p>考虑一个单层的 ReLU 函数，这个映射为$\varphi_{\mathbf{W}}$：</p><script type="math/tex; mode=display">\varphi_{\mathbf{W}}(\mathbf{x})_\mu=\sigma\left[\left(\frac{\mathbf{W} \mathbf{x}}{\sqrt{n}}\right)_\mu\right], \quad \mu=1, \cdots, m</script><p>其中 $n, m \geq 1$ ，$\mathbf{x} \in \mathbb{R}^n$ ，$\sigma(x):=\max (0, x)$ ，ReLU参数满足正态分布 $W_{\mu i} \stackrel{\text { i.i.d. }}{\sim} \mathcal{N}(0,1)$ 。</p><p>已有研究指出在热力学极限下 $n \rightarrow \infty$ 、 $\frac{m}{n} \rightarrow \alpha&gt;0$ ，存在两个阈值 $\alpha_l&lt;\alpha_h$ 。当$\alpha&lt;\alpha_l$，ReLU函数是非单射性的；当$\alpha&gt;\alpha_h$，ReLU是单射性的。</p><p>这篇文章的研究内容与之前的一致，采用统计物理方法（复本对称）。</p><h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><p>研究思路是通过将单射性问题，通过一个能量模型描述，然后这个能量模型在波尔兹曼分布下研究。这样该问题就转为一个物理问题。</p><h2 id="Injectivity"><a href="#Injectivity" class="headerlink" title="Injectivity"></a>Injectivity</h2><p>首先需要解决如何描述单射性。提出概率 $p_{m, n}$ 用于表示映射$\varphi_{\mathbf{W}}$ 是单射性的概率：</p><script type="math/tex; mode=display">p_{m, n}=\mathbb{P}_V\left[V \cap C_{m, n}=\{0\}\right]</script><p>其中 $V$ 是 $\mathbb{R}^m$ 的一个随即子空间， $C_{m, n}$ 是 $\mathbb{R}^m$ 中一组向量，并且这组向量中每一个向量元素为正的个数要小于$n$ 。</p><p>通过这个操作，将描述单射性的问题，转化为数向量中为正的元素个数，可以定量描述了。</p><h2 id="Statistical-physics-and-the-spherical-perceptron"><a href="#Statistical-physics-and-the-spherical-perceptron" class="headerlink" title="Statistical physics and the spherical perceptron"></a>Statistical physics and the spherical perceptron</h2><p>接下来的任务就是通过设计能量函数，将数正数的个数，变成为能量的表述形式。</p><p>通过能量表示总的正元素个数：</p><script type="math/tex; mode=display">E_{\mathbf{W}}(\mathbf{x}):=\sum_{\mu=1}^m \theta\left[(\mathbf{W} \mathbf{x})_\mu\right], \quad e_{\mathbf{W}}(\mathbf{x}):=\frac{E_{\mathbf{W}}(\mathbf{x})}{n}</script><p>其中 $\theta(x)=\mathbb{1}(x&gt;0)$ ， $\mathbf{x} \in \mathcal{S}^{n-1}$ ， $\mathcal{S}^{n-1}$ 是 $\mathbb{R}^n$ 上的单位球。根据之前的讨论$V \cap C_{m, n}=\{0\}$可以得到 $\mathbf{W} \mathbf{x} \in C_{m, n} \Leftrightarrow E_{\mathbf{W}}(\mathbf{x})&lt;n$，将 $p_{m, n}$重新写为：</p><script type="math/tex; mode=display">p_{m, n}=\mathbb{P}_{\mathbf{W}}\left[\min _{\mathbf{x} \in \mathcal{S}^{n-1}} E_{\mathbf{W}}(\mathbf{x}) \geq n\right]</script><h2 id="Thermal-relaxation-the-Gibbs–Boltzmann-distribution"><a href="#Thermal-relaxation-the-Gibbs–Boltzmann-distribution" class="headerlink" title="Thermal relaxation: the Gibbs–Boltzmann distribution"></a>Thermal relaxation: the Gibbs–Boltzmann distribution</h2><p>有了能量，接下来将其写为波尔兹曼分布：</p><script type="math/tex; mode=display">\mathrm{d} \mathbb{P}_{\beta, \mathbf{W}}(\mathbf{x}):=\frac{1}{\mathcal{Z}_n(\mathbf{W}, \beta)} e^{-\beta E_{\mathbf{W}}(\mathbf{x})} \mu_n(\mathrm{~d} \mathbf{x}) . \quad\left(\mathbf{x} \in \mathcal{S}^{n-1}\right)</script><p>其中$beta$为逆温度，$\beta=0$ 那就是球面上的平均测量， $\beta \rightarrow \infty$则是能量最小值部分。</p><p>同时写出其自由能：</p><script type="math/tex; mode=display">\Phi_n(\mathbf{W}, \beta):=\frac{1}{n} \log \mathcal{Z}_n(\mathbf{W}, \beta)=\frac{1}{n} \log \int_{\mathcal{S}^{n-1}} \mu_n(\mathrm{~d} \mathbf{x}) e^{-\beta E_{\mathbf{W}}(\mathbf{x})}</script><h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p>这部分就是通过副本对称破缺讨论了。</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;对于ReLU激活层单向性的分析，得到变化的上下界。&lt;/p&gt;
+&lt;p&gt;Link:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/2302.14112&quot;&gt;Injectivity of ReLU networks: perspectives from statistical physics&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="Machine Learning" scheme="https://renyixiong-ai.github.io/categories/Machine-Learning/"/>
+    
+    
+    <category term="Spin Glass" scheme="https://renyixiong-ai.github.io/tags/Spin-Glass/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Student of Games:Aunified learning algorithm forboth perfect andimperfect information games</title>
     <link href="https://renyixiong-ai.github.io/2024/08/24/RL/SoG/SoG/"/>
     <id>https://renyixiong-ai.github.io/2024/08/24/RL/SoG/SoG/</id>
     <published>2024-08-24T04:00:00.000Z</published>
-    <updated>2024-08-24T17:55:25.565Z</updated>
+    <updated>2024-08-24T17:56:03.126Z</updated>
     
-    <content type="html"><![CDATA[<p>在之前的游戏引擎中存在仅适用于单一游戏的问题，虽然AlphaZero解决对于完全完美信息的通用性，但是对于扑克等依旧不存在通用算法。这篇文章提出一种新的通用算法Student of Games（SoG），该算法类似于AlphaZero通过自博弈的方式完成训练，同时拓展了适用边界——适用于非完全信息博弈，例如扑克。</p><font color="red">这个算法结合了很多内容，并没有读懂</font><p>Link:</p><ul><li><a href="https://www.science.org/doi/10.1126/sciadv.adg3256#supplementary-materials">Student of Games:Aunified learning algorithm forboth perfect andimperfect information games</a></li></ul><span id="more"></span><h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>对于完全完美信息博弈，在理论上存在最优策略，难点在于如何找到该策略。对于不完全信息博弈，是否存在最优策略呢？因为不知道别人的信息，自己作出的选择可能因为对方的信息得到截然不同的结果，因此在这种情况下如何判断不同策略之间哪一个是最优策略？解答这个问题，需要换一个角度从纳什均衡出发，如果存在一种策略使得处于纳什均衡，一旦脱离该策略，那么必然会使得其处于更糟糕的点，那么这个策略就是最优策略。<font color="red">但是可能存在多个均衡策略，哪一个策略是最优的呢？</font></p><p>对于不完全信息博弈，已有的算法是<a href="https://proceedings.neurips.cc/paper/2007/file/08d98638c6fcd194a4b1e6992063e944-Paper.pdf">counterfactual regretminimiza tion (CFR)</a>，以及后续衍生的<a href="https://www.science.org/doi/10.1126/science.aam6960">DeepStack</a>算法。</p><p>这篇文章结合了AlphaZero与DeepStack算法，与AlphaZero的区别在于自博弈的记录可以用于训练非完全信息博弈；与DeepStack的区别在于使用更少的domain knowledge，单个网络对于所有策略。与该算法接近的算法是<a href="https://arxiv.org/abs/2007.13544">Recurr entBelief-based Learning (ReBeL)</a></p><h1 id="SoG-algorithm"><a href="#SoG-algorithm" class="headerlink" title="SoG algorithm"></a>SoG algorithm</h1><p><img src="/2024/08/24/RL/SoG/SoG/CVPN.png" alt="CVPN"></p><p>将参数给入网络得到私有策略。</p><p><img src="/2024/08/24/RL/SoG/SoG/GT-CFR.png" alt="GT-CFR"></p><p>包含后悔值的搜索树。</p><p><img src="/2024/08/24/RL/SoG/SoG/Train.png" alt="Train"></p><p>上面是整个训练树，首先通过给定的参数$\beta$完成自博弈生成数据，</p>]]></content>
+    <content type="html"><![CDATA[<p>在之前的游戏引擎中存在仅适用于单一游戏的问题，虽然AlphaZero解决对于完全完美信息的通用性，但是对于扑克等依旧不存在通用算法。这篇文章提出一种新的通用算法Student of Games（SoG），该算法类似于AlphaZero通过自博弈的方式完成训练，同时拓展了适用边界——适用于非完全信息博弈，例如扑克。</p><font color="red">这个算法结合了很多内容，并没有读懂</font><p>Link:</p><ul><li><a href="https://www.science.org/doi/10.1126/sciadv.adg3256#supplementary-materials">Student of Games:Aunified learning algorithm forboth perfect andimperfect information games</a></li></ul><span id="more"></span><h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>对于完全完美信息博弈，在理论上存在最优策略，难点在于如何找到该策略。对于不完全信息博弈，是否存在最优策略呢？因为不知道别人的信息，自己作出的选择可能因为对方的信息得到截然不同的结果，因此在这种情况下如何判断不同策略之间哪一个是最优策略？解答这个问题，需要换一个角度从纳什均衡出发，如果存在一种策略使得处于纳什均衡，一旦脱离该策略，那么必然会使得其处于更糟糕的点，那么这个策略就是最优策略。<font color="red">但是可能存在多个均衡策略，哪一个策略是最优的呢？</font></p><p>对于不完全信息博弈，已有的算法是<a href="https://proceedings.neurips.cc/paper/2007/file/08d98638c6fcd194a4b1e6992063e944-Paper.pdf">counterfactual regretminimiza tion (CFR)</a>，以及后续衍生的<a href="https://www.science.org/doi/10.1126/science.aam6960">DeepStack</a>算法。</p><p>这篇文章结合了AlphaZero与DeepStack算法，与AlphaZero的区别在于自博弈的记录可以用于训练非完全信息博弈；与DeepStack的区别在于使用更少的domain knowledge，单个网络对于所有策略。与该算法接近的算法是<a href="https://arxiv.org/abs/2007.13544">Recurr entBelief-based Learning (ReBeL)</a></p><h1 id="SoG-algorithm"><a href="#SoG-algorithm" class="headerlink" title="SoG algorithm"></a>SoG algorithm</h1><p><img src="/2024/08/24/RL/SoG/SoG/CVPN.png" alt="CVPN"></p><p>将参数给入网络得到私有策略。</p><p><img src="/2024/08/24/RL/SoG/SoG/GT-CFR.png" alt="GT-CFR"></p><p>包含后悔值的搜索树。</p><p><img src="/2024/08/24/RL/SoG/SoG/train.png" alt="Train"></p>]]></content>
     
     
     <summary type="html">&lt;p&gt;在之前的游戏引擎中存在仅适用于单一游戏的问题，虽然AlphaZero解决对于完全完美信息的通用性，但是对于扑克等依旧不存在通用算法。这篇文章提出一种新的通用算法Student of Games（SoG），该算法类似于AlphaZero通过自博弈的方式完成训练，同时拓展了适用边界——适用于非完全信息博弈，例如扑克。&lt;/p&gt;
@@ -591,32 +616,6 @@
     
     
     <category term="Potts Model" scheme="https://renyixiong-ai.github.io/tags/Potts-Model/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Deconstructing Denoising Diffusion Models for Self-Supervised Learning</title>
-    <link href="https://renyixiong-ai.github.io/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/"/>
-    <id>https://renyixiong-ai.github.io/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/</id>
-    <published>2024-03-15T04:00:00.000Z</published>
-    <updated>2024-04-15T03:39:14.989Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。</p><p>这点和全连接神经网络十分相似，当层数过多的时候，只有输入层附近的几层与输出层附近的几层是关键的，中间几层处于液化状态（可以随意选取，不会影响最终的结果）。</p><span id="more"></span><p>现有的预训练DDM在生成任务上表现十分优异，然而留下一个开放问题：这些用于生成任务的预训练模型，其是否同样获得表征能力。</p><h1 id="Deconstructing-Denoising-Diffusion-Models"><a href="#Deconstructing-Denoising-Diffusion-Models" class="headerlink" title="Deconstructing Denoising Diffusion Models"></a>Deconstructing Denoising Diffusion Models</h1><p>作者发现主要的关键因素是tokenizer，其表现了低维的潜空间。但是不难发现，潜变量并不是tokenizer独有的，standard VAE, a patch-wise VAE, a patch-wise AE, and a patch-wise PCA encoder 均有潜变量。</p><p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig1.png" alt="fig1"></p><p>解构的路线分为三个步骤：</p><ul><li>首先将Diffusion Transformer(DiT)架构，变为自监督模型</li><li>逐步拆解toenizer</li><li>尽可能尝试还原模型，将其变为一个经典的Denoising Autoencoder(DAE)</li></ul><h2 id="Reorienting-DDM-for-Self-supervised-Learning"><a href="#Reorienting-DDM-for-Self-supervised-Learning" class="headerlink" title="Reorienting DDM for Self-supervised Learning"></a>Reorienting DDM for Self-supervised Learning</h2><p>DDM的概念本质上是从DAE的概念上生成的，依旧是用于图像生成，一些设计并不适合自监督学习，一些是并不必要的（例如提升图像生成质量）。</p><p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig2.png" alt="fig2"></p><ol><li><p>Remove class-conditioning<br>标签在图像生成上很重要，但是不符合自监督学习的要求，因此移除标签。此举使得准确性提升，但是图像质量（FID）下降。</p></li><li><p>Deconstruct <font color="red">VQGAN</font></p></li><li>Replace noise schedule<br>不需要逐步添加噪声，可以一步直接加入噪声</li></ol><p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig3.png" alt="fig3"></p><h2 id="Deconstructing-the-Tokenizer"><a href="#Deconstructing-the-Tokenizer" class="headerlink" title="Deconstructing the Tokenizer"></a>Deconstructing the Tokenizer</h2><p>接下来解构tokenizer，将会用到下面四种自编码器，每一种自编码器都是前面一种的简化。</p><ul><li><p>Convolutional VAE \<br>损失函数如下：</p><script type="math/tex; mode=display">\begin{equation}\|x-g(f(x))\|^2+\mathbb{K} \mathbb{L}[f(x) \mid \mathcal{N}]\end{equation}</script><p>其中$f(\cdot)$是编码函数$g(\cdot)$是解码函数，$x$是输入值，VAE是深度卷积神经网络。</p></li><li><p>Patch-wise VAE \<br>选用线性的函数作为编码解码器（全连接网络），损失函数设置如下：</p><script type="math/tex; mode=display">\begin{equation}\left\|x-U^T V x\right\|^2+\mathbb{K} \mathbb{L}[V x \mid \mathcal{N}]\end{equation}</script><p>$U,V$是矩阵。</p></li><li><p>Patch-wise AE \<br>进一步简化，删除正则化项：</p><script type="math/tex; mode=display">\begin{equation}\left\|x-U^T V x\right\|^2\end{equation}</script></li><li><p>Patch-wise PCA \<br>PCA 可以看成是一种特殊的 AE，损失函数为：</p><script type="math/tex; mode=display">\begin{equation}\left\|x-V^T V x\right\|^2\end{equation}</script></li></ul><p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig4.png" alt="fig4"></p><p>可以从上表中看出，表现性能都差不多，并且计算KL散度也不是很重要。甚至PCA工作的更好</p><h2 id="Toward-Classical-Denoising-Autoencoders"><a href="#Toward-Classical-Denoising-Autoencoders" class="headerlink" title="Toward Classical Denoising Autoencoders"></a>Toward Classical Denoising Autoencoders</h2><p>逐步减去 PCA-based DDM 与经典DAE之间的差距。<br><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig5.png" alt="fig5"></p><h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig6.png" alt="fig6"></p><p>从最后的实验结果看出，对潜变量空间加入噪音对结果的影响更大。因此说明对模型训练起关键作用的是少数几个参数。</p><font color="red">应该是我没有读懂该文章的实验思路，在我的理解下，潜变量应该是浓缩了更多信息的空间，对其加噪音本来就会比对原像素空间其更大的影响。另一方面，这种论证方法，我并不认为十分研究，应该有更多的理论分析保证。</font>]]></content>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;Abstract&quot;&gt;&lt;a href=&quot;#Abstract&quot; class=&quot;headerlink&quot; title=&quot;Abstract&quot;&gt;&lt;/a&gt;Abstract&lt;/h1&gt;&lt;p&gt;这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。&lt;/p&gt;
-&lt;p&gt;这点和全连接神经网络十分相似，当层数过多的时候，只有输入层附近的几层与输出层附近的几层是关键的，中间几层处于液化状态（可以随意选取，不会影响最终的结果）。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Machine Learning" scheme="https://renyixiong-ai.github.io/categories/Machine-Learning/"/>
-    
-    
-    <category term="Diffusion Models" scheme="https://renyixiong-ai.github.io/tags/Diffusion-Models/"/>
-    
-    <category term="Denoising Diffusion Models" scheme="https://renyixiong-ai.github.io/tags/Denoising-Diffusion-Models/"/>
-    
-    <category term="Self-Supervised Learning" scheme="https://renyixiong-ai.github.io/tags/Self-Supervised-Learning/"/>
     
   </entry>
   
