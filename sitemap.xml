@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://renyixiong-ai.github.io/2024/08/26/DL/LossPlasticity/LossPlasticity/</loc>
+    
+    <lastmod>2024-08-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://renyixiong-ai.github.io/2024/08/25/DL/Injectivity_ReLU/InjecReLU/</loc>
     
     <lastmod>2024-08-26</lastmod>

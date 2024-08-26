@@ -6,7 +6,7 @@
   <link href="https://renyixiong-ai.github.io/atom.xml" rel="self"/>
   
   <link href="https://renyixiong-ai.github.io/"/>
-  <updated>2024-08-26T02:11:18.302Z</updated>
+  <updated>2024-08-26T10:43:04.777Z</updated>
   <id>https://renyixiong-ai.github.io/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Loss of plasticity in deep continual learning</title>
+    <link href="https://renyixiong-ai.github.io/2024/08/26/DL/LossPlasticity/LossPlasticity/"/>
+    <id>https://renyixiong-ai.github.io/2024/08/26/DL/LossPlasticity/LossPlasticity/</id>
+    <published>2024-08-26T02:30:00.000Z</published>
+    <updated>2024-08-26T10:43:04.777Z</updated>
+    
+    <content type="html"><![CDATA[<p>文章主要讨论在持续学习任务中，损失具有弹性是很关键，进而指出在深度学习中，仅仅依靠反向传播是不够的，需要结合随机、非梯度的优化方式（例如演化计算等）。</p><p>Link:</p><ul><li><a href="https://doi.org/10.1038/s41586-024-07711-7">Loss of plasticity in deep continual learning</a></li><li><a href="https://mp.weixin.qq.com/s?__biz=MzkxODQ0MTQzMg==&amp;mid=2247489568&amp;idx=1&amp;sn=606d85bf9c0df3780f4dc3ccd5835c8d&amp;chksm=c0a474736003b8a50446944aee862eb1417da7025d4892f919e940496e644a24d700688cdb9d&amp;mpshare=1&amp;scene=1&amp;srcid=0825em2QJV5witmRbRpL25ZX&amp;sharer_shareinfo=58591a65fb8a82b6749c7ee6829e99a3&amp;sharer_shareinfo_first=58591a65fb8a82b6749c7ee6829e99a3#rd">Nature正刊（演化深度持续学习）Loss of plasticity in deep continual learning</a></li></ul><span id="more"></span><h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>讨论的问题是持续学习任务，以分类任务为例，首先将几个目标进行分类，然后将成功的分类器（神经网络），然后再添加一些其它的分类目标与训练样本。核心的概念损失弹性由此产生，可以发现随着目标的增加，反向传播训练分类器会降低其在测试集上的成功率，说明这样的网络是不具有弹性的，不能进行持续学习。</p><p><img src="/2024/08/26/DL/LossPlasticity/LossPlasticity/F1.png" alt="Plasticity loss in Continual ImageNet"></p><p>上图是以ImageNet进行的测试，a表示逐渐增加的任务，b是不同步长、不同任务数下的比较，c中包含了其它的改良。</p><p>不具有弹性的原因在于激活函数的失效，意味着这些神经元失去单射性，对结果是没有作用的。</p><p><img src="/2024/08/26/DL/LossPlasticity/LossPlasticity/EDF3.png" alt="Online Permuted MNIST"></p><p>上图中c展示了随着任务的数量增加，失活的神经元数量增加（ReLU激活函数）。</p><p>为了解决反向传播中没有弹性问题，文章提出了一种可持续反向传播的算法continual backpropagation。</p><h1 id="Continual-backpropagation"><a href="#Continual-backpropagation" class="headerlink" title="Continual backpropagation"></a>Continual backpropagation</h1><p>Continual backpropagation的核心思想就是将一些失活的激活函数进行初始化。如何衡量是否有效，提出了效用函数$\mathbf{u}_l[i]$，如果激活函数处于低效用的状况，这对其进行初始化。</p><script type="math/tex; mode=display">\mathbf{u}_l[i]=\eta \times \mathbf{u}_l[i]+(1-\eta) \times\left|\mathbf{h}_{l, i, t}\right| \times \sum_{k=1}^{n_{l+1}} \mid \mathbf{w}_{l, i, k, t}</script><p>其中$\mathbf{u}_l[i]$是对各种训练数据的积累量，$h_{l,i,t}$是第l层第i个隐藏神经元第t次的输出，$\mathbf{w}_{l, i, k, t}$是权重参数，$\eta$是衰减率。</p><p>对每一个神经元的效用函数从大到小进行排序，同时设置超参效用阈值$m$。在每一次反向传播结束，统计超过效用阈值$m$神经元数量$n_{\text {eligible }}$，以比例$\rho$进行累计$c_l=c_l+n_{\text {eligible }} \times \rho$。如果超过1，那么选取一个分界$r$，高效用的按照一个分布进行初始化，低效用置0。</p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;文章主要讨论在持续学习任务中，损失具有弹性是很关键，进而指出在深度学习中，仅仅依靠反向传播是不够的，需要结合随机、非梯度的优化方式（例如演化计算等）。&lt;/p&gt;
+&lt;p&gt;Link:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://doi.org/10.1038/s41586-024-07711-7&quot;&gt;Loss of plasticity in deep continual learning&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://mp.weixin.qq.com/s?__biz=MzkxODQ0MTQzMg==&amp;amp;mid=2247489568&amp;amp;idx=1&amp;amp;sn=606d85bf9c0df3780f4dc3ccd5835c8d&amp;amp;chksm=c0a474736003b8a50446944aee862eb1417da7025d4892f919e940496e644a24d700688cdb9d&amp;amp;mpshare=1&amp;amp;scene=1&amp;amp;srcid=0825em2QJV5witmRbRpL25ZX&amp;amp;sharer_shareinfo=58591a65fb8a82b6749c7ee6829e99a3&amp;amp;sharer_shareinfo_first=58591a65fb8a82b6749c7ee6829e99a3#rd&quot;&gt;Nature正刊（演化深度持续学习）Loss of plasticity in deep continual learning&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="Machine Learning" scheme="https://renyixiong-ai.github.io/categories/Machine-Learning/"/>
+    
+    
+    <category term="Spin Glass" scheme="https://renyixiong-ai.github.io/tags/Spin-Glass/"/>
+    
+  </entry>
   
   <entry>
     <title>Injectivity of ReLU networks (perspectives from statistical physics)</title>
@@ -593,29 +619,6 @@
     <category term="Kullback Leibler Divergence" scheme="https://renyixiong-ai.github.io/tags/Kullback-Leibler-Divergence/"/>
     
     <category term="KL Divergence" scheme="https://renyixiong-ai.github.io/tags/KL-Divergence/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model</title>
-    <link href="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/"/>
-    <id>https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/</id>
-    <published>2024-03-20T04:00:00.000Z</published>
-    <updated>2024-04-15T03:42:32.713Z</updated>
-    
-    <content type="html"><![CDATA[ <font color="red">这篇文章并未读完，更多的内容在于知识上的补充</font><h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>共形对称发生在临界点，，但是在重整化群的相变点相撞的时候，这种对称性会消失。认为这种实平面的固定点将会变到复平面中。这篇工作，利用非厄米量子5态Potts模型，成功提取到了复平面的高度。</p><span id="more"></span><h1 id="The-Potts-Model"><a href="#The-Potts-Model" class="headerlink" title="The Potts Model"></a>The Potts Model</h1><script type="math/tex; mode=display">\begin{align}H = -\sum_{<ij>}J(\theta_{ij})\end{align}</script><p>planar Potts model:</p><script type="math/tex; mode=display">\begin{align}\theta_{ij}=&\theta_{n_i}-\theta_{n_j} \\J(\theta) =& -\epsilon_1\cos \theta_{ij}\end{align}</script><p>standard Potts model (simply the Potts model):</p><script type="math/tex; mode=display">\begin{align}J(\theta_{ij}) =& \epsilon_2\delta(n_i, n_j)\end{align}</script><p>以下讨论针对标准的Potts模型。分别用转移矩阵、乘积展开、染色多项式三种方法，得到配分函数。</p><ol><li><p>转移矩阵法</p><script type="math/tex; mode=display"> Z_N=\operatorname{Tr} V^N</script><p> 其中</p><script type="math/tex; mode=display">\begin{align} V=&\left(\begin{array}{cccccc} e^{\beta J} & 1 & 1 & \cdots & 1 & 1 \\ 1 & e^{\beta J} & 1 & \cdots & 1 & 1 \\ 1 & 1 & e^{\beta J} & \cdots & 1 & 1 \\ \cdots & \cdots & \cdots & e^{\beta J} & \cdots & 1 \\ 1 & 1 & \cdots & \cdots & e^{\beta J} & 1 \\ 1 & 1 & \cdots & \cdots & 1 & e^{\beta J} \end{array}\right) \\ =&\left( \begin{array}{llllll} e^{\beta J}-\lambda & 0 & 0 & \cdots & 0 & 1 \\ 0 & e^{\beta J}-\lambda & 0 & \cdots & 0 & 2 \\ 0 & 0 & e^{\beta J}-\lambda & 0 & \cdots & 3 \\ 0 & \cdots & 0 & e^{\beta J}-\lambda & \cdots & 4 \\ 0 & 0 & \cdots & \cdots & e^{\beta J}-\lambda & q-1 \\ 0 & 0 & 0 & \cdots & 0 & e^{\beta J}-\lambda+q \end{array}\right ) \end{align}</script><p> 于是配分函数也就是</p><script type="math/tex; mode=display"> Z_N=\left(e^{\beta J}+q-1\right)^N+(q-1)\left(e^{\beta J}-1\right)^N</script></li><li><p>乘积展开</p><script type="math/tex; mode=display"> \begin{aligned} Z_N & =\sum_{\{\sigma\}} \exp \left[\beta J \sum_{\langle i j\rangle} \delta\left(\sigma_i, \sigma_j\right)\right] \\ & =\sum_{\{\sigma\}} \prod_{\langle i j\rangle}\left[1+v \delta\left(\sigma_i, \sigma_j\right)\right] \end{aligned}</script><p> 其中 $v=e^{\beta J}-1$ 。</p></li></ol><p><a href="https://zhuanlan.zhihu.com/p/101045691">关于Pottes Model相变精确解，与纽结理论的联系</a></p><h1 id="Append"><a href="#Append" class="headerlink" title="Append"></a>Append</h1><h2 id="共形对称"><a href="#共形对称" class="headerlink" title="共形对称"></a>共形对称</h2><p>共形对称（Conformal symmetry）是一种特殊类型的全局对称性，它指的是一个理论或系统在共形变换下保持不变的性质。</p><p>共形变换是一类特殊的坐标变换，它们不仅包括了普通的平移和旋转，还包括了尺度变换（即缩放）和特殊的非线性变换。共形对称在物理学中尤其重要，因为它通常与系统的尺度不变性相关联，这意味着物理规律在不同的长度尺度上都是相同的。</p><h2 id="高低温展开"><a href="#高低温展开" class="headerlink" title="高低温展开"></a>高低温展开</h2><p><a href="https://zhuanlan.zhihu.com/p/409549219">Ising模型与Duality——相变温度</a></p><p><a href="https://zhuanlan.zhihu.com/p/409603668">Ising模型与Duality——特殊的相变</a></p><p><a href="https://ocw.mit.edu/courses/8-334-statistical-mechanics-ii-statistical-physics-of-fields-spring-2014/pages/lecture-notes/">MIT notes</a></p><p>以2-D Ising 模型为例，配分函数写为：</p><script type="math/tex; mode=display">\begin{equation}Z=\sum_{\left\{s_i\right\}} \exp (-\beta H)=\sum_{\left\{s_i\right\}} \exp \left(K \sum_{<i, j>} s_i s_j\right)\end{equation}</script><p>其中$K=\beta J$。</p><p>高温展开，即$K\to 0$为：</p><script type="math/tex; mode=display">\begin{equation}\begin{aligned}Z= & \sum_{\left\{s_i\right\}} \prod_{<i, j>} \exp \left(K s_i s_j\right) \\= & \sum_{\left\{s_i\right\}} \prod_{<i, j>}\left[\sinh \left(K s_i s_j\right)+\cosh \left(K s_i s_j\right)\right] \\= & (\cosh K)^{2 N} \sum_{\left\{s_i\right\}} \prod_{<i, j>}\left[1+s_i s_j \tanh K\right] \\= & (\cosh K)^{2 N}\left[\sum_{\left\{s_i\right\}} 1+\tanh K \sum_{\left\{s_i\right\}<i, j>} s_i s_j +(\tanh K)^2 \sum_{\left\{s_i\right\}} \sum_{<i, j>} \sum_i s_j s_n s_m+\cdots \right ]\\=& (\cosh K)^{2 N} 2^N\left[1+N(\tanh K)^4+2 N(\tanh K)^6 +(4 N+N(N-5))(\tanh K)^8 \cdots\right]\end{aligned}\end{equation}</script><p><img src="/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap2-1.png" alt="高温展开"></p><p>低温展开，即$K\to +\infty$，零温极限：</p><script type="math/tex; mode=display">\begin{equation}Z=2 e^{2 K N}\left[1+N \exp (-2 K)^4+2 N \exp (-2 K)^6+(4 N+(N-5) N) \exp (-2 K)^8 \cdots\right]\end{equation}</script><p><img src="/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap2-2.png" alt="低温展开"></p><h3 id="对偶"><a href="#对偶" class="headerlink" title="对偶"></a>对偶</h3><p>至此我们已经发现对于正方格点上的二维Ising模型, 高温理论的形式与低温理论一致。我们可以在热力学极限下计算自由能</p><script type="math/tex; mode=display">F=-\frac{\ln Z}{N}=-\ln 2-2 \ln \cosh K-g(\tanh K)=-2 K-g(\exp (-2 K))</script><p>后面两项分别是高温展开的自由能与低温展开的自由能。其中 $g(x)=\ln \left(1+N x^4+2 N x^6 \cdots\right) / N$. 我们知道 2 维Ising模型只有两相, 也就是自由能有且只有一个奇异点。也就是 $\mathrm{g}(\mathrm{x})$ 有且只有一个奇异点。对于上面两个表达式, 奇异点对应的 $K_c$ 一定相同.那就意味着</p><script type="math/tex; mode=display">\begin{aligned}\tanh K_c & =\exp \left(-2 K_c\right) \\\exp \left(4 K_c\right)-2 \exp \left(2 K_c\right)-1 & =0 \\K_c & =\frac{\ln (1+\sqrt{2})}{2} \approx 0.4407\end{aligned}</script><h2 id="dual-lattice"><a href="#dual-lattice" class="headerlink" title="dual lattice"></a>dual lattice</h2><p><img src="/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap3-1.png" alt="dual lattice"></p><p>上图实心格点表示原晶格，然后在原格点围城的最小面积上，构造一个新的格点，用空心原点表示，代表对偶晶格。</p><p>在几何上将原晶格和对偶晶格联系起来，如下图所示，其中格点内的正负代表原晶格，如果反平行边线用实线条连接，平行则不连接。这样便可以把格点转化为图进行研究。</p><p><img src="/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap3-2.png" alt="dual lattice"></p><h2 id="Self-duality"><a href="#Self-duality" class="headerlink" title="Self-duality"></a>Self-duality</h2><p>高温展开与低温展开在无限项的情况下是严格的，因此其对应的相应该有相同的关系。利用自对偶的性质求解相变温度。</p>]]></content>
-    
-    
-    <summary type="html">&lt;font color=&quot;red&quot;&gt;这篇文章并未读完，更多的内容在于知识上的补充&lt;/font&gt;
-
-&lt;h1 id=&quot;Abstract&quot;&gt;&lt;a href=&quot;#Abstract&quot; class=&quot;headerlink&quot; title=&quot;Abstract&quot;&gt;&lt;/a&gt;Abstract&lt;/h1&gt;&lt;p&gt;共形对称发生在临界点，，但是在重整化群的相变点相撞的时候，这种对称性会消失。认为这种实平面的固定点将会变到复平面中。这篇工作，利用非厄米量子5态Potts模型，成功提取到了复平面的高度。&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="Physics" scheme="https://renyixiong-ai.github.io/categories/Physics/"/>
-    
-    
-    <category term="Potts Model" scheme="https://renyixiong-ai.github.io/tags/Potts-Model/"/>
     
   </entry>
   
