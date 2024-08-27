@@ -1148,6 +1148,7 @@ x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}</script><p>这种方法在接近根时会
 <p>从上图中可以发现收敛性得到提升。尤其对于右图这种具有振荡性质函数，通过加入$\beta$利用函数本身的性质进行收敛。</p>
 <p><img src="/2024/08/27/Phys/Annealing_root_finding/Annealing_root_finding/fig2.png" alt="Improved convergence to roots"></p>
 <p>提升迭代速度。</p>
+<p>这里能否联系<a href="/2024/08/26/DL/LossPlasticity/LossPlasticity/" title="Loss of plasticity in deep continual learning">Loss of plasticity in deep continual learning</a>文章中修改反向传播的想法。通过$\beta$的退火机制，通过对一些参数遗忘从而实现连续学习，一个简单的想法是当学习新的内容时，意味着温度升高，一些参数可以重新调整，然后学习的过程伴随着温度的下降，当完后学习之后，收敛到一个基态。</p>
 ]]></content>
       <categories>
         <category>Physics</category>

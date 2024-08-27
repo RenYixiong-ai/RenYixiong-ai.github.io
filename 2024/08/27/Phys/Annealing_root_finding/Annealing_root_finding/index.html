@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://renyixiong-ai.github.io/2024/08/27/Phys/Annealing_root_finding/Annealing_root_finding/fig1.png">
 <meta property="og:image" content="https://renyixiong-ai.github.io/2024/08/27/Phys/Annealing_root_finding/Annealing_root_finding/fig2.png">
 <meta property="article:published_time" content="2024-08-27T09:30:00.000Z">
-<meta property="article:modified_time" content="2024-08-27T09:52:11.802Z">
+<meta property="article:modified_time" content="2024-08-27T09:59:38.419Z">
 <meta property="article:author" content="Ren Yixiong">
 <meta property="article:tag" content="Computer Physics">
 <meta name="twitter:card" content="summary">
@@ -218,7 +218,7 @@
               <span class="post-meta-item-text">Posted on</span>
               
 
-              <time title="Created: 2024-08-27 17:30:00 / Modified: 17:52:11" itemprop="dateCreated datePublished" datetime="2024-08-27T17:30:00+08:00">2024-08-27</time>
+              <time title="Created: 2024-08-27 17:30:00 / Modified: 17:59:38" itemprop="dateCreated datePublished" datetime="2024-08-27T17:30:00+08:00">2024-08-27</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -243,7 +243,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.2k</span>
+              <span>1.3k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
@@ -281,6 +281,7 @@ x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}</script><p>这种方法在接近根时会
 <p>从上图中可以发现收敛性得到提升。尤其对于右图这种具有振荡性质函数，通过加入$\beta$利用函数本身的性质进行收敛。</p>
 <p><img src="/2024/08/27/Phys/Annealing_root_finding/Annealing_root_finding/fig2.png" alt="Improved convergence to roots"></p>
 <p>提升迭代速度。</p>
+<p>这里能否联系<a href="/2024/08/26/DL/LossPlasticity/LossPlasticity/" title="Loss of plasticity in deep continual learning">Loss of plasticity in deep continual learning</a>文章中修改反向传播的想法。通过$\beta$的退火机制，通过对一些参数遗忘从而实现连续学习，一个简单的想法是当学习新的内容时，意味着温度升高，一些参数可以重新调整，然后学习的过程伴随着温度的下降，当完后学习之后，收敛到一个基态。</p>
 
     </div>
 
