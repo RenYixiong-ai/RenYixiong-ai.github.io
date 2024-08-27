@@ -417,6 +417,45 @@ p\left(C_i \mid C_1, \ldots, C_{i-1}, \mathcal{P}\right)&=\operatorname{softmax}
       </tags>
   </entry>
   <entry>
+    <title>Injectivity of ReLU networks (perspectives from statistical physics)</title>
+    <url>/2024/08/25/DL/Injectivity_ReLU/InjecReLU/</url>
+    <content><![CDATA[<p>对于ReLU激活层单向性的分析，得到变化的上下界。</p>
+<p>Link:</p>
+<ul>
+<li><a href="https://arxiv.org/abs/2302.14112">Injectivity of ReLU networks: perspectives from statistical physics</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>在什么情况下，随机初始化的ReLU网络是单射性的？</p>
+<p>考虑一个单层的 ReLU 函数，这个映射为$\varphi_{\mathbf{W}}$：</p>
+<script type="math/tex; mode=display">
+\varphi_{\mathbf{W}}(\mathbf{x})_\mu=\sigma\left[\left(\frac{\mathbf{W} \mathbf{x}}{\sqrt{n}}\right)_\mu\right], \quad \mu=1, \cdots, m</script><p>其中 $n, m \geq 1$ ，$\mathbf{x} \in \mathbb{R}^n$ ，$\sigma(x):=\max (0, x)$ ，ReLU参数满足正态分布 $W_{\mu i} \stackrel{\text { i.i.d. }}{\sim} \mathcal{N}(0,1)$ 。</p>
+<p>已有研究指出在热力学极限下 $n \rightarrow \infty$ 、 $\frac{m}{n} \rightarrow \alpha&gt;0$ ，存在两个阈值 $\alpha_l&lt;\alpha_h$ 。当$\alpha&lt;\alpha_l$，ReLU函数是非单射性的；当$\alpha&gt;\alpha_h$，ReLU是单射性的。</p>
+<p>这篇文章的研究内容与之前的一致，采用统计物理方法（复本对称）。</p>
+<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><p>研究思路是通过将单射性问题，通过一个能量模型描述，然后这个能量模型在波尔兹曼分布下研究。这样该问题就转为一个物理问题。</p>
+<h2 id="Injectivity"><a href="#Injectivity" class="headerlink" title="Injectivity"></a>Injectivity</h2><p>首先需要解决如何描述单射性。提出概率 $p_{m, n}$ 用于表示映射$\varphi_{\mathbf{W}}$ 是单射性的概率：</p>
+<script type="math/tex; mode=display">
+p_{m, n}=\mathbb{P}_V\left[V \cap C_{m, n}=\{0\}\right]</script><p>其中 $V$ 是 $\mathbb{R}^m$ 的一个随即子空间， $C_{m, n}$ 是 $\mathbb{R}^m$ 中一组向量，并且这组向量中每一个向量元素为正的个数要小于$n$ 。</p>
+<p>通过这个操作，将描述单射性的问题，转化为数向量中为正的元素个数，可以定量描述了。</p>
+<h2 id="Statistical-physics-and-the-spherical-perceptron"><a href="#Statistical-physics-and-the-spherical-perceptron" class="headerlink" title="Statistical physics and the spherical perceptron"></a>Statistical physics and the spherical perceptron</h2><p>接下来的任务就是通过设计能量函数，将数正数的个数，变成为能量的表述形式。</p>
+<p>通过能量表示总的正元素个数：</p>
+<script type="math/tex; mode=display">
+E_{\mathbf{W}}(\mathbf{x}):=\sum_{\mu=1}^m \theta\left[(\mathbf{W} \mathbf{x})_\mu\right], \quad e_{\mathbf{W}}(\mathbf{x}):=\frac{E_{\mathbf{W}}(\mathbf{x})}{n}</script><p>其中 $\theta(x)=\mathbb{1}(x&gt;0)$ ， $\mathbf{x} \in \mathcal{S}^{n-1}$ ， $\mathcal{S}^{n-1}$ 是 $\mathbb{R}^n$ 上的单位球。根据之前的讨论$V \cap C_{m, n}=\{0\}$可以得到 $\mathbf{W} \mathbf{x} \in C_{m, n} \Leftrightarrow E_{\mathbf{W}}(\mathbf{x})&lt;n$，将 $p_{m, n}$重新写为：</p>
+<script type="math/tex; mode=display">
+p_{m, n}=\mathbb{P}_{\mathbf{W}}\left[\min _{\mathbf{x} \in \mathcal{S}^{n-1}} E_{\mathbf{W}}(\mathbf{x}) \geq n\right]</script><h2 id="Thermal-relaxation-the-Gibbs–Boltzmann-distribution"><a href="#Thermal-relaxation-the-Gibbs–Boltzmann-distribution" class="headerlink" title="Thermal relaxation: the Gibbs–Boltzmann distribution"></a>Thermal relaxation: the Gibbs–Boltzmann distribution</h2><p>有了能量，接下来将其写为波尔兹曼分布：</p>
+<script type="math/tex; mode=display">
+\mathrm{d} \mathbb{P}_{\beta, \mathbf{W}}(\mathbf{x}):=\frac{1}{\mathcal{Z}_n(\mathbf{W}, \beta)} e^{-\beta E_{\mathbf{W}}(\mathbf{x})} \mu_n(\mathrm{~d} \mathbf{x}) . \quad\left(\mathbf{x} \in \mathcal{S}^{n-1}\right)</script><p>其中$beta$为逆温度，$\beta=0$ 那就是球面上的平均测量， $\beta \rightarrow \infty$则是能量最小值部分。</p>
+<p>同时写出其自由能：</p>
+<script type="math/tex; mode=display">
+\Phi_n(\mathbf{W}, \beta):=\frac{1}{n} \log \mathcal{Z}_n(\mathbf{W}, \beta)=\frac{1}{n} \log \int_{\mathcal{S}^{n-1}} \mu_n(\mathrm{~d} \mathbf{x}) e^{-\beta E_{\mathbf{W}}(\mathbf{x})}</script><h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p>这部分就是通过副本对称破缺讨论了。</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Spin Glass</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>KAN: Kolmogorov–Arnold Networks</title>
     <url>/2024/05/08/DL/Kolmogorov%E2%80%93Arnold_Networks/Kolmogorov%E2%80%93Arnold_Networks/</url>
     <content><![CDATA[<p>文献地址：</p>
@@ -528,6 +567,35 @@ b_{i, n}(t) &= C_n^i(1-t)^{n-i} t^i \quad i=0,1, \ldots, n \quad t \in[0,1] \lab
       <tags>
         <tag>Kolmogorov–Arnold Networks</tag>
         <tag>Physics</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Loss of plasticity in deep continual learning</title>
+    <url>/2024/08/26/DL/LossPlasticity/LossPlasticity/</url>
+    <content><![CDATA[<p>文章主要讨论在持续学习任务中，损失具有弹性是很关键，进而指出在深度学习中，仅仅依靠反向传播是不够的，需要结合随机、非梯度的优化方式（例如演化计算等）。</p>
+<p>Link:</p>
+<ul>
+<li><a href="https://doi.org/10.1038/s41586-024-07711-7">Loss of plasticity in deep continual learning</a></li>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MzkxODQ0MTQzMg==&amp;mid=2247489568&amp;idx=1&amp;sn=606d85bf9c0df3780f4dc3ccd5835c8d&amp;chksm=c0a474736003b8a50446944aee862eb1417da7025d4892f919e940496e644a24d700688cdb9d&amp;mpshare=1&amp;scene=1&amp;srcid=0825em2QJV5witmRbRpL25ZX&amp;sharer_shareinfo=58591a65fb8a82b6749c7ee6829e99a3&amp;sharer_shareinfo_first=58591a65fb8a82b6749c7ee6829e99a3#rd">Nature正刊（演化深度持续学习）Loss of plasticity in deep continual learning</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>讨论的问题是持续学习任务，以分类任务为例，首先将几个目标进行分类，然后将成功的分类器（神经网络），然后再添加一些其它的分类目标与训练样本。核心的概念损失弹性由此产生，可以发现随着目标的增加，反向传播训练分类器会降低其在测试集上的成功率，说明这样的网络是不具有弹性的，不能进行持续学习。</p>
+<p><img src="/2024/08/26/DL/LossPlasticity/LossPlasticity/F1.png" alt="Plasticity loss in Continual ImageNet"></p>
+<p>上图是以ImageNet进行的测试，a表示逐渐增加的任务，b是不同步长、不同任务数下的比较，c中包含了其它的改良。</p>
+<p>不具有弹性的原因在于激活函数的失效，意味着这些神经元失去单射性，对结果是没有作用的。</p>
+<p><img src="/2024/08/26/DL/LossPlasticity/LossPlasticity/EDF3.png" alt="Online Permuted MNIST"></p>
+<p>上图中c展示了随着任务的数量增加，失活的神经元数量增加（ReLU激活函数）。</p>
+<p>为了解决反向传播中没有弹性问题，文章提出了一种可持续反向传播的算法continual backpropagation。</p>
+<h1 id="Continual-backpropagation"><a href="#Continual-backpropagation" class="headerlink" title="Continual backpropagation"></a>Continual backpropagation</h1><p>Continual backpropagation的核心思想就是将一些失活的激活函数进行初始化。如何衡量是否有效，提出了效用函数$\mathbf{u}_l[i]$，如果激活函数处于低效用的状况，这对其进行初始化。</p>
+<script type="math/tex; mode=display">
+\mathbf{u}_l[i]=\eta \times \mathbf{u}_l[i]+(1-\eta) \times\left|\mathbf{h}_{l, i, t}\right| \times \sum_{k=1}^{n_{l+1}} \mid \mathbf{w}_{l, i, k, t}</script><p>其中$\mathbf{u}_l[i]$是对各种训练数据的积累量，$h_{l,i,t}$是第l层第i个隐藏神经元第t次的输出，$\mathbf{w}_{l, i, k, t}$是权重参数，$\eta$是衰减率。</p>
+<p>对每一个神经元的效用函数从大到小进行排序，同时设置超参效用阈值$m$。在每一次反向传播结束，统计超过效用阈值$m$神经元数量$n_{\text {eligible }}$，以比例$\rho$进行累计$c_l=c_l+n_{\text {eligible }} \times \rho$。如果超过1，那么选取一个分界$r$，高效用的按照一个分布进行初始化，低效用置0。</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Evolution</tag>
       </tags>
   </entry>
   <entry>
@@ -1056,6 +1124,36 @@ B & =\frac{1}{2 \sigma_2^2}\int_x p_1(x)\left(x-\mu_2\right)^2 d x \\
       <tags>
         <tag>Kullback Leibler Divergence</tag>
         <tag>KL Divergence</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Annealing approach to root finding</title>
+    <url>/2024/08/27/Phys/Annealing_root_finding/Annealing_root_finding/</url>
+    <content><![CDATA[<p>在数值分析和科学计算中，Newton-Raphson方法是一个非常重要的工具，它被广泛用于求解方程的根。然而，经典的Newton-Raphson方法在面对复杂的非线性方程和多个根的情况下，可能会出现收敛性差、振荡或发散的情况。为了解决这些问题，研究者们提出了一种基于物理学启发的新方法，该方法在保留Newton-Raphson方法优点的同时，通过引入一个新的参数$\beta$，有效提升了算法的收敛速度和稳定性。</p>
+<p>Link:</p>
+<ul>
+<li><a href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.110.025305">Annealing approach to root finding</a></li>
+</ul>
+<span id="more"></span>
+<p>这项改进的灵感来源于物理学中的退火过程。退火是指材料在高温下加热，然后缓慢冷却，以达到其最低能量状态的过程。通过这种逐渐降温的方法，材料可以在高温下探索更多的状态空间，而在低温下则集中于更稳定的状态。</p>
+<p>这种物理过程被引入到数值计算中，特别是用于求解非线性方程的根。传统的Newton-Raphson方法可以看作是高温下的大幅跳跃，能够快速找到接近根的位置，但在接近根时可能会失去效率。通过引入一个类似“温度”的参数$\beta$，算法在初期可以进行广泛的搜索，而在接近根时逐渐收敛，使得算法既能快速搜索，又能稳定逼近根。</p>
+<p>在经典的Newton-Raphson方法中，新的迭代点是通过以下公式计算的：</p>
+<script type="math/tex; mode=display">
+x_{n+1} = x_n - \frac{f(x_n)}{f'(x_n)}</script><p>这种方法在接近根时会快速收敛，但远离根时可能会跳过根或收敛到错误的解。为了改进这一点，本文提出了一个改进的更新公式：</p>
+<script type="math/tex; mode=display">\begin{aligned} 
+& \hat{x}_{n+1}=x_n-\frac{f\left(x_n\right)}{f^{\prime}\left(x_n\right)} \\ & x_{n+1}=\hat{x}_{n+1}-\beta \frac{f\left(\hat{x}_{n+1}\right)}{f^{\prime}\left(x_n\right)}
+\end{aligned}</script><p>其中，$x_{n+1}^{(NR)}$是经典Newton-Raphson方法计算的中间值。通过引入参数$\beta$，算法能够在早期（类似高温状态）进行较大的跳跃搜索，而在后期（类似低温状态）逐步逼近根。这种方法与Adomian’s method有一定关联。</p>
+<p>这个改进方法的核心在于$\beta$值的动态调整。通过调整$\beta$，算法可以在迭代过程中逐步从“高温”过渡到“低温”，从而实现从全局搜索到局部收敛的平衡。当$\beta = 0$时，算法等同于经典的Newton-Raphson方法，具有快速的搜索能力；当$\beta = 1$时，算法更精确地逼近根，收敛速度显著提高。</p>
+<p><img src="/2024/08/27/Phys/Annealing_root_finding/Annealing_root_finding/fig1.png" alt="Improved convergence to roots"></p>
+<p>从上图中可以发现收敛性得到提升。尤其对于右图这种具有振荡性质函数，通过加入$\beta$利用函数本身的性质进行收敛。</p>
+<p><img src="/2024/08/27/Phys/Annealing_root_finding/Annealing_root_finding/fig2.png" alt="Improved convergence to roots"></p>
+<p>提升迭代速度。</p>
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Computer Physics</tag>
       </tags>
   </entry>
   <entry>
@@ -2356,195 +2454,6 @@ Z(\beta) \simeq\left(\frac{m}{2 \pi \hbar \Delta \tau}\right)^{M N d / 2} \int d
       </tags>
   </entry>
   <entry>
-    <title>The Parisi solution of Sherrington-Kirkpatrick Model</title>
-    <url>/2022/11/20/Phys/SK_model/SK_model1/</url>
-    <content><![CDATA[<p>利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。该章节主要介绍 Parisi 解。</p>
-<p>Reference:</p>
-<ul>
-<li>Statistical Physics of Spin Glasses and Information Processing. Nishimori</li>
-<li><a href="https://hzshan.github.io/replica_method_in_SK_model.pdf">Replica calculations for the SK model</a>笔误有点多</li>
-<li><a href="https://www.sciencedirect.com/science/article/pii/S0378437199000242">RS and RSB solutions for SK model with spin-S</a></li>
-</ul>
-<p>Link:</p>
-<ul>
-<li><a href="/2022/11/12/Phys/Hopfield/Hopfield/" title="Hopfield Model">Hopfield Model</a></li>
-<li><a href="/2022/11/13/Phys/replica/replica/" title="Replica">Replica</a></li>
-<li><a href="/2022/11/20/Phys/SK_model/SK_model/" title="Sherrington-Kirkpatrick Model">Sherrington-Kirkpatrick Model</a>
-</li>
-</ul>
-<span id="more"></span>
-<p>根据</p>
-<script type="math/tex; mode=display">\begin{align}
--\beta[f]= & \lim _{n \rightarrow 0} \frac{\left[Z^n\right]-1}{n N}=\lim _{n \rightarrow 0}\left\{-\frac{\beta^2 J^2}{4 n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^2-\frac{\beta J_0}{2 n} \sum_\alpha m_\alpha^2+\frac{1}{4} \beta^2 J^2+\frac{1}{n} \log \operatorname{Tr} \mathrm{e}^L\right\} \label{2.17}
-\end{align}</script><h1 id="Multi-step-replica-symmetry-breaking-RSB"><a href="#Multi-step-replica-symmetry-breaking-RSB" class="headerlink" title="Multi-step replica symmetry breaking (RSB)"></a>Multi-step replica symmetry breaking (RSB)</h1><p>在复本对称假设$\eqref{RS}$中$q_{\alpha\beta}$与$m_{\alpha\beta}$并不依赖于$\alpha\beta$，为了打破对称需要考虑$q$矩阵的结构。现在考虑 n-RSB 的矩阵，首先对于 1-RSB有$m_1&lt;n$，例如当$n=6,m_1=3$时候，$q$矩阵有（对角线为零的原因在于，当$\alpha=\beta$时候没有定义）：</p>
-<script type="math/tex; mode=display">\begin{align}
-\left(\begin{array}{ccc|ccc}
-0 & q_1 & q_1 & & & \\
-q_1 & 0 & q_1 & & q_0 & \\
-q_1 & q_1 & 0 & & & \\
-\hline & & & 0 & q_1 & q_1 \\
-& q_0 & & q_1 & 0 & q_1 \\
-& & & q_1 & q_1 & 0
-\end{array}\right)\label{1-RSB}
-\end{align}</script><p>可以执行相同的迭代操作，将粒度不断细化，例如再进行对称破缺$\eqref{1-RSB}$左上角的块变为：</p>
-<script type="math/tex; mode=display">\begin{align}
-\begin{array}{ccc|ccc}
-0 & q_2 & q_2 & & & \\
-q_2 & 0 & q_2 & & q_1 & \\
-q_2 & q_2 & 0 & & & \\
-\hline & & & 0 & q_2 & q_2 \\
-& q_1 & & q_2 & 0 & q_2 \\
-& & & q_2 & q_2 & 0
-\end{array} \label{2-RSB}
-\end{align}</script><p>同时应当满足条件：</p>
-<script type="math/tex; mode=display">\begin{align}
-n \geq m_1 \geq m_2 \geq \ldots \geq 1
-\end{align}</script><p>定义函数：</p>
-<script type="math/tex; mode=display">\begin{align}
-q(x)=q_i \quad\left(m_{i+1} \leq x \leq m_i\right)
-\end{align}</script><p>进行复本对称的极限变换$n\to 0$，将不等关系进行任意的翻转<font color="red">（令人费解的反号）</font>：</p>
-<script type="math/tex; mode=display">\begin{align}
-0 \leq m_1 \leq m_2 . . \leq 1
-\end{align}</script><h1 id="First-step-RSB"><a href="#First-step-RSB" class="headerlink" title="First step RSB"></a>First step RSB</h1><p>再次回到计算$\left[Z^n\right]$，结合$\eqref{19}$，在$J_0=h=0$的假设下，将$\eqref{1-RSB}$融入进去有：</p>
-<script type="math/tex; mode=display">\begin{align}
-\sum_{\alpha<\beta} q_{\alpha \beta} S^\alpha S^\beta=\frac{1}{2}\left\{q_0\left(\sum_\alpha^n S^\alpha\right)^2+\left(q_1-q_0\right) \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2-n q_1\right\} \label{67}
-\end{align}</script><p>其中$B_b$ 表示 $b$-th block。第一项是没有进行复本破缺的，第二项是表示一阶复本破缺，第三项将对角线的贡献排除。同样的，对于$\eqref{28}$有：</p>
-<script type="math/tex; mode=display">\begin{align}
-\lim _{n \rightarrow 0} \frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^2=\lim _{n \rightarrow 0} \frac{1}{n}\left\{n^2 q_0^2+\frac{n}{m_1} m_1^2\left(q_1^2-q_0^2\right)-n q_1^2\right\}=\left(m_1-1\right) q_1^2-m_1 q_0^2 \label{68}
-\end{align}</script><p>此时已经将自由能中含有$q_{\alpha\beta}$的地方进行替换，接下来分析$\eqref{28}$。首先将$\eqref{68}$代入：</p>
-<script type="math/tex; mode=display">\begin{align}
-\beta\left[f_{1 R S B}\right]=\frac{\beta^2 J^2}{4}\left\{\left(m_1-1\right) q_1^2-m_1 q_0^2-1\right\}+\frac{\beta J_0}{2} m^2-\frac{1}{n} \log \sum_{\left\{S^\alpha, S^3, \ldots, S^n\right\}} \exp \left(L_{1 R S B}\right) \label{70}
-\end{align}</script><p>再将$\eqref{67}$代入$\eqref{19}$：</p>
-<script type="math/tex; mode=display">
-\begin{gather}
-L\left(\left\{q_{\alpha \beta}, m_\alpha\right\}\right):=\beta^2 J^2 \sum_{\alpha<\beta} q_{\alpha \beta} S^\alpha S^\beta+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) S^\alpha \label{71} \\
-\Rightarrow L_{1 R S B}=\frac{\beta^2 J^2}{2}\left\{q_0\left(\sum_\alpha^n S^\alpha\right)^2+\left(q_1-q_0\right) \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2-n q_1\right\}+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) S^\alpha \label{72}
-\end{gather}</script><p>由于里面有$\left(\sum_\alpha^n S^\alpha\right)^2$和$\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2$，需要将平方项变为线性项，同样使用$\eqref{11}$的办法：</p>
-<script type="math/tex; mode=display">
-\begin{align}
-& \frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp \left(L_{1 R S B}\right) \\
-& =\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right)} \int D u \exp \left(\beta J \sqrt{q_0} u \sum_\alpha S^\alpha-\frac{n}{2} \beta^2 J^2 q_1+\sum_\alpha S^\alpha \beta\left(J_0 m+h\right)+\left(q_1-q_0\right)\frac{\beta^2 J^2}{2} \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2\right) \\
-& =-\frac{1}{2} \beta^2 J^2 q_1+\underbrace{\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right)} \int D u \exp \left(\sum_\alpha S^\alpha\left(\beta J \sqrt{q_0} u+\beta\left(J_0 m+h\right)\right)+\left(q_1-q_0\right)\frac{\beta^2 J^2}{2} \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2\right)}_{\Delta} \label{72_2}
-\end{align}</script><p>引入$v_b$线性化$\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2$：</p>
-<script type="math/tex; mode=display">
-\begin{align}
-& \frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots,\right\}} \int D u \prod_{b=1}^{n / m_1}\left(\int D v_b\right) \exp \left(\sum_\alpha S^\alpha \beta J \sqrt{q_0} u+\sum_\alpha S^\alpha \beta\left(J_0 m+h\right)+\beta J \sqrt{q_1-q_0} \sum_{b=1}^{n / m_1} v_b \sum_{\alpha \in B_b}^{m_1} S^\alpha\right) \\
-= & \frac{1}{n} \log \int D u \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \prod_{b=1}^{n / m_1}\left\{\int v e \exp \left(\sum_\alpha S^\alpha \beta\left(J_0 m+h+\beta J \sqrt{q_0} u\right)\right) \exp \left(\beta J \sqrt{q_1-q_0} v \sum_{\alpha \in B_b}^{m_1} S^\alpha\right)\right\} \\
-= & \frac{1}{n} \log \int D u \prod_{b=1}^{n / m_1}\left\{\int D v_b \sum_{\left\{S^\alpha\right\} \in B_b} \exp \left(\sum_{\left\{S^\alpha\right\} \in B_b} S^\alpha\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v_b\right)\right)\right\} \\
-= & \frac{1}{n} \log \int D u \prod_{b=1}^{n / m_1}\left\{\int D v_b\left\{\sum_{S= \pm 1} \exp \left(S \beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v_b\right)\right)\right\}^{m_1}\right\} \\
-= & \frac{1}{n} \log \int D u\left\{\int v\left\{\sum_{S= \pm 1} \exp \left(S \beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}^{n / m_1} \\
-= & \frac{1}{n} \log \int D u\left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}^{n / m_1} \\
-= & \frac{1}{n} \log \int D u \exp \left\{\frac{n}{m_1} \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}\right\} \\
-\approx & \frac{1}{n} \log \left\{1+\frac{n}{m_1} \int D u \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}\right\} \text { expand exponent around } 0 \\
-\approx & \frac{1}{n} \frac{n}{m_1} \int D u \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\} \text { expand exponent around } 1 \\
-= & \log 2+\frac{1}{m_1} \int D u \log \left\{\int D v\left\{\cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\} \text { pull the factor of } 2 \text { out } \label{82}
-\end{align}</script><p>令：</p>
-<script type="math/tex; mode=display">\begin{align}
-\Xi=\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right) \label{86}
-\end{align}</script><p>有：</p>
-<script type="math/tex; mode=display">\begin{align}
-\Delta=\log 2+\frac{1}{m_1} \int D u \log \left\{\int D v\{\cosh \Xi\}^{m_1}\right\} \label{87}
-\end{align}</script><p>结合$\eqref{72_2}\eqref{87}$将$\eqref{70}$写为：</p>
-<script type="math/tex; mode=display">\begin{align}
-\beta\left[f_{1 R S B}\right]=\frac{\beta^2 J^2}{4}\left\{\left(m_1-1\right) q_1^2-m_1 q_0^2+2 q_1-1\right\}+\frac{\beta J_0}{2} m^2-\log 2-\frac{1}{m_1} \int D u \log \left\{\int D v\{\cosh \Xi\}^{m_1}\right\} .
-\end{align}</script><p>得到极值点为：</p>
-<script type="math/tex; mode=display">\begin{gather}
-m^*=\int D u \frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}} \\
-q_0^* =\int D u\left(\frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}}\right)^2 \\ 
-q_1^* =\int D u \frac{\int D v\{\cosh \Xi\}^{m_1}\{\tanh \Xi\}^2}{\int D v\{\cosh \Xi\}^{m_1}} 
-\end{gather}</script><p><img src="/2022/11/20/Phys/SK_model/SK_model1/phase.png" alt="phase diagram"><br><a href="./phase_diagram.nb">mathematica代码</a>与<a href="./phase.py">python代码</a></p>
-<h1 id="Full-RSB-Solution"><a href="#Full-RSB-Solution" class="headerlink" title="Full RSB Solution"></a>Full RSB Solution</h1><p>由于熵还是负数，接下来进行更高阶的复本对称破缺（k-RSB）计算$\eqref{28}$。与一阶复本对称$\eqref{67}$类似:</p>
-<script type="math/tex; mode=display">\begin{align} 
-\sum_{\alpha \neq \beta} q_{\alpha \beta}^l & =q_0^l n^2+\left(q_1^l-q_0^l\right) m_1^2 \cdot \frac{n}{m_1}+\left(q_2^l-q_1^l\right) m_2^2 \cdot \frac{m_1}{m_2} \cdot \frac{n}{m_1}+\cdots-q_K^l \cdot n \\ & =n \sum_{j=0}^K\left(m_j-m_{j+1}\right) q_j^l \label{3.37}
-\end{align}</script><p>其中$l$是任意整数，$m_0=n,m_{K+1}=1$，在极限情况${n\to 0}$下，使用$m_j-m_{j+1}\to -d x$，可以得到：</p>
-<script type="math/tex; mode=display">\begin{align}
-\frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^l \rightarrow-\int_0^1 q^l(x) \mathrm{d} x \label{3.38}
-\end{align}</script><p>在$J_0 =0, h=0$的条件下，结合$E=-\frac{\partial \log Z}{\partial \beta}$、$\chi=-\frac{\partial^2 F}{\partial h^2}$与$\eqref{28}$，可得：</p>
-<font color="red">没有证明</font>
-
-<script type="math/tex; mode=display">\begin{gather}
-E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2\right) \rightarrow-\frac{\beta J^2}{2}\left(1-\int_0^1 q^2(x) \mathrm{d} x\right) \\
-\chi=\beta\left(1+\frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}\right) \rightarrow \beta\left(1-\int_0^1 q(x) \mathrm{d} x\right)
-\end{gather}</script><h2 id="parisi-equation"><a href="#parisi-equation" class="headerlink" title="parisi equation"></a>parisi equation</h2><p>接下来需要将高阶复本破缺技巧应用在自由能$\eqref{2.17}$，和计算一阶复本对称的操作一样，首先计算$q_0$然后计算第一次分块$q_1$的贡献并且排除$q_0$的影响，以此类推，在主对角线上是$q_K$。首先计算如下项：</p>
-<script type="math/tex; mode=display">
-\begin{align}
-G & =\operatorname{Tr} \exp \left(\frac{1}{2} \sum_{\alpha, \beta=1}^n q_{\alpha \beta} S^\alpha S^\beta+h \sum_\alpha^n S^\alpha\right) \\
-& =\left.\exp \left(\frac{1}{2} \sum_{\alpha, \beta} q_{\alpha \beta} \frac{\partial^2}{\partial h_\alpha \partial h_\beta}\right) \prod_\alpha 2 \cosh h_\alpha\right|_{h_\alpha=h}  \label{B.1}
-\end{align}</script><p>这里将$q_{\alpha\beta}$贡献的项目视为$h$项的偏移，因此使用$\exp(\frac{\partial^2}{\partial h_\alpha \partial h_\beta})$的形式表示这个偏移量。如果使用复本对称的假设，则：</p>
-<script type="math/tex; mode=display">\begin{align}
-G=\exp \left(\frac{q}{2} \frac{\partial^2}{\partial h^2}\right)(2 \cosh h)^n \label{B.2}
-\end{align}</script><p>其中使用到：</p>
-<script type="math/tex; mode=display">
-\left.\sum_\alpha \frac{\partial f\left(h_1, \ldots, h_n\right)}{\partial h_\alpha}\right|_{h_\alpha=h}=\frac{\partial f(h, \ldots, h)}{\partial h}</script><p>从$\eqref{67}$中可以看出，当时的思想是从复本对称假设出发，然后将整个矩阵分为几部分（取决于$\frac{n}{m}$大小），在主对角线的块上为一阶复本对称$q_1$；那么同样的二阶复本对称可以将每一个一阶复本对称的块分为几部分，然后将主对角线的块作为二阶复本$q_2$；这个流程以此类推。现在可以反过来，从$K$阶复本逐渐变为$0$阶级复本：</p>
-<ol>
-<li>对于$K-1$阶复本有$\left(q_K-q_{K-1}\right) I\left(m_K\right)$，表示$\left(m_K \times m_K\right)$大小。</li>
-<li>生长出$(K-2)$复本，将$K$阶复本通过$\operatorname{Diag}_{K-1}$扩张$\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-1}\left[I\left(m_K\right)\right]$，然后$K-2$阶写为$\left(q_{K-1}-q_{K-2}\right) I\left(m_{K-1}\right)$矩阵的大小为$\left(m_{K-1} \times m_{K-1}\right)$。整体为:<script type="math/tex; mode=display">\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-1}\left[I\left(m_K\right)\right]+\left(q_{K-1}-q_{K-2}\right) I\left(m_{K-1}\right)</script></li>
-<li>重复步骤2，得到$K-3$复本。矩阵的大小为$\left(m_{K-2} \times m_{K-2}\right)$<script type="math/tex; mode=display">\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-2}\left[I\left(m_K\right)\right]+\left(q_{K-1}-q_{K-2}\right) \operatorname{Diag}_{K-2}\left[I\left(m_{K-1}\right)\right]+\left(q_{K-2}-q_{K-3}\right)I\left(m_{K-2}\right)</script></li>
-</ol>
-<p>在清楚以上步骤之后，接下来首先处理$\left(m_K \times m_K\right)$大小矩阵$\operatorname{Tr}$，并将结果标注为$g(m_K,h)$，由于这是复本破缺的最后一次，因此这个矩阵元是复本对称的，由$\eqref{B.2}$得到：</p>
-<script type="math/tex; mode=display">\begin{align}
-g\left(m_K, h\right)=\exp \left\{\frac{1}{2}\left(q_K-q_{K-1}\right) \frac{\partial^2}{\partial h^2}\right\}(2 \cosh h)^{m_K} \label{B.4}
-\end{align}</script><p>对于$K-1$阶，是考虑将$g\left(m_K, h\right)$复制到对角部分，然后每一个元素相加$q_{K-1}-q_{K-2}$，从$\eqref{B.2}$可以得到：</p>
-<script type="math/tex; mode=display">\begin{align}
-g\left(m_{K-1}, h\right)=\exp \left\{\frac{1}{2}\left(q_{K-1}-q_{K-2}\right) \frac{\partial^2}{\partial h^2}\right\}\left[g\left(m_K, h\right)\right]^{m_{K-1} / m_K} \label{B.5}
-\end{align}</script><p>一直重复这个过程，直到复本对称项：</p>
-<script type="math/tex; mode=display">\begin{align}
-G=g(n, h)=\exp \left\{\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right\}\left[g\left(m_1, h\right)\right]^{n / m_1}  \label{B.6}
-\end{align}</script><p>考虑到极限$n\to 0$下有$m_j-m_{j-1}=-\mathrm{d}x$，将$\eqref{B.5}$写为：</p>
-<script type="math/tex; mode=display">\begin{align}
-g(x+\mathrm{d} x, h)=\exp \left\{-\frac{1}{2} \mathrm{~d} q(x) \frac{\partial^2}{\partial h^2}\right\} g(x, h)^{1+\mathrm{d} \log x} \label{B.7}
-\end{align}</script><p>对于$\eqref{B.4}$，当$K\to \infty$有$m_k \to 1$，因为存在$g(1,h)=2\cosh h$。将$\eqref{B.7}$转化为微分形式（对$\mathrm{d}q$与$\mathrm{d}x$进行展开）：</p>
-<script type="math/tex; mode=display">
-\frac{\partial g}{\partial x}=-\frac{1}{2} \frac{\mathrm{d} q}{\mathrm{~d} x} \frac{\partial^2 g}{\partial h^2}+\frac{1}{x} g \log g</script><p>利用注记$f_0(x, h)=(1 / x) \log g(x, h)$改写为：</p>
-<script type="math/tex; mode=display">\begin{align}
-\frac{\partial f_0}{\partial x}=-\frac{1}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\} \label{B.8}
-\end{align}</script><p>分析$\eqref{B.6}$的极限情况，根据之前的讨论知道，当$n\to 0$的时候，$m_1\to0$：</p>
-<script type="math/tex; mode=display">\begin{align}
-\frac{1}{n} \log \operatorname{Tr} \mathrm{e}^L &= \left. \exp \left(\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right) \frac{1}{x} \log g(x, h)\right|_{x, h \rightarrow 0} \\
-& =\left.\exp \left(\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right) f_0(0, h)\right|_{h \rightarrow 0} \\
-& =\int \mathrm{D} u f_0(0, \sqrt{q(0)} u) \label{B.10}
-\end{align}</script><p>结合$\eqref{3.38},\eqref{B.10}$将$\eqref{2.17}$写为<font color="red">$q(1)$这一项怎么来的？</font>：</p>
-<script type="math/tex; mode=display">\begin{align}
-\beta f=-\frac{\beta^2 J^2}{4}\left\{1+\int_0^1 q(x)^2 \mathrm{~d} x-2 q(1)\right\}-\int \mathrm{D} u f_0(0, \sqrt{q(0)} u) \label{3.41}
-\end{align}</script><p>其中$f_0$应当满足 Parisi equation，即$\eqref{B.9}$:</p>
-<script type="math/tex; mode=display">\begin{align}
-\frac{\partial f_0(x, h)}{\partial x}=-\frac{J^2}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\} \label{3.42} 
-\end{align}</script><p>有 $f_0(1, h)=\log 2 \cosh \beta h$。</p>
-<h2 id="Order-parameter-near-the-critical-point"><a href="#Order-parameter-near-the-critical-point" class="headerlink" title="Order parameter near the critical point"></a>Order parameter near the critical point</h2><p>虽然求解$\eqref{3.41}$十分困难，但是在临界点附近的性质是可以研究的。</p>
-<p>在$J_0=h=0$的条件下，$\eqref{2.17}$展为4阶可以是：</p>
-<font color="red">未经计算，直接抄的，并且十分简略</font>
-
-<script type="math/tex; mode=display">
-\begin{align}
-\beta f= & \lim _{n \rightarrow 0} \frac{1}{n}\left\{\frac{1}{4}\left(\frac{T^2}{T_{\mathrm{f}}^2}-1\right) \operatorname{Tr} Q^2-\frac{1}{6} \operatorname{Tr} Q^3 - \frac{1}{8} \operatorname{Tr} Q^4+\frac{1}{4} \sum_{\alpha \neq \beta \neq \gamma} Q_{\alpha \beta}^2 Q_{\alpha \gamma}^2-\frac{1}{12} \sum_{\alpha \neq \beta} Q_{\alpha \beta}^4\right\},
-\end{align}</script><p>其中$Q_{\alpha\beta}=(\beta J)^2 q_{\alpha\beta}$，令$\theta=\frac{T_f-T}{T_f}$并且考虑复本极限$n\to 0$有：</p>
-<script type="math/tex; mode=display">
-\beta f=\frac{1}{2} \int_0^1 \mathrm{~d} x\left\{|\theta| q^2(x)-\frac{1}{3} x q^3(x)-q(x) \int_0^x q^2(y) \mathrm{d} y+\frac{1}{6} q^4(x)\right\}</script><p>对$q(x)$求导：</p>
-<script type="math/tex; mode=display">
-2|\theta| q(x)-x q^2(x)-\int_0^x q^2(y) \mathrm{d} y-2 q(x) \int_x^1 q(y) \mathrm{d} y+\frac{2}{3} q^3(x)=0</script><p>持续求微分得到结果：</p>
-<script type="math/tex; mode=display">
-|\theta|-x q(x)-\int_x^1 q(y) \mathrm{d} y+q^2(x)=0 \quad \text { or } \quad q^{\prime}(x)=0</script><script type="math/tex; mode=display">
-q(x)=\frac{x}{2} \quad \text { or } \quad q^{\prime}(x)=0</script><p>最后得到的解与$|\theta|$有关：</p>
-<script type="math/tex; mode=display">
-\begin{align}
-& q(x)=\frac{x}{2} \quad\left(0 \leq x \leq x_1=2 q(1)\right) \\
-& q(x)=q(1) \quad\left(x_1 \leq x \leq 1\right) \\
-& q(1)=|\theta|+\mathcal{O}\left(\theta^2\right) 
-\end{align}</script><p>当接近相变点时，$q(x=0)$。</p>
-<p><img src="/2022/11/20/Phys/SK_model/SK_model1/q_x.png" alt="$q(x)$"></p>
-]]></content>
-      <categories>
-        <category>Physics</category>
-      </categories>
-      <tags>
-        <tag>Spin Glass</tag>
-        <tag>Replica Method</tag>
-        <tag>Sherrington-Kirkpatrick Model</tag>
-        <tag>Parisi solution</tag>
-        <tag>Replica Symmetry Breaking</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Sherrington-Kirkpatrick Model</title>
     <url>/2022/11/20/Phys/SK_model/SK_model/</url>
     <content><![CDATA[<p>利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。目的是掌握和熟悉复本方法的使用。</p>
@@ -2795,6 +2704,195 @@ H = \begin{bmatrix}
         <tag>Spin Glass</tag>
         <tag>Replica Method</tag>
         <tag>Sherrington-Kirkpatrick Model</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>The Parisi solution of Sherrington-Kirkpatrick Model</title>
+    <url>/2022/11/20/Phys/SK_model/SK_model1/</url>
+    <content><![CDATA[<p>利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。该章节主要介绍 Parisi 解。</p>
+<p>Reference:</p>
+<ul>
+<li>Statistical Physics of Spin Glasses and Information Processing. Nishimori</li>
+<li><a href="https://hzshan.github.io/replica_method_in_SK_model.pdf">Replica calculations for the SK model</a>笔误有点多</li>
+<li><a href="https://www.sciencedirect.com/science/article/pii/S0378437199000242">RS and RSB solutions for SK model with spin-S</a></li>
+</ul>
+<p>Link:</p>
+<ul>
+<li><a href="/2022/11/12/Phys/Hopfield/Hopfield/" title="Hopfield Model">Hopfield Model</a></li>
+<li><a href="/2022/11/13/Phys/replica/replica/" title="Replica">Replica</a></li>
+<li><a href="/2022/11/20/Phys/SK_model/SK_model/" title="Sherrington-Kirkpatrick Model">Sherrington-Kirkpatrick Model</a>
+</li>
+</ul>
+<span id="more"></span>
+<p>根据</p>
+<script type="math/tex; mode=display">\begin{align}
+-\beta[f]= & \lim _{n \rightarrow 0} \frac{\left[Z^n\right]-1}{n N}=\lim _{n \rightarrow 0}\left\{-\frac{\beta^2 J^2}{4 n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^2-\frac{\beta J_0}{2 n} \sum_\alpha m_\alpha^2+\frac{1}{4} \beta^2 J^2+\frac{1}{n} \log \operatorname{Tr} \mathrm{e}^L\right\} \label{2.17}
+\end{align}</script><h1 id="Multi-step-replica-symmetry-breaking-RSB"><a href="#Multi-step-replica-symmetry-breaking-RSB" class="headerlink" title="Multi-step replica symmetry breaking (RSB)"></a>Multi-step replica symmetry breaking (RSB)</h1><p>在复本对称假设$\eqref{RS}$中$q_{\alpha\beta}$与$m_{\alpha\beta}$并不依赖于$\alpha\beta$，为了打破对称需要考虑$q$矩阵的结构。现在考虑 n-RSB 的矩阵，首先对于 1-RSB有$m_1&lt;n$，例如当$n=6,m_1=3$时候，$q$矩阵有（对角线为零的原因在于，当$\alpha=\beta$时候没有定义）：</p>
+<script type="math/tex; mode=display">\begin{align}
+\left(\begin{array}{ccc|ccc}
+0 & q_1 & q_1 & & & \\
+q_1 & 0 & q_1 & & q_0 & \\
+q_1 & q_1 & 0 & & & \\
+\hline & & & 0 & q_1 & q_1 \\
+& q_0 & & q_1 & 0 & q_1 \\
+& & & q_1 & q_1 & 0
+\end{array}\right)\label{1-RSB}
+\end{align}</script><p>可以执行相同的迭代操作，将粒度不断细化，例如再进行对称破缺$\eqref{1-RSB}$左上角的块变为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\begin{array}{ccc|ccc}
+0 & q_2 & q_2 & & & \\
+q_2 & 0 & q_2 & & q_1 & \\
+q_2 & q_2 & 0 & & & \\
+\hline & & & 0 & q_2 & q_2 \\
+& q_1 & & q_2 & 0 & q_2 \\
+& & & q_2 & q_2 & 0
+\end{array} \label{2-RSB}
+\end{align}</script><p>同时应当满足条件：</p>
+<script type="math/tex; mode=display">\begin{align}
+n \geq m_1 \geq m_2 \geq \ldots \geq 1
+\end{align}</script><p>定义函数：</p>
+<script type="math/tex; mode=display">\begin{align}
+q(x)=q_i \quad\left(m_{i+1} \leq x \leq m_i\right)
+\end{align}</script><p>进行复本对称的极限变换$n\to 0$，将不等关系进行任意的翻转<font color="red">（令人费解的反号）</font>：</p>
+<script type="math/tex; mode=display">\begin{align}
+0 \leq m_1 \leq m_2 . . \leq 1
+\end{align}</script><h1 id="First-step-RSB"><a href="#First-step-RSB" class="headerlink" title="First step RSB"></a>First step RSB</h1><p>再次回到计算$\left[Z^n\right]$，结合$\eqref{19}$，在$J_0=h=0$的假设下，将$\eqref{1-RSB}$融入进去有：</p>
+<script type="math/tex; mode=display">\begin{align}
+\sum_{\alpha<\beta} q_{\alpha \beta} S^\alpha S^\beta=\frac{1}{2}\left\{q_0\left(\sum_\alpha^n S^\alpha\right)^2+\left(q_1-q_0\right) \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2-n q_1\right\} \label{67}
+\end{align}</script><p>其中$B_b$ 表示 $b$-th block。第一项是没有进行复本破缺的，第二项是表示一阶复本破缺，第三项将对角线的贡献排除。同样的，对于$\eqref{28}$有：</p>
+<script type="math/tex; mode=display">\begin{align}
+\lim _{n \rightarrow 0} \frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^2=\lim _{n \rightarrow 0} \frac{1}{n}\left\{n^2 q_0^2+\frac{n}{m_1} m_1^2\left(q_1^2-q_0^2\right)-n q_1^2\right\}=\left(m_1-1\right) q_1^2-m_1 q_0^2 \label{68}
+\end{align}</script><p>此时已经将自由能中含有$q_{\alpha\beta}$的地方进行替换，接下来分析$\eqref{28}$。首先将$\eqref{68}$代入：</p>
+<script type="math/tex; mode=display">\begin{align}
+\beta\left[f_{1 R S B}\right]=\frac{\beta^2 J^2}{4}\left\{\left(m_1-1\right) q_1^2-m_1 q_0^2-1\right\}+\frac{\beta J_0}{2} m^2-\frac{1}{n} \log \sum_{\left\{S^\alpha, S^3, \ldots, S^n\right\}} \exp \left(L_{1 R S B}\right) \label{70}
+\end{align}</script><p>再将$\eqref{67}$代入$\eqref{19}$：</p>
+<script type="math/tex; mode=display">
+\begin{gather}
+L\left(\left\{q_{\alpha \beta}, m_\alpha\right\}\right):=\beta^2 J^2 \sum_{\alpha<\beta} q_{\alpha \beta} S^\alpha S^\beta+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) S^\alpha \label{71} \\
+\Rightarrow L_{1 R S B}=\frac{\beta^2 J^2}{2}\left\{q_0\left(\sum_\alpha^n S^\alpha\right)^2+\left(q_1-q_0\right) \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2-n q_1\right\}+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) S^\alpha \label{72}
+\end{gather}</script><p>由于里面有$\left(\sum_\alpha^n S^\alpha\right)^2$和$\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2$，需要将平方项变为线性项，同样使用$\eqref{11}$的办法：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& \frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp \left(L_{1 R S B}\right) \\
+& =\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right)} \int D u \exp \left(\beta J \sqrt{q_0} u \sum_\alpha S^\alpha-\frac{n}{2} \beta^2 J^2 q_1+\sum_\alpha S^\alpha \beta\left(J_0 m+h\right)+\left(q_1-q_0\right)\frac{\beta^2 J^2}{2} \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2\right) \\
+& =-\frac{1}{2} \beta^2 J^2 q_1+\underbrace{\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right)} \int D u \exp \left(\sum_\alpha S^\alpha\left(\beta J \sqrt{q_0} u+\beta\left(J_0 m+h\right)\right)+\left(q_1-q_0\right)\frac{\beta^2 J^2}{2} \sum_{b=1}^{n / m_1}\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2\right)}_{\Delta} \label{72_2}
+\end{align}</script><p>引入$v_b$线性化$\left(\sum_{\alpha \in B_b}^{m_1} S^\alpha\right)^2$：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& \frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots,\right\}} \int D u \prod_{b=1}^{n / m_1}\left(\int D v_b\right) \exp \left(\sum_\alpha S^\alpha \beta J \sqrt{q_0} u+\sum_\alpha S^\alpha \beta\left(J_0 m+h\right)+\beta J \sqrt{q_1-q_0} \sum_{b=1}^{n / m_1} v_b \sum_{\alpha \in B_b}^{m_1} S^\alpha\right) \\
+= & \frac{1}{n} \log \int D u \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \prod_{b=1}^{n / m_1}\left\{\int v e \exp \left(\sum_\alpha S^\alpha \beta\left(J_0 m+h+\beta J \sqrt{q_0} u\right)\right) \exp \left(\beta J \sqrt{q_1-q_0} v \sum_{\alpha \in B_b}^{m_1} S^\alpha\right)\right\} \\
+= & \frac{1}{n} \log \int D u \prod_{b=1}^{n / m_1}\left\{\int D v_b \sum_{\left\{S^\alpha\right\} \in B_b} \exp \left(\sum_{\left\{S^\alpha\right\} \in B_b} S^\alpha\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v_b\right)\right)\right\} \\
+= & \frac{1}{n} \log \int D u \prod_{b=1}^{n / m_1}\left\{\int D v_b\left\{\sum_{S= \pm 1} \exp \left(S \beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v_b\right)\right)\right\}^{m_1}\right\} \\
+= & \frac{1}{n} \log \int D u\left\{\int v\left\{\sum_{S= \pm 1} \exp \left(S \beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}^{n / m_1} \\
+= & \frac{1}{n} \log \int D u\left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}^{n / m_1} \\
+= & \frac{1}{n} \log \int D u \exp \left\{\frac{n}{m_1} \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}\right\} \\
+\approx & \frac{1}{n} \log \left\{1+\frac{n}{m_1} \int D u \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\}\right\} \text { expand exponent around } 0 \\
+\approx & \frac{1}{n} \frac{n}{m_1} \int D u \log \left\{\int D v\left\{2 \cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\} \text { expand exponent around } 1 \\
+= & \log 2+\frac{1}{m_1} \int D u \log \left\{\int D v\left\{\cosh \left(\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right)\right)\right\}^{m_1}\right\} \text { pull the factor of } 2 \text { out } \label{82}
+\end{align}</script><p>令：</p>
+<script type="math/tex; mode=display">\begin{align}
+\Xi=\beta\left(J_0 m+h+\beta J \sqrt{q_0} u+J \sqrt{q_1-q_0} v\right) \label{86}
+\end{align}</script><p>有：</p>
+<script type="math/tex; mode=display">\begin{align}
+\Delta=\log 2+\frac{1}{m_1} \int D u \log \left\{\int D v\{\cosh \Xi\}^{m_1}\right\} \label{87}
+\end{align}</script><p>结合$\eqref{72_2}\eqref{87}$将$\eqref{70}$写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\beta\left[f_{1 R S B}\right]=\frac{\beta^2 J^2}{4}\left\{\left(m_1-1\right) q_1^2-m_1 q_0^2+2 q_1-1\right\}+\frac{\beta J_0}{2} m^2-\log 2-\frac{1}{m_1} \int D u \log \left\{\int D v\{\cosh \Xi\}^{m_1}\right\} .
+\end{align}</script><p>得到极值点为：</p>
+<script type="math/tex; mode=display">\begin{gather}
+m^*=\int D u \frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}} \\
+q_0^* =\int D u\left(\frac{\int D v\{\cosh \Xi\}^{m_1} \tanh \Xi}{\int D v\{\cosh \Xi\}^{m_1}}\right)^2 \\ 
+q_1^* =\int D u \frac{\int D v\{\cosh \Xi\}^{m_1}\{\tanh \Xi\}^2}{\int D v\{\cosh \Xi\}^{m_1}} 
+\end{gather}</script><p><img src="/2022/11/20/Phys/SK_model/SK_model1/phase.png" alt="phase diagram"><br><a href="./phase_diagram.nb">mathematica代码</a>与<a href="./phase.py">python代码</a></p>
+<h1 id="Full-RSB-Solution"><a href="#Full-RSB-Solution" class="headerlink" title="Full RSB Solution"></a>Full RSB Solution</h1><p>由于熵还是负数，接下来进行更高阶的复本对称破缺（k-RSB）计算$\eqref{28}$。与一阶复本对称$\eqref{67}$类似:</p>
+<script type="math/tex; mode=display">\begin{align} 
+\sum_{\alpha \neq \beta} q_{\alpha \beta}^l & =q_0^l n^2+\left(q_1^l-q_0^l\right) m_1^2 \cdot \frac{n}{m_1}+\left(q_2^l-q_1^l\right) m_2^2 \cdot \frac{m_1}{m_2} \cdot \frac{n}{m_1}+\cdots-q_K^l \cdot n \\ & =n \sum_{j=0}^K\left(m_j-m_{j+1}\right) q_j^l \label{3.37}
+\end{align}</script><p>其中$l$是任意整数，$m_0=n,m_{K+1}=1$，在极限情况${n\to 0}$下，使用$m_j-m_{j+1}\to -d x$，可以得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}^l \rightarrow-\int_0^1 q^l(x) \mathrm{d} x \label{3.38}
+\end{align}</script><p>在$J_0 =0, h=0$的条件下，结合$E=-\frac{\partial \log Z}{\partial \beta}$、$\chi=-\frac{\partial^2 F}{\partial h^2}$与$\eqref{28}$，可得：</p>
+<font color="red">没有证明</font>
+
+<script type="math/tex; mode=display">\begin{gather}
+E=-\frac{\beta J^2}{2}\left(1+\frac{2}{n} \sum_{\alpha<\beta} q_{\alpha \beta}^2\right) \rightarrow-\frac{\beta J^2}{2}\left(1-\int_0^1 q^2(x) \mathrm{d} x\right) \\
+\chi=\beta\left(1+\frac{1}{n} \sum_{\alpha \neq \beta} q_{\alpha \beta}\right) \rightarrow \beta\left(1-\int_0^1 q(x) \mathrm{d} x\right)
+\end{gather}</script><h2 id="parisi-equation"><a href="#parisi-equation" class="headerlink" title="parisi equation"></a>parisi equation</h2><p>接下来需要将高阶复本破缺技巧应用在自由能$\eqref{2.17}$，和计算一阶复本对称的操作一样，首先计算$q_0$然后计算第一次分块$q_1$的贡献并且排除$q_0$的影响，以此类推，在主对角线上是$q_K$。首先计算如下项：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+G & =\operatorname{Tr} \exp \left(\frac{1}{2} \sum_{\alpha, \beta=1}^n q_{\alpha \beta} S^\alpha S^\beta+h \sum_\alpha^n S^\alpha\right) \\
+& =\left.\exp \left(\frac{1}{2} \sum_{\alpha, \beta} q_{\alpha \beta} \frac{\partial^2}{\partial h_\alpha \partial h_\beta}\right) \prod_\alpha 2 \cosh h_\alpha\right|_{h_\alpha=h}  \label{B.1}
+\end{align}</script><p>这里将$q_{\alpha\beta}$贡献的项目视为$h$项的偏移，因此使用$\exp(\frac{\partial^2}{\partial h_\alpha \partial h_\beta})$的形式表示这个偏移量。如果使用复本对称的假设，则：</p>
+<script type="math/tex; mode=display">\begin{align}
+G=\exp \left(\frac{q}{2} \frac{\partial^2}{\partial h^2}\right)(2 \cosh h)^n \label{B.2}
+\end{align}</script><p>其中使用到：</p>
+<script type="math/tex; mode=display">
+\left.\sum_\alpha \frac{\partial f\left(h_1, \ldots, h_n\right)}{\partial h_\alpha}\right|_{h_\alpha=h}=\frac{\partial f(h, \ldots, h)}{\partial h}</script><p>从$\eqref{67}$中可以看出，当时的思想是从复本对称假设出发，然后将整个矩阵分为几部分（取决于$\frac{n}{m}$大小），在主对角线的块上为一阶复本对称$q_1$；那么同样的二阶复本对称可以将每一个一阶复本对称的块分为几部分，然后将主对角线的块作为二阶复本$q_2$；这个流程以此类推。现在可以反过来，从$K$阶复本逐渐变为$0$阶级复本：</p>
+<ol>
+<li>对于$K-1$阶复本有$\left(q_K-q_{K-1}\right) I\left(m_K\right)$，表示$\left(m_K \times m_K\right)$大小。</li>
+<li>生长出$(K-2)$复本，将$K$阶复本通过$\operatorname{Diag}_{K-1}$扩张$\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-1}\left[I\left(m_K\right)\right]$，然后$K-2$阶写为$\left(q_{K-1}-q_{K-2}\right) I\left(m_{K-1}\right)$矩阵的大小为$\left(m_{K-1} \times m_{K-1}\right)$。整体为:<script type="math/tex; mode=display">\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-1}\left[I\left(m_K\right)\right]+\left(q_{K-1}-q_{K-2}\right) I\left(m_{K-1}\right)</script></li>
+<li>重复步骤2，得到$K-3$复本。矩阵的大小为$\left(m_{K-2} \times m_{K-2}\right)$<script type="math/tex; mode=display">\quad\left(q_K-q_{K-1}\right) \operatorname{Diag}_{K-2}\left[I\left(m_K\right)\right]+\left(q_{K-1}-q_{K-2}\right) \operatorname{Diag}_{K-2}\left[I\left(m_{K-1}\right)\right]+\left(q_{K-2}-q_{K-3}\right)I\left(m_{K-2}\right)</script></li>
+</ol>
+<p>在清楚以上步骤之后，接下来首先处理$\left(m_K \times m_K\right)$大小矩阵$\operatorname{Tr}$，并将结果标注为$g(m_K,h)$，由于这是复本破缺的最后一次，因此这个矩阵元是复本对称的，由$\eqref{B.2}$得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+g\left(m_K, h\right)=\exp \left\{\frac{1}{2}\left(q_K-q_{K-1}\right) \frac{\partial^2}{\partial h^2}\right\}(2 \cosh h)^{m_K} \label{B.4}
+\end{align}</script><p>对于$K-1$阶，是考虑将$g\left(m_K, h\right)$复制到对角部分，然后每一个元素相加$q_{K-1}-q_{K-2}$，从$\eqref{B.2}$可以得到：</p>
+<script type="math/tex; mode=display">\begin{align}
+g\left(m_{K-1}, h\right)=\exp \left\{\frac{1}{2}\left(q_{K-1}-q_{K-2}\right) \frac{\partial^2}{\partial h^2}\right\}\left[g\left(m_K, h\right)\right]^{m_{K-1} / m_K} \label{B.5}
+\end{align}</script><p>一直重复这个过程，直到复本对称项：</p>
+<script type="math/tex; mode=display">\begin{align}
+G=g(n, h)=\exp \left\{\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right\}\left[g\left(m_1, h\right)\right]^{n / m_1}  \label{B.6}
+\end{align}</script><p>考虑到极限$n\to 0$下有$m_j-m_{j-1}=-\mathrm{d}x$，将$\eqref{B.5}$写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+g(x+\mathrm{d} x, h)=\exp \left\{-\frac{1}{2} \mathrm{~d} q(x) \frac{\partial^2}{\partial h^2}\right\} g(x, h)^{1+\mathrm{d} \log x} \label{B.7}
+\end{align}</script><p>对于$\eqref{B.4}$，当$K\to \infty$有$m_k \to 1$，因为存在$g(1,h)=2\cosh h$。将$\eqref{B.7}$转化为微分形式（对$\mathrm{d}q$与$\mathrm{d}x$进行展开）：</p>
+<script type="math/tex; mode=display">
+\frac{\partial g}{\partial x}=-\frac{1}{2} \frac{\mathrm{d} q}{\mathrm{~d} x} \frac{\partial^2 g}{\partial h^2}+\frac{1}{x} g \log g</script><p>利用注记$f_0(x, h)=(1 / x) \log g(x, h)$改写为：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{\partial f_0}{\partial x}=-\frac{1}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\} \label{B.8}
+\end{align}</script><p>分析$\eqref{B.6}$的极限情况，根据之前的讨论知道，当$n\to 0$的时候，$m_1\to0$：</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{1}{n} \log \operatorname{Tr} \mathrm{e}^L &= \left. \exp \left(\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right) \frac{1}{x} \log g(x, h)\right|_{x, h \rightarrow 0} \\
+& =\left.\exp \left(\frac{1}{2} q(0) \frac{\partial^2}{\partial h^2}\right) f_0(0, h)\right|_{h \rightarrow 0} \\
+& =\int \mathrm{D} u f_0(0, \sqrt{q(0)} u) \label{B.10}
+\end{align}</script><p>结合$\eqref{3.38},\eqref{B.10}$将$\eqref{2.17}$写为<font color="red">$q(1)$这一项怎么来的？</font>：</p>
+<script type="math/tex; mode=display">\begin{align}
+\beta f=-\frac{\beta^2 J^2}{4}\left\{1+\int_0^1 q(x)^2 \mathrm{~d} x-2 q(1)\right\}-\int \mathrm{D} u f_0(0, \sqrt{q(0)} u) \label{3.41}
+\end{align}</script><p>其中$f_0$应当满足 Parisi equation，即$\eqref{B.9}$:</p>
+<script type="math/tex; mode=display">\begin{align}
+\frac{\partial f_0(x, h)}{\partial x}=-\frac{J^2}{2} \frac{\mathrm{d} q}{\mathrm{~d} x}\left\{\frac{\partial^2 f_0}{\partial h^2}+x\left(\frac{\partial f_0}{\partial h}\right)^2\right\} \label{3.42} 
+\end{align}</script><p>有 $f_0(1, h)=\log 2 \cosh \beta h$。</p>
+<h2 id="Order-parameter-near-the-critical-point"><a href="#Order-parameter-near-the-critical-point" class="headerlink" title="Order parameter near the critical point"></a>Order parameter near the critical point</h2><p>虽然求解$\eqref{3.41}$十分困难，但是在临界点附近的性质是可以研究的。</p>
+<p>在$J_0=h=0$的条件下，$\eqref{2.17}$展为4阶可以是：</p>
+<font color="red">未经计算，直接抄的，并且十分简略</font>
+
+<script type="math/tex; mode=display">
+\begin{align}
+\beta f= & \lim _{n \rightarrow 0} \frac{1}{n}\left\{\frac{1}{4}\left(\frac{T^2}{T_{\mathrm{f}}^2}-1\right) \operatorname{Tr} Q^2-\frac{1}{6} \operatorname{Tr} Q^3 - \frac{1}{8} \operatorname{Tr} Q^4+\frac{1}{4} \sum_{\alpha \neq \beta \neq \gamma} Q_{\alpha \beta}^2 Q_{\alpha \gamma}^2-\frac{1}{12} \sum_{\alpha \neq \beta} Q_{\alpha \beta}^4\right\},
+\end{align}</script><p>其中$Q_{\alpha\beta}=(\beta J)^2 q_{\alpha\beta}$，令$\theta=\frac{T_f-T}{T_f}$并且考虑复本极限$n\to 0$有：</p>
+<script type="math/tex; mode=display">
+\beta f=\frac{1}{2} \int_0^1 \mathrm{~d} x\left\{|\theta| q^2(x)-\frac{1}{3} x q^3(x)-q(x) \int_0^x q^2(y) \mathrm{d} y+\frac{1}{6} q^4(x)\right\}</script><p>对$q(x)$求导：</p>
+<script type="math/tex; mode=display">
+2|\theta| q(x)-x q^2(x)-\int_0^x q^2(y) \mathrm{d} y-2 q(x) \int_x^1 q(y) \mathrm{d} y+\frac{2}{3} q^3(x)=0</script><p>持续求微分得到结果：</p>
+<script type="math/tex; mode=display">
+|\theta|-x q(x)-\int_x^1 q(y) \mathrm{d} y+q^2(x)=0 \quad \text { or } \quad q^{\prime}(x)=0</script><script type="math/tex; mode=display">
+q(x)=\frac{x}{2} \quad \text { or } \quad q^{\prime}(x)=0</script><p>最后得到的解与$|\theta|$有关：</p>
+<script type="math/tex; mode=display">
+\begin{align}
+& q(x)=\frac{x}{2} \quad\left(0 \leq x \leq x_1=2 q(1)\right) \\
+& q(x)=q(1) \quad\left(x_1 \leq x \leq 1\right) \\
+& q(1)=|\theta|+\mathcal{O}\left(\theta^2\right) 
+\end{align}</script><p>当接近相变点时，$q(x=0)$。</p>
+<p><img src="/2022/11/20/Phys/SK_model/SK_model1/q_x.png" alt="$q(x)$"></p>
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Spin Glass</tag>
+        <tag>Replica Method</tag>
+        <tag>Sherrington-Kirkpatrick Model</tag>
+        <tag>Parisi solution</tag>
+        <tag>Replica Symmetry Breaking</tag>
       </tags>
   </entry>
   <entry>
@@ -3479,6 +3577,34 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
         <tag>PPO</tag>
         <tag>TRPO</tag>
         <tag>Policy Gradients</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Student of Games:Aunified learning algorithm forboth perfect andimperfect information games</title>
+    <url>/2024/08/24/RL/SoG/SoG/</url>
+    <content><![CDATA[<p>在之前的游戏引擎中存在仅适用于单一游戏的问题，虽然AlphaZero解决对于完全完美信息的通用性，但是对于扑克等依旧不存在通用算法。这篇文章提出一种新的通用算法Student of Games（SoG），该算法类似于AlphaZero通过自博弈的方式完成训练，同时拓展了适用边界——适用于非完全信息博弈，例如扑克。</p>
+<font color="red">这个算法结合了很多内容，并没有读懂</font>
+
+<p>Link:</p>
+<ul>
+<li><a href="https://www.science.org/doi/10.1126/sciadv.adg3256#supplementary-materials">Student of Games:Aunified learning algorithm forboth perfect andimperfect information games</a></li>
+</ul>
+<span id="more"></span>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>对于完全完美信息博弈，在理论上存在最优策略，难点在于如何找到该策略。对于不完全信息博弈，是否存在最优策略呢？因为不知道别人的信息，自己作出的选择可能因为对方的信息得到截然不同的结果，因此在这种情况下如何判断不同策略之间哪一个是最优策略？解答这个问题，需要换一个角度从纳什均衡出发，如果存在一种策略使得处于纳什均衡，一旦脱离该策略，那么必然会使得其处于更糟糕的点，那么这个策略就是最优策略。<font color="red">但是可能存在多个均衡策略，哪一个策略是最优的呢？</font></p>
+<p>对于不完全信息博弈，已有的算法是<a href="https://proceedings.neurips.cc/paper/2007/file/08d98638c6fcd194a4b1e6992063e944-Paper.pdf">counterfactual regretminimiza tion (CFR)</a>，以及后续衍生的<a href="https://www.science.org/doi/10.1126/science.aam6960">DeepStack</a>算法。</p>
+<p>这篇文章结合了AlphaZero与DeepStack算法，与AlphaZero的区别在于自博弈的记录可以用于训练非完全信息博弈；与DeepStack的区别在于使用更少的domain knowledge，单个网络对于所有策略。与该算法接近的算法是<a href="https://arxiv.org/abs/2007.13544">Recurr entBelief-based Learning (ReBeL)</a></p>
+<h1 id="SoG-algorithm"><a href="#SoG-algorithm" class="headerlink" title="SoG algorithm"></a>SoG algorithm</h1><p><img src="/2024/08/24/RL/SoG/SoG/CVPN.png" alt="CVPN"></p>
+<p>将参数给入网络得到私有策略。</p>
+<p><img src="/2024/08/24/RL/SoG/SoG/GT-CFR.png" alt="GT-CFR"></p>
+<p>包含后悔值的搜索树。</p>
+<p><img src="/2024/08/24/RL/SoG/SoG/train.png" alt="Train"></p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Student of Games</tag>
       </tags>
   </entry>
   <entry>
@@ -5161,102 +5287,6 @@ E_v[\rho]=F_{\mathrm{HK}}[\rho]+\int \mathrm{d} \boldsymbol{r} \rho(\boldsymbol{
         <tag>基本概念</tag>
         <tag>系综</tag>
         <tag>Clasical dynamics</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Student of Games:Aunified learning algorithm forboth perfect andimperfect information games</title>
-    <url>/2024/08/24/RL/SoG/SoG/</url>
-    <content><![CDATA[<p>在之前的游戏引擎中存在仅适用于单一游戏的问题，虽然AlphaZero解决对于完全完美信息的通用性，但是对于扑克等依旧不存在通用算法。这篇文章提出一种新的通用算法Student of Games（SoG），该算法类似于AlphaZero通过自博弈的方式完成训练，同时拓展了适用边界——适用于非完全信息博弈，例如扑克。</p>
-<font color="red">这个算法结合了很多内容，并没有读懂</font>
-
-<p>Link:</p>
-<ul>
-<li><a href="https://www.science.org/doi/10.1126/sciadv.adg3256#supplementary-materials">Student of Games:Aunified learning algorithm forboth perfect andimperfect information games</a></li>
-</ul>
-<span id="more"></span>
-<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>对于完全完美信息博弈，在理论上存在最优策略，难点在于如何找到该策略。对于不完全信息博弈，是否存在最优策略呢？因为不知道别人的信息，自己作出的选择可能因为对方的信息得到截然不同的结果，因此在这种情况下如何判断不同策略之间哪一个是最优策略？解答这个问题，需要换一个角度从纳什均衡出发，如果存在一种策略使得处于纳什均衡，一旦脱离该策略，那么必然会使得其处于更糟糕的点，那么这个策略就是最优策略。<font color="red">但是可能存在多个均衡策略，哪一个策略是最优的呢？</font></p>
-<p>对于不完全信息博弈，已有的算法是<a href="https://proceedings.neurips.cc/paper/2007/file/08d98638c6fcd194a4b1e6992063e944-Paper.pdf">counterfactual regretminimiza tion (CFR)</a>，以及后续衍生的<a href="https://www.science.org/doi/10.1126/science.aam6960">DeepStack</a>算法。</p>
-<p>这篇文章结合了AlphaZero与DeepStack算法，与AlphaZero的区别在于自博弈的记录可以用于训练非完全信息博弈；与DeepStack的区别在于使用更少的domain knowledge，单个网络对于所有策略。与该算法接近的算法是<a href="https://arxiv.org/abs/2007.13544">Recurr entBelief-based Learning (ReBeL)</a></p>
-<h1 id="SoG-algorithm"><a href="#SoG-algorithm" class="headerlink" title="SoG algorithm"></a>SoG algorithm</h1><p><img src="/2024/08/24/RL/SoG/SoG/CVPN.png" alt="CVPN"></p>
-<p>将参数给入网络得到私有策略。</p>
-<p><img src="/2024/08/24/RL/SoG/SoG/GT-CFR.png" alt="GT-CFR"></p>
-<p>包含后悔值的搜索树。</p>
-<p><img src="/2024/08/24/RL/SoG/SoG/train.png" alt="Train"></p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Reinforcement Learning</tag>
-        <tag>Student of Games</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Injectivity of ReLU networks (perspectives from statistical physics)</title>
-    <url>/2024/08/25/DL/Injectivity_ReLU/InjecReLU/</url>
-    <content><![CDATA[<p>对于ReLU激活层单向性的分析，得到变化的上下界。</p>
-<p>Link:</p>
-<ul>
-<li><a href="https://arxiv.org/abs/2302.14112">Injectivity of ReLU networks: perspectives from statistical physics</a></li>
-</ul>
-<span id="more"></span>
-<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>在什么情况下，随机初始化的ReLU网络是单射性的？</p>
-<p>考虑一个单层的 ReLU 函数，这个映射为$\varphi_{\mathbf{W}}$：</p>
-<script type="math/tex; mode=display">
-\varphi_{\mathbf{W}}(\mathbf{x})_\mu=\sigma\left[\left(\frac{\mathbf{W} \mathbf{x}}{\sqrt{n}}\right)_\mu\right], \quad \mu=1, \cdots, m</script><p>其中 $n, m \geq 1$ ，$\mathbf{x} \in \mathbb{R}^n$ ，$\sigma(x):=\max (0, x)$ ，ReLU参数满足正态分布 $W_{\mu i} \stackrel{\text { i.i.d. }}{\sim} \mathcal{N}(0,1)$ 。</p>
-<p>已有研究指出在热力学极限下 $n \rightarrow \infty$ 、 $\frac{m}{n} \rightarrow \alpha&gt;0$ ，存在两个阈值 $\alpha_l&lt;\alpha_h$ 。当$\alpha&lt;\alpha_l$，ReLU函数是非单射性的；当$\alpha&gt;\alpha_h$，ReLU是单射性的。</p>
-<p>这篇文章的研究内容与之前的一致，采用统计物理方法（复本对称）。</p>
-<h1 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h1><p>研究思路是通过将单射性问题，通过一个能量模型描述，然后这个能量模型在波尔兹曼分布下研究。这样该问题就转为一个物理问题。</p>
-<h2 id="Injectivity"><a href="#Injectivity" class="headerlink" title="Injectivity"></a>Injectivity</h2><p>首先需要解决如何描述单射性。提出概率 $p_{m, n}$ 用于表示映射$\varphi_{\mathbf{W}}$ 是单射性的概率：</p>
-<script type="math/tex; mode=display">
-p_{m, n}=\mathbb{P}_V\left[V \cap C_{m, n}=\{0\}\right]</script><p>其中 $V$ 是 $\mathbb{R}^m$ 的一个随即子空间， $C_{m, n}$ 是 $\mathbb{R}^m$ 中一组向量，并且这组向量中每一个向量元素为正的个数要小于$n$ 。</p>
-<p>通过这个操作，将描述单射性的问题，转化为数向量中为正的元素个数，可以定量描述了。</p>
-<h2 id="Statistical-physics-and-the-spherical-perceptron"><a href="#Statistical-physics-and-the-spherical-perceptron" class="headerlink" title="Statistical physics and the spherical perceptron"></a>Statistical physics and the spherical perceptron</h2><p>接下来的任务就是通过设计能量函数，将数正数的个数，变成为能量的表述形式。</p>
-<p>通过能量表示总的正元素个数：</p>
-<script type="math/tex; mode=display">
-E_{\mathbf{W}}(\mathbf{x}):=\sum_{\mu=1}^m \theta\left[(\mathbf{W} \mathbf{x})_\mu\right], \quad e_{\mathbf{W}}(\mathbf{x}):=\frac{E_{\mathbf{W}}(\mathbf{x})}{n}</script><p>其中 $\theta(x)=\mathbb{1}(x&gt;0)$ ， $\mathbf{x} \in \mathcal{S}^{n-1}$ ， $\mathcal{S}^{n-1}$ 是 $\mathbb{R}^n$ 上的单位球。根据之前的讨论$V \cap C_{m, n}=\{0\}$可以得到 $\mathbf{W} \mathbf{x} \in C_{m, n} \Leftrightarrow E_{\mathbf{W}}(\mathbf{x})&lt;n$，将 $p_{m, n}$重新写为：</p>
-<script type="math/tex; mode=display">
-p_{m, n}=\mathbb{P}_{\mathbf{W}}\left[\min _{\mathbf{x} \in \mathcal{S}^{n-1}} E_{\mathbf{W}}(\mathbf{x}) \geq n\right]</script><h2 id="Thermal-relaxation-the-Gibbs–Boltzmann-distribution"><a href="#Thermal-relaxation-the-Gibbs–Boltzmann-distribution" class="headerlink" title="Thermal relaxation: the Gibbs–Boltzmann distribution"></a>Thermal relaxation: the Gibbs–Boltzmann distribution</h2><p>有了能量，接下来将其写为波尔兹曼分布：</p>
-<script type="math/tex; mode=display">
-\mathrm{d} \mathbb{P}_{\beta, \mathbf{W}}(\mathbf{x}):=\frac{1}{\mathcal{Z}_n(\mathbf{W}, \beta)} e^{-\beta E_{\mathbf{W}}(\mathbf{x})} \mu_n(\mathrm{~d} \mathbf{x}) . \quad\left(\mathbf{x} \in \mathcal{S}^{n-1}\right)</script><p>其中$beta$为逆温度，$\beta=0$ 那就是球面上的平均测量， $\beta \rightarrow \infty$则是能量最小值部分。</p>
-<p>同时写出其自由能：</p>
-<script type="math/tex; mode=display">
-\Phi_n(\mathbf{W}, \beta):=\frac{1}{n} \log \mathcal{Z}_n(\mathbf{W}, \beta)=\frac{1}{n} \log \int_{\mathcal{S}^{n-1}} \mu_n(\mathrm{~d} \mathbf{x}) e^{-\beta E_{\mathbf{W}}(\mathbf{x})}</script><h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p>这部分就是通过副本对称破缺讨论了。</p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Spin Glass</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Loss of plasticity in deep continual learning</title>
-    <url>/2024/08/26/DL/LossPlasticity/LossPlasticity/</url>
-    <content><![CDATA[<p>文章主要讨论在持续学习任务中，损失具有弹性是很关键，进而指出在深度学习中，仅仅依靠反向传播是不够的，需要结合随机、非梯度的优化方式（例如演化计算等）。</p>
-<p>Link:</p>
-<ul>
-<li><a href="https://doi.org/10.1038/s41586-024-07711-7">Loss of plasticity in deep continual learning</a></li>
-<li><a href="https://mp.weixin.qq.com/s?__biz=MzkxODQ0MTQzMg==&amp;mid=2247489568&amp;idx=1&amp;sn=606d85bf9c0df3780f4dc3ccd5835c8d&amp;chksm=c0a474736003b8a50446944aee862eb1417da7025d4892f919e940496e644a24d700688cdb9d&amp;mpshare=1&amp;scene=1&amp;srcid=0825em2QJV5witmRbRpL25ZX&amp;sharer_shareinfo=58591a65fb8a82b6749c7ee6829e99a3&amp;sharer_shareinfo_first=58591a65fb8a82b6749c7ee6829e99a3#rd">Nature正刊（演化深度持续学习）Loss of plasticity in deep continual learning</a></li>
-</ul>
-<span id="more"></span>
-<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>讨论的问题是持续学习任务，以分类任务为例，首先将几个目标进行分类，然后将成功的分类器（神经网络），然后再添加一些其它的分类目标与训练样本。核心的概念损失弹性由此产生，可以发现随着目标的增加，反向传播训练分类器会降低其在测试集上的成功率，说明这样的网络是不具有弹性的，不能进行持续学习。</p>
-<p><img src="/2024/08/26/DL/LossPlasticity/LossPlasticity/F1.png" alt="Plasticity loss in Continual ImageNet"></p>
-<p>上图是以ImageNet进行的测试，a表示逐渐增加的任务，b是不同步长、不同任务数下的比较，c中包含了其它的改良。</p>
-<p>不具有弹性的原因在于激活函数的失效，意味着这些神经元失去单射性，对结果是没有作用的。</p>
-<p><img src="/2024/08/26/DL/LossPlasticity/LossPlasticity/EDF3.png" alt="Online Permuted MNIST"></p>
-<p>上图中c展示了随着任务的数量增加，失活的神经元数量增加（ReLU激活函数）。</p>
-<p>为了解决反向传播中没有弹性问题，文章提出了一种可持续反向传播的算法continual backpropagation。</p>
-<h1 id="Continual-backpropagation"><a href="#Continual-backpropagation" class="headerlink" title="Continual backpropagation"></a>Continual backpropagation</h1><p>Continual backpropagation的核心思想就是将一些失活的激活函数进行初始化。如何衡量是否有效，提出了效用函数$\mathbf{u}_l[i]$，如果激活函数处于低效用的状况，这对其进行初始化。</p>
-<script type="math/tex; mode=display">
-\mathbf{u}_l[i]=\eta \times \mathbf{u}_l[i]+(1-\eta) \times\left|\mathbf{h}_{l, i, t}\right| \times \sum_{k=1}^{n_{l+1}} \mid \mathbf{w}_{l, i, k, t}</script><p>其中$\mathbf{u}_l[i]$是对各种训练数据的积累量，$h_{l,i,t}$是第l层第i个隐藏神经元第t次的输出，$\mathbf{w}_{l, i, k, t}$是权重参数，$\eta$是衰减率。</p>
-<p>对每一个神经元的效用函数从大到小进行排序，同时设置超参效用阈值$m$。在每一次反向传播结束，统计超过效用阈值$m$神经元数量$n_{\text {eligible }}$，以比例$\rho$进行累计$c_l=c_l+n_{\text {eligible }} \times \rho$。如果超过1，那么选取一个分界$r$，高效用的按照一个分布进行初始化，低效用置0。</p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Spin Glass</tag>
       </tags>
   </entry>
 </search>
