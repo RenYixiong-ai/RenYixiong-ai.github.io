@@ -109,6 +109,67 @@ c\neq& b \label{test2} \\
       </tags>
   </entry>
   <entry>
+    <title>Deconstructing Denoising Diffusion Models for Self-Supervised Learning</title>
+    <url>/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/</url>
+    <content><![CDATA[<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。</p>
+<p>这点和全连接神经网络十分相似，当层数过多的时候，只有输入层附近的几层与输出层附近的几层是关键的，中间几层处于液化状态（可以随意选取，不会影响最终的结果）。</p>
+<span id="more"></span>
+<p>现有的预训练DDM在生成任务上表现十分优异，然而留下一个开放问题：这些用于生成任务的预训练模型，其是否同样获得表征能力。</p>
+<h1 id="Deconstructing-Denoising-Diffusion-Models"><a href="#Deconstructing-Denoising-Diffusion-Models" class="headerlink" title="Deconstructing Denoising Diffusion Models"></a>Deconstructing Denoising Diffusion Models</h1><p>作者发现主要的关键因素是tokenizer，其表现了低维的潜空间。但是不难发现，潜变量并不是tokenizer独有的，standard VAE, a patch-wise VAE, a patch-wise AE, and a patch-wise PCA encoder 均有潜变量。</p>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig1.png" alt="fig1"></p>
+<p>解构的路线分为三个步骤：</p>
+<ul>
+<li>首先将Diffusion Transformer(DiT)架构，变为自监督模型</li>
+<li>逐步拆解toenizer</li>
+<li>尽可能尝试还原模型，将其变为一个经典的Denoising Autoencoder(DAE)</li>
+</ul>
+<h2 id="Reorienting-DDM-for-Self-supervised-Learning"><a href="#Reorienting-DDM-for-Self-supervised-Learning" class="headerlink" title="Reorienting DDM for Self-supervised Learning"></a>Reorienting DDM for Self-supervised Learning</h2><p>DDM的概念本质上是从DAE的概念上生成的，依旧是用于图像生成，一些设计并不适合自监督学习，一些是并不必要的（例如提升图像生成质量）。</p>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig2.png" alt="fig2"></p>
+<ol>
+<li><p>Remove class-conditioning<br>标签在图像生成上很重要，但是不符合自监督学习的要求，因此移除标签。此举使得准确性提升，但是图像质量（FID）下降。</p>
+</li>
+<li><p>Deconstruct <font color="red">VQGAN</font></p>
+</li>
+<li>Replace noise schedule<br>不需要逐步添加噪声，可以一步直接加入噪声</li>
+</ol>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig3.png" alt="fig3"></p>
+<h2 id="Deconstructing-the-Tokenizer"><a href="#Deconstructing-the-Tokenizer" class="headerlink" title="Deconstructing the Tokenizer"></a>Deconstructing the Tokenizer</h2><p>接下来解构tokenizer，将会用到下面四种自编码器，每一种自编码器都是前面一种的简化。</p>
+<ul>
+<li><p>Convolutional VAE \<br>损失函数如下：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\|x-g(f(x))\|^2+\mathbb{K} \mathbb{L}[f(x) \mid \mathcal{N}]
+\end{equation}</script><p>其中$f(\cdot)$是编码函数$g(\cdot)$是解码函数，$x$是输入值，VAE是深度卷积神经网络。</p>
+</li>
+<li><p>Patch-wise VAE \<br>选用线性的函数作为编码解码器（全连接网络），损失函数设置如下：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\left\|x-U^T V x\right\|^2+\mathbb{K} \mathbb{L}[V x \mid \mathcal{N}]
+\end{equation}</script><p>$U,V$是矩阵。</p>
+</li>
+<li><p>Patch-wise AE \<br>进一步简化，删除正则化项：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\left\|x-U^T V x\right\|^2
+\end{equation}</script></li>
+<li><p>Patch-wise PCA \<br>PCA 可以看成是一种特殊的 AE，损失函数为：</p>
+<script type="math/tex; mode=display">\begin{equation}
+\left\|x-V^T V x\right\|^2
+\end{equation}</script></li>
+</ul>
+<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig4.png" alt="fig4"></p>
+<p>可以从上表中看出，表现性能都差不多，并且计算KL散度也不是很重要。甚至PCA工作的更好</p>
+<h2 id="Toward-Classical-Denoising-Autoencoders"><a href="#Toward-Classical-Denoising-Autoencoders" class="headerlink" title="Toward Classical Denoising Autoencoders"></a>Toward Classical Denoising Autoencoders</h2><p>逐步减去 PCA-based DDM 与经典DAE之间的差距。<br><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig5.png" alt="fig5"></p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig6.png" alt="fig6"></p>
+<p>从最后的实验结果看出，对潜变量空间加入噪音对结果的影响更大。因此说明对模型训练起关键作用的是少数几个参数。</p>
+<font color="red">应该是我没有读懂该文章的实验思路，在我的理解下，潜变量应该是浓缩了更多信息的空间，对其加噪音本来就会比对原像素空间其更大的影响。另一方面，这种论证方法，我并不认为十分研究，应该有更多的理论分析保证。</font>]]></content>
+      <categories>
+        <category>Machine Learning</category>
+      </categories>
+      <tags>
+        <tag>Diffusion Models</tag>
+        <tag>Denoising Diffusion Models</tag>
+        <tag>Self-Supervised Learning</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning</title>
     <url>/2024/06/01/DL/DRL_COM/DRL_COM/</url>
     <content><![CDATA[<p>The application of deep reinforcement learning to combinatorial optimization methods.</p>
@@ -168,11 +229,9 @@ c\neq& b \label{test2} \\
 <p><img src="/2024/06/01/DL/DRL_COM/DRL_COM/table1.png" alt="surbey of point to point model"></p>
 <p>Two directions for improving the end-to-end approach are changing the model and using different training patterns. In my view, the network model determines the peak performance level, while the training patterns influence whether this peak can be reached and factors like time and data requirements. </p>
 <p>However, sometimes network models incorporate training patterns, necessitating an in-depth exploration of specific algorithms. This study originated from <a href="/2024/06/11/DL/DRL_COM/NCORL/" title="Neural Combiantorial Optimization with Reinforcement Learning">Neural Combiantorial Optimization with Reinforcement Learning</a>, which was later modified by <a href="/2024/06/11/DL/DRL_COM/RLSVRP/" title="Reinforcement Learning for Solving the Vehicle Routing Problem">Reinforcement Learning for Solving the Vehicle Routing Problem</a>, followed by numerous improved versions.</p>
-<font color="red">stop</font>
-
-
-
-
+<h1 id="Local-Search-Methods-based-DRL"><a href="#Local-Search-Methods-based-DRL" class="headerlink" title="Local Search Methods based DRL"></a>Local Search Methods based DRL</h1><p>Previously, local search algorithm rules were designed manually, which is a form of heuristic search. However, we now aim to use reinforcement learning to automatically generate these search rules to get better performance.</p>
+<p>Chen addressed a combination optimaztion search model “<a href="/2024/06/03/DL/DRL_COM/NeuRewriter/" title="Learning to Perform Local Rewriting for Combinatorial Optimization">Learning to Perform Local Rewriting for Combinatorial Optimization</a>“ based on DRL. <a href="https://dl.acm.org/doi/10.5555/3454287.3455005">Yolcu</a> modify the local search methods in satisfiability problem, though need less step find the ground-state, it will use more time. <a href="https://arxiv.org/abs/2002.08539">Gao</a> based on Large Neighborhood Search optimize Destory abd Repair operator. <a href="https://openreview.net/forum?id=BJe1334YDH">Lu</a> created Learn to improve(LSI).</p>
+<p><img src="/2024/06/01/DL/DRL_COM/DRL_COM/table3.png" alt="Local Search Methods based DRL"></p>
 ]]></content>
       <categories>
         <category>Machine Learning</category>
@@ -353,67 +412,6 @@ p\left(C_i \mid C_1, \ldots, C_{i-1}, \mathcal{P}\right)&=\operatorname{softmax}
         <tag>Reinforcement Learning</tag>
         <tag>Spin Glass</tag>
         <tag>Combinatorial Optimization Methods</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Deconstructing Denoising Diffusion Models for Self-Supervised Learning</title>
-    <url>/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/</url>
-    <content><![CDATA[<h1 id="Abstract"><a href="#Abstract" class="headerlink" title="Abstract"></a>Abstract</h1><p>这篇文章分析了 Denoising Diffusion Models(DDM) 在图像领域的表示能力。通过不断解构DDM，从而分析Transformer的性能。最终得出结论：仅仅有很少的几个参数是有用的，对最后的图像生成起到关键作用。</p>
-<p>这点和全连接神经网络十分相似，当层数过多的时候，只有输入层附近的几层与输出层附近的几层是关键的，中间几层处于液化状态（可以随意选取，不会影响最终的结果）。</p>
-<span id="more"></span>
-<p>现有的预训练DDM在生成任务上表现十分优异，然而留下一个开放问题：这些用于生成任务的预训练模型，其是否同样获得表征能力。</p>
-<h1 id="Deconstructing-Denoising-Diffusion-Models"><a href="#Deconstructing-Denoising-Diffusion-Models" class="headerlink" title="Deconstructing Denoising Diffusion Models"></a>Deconstructing Denoising Diffusion Models</h1><p>作者发现主要的关键因素是tokenizer，其表现了低维的潜空间。但是不难发现，潜变量并不是tokenizer独有的，standard VAE, a patch-wise VAE, a patch-wise AE, and a patch-wise PCA encoder 均有潜变量。</p>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig1.png" alt="fig1"></p>
-<p>解构的路线分为三个步骤：</p>
-<ul>
-<li>首先将Diffusion Transformer(DiT)架构，变为自监督模型</li>
-<li>逐步拆解toenizer</li>
-<li>尽可能尝试还原模型，将其变为一个经典的Denoising Autoencoder(DAE)</li>
-</ul>
-<h2 id="Reorienting-DDM-for-Self-supervised-Learning"><a href="#Reorienting-DDM-for-Self-supervised-Learning" class="headerlink" title="Reorienting DDM for Self-supervised Learning"></a>Reorienting DDM for Self-supervised Learning</h2><p>DDM的概念本质上是从DAE的概念上生成的，依旧是用于图像生成，一些设计并不适合自监督学习，一些是并不必要的（例如提升图像生成质量）。</p>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig2.png" alt="fig2"></p>
-<ol>
-<li><p>Remove class-conditioning<br>标签在图像生成上很重要，但是不符合自监督学习的要求，因此移除标签。此举使得准确性提升，但是图像质量（FID）下降。</p>
-</li>
-<li><p>Deconstruct <font color="red">VQGAN</font></p>
-</li>
-<li>Replace noise schedule<br>不需要逐步添加噪声，可以一步直接加入噪声</li>
-</ol>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig3.png" alt="fig3"></p>
-<h2 id="Deconstructing-the-Tokenizer"><a href="#Deconstructing-the-Tokenizer" class="headerlink" title="Deconstructing the Tokenizer"></a>Deconstructing the Tokenizer</h2><p>接下来解构tokenizer，将会用到下面四种自编码器，每一种自编码器都是前面一种的简化。</p>
-<ul>
-<li><p>Convolutional VAE \<br>损失函数如下：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\|x-g(f(x))\|^2+\mathbb{K} \mathbb{L}[f(x) \mid \mathcal{N}]
-\end{equation}</script><p>其中$f(\cdot)$是编码函数$g(\cdot)$是解码函数，$x$是输入值，VAE是深度卷积神经网络。</p>
-</li>
-<li><p>Patch-wise VAE \<br>选用线性的函数作为编码解码器（全连接网络），损失函数设置如下：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\left\|x-U^T V x\right\|^2+\mathbb{K} \mathbb{L}[V x \mid \mathcal{N}]
-\end{equation}</script><p>$U,V$是矩阵。</p>
-</li>
-<li><p>Patch-wise AE \<br>进一步简化，删除正则化项：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\left\|x-U^T V x\right\|^2
-\end{equation}</script></li>
-<li><p>Patch-wise PCA \<br>PCA 可以看成是一种特殊的 AE，损失函数为：</p>
-<script type="math/tex; mode=display">\begin{equation}
-\left\|x-V^T V x\right\|^2
-\end{equation}</script></li>
-</ul>
-<p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig4.png" alt="fig4"></p>
-<p>可以从上表中看出，表现性能都差不多，并且计算KL散度也不是很重要。甚至PCA工作的更好</p>
-<h2 id="Toward-Classical-Denoising-Autoencoders"><a href="#Toward-Classical-Denoising-Autoencoders" class="headerlink" title="Toward Classical Denoising Autoencoders"></a>Toward Classical Denoising Autoencoders</h2><p>逐步减去 PCA-based DDM 与经典DAE之间的差距。<br><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig5.png" alt="fig5"></p>
-<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p><img src="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/fig6.png" alt="fig6"></p>
-<p>从最后的实验结果看出，对潜变量空间加入噪音对结果的影响更大。因此说明对模型训练起关键作用的是少数几个参数。</p>
-<font color="red">应该是我没有读懂该文章的实验思路，在我的理解下，潜变量应该是浓缩了更多信息的空间，对其加噪音本来就会比对原像素空间其更大的影响。另一方面，这种论证方法，我并不认为十分研究，应该有更多的理论分析保证。</font>]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Diffusion Models</tag>
-        <tag>Denoising Diffusion Models</tag>
-        <tag>Self-Supervised Learning</tag>
       </tags>
   </entry>
   <entry>
@@ -2993,6 +2991,80 @@ K_c & =\frac{\ln (1+\sqrt{2})}{2} \approx 0.4407
       </tags>
   </entry>
   <entry>
+    <title>Replica in Random Matrix</title>
+    <url>/2024/07/03/Phys/replica/replica_math/</url>
+    <content><![CDATA[<span id="more"></span>
+<h3 id="Stieltjes变换概述"><a href="#Stieltjes变换概述" class="headerlink" title="Stieltjes变换概述"></a>Stieltjes变换概述</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>Stieltjes变换是一个用于分析和研究实数轴上测度（或函数）性质的工具。对于一个实数轴上的测度 $\mu$，它的Stieltjes变换 $ G(z) $ 定义为：</p>
+<script type="math/tex; mode=display">G(z) = \int_{-\infty}^{\infty} \frac{d\mu(x)}{x - z}</script><p>其中，$ z $ 是复平面上的一个点，且不在实数轴上的支撑集（即测度 $\mu$ 为零的区域）内。</p>
+<p>对于一个函数 $ f(x) $ 来说，如果我们把它视为测度的密度函数，则Stieltjes变换可以写成：</p>
+<script type="math/tex; mode=display">G(z) = \int_{-\infty}^{\infty} \frac{f(x) \, dx}{x - z}</script><h4 id="逆变换"><a href="#逆变换" class="headerlink" title="逆变换"></a>逆变换</h4><p>Stieltjes变换的逆变换用于从变换后的函数恢复原始测度或密度函数。对于谱密度 $ \rho(x) $，我们有：</p>
+<script type="math/tex; mode=display">\rho(x) = \lim_{\epsilon \to 0^+} \frac{1}{\pi} \Im[G(x + i\epsilon)]</script><p>其中，$ \Im[G(x + i\epsilon)] $ 表示 $ G(z) $ 在 $ z = x + i\epsilon $ 处的虚部。</p>
+<h3 id="应用示例：Wigner矩阵的谱密度"><a href="#应用示例：Wigner矩阵的谱密度" class="headerlink" title="应用示例：Wigner矩阵的谱密度"></a>应用示例：Wigner矩阵的谱密度</h3><h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>Wigner矩阵是一个对称的随机矩阵，其元素是独立同分布的随机变量。设 $ W $ 是一个 $ N \times N $ 的Wigner矩阵，其元素 $ W_{ij} $ 满足以下条件：</p>
+<ul>
+<li>$ W_{ij} = W_{ji} $</li>
+<li>对于 $ i \neq j $， $ W_{ij} $ 是均值为零、方差为 $ \frac{1}{N} $ 的独立随机变量</li>
+<li>对角元素 $ W_{ii} $ 是均值为零、方差为 $ \frac{2}{N} $ 的独立随机变量</li>
+</ul>
+<p>Wigner半圆定律描述了在 $ N \to \infty $ 的极限下，Wigner矩阵的特征值分布趋向于一个半圆分布。</p>
+<h4 id="自洽方程推导"><a href="#自洽方程推导" class="headerlink" title="自洽方程推导"></a>自洽方程推导</h4><p>随机矩阵 $ W $ 的Stieltjes变换 $ G(z) $ 定义为：</p>
+<script type="math/tex; mode=display">G_N(z) = \frac{1}{N} \sum_{i=1}^N \frac{1}{\lambda_i - z}</script><p>在大尺寸极限下， $ G_N(z) $ 的期望值趋向于一个确定的值 $ G(z) $，满足自洽方程：</p>
+<script type="math/tex; mode=display">G(z) = \frac{1}{-z - G(z)}</script><p>这个方程通过以下步骤推导：</p>
+<ol>
+<li>将Stieltjes变换定义为矩阵的特征值求和。</li>
+<li>利用矩阵的迹和逆矩阵的关系，展开逆矩阵。</li>
+<li>在大尺寸极限下，假设矩阵元素足够小，进行平均场近似。</li>
+<li>得到自洽方程，并通过二次方程求解。</li>
+</ol>
+<h4 id="解析自洽方程"><a href="#解析自洽方程" class="headerlink" title="解析自洽方程"></a>解析自洽方程</h4><p>解自洽方程 $ G(z) = \frac{1}{-z - G(z)} $：</p>
+<script type="math/tex; mode=display">G(z)^2 + zG(z) + 1 = 0</script><p>解得：</p>
+<script type="math/tex; mode=display">G(z) = \frac{-z \pm \sqrt{z^2 - 4}}{2}</script><p>选择满足 $ \Im[G(z)] \geq 0 $ 的分支：</p>
+<script type="math/tex; mode=display">G(z) = \frac{-z + \sqrt{z^2 - 4}}{2}</script><h4 id="恢复谱密度"><a href="#恢复谱密度" class="headerlink" title="恢复谱密度"></a>恢复谱密度</h4><p>根据逆Stieltjes变换公式，谱密度 $ \rho(x) $ 为：</p>
+<script type="math/tex; mode=display">\rho(x) = \frac{1}{\pi} \text{Im}[G(x + i\epsilon)]</script><p>代入 $ G(z) $ 的表达式，计算得：</p>
+<script type="math/tex; mode=display">\rho(x) = \frac{1}{2\pi} \sqrt{4 - x^2}</script><p>这正是Wigner半圆分布的谱密度。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Stieltjes变换在随机矩阵理论中是一个强大的工具，特别适用于谱密度的计算。通过Stieltjes变换，可以将实数轴上的谱密度问题转化为复平面上的解析问题，利用其逆变换可以从复平面上的函数恢复原始的谱密度，从而简化了复杂的计算过程。</p>
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Spin Glass</tag>
+        <tag>Replica Method</tag>
+        <tag>Random Matrix</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Analytic and Algorithmic Solution of Random Satisfiability Problems</title>
+    <url>/2024/07/09/Phys/science_3831989/RSP/</url>
+    <content><![CDATA[<p>Parisi关于组合优化问题的分析。</p>
+<p>reference:</p>
+<ul>
+<li><a href="https://www.jstor.org/stable/3831989">Analytic and Algorithmic Solution of Random Satisfiability Problems</a></li>
+</ul>
+<span id="more"></span>
+<p>关于组合优化问题关心两类求解算法、理论分析，第二类理论分析具体为一类组合优化问题在不同实例的情况下，有哪些共性特征。</p>
+<p>考虑热力学极限$\alpha=M/N$，其中$N$是变量数，$M$是子句数目，其中$\alpha$是一个恒定值。将其转化为统计物理问题，$N$个布尔变量用二值$s$表示，每个子句$a$包含$k$个变量（K-SAT问题）即$k$个自旋相互作用，相互作用强度$J\in\{-1,1\}$通过子句中的$\neg$决定，将所有子句进行加和：</p>
+<script type="math/tex; mode=display">\begin{align}
+H=\sum_a \prod_k \frac{1+J_a s_k}{2^k}
+\end{align}</script><p>最终$H$的值表示违反的关系的个数，当全部满足的时候$H=0$。定义零温下的自由能关系：</p>
+<script type="math/tex; mode=display">
+\exp(-Ny\Phi(y))=\int\mathbb{d}w \exp(N[\Sigma(e)-ye])</script><p>其中$e$表示自由能，$\Sigma$为对应自由能量的熵。为了计算$\Phi$，使用空腔的方法。</p>
+<p>$\begin{aligned}<br>\min _{s_2, \ldots, s_K}\left(H-\frac{1}{2} \sum_{j=2}^K h_j s_j\right) =-\frac{1}{2}\left[a_J\left(h_2, \ldots, h_K\right)+s_1 u_J\left(h_2, \ldots, h_K\right)\right]<br>\end{aligned}$</p>
+<p><img src="/2024/07/09/Phys/science_3831989/RSP/fig1.png" alt="Cavity"><br>上图为表示空腔的因子图。</p>
+<p><img src="/2024/07/09/Phys/science_3831989/RSP/fig2.png" alt="phase diagram"></p>
+<p>相图可以用如上的结果表示，红线代表平均每个变量不满足的几率；绿线代表遍历性破缺线条；蓝线表示解的熵线。</p>
+]]></content>
+      <categories>
+        <category>Physics</category>
+      </categories>
+      <tags>
+        <tag>Spin Glass</tag>
+        <tag>Combinatorial Optimization Methods</tag>
+        <tag>Boltzmann Machine</tag>
+        <tag>Replica Method</tag>
+        <tag>Replica Symmetry Breaking</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Replica</title>
     <url>/2022/11/13/Phys/replica/replica/</url>
     <content><![CDATA[<p>Reference:</p>
@@ -3215,77 +3287,70 @@ e^{-N \beta m \phi(\beta, m)}=\sum_\alpha e^{-N \beta m f_\alpha}=\sum_\alpha e^
       </tags>
   </entry>
   <entry>
-    <title>Replica in Random Matrix</title>
-    <url>/2024/07/03/Phys/replica/replica_math/</url>
-    <content><![CDATA[<span id="more"></span>
-<h3 id="Stieltjes变换概述"><a href="#Stieltjes变换概述" class="headerlink" title="Stieltjes变换概述"></a>Stieltjes变换概述</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>Stieltjes变换是一个用于分析和研究实数轴上测度（或函数）性质的工具。对于一个实数轴上的测度 $\mu$，它的Stieltjes变换 $ G(z) $ 定义为：</p>
-<script type="math/tex; mode=display">G(z) = \int_{-\infty}^{\infty} \frac{d\mu(x)}{x - z}</script><p>其中，$ z $ 是复平面上的一个点，且不在实数轴上的支撑集（即测度 $\mu$ 为零的区域）内。</p>
-<p>对于一个函数 $ f(x) $ 来说，如果我们把它视为测度的密度函数，则Stieltjes变换可以写成：</p>
-<script type="math/tex; mode=display">G(z) = \int_{-\infty}^{\infty} \frac{f(x) \, dx}{x - z}</script><h4 id="逆变换"><a href="#逆变换" class="headerlink" title="逆变换"></a>逆变换</h4><p>Stieltjes变换的逆变换用于从变换后的函数恢复原始测度或密度函数。对于谱密度 $ \rho(x) $，我们有：</p>
-<script type="math/tex; mode=display">\rho(x) = \lim_{\epsilon \to 0^+} \frac{1}{\pi} \Im[G(x + i\epsilon)]</script><p>其中，$ \Im[G(x + i\epsilon)] $ 表示 $ G(z) $ 在 $ z = x + i\epsilon $ 处的虚部。</p>
-<h3 id="应用示例：Wigner矩阵的谱密度"><a href="#应用示例：Wigner矩阵的谱密度" class="headerlink" title="应用示例：Wigner矩阵的谱密度"></a>应用示例：Wigner矩阵的谱密度</h3><h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>Wigner矩阵是一个对称的随机矩阵，其元素是独立同分布的随机变量。设 $ W $ 是一个 $ N \times N $ 的Wigner矩阵，其元素 $ W_{ij} $ 满足以下条件：</p>
+    <title>Student of Games:Aunified learning algorithm forboth perfect andimperfect information games</title>
+    <url>/2024/08/24/RL/SoG/SoG/</url>
+    <content><![CDATA[<p>在之前的游戏引擎中存在仅适用于单一游戏的问题，虽然AlphaZero解决对于完全完美信息的通用性，但是对于扑克等依旧不存在通用算法。这篇文章提出一种新的通用算法Student of Games（SoG），该算法类似于AlphaZero通过自博弈的方式完成训练，同时拓展了适用边界——适用于非完全信息博弈，例如扑克。</p>
+<font color="red">这个算法结合了很多内容，并没有读懂</font>
+
+<p>Link:</p>
 <ul>
-<li>$ W_{ij} = W_{ji} $</li>
-<li>对于 $ i \neq j $， $ W_{ij} $ 是均值为零、方差为 $ \frac{1}{N} $ 的独立随机变量</li>
-<li>对角元素 $ W_{ii} $ 是均值为零、方差为 $ \frac{2}{N} $ 的独立随机变量</li>
+<li><a href="https://www.science.org/doi/10.1126/sciadv.adg3256#supplementary-materials">Student of Games:Aunified learning algorithm forboth perfect andimperfect information games</a></li>
 </ul>
-<p>Wigner半圆定律描述了在 $ N \to \infty $ 的极限下，Wigner矩阵的特征值分布趋向于一个半圆分布。</p>
-<h4 id="自洽方程推导"><a href="#自洽方程推导" class="headerlink" title="自洽方程推导"></a>自洽方程推导</h4><p>随机矩阵 $ W $ 的Stieltjes变换 $ G(z) $ 定义为：</p>
-<script type="math/tex; mode=display">G_N(z) = \frac{1}{N} \sum_{i=1}^N \frac{1}{\lambda_i - z}</script><p>在大尺寸极限下， $ G_N(z) $ 的期望值趋向于一个确定的值 $ G(z) $，满足自洽方程：</p>
-<script type="math/tex; mode=display">G(z) = \frac{1}{-z - G(z)}</script><p>这个方程通过以下步骤推导：</p>
-<ol>
-<li>将Stieltjes变换定义为矩阵的特征值求和。</li>
-<li>利用矩阵的迹和逆矩阵的关系，展开逆矩阵。</li>
-<li>在大尺寸极限下，假设矩阵元素足够小，进行平均场近似。</li>
-<li>得到自洽方程，并通过二次方程求解。</li>
-</ol>
-<h4 id="解析自洽方程"><a href="#解析自洽方程" class="headerlink" title="解析自洽方程"></a>解析自洽方程</h4><p>解自洽方程 $ G(z) = \frac{1}{-z - G(z)} $：</p>
-<script type="math/tex; mode=display">G(z)^2 + zG(z) + 1 = 0</script><p>解得：</p>
-<script type="math/tex; mode=display">G(z) = \frac{-z \pm \sqrt{z^2 - 4}}{2}</script><p>选择满足 $ \Im[G(z)] \geq 0 $ 的分支：</p>
-<script type="math/tex; mode=display">G(z) = \frac{-z + \sqrt{z^2 - 4}}{2}</script><h4 id="恢复谱密度"><a href="#恢复谱密度" class="headerlink" title="恢复谱密度"></a>恢复谱密度</h4><p>根据逆Stieltjes变换公式，谱密度 $ \rho(x) $ 为：</p>
-<script type="math/tex; mode=display">\rho(x) = \frac{1}{\pi} \text{Im}[G(x + i\epsilon)]</script><p>代入 $ G(z) $ 的表达式，计算得：</p>
-<script type="math/tex; mode=display">\rho(x) = \frac{1}{2\pi} \sqrt{4 - x^2}</script><p>这正是Wigner半圆分布的谱密度。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>Stieltjes变换在随机矩阵理论中是一个强大的工具，特别适用于谱密度的计算。通过Stieltjes变换，可以将实数轴上的谱密度问题转化为复平面上的解析问题，利用其逆变换可以从复平面上的函数恢复原始的谱密度，从而简化了复杂的计算过程。</p>
+<span id="more"></span>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>对于完全完美信息博弈，在理论上存在最优策略，难点在于如何找到该策略。对于不完全信息博弈，是否存在最优策略呢？因为不知道别人的信息，自己作出的选择可能因为对方的信息得到截然不同的结果，因此在这种情况下如何判断不同策略之间哪一个是最优策略？解答这个问题，需要换一个角度从纳什均衡出发，如果存在一种策略使得处于纳什均衡，一旦脱离该策略，那么必然会使得其处于更糟糕的点，那么这个策略就是最优策略。<font color="red">但是可能存在多个均衡策略，哪一个策略是最优的呢？</font></p>
+<p>对于不完全信息博弈，已有的算法是<a href="https://proceedings.neurips.cc/paper/2007/file/08d98638c6fcd194a4b1e6992063e944-Paper.pdf">counterfactual regretminimiza tion (CFR)</a>，以及后续衍生的<a href="https://www.science.org/doi/10.1126/science.aam6960">DeepStack</a>算法。</p>
+<p>这篇文章结合了AlphaZero与DeepStack算法，与AlphaZero的区别在于自博弈的记录可以用于训练非完全信息博弈；与DeepStack的区别在于使用更少的domain knowledge，单个网络对于所有策略。与该算法接近的算法是<a href="https://arxiv.org/abs/2007.13544">Recurr entBelief-based Learning (ReBeL)</a></p>
+<h1 id="SoG-algorithm"><a href="#SoG-algorithm" class="headerlink" title="SoG algorithm"></a>SoG algorithm</h1><p><img src="/2024/08/24/RL/SoG/SoG/CVPN.png" alt="CVPN"></p>
+<p>将参数给入网络得到私有策略。</p>
+<p><img src="/2024/08/24/RL/SoG/SoG/GT-CFR.png" alt="GT-CFR"></p>
+<p>包含后悔值的搜索树。</p>
+<p><img src="/2024/08/24/RL/SoG/SoG/train.png" alt="Train"></p>
 ]]></content>
       <categories>
-        <category>Physics</category>
+        <category>Machine Learning</category>
       </categories>
       <tags>
-        <tag>Spin Glass</tag>
-        <tag>Replica Method</tag>
-        <tag>Random Matrix</tag>
+        <tag>Reinforcement Learning</tag>
+        <tag>Student of Games</tag>
       </tags>
   </entry>
   <entry>
-    <title>Analytic and Algorithmic Solution of Random Satisfiability Problems</title>
-    <url>/2024/07/09/Phys/science_3831989/RSP/</url>
-    <content><![CDATA[<p>Parisi关于组合优化问题的分析。</p>
-<p>reference:</p>
+    <title>Machine learning renormalization group for statistical physics</title>
+    <url>/2024/08/21/ai4sci/MLRG/MLRG/</url>
+    <content><![CDATA[<p>通过构建三个网络学习实空间重整化过程中的参数变化。</p>
+<p>Reference:</p>
 <ul>
-<li><a href="https://www.jstor.org/stable/3831989">Analytic and Algorithmic Solution of Random Satisfiability Problems</a></li>
+<li><a href="https://doi.org/10.1088/2632-2153/ad0101">Machine learning renormalization group for statistical physics</a></li>
 </ul>
 <span id="more"></span>
-<p>关于组合优化问题关心两类求解算法、理论分析，第二类理论分析具体为一类组合优化问题在不同实例的情况下，有哪些共性特征。</p>
-<p>考虑热力学极限$\alpha=M/N$，其中$N$是变量数，$M$是子句数目，其中$\alpha$是一个恒定值。将其转化为统计物理问题，$N$个布尔变量用二值$s$表示，每个子句$a$包含$k$个变量（K-SAT问题）即$k$个自旋相互作用，相互作用强度$J\in\{-1,1\}$通过子句中的$\neg$决定，将所有子句进行加和：</p>
-<script type="math/tex; mode=display">\begin{align}
-H=\sum_a \prod_k \frac{1+J_a s_k}{2^k}
-\end{align}</script><p>最终$H$的值表示违反的关系的个数，当全部满足的时候$H=0$。定义零温下的自由能关系：</p>
-<script type="math/tex; mode=display">
-\exp(-Ny\Phi(y))=\int\mathbb{d}w \exp(N[\Sigma(e)-ye])</script><p>其中$e$表示自由能，$\Sigma$为对应自由能量的熵。为了计算$\Phi$，使用空腔的方法。</p>
-<p>$\begin{aligned}<br>\min _{s_2, \ldots, s_K}\left(H-\frac{1}{2} \sum_{j=2}^K h_j s_j\right) =-\frac{1}{2}\left[a_J\left(h_2, \ldots, h_K\right)+s_1 u_J\left(h_2, \ldots, h_K\right)\right]<br>\end{aligned}$</p>
-<p><img src="/2024/07/09/Phys/science_3831989/RSP/fig1.png" alt="Cavity"><br>上图为表示空腔的因子图。</p>
-<p><img src="/2024/07/09/Phys/science_3831989/RSP/fig2.png" alt="phase diagram"></p>
-<p>相图可以用如上的结果表示，红线代表平均每个变量不满足的几率；绿线代表遍历性破缺线条；蓝线表示解的熵线。</p>
+<h1 id="Network"><a href="#Network" class="headerlink" title="Network"></a>Network</h1><p><img src="/2024/08/21/ai4sci/MLRG/MLRG/architecture.png" alt="architecture of algorithm"></p>
+<p>一共有三个网络，其中两个是 RBM，另一个是深度网络。这两个 RBM 分别表示重整化前与重整化后的模型，可以给出波尔兹曼分布。在重整化变换前后分布应当是不变的，因此通过KL散度衡量这两个网络之间的距离，然而衡量KL散度存在困难，使用CD散度进行替代。</p>
+<p>那么这两个网络之间的重整化参数是如何确定的呢？这里引入了三个网络 moderator，用以将第一个网络参数转化为第第二个网络的参数，是学习重整化流的主要网络。</p>
+<h1 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h1><p>算法流程为：</p>
+<ol>
+<li>通过参数J进行采样（HMC），得到一些用于训练的 sample。</li>
+<li>J 作为 fine-grained RBM 的参数。</li>
+<li>这些sample输入 fine-grained RBM，产生根据其概率分布的sample1。</li>
+<li>通过 Moderator 将 J 变化为 J’，输入进 corase-grained RBM。</li>
+<li>将 sample1 输入 corase-grained RBM，产生根据其概率分布的sample2。</li>
+<li>根据sample2和sample1之间的概率分布区别作为loss。</li>
+<li>利用loss训练 Moderator。</li>
+<li>将 J’ 作为下一次循环的 J。</li>
+</ol>
+<h1 id="RG"><a href="#RG" class="headerlink" title="RG"></a>RG</h1><p><img src="/2024/08/21/ai4sci/MLRG/MLRG/lattice.png" alt="lattice"></p>
+<p>这里的重整化变换见上图中的阴影部分，a、b分别表示变换前后，绿色格点是sample的位置，蓝色和红色表示相互作用J。</p>
+<p><img src="/2024/08/21/ai4sci/MLRG/MLRG/tensor.png" alt="tensor"></p>
+<p>这里存在一个问题，两个不同的网络结构，相互作用是如何进行转化的？上图将这个相互用进行分解，将自旋、对称性、相互作用系数进行分解。</p>
+<h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="/2024/08/21/ai4sci/MLRG/MLRG/result.png" alt="result"></p>
+<p>绘制出 RG flow，并且能够准确找到鞍点。</p>
 ]]></content>
       <categories>
-        <category>Physics</category>
+        <category>AI for Science</category>
       </categories>
       <tags>
+        <tag>Reinforcement Learning</tag>
         <tag>Spin Glass</tag>
         <tag>Combinatorial Optimization Methods</tag>
-        <tag>Boltzmann Machine</tag>
-        <tag>Replica Method</tag>
-        <tag>Replica Symmetry Breaking</tag>
       </tags>
   </entry>
   <entry>
@@ -3578,73 +3643,6 @@ L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid s_t
         <tag>PPO</tag>
         <tag>TRPO</tag>
         <tag>Policy Gradients</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Student of Games:Aunified learning algorithm forboth perfect andimperfect information games</title>
-    <url>/2024/08/24/RL/SoG/SoG/</url>
-    <content><![CDATA[<p>在之前的游戏引擎中存在仅适用于单一游戏的问题，虽然AlphaZero解决对于完全完美信息的通用性，但是对于扑克等依旧不存在通用算法。这篇文章提出一种新的通用算法Student of Games（SoG），该算法类似于AlphaZero通过自博弈的方式完成训练，同时拓展了适用边界——适用于非完全信息博弈，例如扑克。</p>
-<font color="red">这个算法结合了很多内容，并没有读懂</font>
-
-<p>Link:</p>
-<ul>
-<li><a href="https://www.science.org/doi/10.1126/sciadv.adg3256#supplementary-materials">Student of Games:Aunified learning algorithm forboth perfect andimperfect information games</a></li>
-</ul>
-<span id="more"></span>
-<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><p>对于完全完美信息博弈，在理论上存在最优策略，难点在于如何找到该策略。对于不完全信息博弈，是否存在最优策略呢？因为不知道别人的信息，自己作出的选择可能因为对方的信息得到截然不同的结果，因此在这种情况下如何判断不同策略之间哪一个是最优策略？解答这个问题，需要换一个角度从纳什均衡出发，如果存在一种策略使得处于纳什均衡，一旦脱离该策略，那么必然会使得其处于更糟糕的点，那么这个策略就是最优策略。<font color="red">但是可能存在多个均衡策略，哪一个策略是最优的呢？</font></p>
-<p>对于不完全信息博弈，已有的算法是<a href="https://proceedings.neurips.cc/paper/2007/file/08d98638c6fcd194a4b1e6992063e944-Paper.pdf">counterfactual regretminimiza tion (CFR)</a>，以及后续衍生的<a href="https://www.science.org/doi/10.1126/science.aam6960">DeepStack</a>算法。</p>
-<p>这篇文章结合了AlphaZero与DeepStack算法，与AlphaZero的区别在于自博弈的记录可以用于训练非完全信息博弈；与DeepStack的区别在于使用更少的domain knowledge，单个网络对于所有策略。与该算法接近的算法是<a href="https://arxiv.org/abs/2007.13544">Recurr entBelief-based Learning (ReBeL)</a></p>
-<h1 id="SoG-algorithm"><a href="#SoG-algorithm" class="headerlink" title="SoG algorithm"></a>SoG algorithm</h1><p><img src="/2024/08/24/RL/SoG/SoG/CVPN.png" alt="CVPN"></p>
-<p>将参数给入网络得到私有策略。</p>
-<p><img src="/2024/08/24/RL/SoG/SoG/GT-CFR.png" alt="GT-CFR"></p>
-<p>包含后悔值的搜索树。</p>
-<p><img src="/2024/08/24/RL/SoG/SoG/train.png" alt="Train"></p>
-]]></content>
-      <categories>
-        <category>Machine Learning</category>
-      </categories>
-      <tags>
-        <tag>Reinforcement Learning</tag>
-        <tag>Student of Games</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Machine learning renormalization group for statistical physics</title>
-    <url>/2024/08/21/ai4sci/MLRG/MLRG/</url>
-    <content><![CDATA[<p>通过构建三个网络学习实空间重整化过程中的参数变化。</p>
-<p>Reference:</p>
-<ul>
-<li><a href="https://doi.org/10.1088/2632-2153/ad0101">Machine learning renormalization group for statistical physics</a></li>
-</ul>
-<span id="more"></span>
-<h1 id="Network"><a href="#Network" class="headerlink" title="Network"></a>Network</h1><p><img src="/2024/08/21/ai4sci/MLRG/MLRG/architecture.png" alt="architecture of algorithm"></p>
-<p>一共有三个网络，其中两个是 RBM，另一个是深度网络。这两个 RBM 分别表示重整化前与重整化后的模型，可以给出波尔兹曼分布。在重整化变换前后分布应当是不变的，因此通过KL散度衡量这两个网络之间的距离，然而衡量KL散度存在困难，使用CD散度进行替代。</p>
-<p>那么这两个网络之间的重整化参数是如何确定的呢？这里引入了三个网络 moderator，用以将第一个网络参数转化为第第二个网络的参数，是学习重整化流的主要网络。</p>
-<h1 id="Algorithm"><a href="#Algorithm" class="headerlink" title="Algorithm"></a>Algorithm</h1><p>算法流程为：</p>
-<ol>
-<li>通过参数J进行采样（HMC），得到一些用于训练的 sample。</li>
-<li>J 作为 fine-grained RBM 的参数。</li>
-<li>这些sample输入 fine-grained RBM，产生根据其概率分布的sample1。</li>
-<li>通过 Moderator 将 J 变化为 J’，输入进 corase-grained RBM。</li>
-<li>将 sample1 输入 corase-grained RBM，产生根据其概率分布的sample2。</li>
-<li>根据sample2和sample1之间的概率分布区别作为loss。</li>
-<li>利用loss训练 Moderator。</li>
-<li>将 J’ 作为下一次循环的 J。</li>
-</ol>
-<h1 id="RG"><a href="#RG" class="headerlink" title="RG"></a>RG</h1><p><img src="/2024/08/21/ai4sci/MLRG/MLRG/lattice.png" alt="lattice"></p>
-<p>这里的重整化变换见上图中的阴影部分，a、b分别表示变换前后，绿色格点是sample的位置，蓝色和红色表示相互作用J。</p>
-<p><img src="/2024/08/21/ai4sci/MLRG/MLRG/tensor.png" alt="tensor"></p>
-<p>这里存在一个问题，两个不同的网络结构，相互作用是如何进行转化的？上图将这个相互用进行分解，将自旋、对称性、相互作用系数进行分解。</p>
-<h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p><img src="/2024/08/21/ai4sci/MLRG/MLRG/result.png" alt="result"></p>
-<p>绘制出 RG flow，并且能够准确找到鞍点。</p>
-]]></content>
-      <categories>
-        <category>AI for Science</category>
-      </categories>
-      <tags>
-        <tag>Reinforcement Learning</tag>
-        <tag>Spin Glass</tag>
-        <tag>Combinatorial Optimization Methods</tag>
       </tags>
   </entry>
   <entry>
