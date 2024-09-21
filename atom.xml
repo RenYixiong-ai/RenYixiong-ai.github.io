@@ -6,7 +6,7 @@
   <link href="https://renyixiong-ai.github.io/atom.xml" rel="self"/>
   
   <link href="https://renyixiong-ai.github.io/"/>
-  <updated>2024-08-27T09:59:38.419Z</updated>
+  <updated>2024-09-21T15:10:51.907Z</updated>
   <id>https://renyixiong-ai.github.io/</id>
   
   <author>
@@ -15,6 +15,40 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Tensor network Monte Carlo simulations for the two-dimensional random-bond Ising model</title>
+    <link href="https://renyixiong-ai.github.io/2024/09/18/Phys/TNMC/TNMC/"/>
+    <id>https://renyixiong-ai.github.io/2024/09/18/Phys/TNMC/TNMC/</id>
+    <published>2024-09-18T03:11:00.000Z</published>
+    <updated>2024-09-21T15:10:51.907Z</updated>
+    
+    <content type="html"><![CDATA[<p>Tensor Network Monte Carlo (TNMC) method将张量网络和蒙特卡洛模拟结合，是一种新的模拟方法。本文分为两个部分，介绍TNMC方法，以及其在随机二维Ising模型上的实验。</p><p>Link:</p><ul><li><a href="https://arxiv.org/abs/2409.06538">Tensor network Monte Carlo simulations for the two-dimensional random-bond Ising model</a></li><li><a href="https://arxiv.org/abs/1507.00767">Unbiased Monte Carlo for the age of tensor networks</a></li></ul><p>Code:</p><ul><li><a href="https://github.com/Fermichen99/TNMC">TNMC</a></li></ul><span id="more"></span><h1 id="Metropolis-Hasting-method"><a href="#Metropolis-Hasting-method" class="headerlink" title="Metropolis-Hasting method"></a>Metropolis-Hasting method</h1><blockquote><p>In particular, the local moves can get trapped in local minima, especially in disordered systems, because due to the nature of the rugged energy landscape, the probability of moving to a higher-energy state is low.</p></blockquote><p>对于传统的蒙卡，主要存在两个问题：临界慢化和阻锉模型基态问题，这两个问题是由完全不同的因素造成的。临界慢化的原因是在临界点会形成团簇，单个格点翻转接受概率低，这种阻碍也称为磁畴壁，有效的解决方案是从单一格点翻转改为集体翻转；基态问题是由于模型结构自身具有的阻锉引起的。</p><p>这两个问题也可以从自由能的角度看待。自由能是通过熵和能量的竞争得到的，临界慢化对应相变点，此时系统倾向于处于熵极大的构型，也就是在能量相同的情况下拥有尽可能多的构型，但是这样就会遇到采样的困难，目标构型是非常稀疏的；同时还有另一个问题，熵并不容易衡量，这就意味着在穷尽结果前并不知道自己选取的构型是否为目标构型。没有评价指标和稀疏采样，造成临界慢化的困难性。那么提升方案（Swendsen-wang、Wolff）为什么有效呢？它们并没有设计机制解决稀疏采样和无评价指标的问题，而是利用在临界点特性。这些算法敏锐的觉察到，这些目标构型之间存在关联，因此从一个目标构型出发可以快速采样到其它的目标构型。基于此，接受率成为一个很好的评价指标。</p><p>那接下来从自由能的角度分析基态。由于温度趋近于零，此时自由能等于能量，而基态的构型是由模型决定的，因此这是具有特定解的问题，同时评价构型优劣的指标为能量，能量越低是更倾向于选择的构型。此时的难点在于如何搜索。主要有两个方面，首先在穷举之前并不清楚目前低能量构型是最低能量构型；其次如何找到高效的搜索的方法。优化策略我认为有两种，首先是通过启发式的方法搜索，给出一个撒点的方式；另一方面是通过将构型的表示方法进行编码，在编码的空间进行搜索，将一些非凸的结构转化为凸性。</p><font color="red">竟然没有在博客中写过这个内容...之后想写的话添加上引用。</font><script type="math/tex; mode=display">\begin{align}\frac{P\left(\mathbf{s}_b\right)}{P\left(\mathbf{s}_a\right)}&=e^{\beta E\left(\mathbf{s}_a\right)-\beta E\left(\mathbf{s}_b\right)} \\P(\mathbf{s})&=\prod_{i=1}^N P\left(s_i \mid \mathbf{s}_{<i}\right)\\P\left(s_i \mid \mathbf{s}_{<\mathbf{i}}\right)&=\frac{\sum_{\mathbf{s}_{>i}} e^{-\beta E\left(s_i, \mathbf{s}_{<i}\right)}}{\sum_{s_i, \mathbf{s}_{>i}} e^{-\beta E\left(s_i, \mathbf{s}_{<i}\right)}}=\frac{Z\left(s_i, \mathbf{s}_{<i}\right)}{\sum_{s_i} Z\left(s_i, \mathbf{s}_{<i}\right)} \label{5}\end{align}</script><h1 id="Tensor-network-proposals"><a href="#Tensor-network-proposals" class="headerlink" title="Tensor network proposals"></a>Tensor network proposals</h1><p>将Ising模型求解配分函数的过程转化为张量网络。首先将整个网格表示为：</p><p><img src="/2024/09/18/Phys/TNMC/TNMC/fig1a.png" alt="tensor network"></p><p>由节点$\delta$和转移矩阵$W$组成。其中节点$\delta$的具体表达式，根据其连接边的数目（腿）决定，例如$\delta_1$有2条腿、$\delta_2$有3条腿、$\delta_5$有4条腿。<br><img src="/2024/09/18/Phys/TNMC/TNMC/tensor.png" alt="tensor"><br>每一个节点，通过其腿的标号表示，例如$\delta_2=\delta_{mno},\delta_6=\delta_{ijkl}$，由于Ising模型只有$\pm 1$，因此每条腿的选项只有$1,2$两个，并且$\delta$的取值定为：</p><script type="math/tex; mode=display">\begin{align}\delta_{ijkl}= \begin{cases}1 & i=j=k=l \\ 0 & \text { else } \quad(i, j, k, l=1,2)\end{cases}\end{align}</script><p>每一条腿表示对应格点的自旋取值，因此同一个自旋外延出来的腿应该具有相同的取值。</p><p>然后定义转移矩阵：</p><script type="math/tex; mode=display">\begin{align}W_{i j}=\left(\begin{array}{cc}e^{\beta J_{i j}} & e^{-\beta J_{i j}} \\e^{-\beta J_{i j}} & e^{\beta J_{i j}}\end{array}\right)\end{align}</script><p>其中 $W_{11}=W_{22}=\exp \left(\beta J_{i j}\right), W_{12}=W_{21}=\exp \left(-\beta J_{i j}\right)$，$J_{ij}$表示相邻的相互作用系数（Ising模型中是相同的，在spin glass）。</p><p>接下来需要进一步对矩阵进行收缩，将转移矩阵收缩进格点中，表示为<br><img src="/2024/09/18/Phys/TNMC/TNMC/fig1b.png" alt="tensor"></p><p>在之前的模型中，箭头表示收缩的方向，由下及上、由左及右。例如$\delta_5$会收缩两个方向的，因此将$l, k$进行求和：</p><script type="math/tex; mode=display">\begin{align}T_5 = T_{ijqr}=\sum_l\sum_k \delta_{ijkl} W_{kq}W_{lr}\end{align}</script><p>$\delta_2$同理：</p><script type="math/tex; mode=display">\begin{align}T_2 = T_{mis}=\sum_o\sum_n \delta_{nmo} W_{oi}W_{ns}\end{align}</script><p>接下来对于$T_2 T_5$的收缩，可以通过对$i$的求和，表示为$\sum_i T_{mis} T_{ijqr}$。</p><p>因此求配分函数，接下来就是通过指标的收缩求和。<br><img src="/2024/09/18/Phys/TNMC/TNMC/fig2.png" alt="tensor network contraction process"></p><p>精确求解这个张量网络会遇到维数增长的问题，可以通过singular-value-decomposition（SVD）近似的方法解决这个问题。</p><h1 id="Computing-the-partition-function-using-tensor-networks"><a href="#Computing-the-partition-function-using-tensor-networks" class="headerlink" title="Computing the partition function using tensor networks"></a>Computing the partition function using tensor networks</h1><p>计算蒙卡的接受效率，需要通过计算$\eqref{5}$。因此，接下来描述如何利用张量网络结合采样，计算$\eqref{5}$。</p><p>以计算$s_4$为例，那么已经提前知道采样$s_1, s_2, s_3$的值。此时张量网络可以表示为：</p><p><img src="/2024/09/18/Phys/TNMC/TNMC/fig3.png" alt="sample tensor"></p><p>当自旋确定，改变的是在自旋收缩的时候，不再是求和而是直接固定。上图展示了如何通过指标的收缩，表示$\sum_{s_4} Z\left(s_4, \mathbf{s}_{&lt;4}\right)$。对于计算$Z\left(s_4, \mathbf{s}_{&lt;4}\right)$则需要将，$\delta_4$改为固定的$s_4$：</p><p><img src="/2024/09/18/Phys/TNMC/TNMC/fig4.png" alt="sample tensor2"></p><p>其中$f\left(s_4\right)=e^{\beta J_{14} s_1 s_4}$，张量两边为$s_4$的取值。然后逐渐增加位置，直到完成整体的采样。</p><p>通过如上的计算方式，便可以计算$\eqref{5}$。其中，存在一些小技巧：为了加速，在计算的时候可以存储之前的计算结果，之后相似的构型可以直接查表。</p><p>然而这个计算方式也存在问题，看似解决了之前迭代速度慢的问题，但每次迭代比之前要花费更多的时间。这个算法真正有效的地方在于临界行为处，当处理复杂的能量面时候，这个算法能够更快速的迭代，而不是传统蒙卡被困于无穷关联长度中。</p><h1 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h1><p>接下来在随机二维Ising模型上进行实验，随机体现在自旋之间的相互作用$J$正负是以$p$和$1-p$的概率选取。</p><p>该算法的核心点在于接受率的提升，所以第一个数据展示在SVD不同维度的情况，以及不同温度、不同尺寸的情况下接受率的变化。</p><p><img src="/2024/09/18/Phys/TNMC/TNMC/fig6.png" alt="result"></p><p>第二个实验展示了CPU用时和内存消耗。</p><p><img src="/2024/09/18/Phys/TNMC/TNMC/fig7.png" alt="result2"></p>]]></content>
+    
+    
+    <summary type="html">&lt;p&gt;Tensor Network Monte Carlo (TNMC) method将张量网络和蒙特卡洛模拟结合，是一种新的模拟方法。本文分为两个部分，介绍TNMC方法，以及其在随机二维Ising模型上的实验。&lt;/p&gt;
+&lt;p&gt;Link:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/2409.06538&quot;&gt;Tensor network Monte Carlo simulations for the two-dimensional random-bond Ising model&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://arxiv.org/abs/1507.00767&quot;&gt;Unbiased Monte Carlo for the age of tensor networks&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Code:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/Fermichen99/TNMC&quot;&gt;TNMC&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</summary>
+    
+    
+    
+    <category term="Physics" scheme="https://renyixiong-ai.github.io/categories/Physics/"/>
+    
+    
+    <category term="Monte Carlo" scheme="https://renyixiong-ai.github.io/tags/Monte-Carlo/"/>
+    
+    <category term="Computer Physics" scheme="https://renyixiong-ai.github.io/tags/Computer-Physics/"/>
+    
+    <category term="Tensor Network" scheme="https://renyixiong-ai.github.io/tags/Tensor-Network/"/>
+    
+  </entry>
   
   <entry>
     <title>Annealing approach to root finding</title>
@@ -583,35 +617,6 @@
     <category term="NP problems" scheme="https://renyixiong-ai.github.io/tags/NP-problems/"/>
     
     <category term="Ising" scheme="https://renyixiong-ai.github.io/tags/Ising/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Markdown 文章中的交叉引用（利用锚点）</title>
-    <link href="https://renyixiong-ai.github.io/2024/04/15/CS/anchor_point/anchor_point/"/>
-    <id>https://renyixiong-ai.github.io/2024/04/15/CS/anchor_point/anchor_point/</id>
-    <published>2024-04-15T04:00:01.000Z</published>
-    <updated>2024-06-04T13:05:07.311Z</updated>
-    
-    <content type="html"><![CDATA[<p>参考文章<a href="https://retzzz.github.io/55e045cb/#HTML-anchor">在带有数学公式的markdown文档里的交叉引用</a>实现。</p><p><span id="anchor_name">这篇文章作为案例，实现公式的交叉引用。</span></p><p>更多阅读：</p><ul><li><a href="https://retzzz.github.io/55e045cb/#HTML-anchor">在带有数学公式的markdown文档里的交叉引用</a></li><li><a href="https://onemathematicalcat.org//MathJaxDocumentation/TeXSyntax.htm">$\LaTeX$在MathJax中的命令</a></li><li><a href="https://blog.csdn.net/weixin_40301746/article/details/123967807">MathJax 与 Katex 在公式对齐、编号、交叉引用方面的不同</a></li><li><a href="https://zhuanlan.zhihu.com/p/381263375">Markdown杂记</a></li></ul><span id="more"></span><p>注意：这里渲染$\LaTeX$的引擎需要为MathJax，之前还真没注意过这个区别。MathJax支持公式引用，但必须自己手动标号。我觉得应该是因为交叉引用会使实时渲染产生问题。但是可以静态渲染，然后再检查，麻烦了一点。希望这个<a href="https://github.com/shd101wyy/vscode-markdown-preview-enhanced/issues/67">问题</a>能够解决吧。</p><h1 id="使用cassId方案"><a href="#使用cassId方案" class="headerlink" title="使用cassId方案"></a>使用<code>cassId</code>方案</h1><h2 id="添加锚点"><a href="#添加锚点" class="headerlink" title="添加锚点"></a>添加锚点</h2><h3 id="行间公式"><a href="#行间公式" class="headerlink" title="行间公式"></a>行间公式</h3><p>编号为$1$<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$$\cssId&#123;1&#125;&#123;\overline&#123;v&#125;&#125;:\overline&#123;S&#125;\to\&#123;F,T\&#125;$$</span><br></pre></td></tr></table></figure><br>渲染为：</p><script type="math/tex; mode=display">\cssId{1}{\overline{v}}:\overline{S}\to\{F,T\}</script><p>接下来加入环境，编号为$3$<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$$\begin&#123;align&#125;</span><br><span class="line">\cssId&#123;3&#125;&#123;\overline&#123;v&#125;&#125;:\overline&#123;S&#125;\to\&#123;F,T\&#125;</span><br><span class="line">\end&#123;align&#125;$$</span><br></pre></td></tr></table></figure><br>渲染为：</p><script type="math/tex; mode=display">\begin{align}\cssId{3}{\overline{v}}:\overline{S}\to\{F,T\}\end{align}</script><h3 id="行内公式"><a href="#行内公式" class="headerlink" title="行内公式"></a>行内公式</h3><p>编号为$3$：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">这是一段没有意义的废话$\cssId&#123;2&#125;&#123;\overline&#123;v&#125;&#125;:\overline&#123;S&#125;\to\&#123;F,T\&#125;$</span><br></pre></td></tr></table></figure><br>渲染为：</p><p>例如这样的行内公式$\cssId{2}{\overline{v}}:\overline{S}\to\{F,T\}$。</p><h2 id="引用锚点"><a href="#引用锚点" class="headerlink" title="引用锚点"></a>引用锚点</h2><p>公式中的引用：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">\href&#123; #1&#125;&#123;\overline&#123;v&#125;&#125;=F(x)</span><br></pre></td></tr></table></figure><br>通过替换<code>#</code>之后的标签引用，而且前面要有空格。</p><p>以下为渲染之后的例子：</p><script type="math/tex; mode=display">\href{ #1}{\overline{v}}=F(x)</script><script type="math/tex; mode=display">\href{ #2}{\overline{v}}=F(x)</script><script type="math/tex; mode=display">\href{ #3}{\overline{v}}=F(x)</script><h1 id="使用mathjax方案"><a href="#使用mathjax方案" class="headerlink" title="使用mathjax方案"></a>使用<code>mathjax</code>方案</h1><p>编号为<code>test</code>：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$$\begin&#123;align&#125;</span><br><span class="line">a\neq&amp; b \label&#123;test&#125; \\</span><br><span class="line">c\neq&amp; b \label&#123;test2&#125; \\</span><br><span class="line">\end&#123;align&#125;$$</span><br></pre></td></tr></table></figure><br>渲染为：</p><script type="math/tex; mode=display">\begin{align}a\neq& b \label{test} \\c\neq& b \label{test2} \\\end{align}</script><p>通过<code>$$\eqref&#123;test&#125;$$</code>引用$\eqref{test}$，或者通过<code>$$\ref&#123;test2&#125;$$</code>引用公式$\ref{test2}$。</p><h1 id="用HTML插入方案"><a href="#用HTML插入方案" class="headerlink" title="用HTML插入方案"></a>用HTML插入方案</h1><p>使用<code>&lt;span id=&quot;anchor_name&quot;/&gt;</code>来建立锚点，例如：</p><p><code>&lt;span id=&quot;anchor_name&quot;/&gt;这篇文章作为案例，实现公式的交叉引用。</code></p><p>使用相对地址引用锚点：<br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[点击这里](#anchor_name)</span><br></pre></td></tr></table></figure></p><p><a href="#anchor_name">点击这里</a></p><h1 id="Hexo官方方案"><a href="#Hexo官方方案" class="headerlink" title="Hexo官方方案"></a>Hexo官方方案</h1><p>目前跑通一个，给出下属链接：</p><ul><li><a href="https://hexo.io/zh-cn/docs/tag-plugins#%E5%BC%95%E7%94%A8%E6%96%87%E7%AB%A0">官方</a></li><li><a href="https://blog.jijian.link/2020-01-08/hexo-anchor-link/#hexo-%E6%A0%87%E9%A2%98%E4%B8%8E-id-%E5%85%B3%E7%B3%BB">博客</a></li></ul><p>连接到之前的一个文章 Git:<br><a href="/2022/09/16/CS/git/git/" title="Git Note">Git Note</a><br><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% post_link CS/git/git %&#125;</span><br></pre></td></tr></table></figure></p>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;参考文章&lt;a href=&quot;https://retzzz.github.io/55e045cb/#HTML-anchor&quot;&gt;在带有数学公式的markdown文档里的交叉引用&lt;/a&gt;实现。&lt;/p&gt;
-&lt;p&gt;&lt;span id=&quot;anchor_name&quot;&gt;这篇文章作为案例，实现公式的交叉引用。&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;更多阅读：&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&quot;https://retzzz.github.io/55e045cb/#HTML-anchor&quot;&gt;在带有数学公式的markdown文档里的交叉引用&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://onemathematicalcat.org//MathJaxDocumentation/TeXSyntax.htm&quot;&gt;$&#92;LaTeX$在MathJax中的命令&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://blog.csdn.net/weixin_40301746/article/details/123967807&quot;&gt;MathJax 与 Katex 在公式对齐、编号、交叉引用方面的不同&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://zhuanlan.zhihu.com/p/381263375&quot;&gt;Markdown杂记&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;</summary>
-    
-    
-    
-    <category term="Note" scheme="https://renyixiong-ai.github.io/categories/Note/"/>
-    
-    
-    <category term="Markdown" scheme="https://renyixiong-ai.github.io/tags/Markdown/"/>
     
   </entry>
   
