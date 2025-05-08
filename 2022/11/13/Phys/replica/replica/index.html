@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Reference: * Hopfield模型的统计物理视频 * Analytic and Algorithmic Solution of Random Satisfiability Problems * Gibbs states and the set of solutions of random constraint satisfaction problems">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Replica">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="Reference: * Hopfield模型的统计物理视频 * Analytic and Algorithmic Solution of Random Satisfiability Problems * Gibbs states and the set of solutions of random constraint satisfaction problems">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/diagram.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/landscape.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/ms.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/sigma_alpha.png">
+<meta property="article:published_time" content="2022-11-13T13:37:00.000Z">
+<meta property="article:modified_time" content="2025-05-08T10:17:11.650Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Spin Glass">
+<meta property="article:tag" content="Replica Method">
+<meta property="article:tag" content="Hopfield Model">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/diagram.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Replica | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2022/11/13/Phys/replica/replica/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Replica
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-13 21:37:00" itemprop="dateCreated datePublished" datetime="2022-11-13T21:37:00+08:00">2022-11-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-08 18:17:11" itemprop="dateModified" datetime="2025-05-08T18:17:11+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>9.3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>17 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Reference: * <a
+target="_blank" rel="noopener" href="https://campus.swarma.org/course/4913/study">Hopfield模型的统计物理视频</a>
+* <a target="_blank" rel="noopener" href="https://www.science.org/doi/10.1126/science.1073287">Analytic
+and Algorithmic Solution of Random Satisfiability Problems</a> * <a
+target="_blank" rel="noopener" href="https://www.pnas.org/doi/full/10.1073/pnas.0703685104">Gibbs
+states and the set of solutions of random constraint satisfaction
+problems</a></p>
+<span id="more"></span>
+<h1 id="average">Average</h1>
+<p>淬火平均（quenched average）： <span
+class="math display">$$\begin{align}
+\langle\ln Z\rangle
+\end{align}$$</span></p>
+<p>退火平均（annealed average）: <span
+class="math display">$$\begin{align}
+\ln\langle Z\rangle
+\end{align}$$</span></p>
+<p>首先从数学上来看这两者是不一样的，可以把<span
+class="math inline">ln </span>当成一个凸函数来看待，本质分析的就是先平均再经过凸函数处理，还是先经过凸函数处理然后再平均。通过Jensen不等式有：
+<span class="math display">⟨ln <em>Z</em>⟩ ≤ ln ⟨<em>Z</em>⟩</span></p>
+<p>这两者有什么区别呢？</p>
+<p>对于一个物理量 <span class="math inline"><em>Q</em></span>
+，淬火平均表示为： <span class="math display">$$\begin{align}
+\langle Q \rangle_{\text{quenched}} = \int P(\{J\}) \left[
+\frac{1}{Z(\{J\})} \sum_{\{s\}} Q(\{s\}, \{J\}) e^{-\beta H(\{s\},
+\{J\})} \right] d\{J\}
+\end{align}$$</span></p>
+<ul>
+<li><span
+class="math inline">{<em>J</em>}</span>：无序变量的集合（如随机耦合）。</li>
+<li><span
+class="math inline"><em>P</em>({<em>J</em>})</span>：无序变量的概率分布。</li>
+<li><span
+class="math inline">{<em>s</em>}</span>：系统的状态（如自旋配置）。</li>
+<li><span
+class="math inline"><em>H</em>({<em>s</em>}, {<em>J</em>})</span>：系统的哈密顿量（能量函数）。</li>
+<li><span
+class="math inline"><em>Z</em>({<em>J</em>})</span>：对固定无序变量的配分函数。</li>
+</ul>
+<p>对于一个物理量 <span class="math inline"><em>Q</em></span>
+，退火平均表示为： <span class="math display">$$\begin{align}
+\langle Q \rangle_{\text{annealed}} = \frac{1}{Z_{\text{annealed}}}
+\sum_{\{s\}, \{J\}} Q(\{s\}, \{J\}) e^{-\beta H(\{s\}, \{J\})}
+\end{align}$$</span></p>
+<ul>
+<li><span
+class="math inline"><em>Z</em><sub>annealed</sub></span>：退火平均下的配分函数：
+<span class="math display">$$\begin{align}
+Z_{\text{annealed}} = \sum_{\{s\}, \{J\}} e^{-\beta H(\{s\}, \{J\})}
+\end{align}$$</span></li>
+</ul>
+<p>两者的主要区别在<span
+class="math inline">{<em>J</em>}</span>的处理上，对于淬火平均只是选取了其中的几个无序点进行计算，即固定<span
+class="math inline"><em>J</em></span>为特定的值。而退火平均将会考虑所有<span
+class="math inline"><em>J</em></span>的分布组合。以$Z<span
+class="math inline"><em>和</em></span>Z<span
+class="math inline"><em>进</em><em>行</em><em>区</em><em>别</em>，<em>其</em><em>中</em></span>Z<span
+class="math inline"><em>是</em><em>对</em><em>所</em><em>有</em><em>构</em><em>型</em></span>S<span
+class="math inline"><em>进</em><em>行</em><em>的</em><em>求</em><em>和</em>；</span><span
+class="math inline"><em>是</em><em>对</em><em>耦</em><em>合</em><em>系</em><em>数</em></span>J$的平均，对于两种方式这个符号有着不同的含义，淬火平均只会选取其中的一些点进行计算，而退火平均将会计算所有的构型。</p>
+<p>对于铁磁Ising模型，由于<span
+class="math inline"><em>J</em></span>本固定的，因此不会存在上面的讨论的<span
+class="math inline">⟨⋅⟩</span>符号的区别。但是对于Hopfield模型，其相互作用是随机连接的，这里存在<span
+class="math inline"><em>J</em></span>变化的问题，因此需要讨论退火与淬火的区别。</p>
+<p>这里有一个猜测，Jensen不等式什么时候取等号，就是对<span
+class="math inline">{<em>J</em>}</span>进行平均的时候，由于每一个具体的<span
+class="math inline"><em>J</em></span>存在一个权重，因此可能将<span
+class="math inline">ln </span>计算变成一个线性的计算。<font color='red'>想办法证明这个猜测。</font></p>
+<p>通常对于这两个概念来说，是从演化时间尺度上比较，淬火表示无序的时间尺度远大于动力学的时间尺度，退火表示无序与动力学的时间尺度差不多大。</p>
+<h1 id="replica-method">Replica Method</h1>
+<p>利用数学中的极限有：</p>
+<p><span class="math display">$$\begin{align}
+\ln Z=\lim_{n\to0}\frac{Z^n-1}{n}
+\end{align}$$</span></p>
+<p>然后计算两边的期望值： <span class="math display">$$\begin{align}
+\langle\ln Z\rangle=\lim _{n \rightarrow 0} \frac{\left\langle
+Z^n\right\rangle-1}{n}=\lim _{n \rightarrow 0} \frac{\ln \left\langle
+Z^n\right\rangle}{n},
+\end{align}$$</span></p>
+<p>其中 <span class="math inline">⟨⋅⟩</span> 是 <span
+class="math inline"><em>ξ</em></span> 的无序平均。</p>
+<p>以下证明，以上公式第二个等号成立。首先利用<span
+class="math inline">$\ln z=z-\frac{z^2}{2}+\cdots$</span>：</p>
+<p><span class="math display">$$\begin{align}
+\langle\ln Z\rangle=\lim _{n \rightarrow 0} \frac{n\langle\ln
+Z\rangle}{n}=\lim _{n \rightarrow 0} \frac{\ln (1+n\langle\ln
+Z\rangle)}{n}
+\end{align}$$</span> 因为 <span
+class="math inline"><em>Z</em><sup><em>n</em></sup> ≃ 1 + <em>n</em>ln <em>Z</em> + ⋯</span>,
+得到 <span
+class="math inline">⟨<em>Z</em><sup><em>n</em></sup>⟩ ≃ 1 + <em>n</em>⟨ln <em>Z</em>⟩⋯</span>，故当<span
+class="math inline"><em>n</em></span>是一个小量的时候可以将展开公式从右到左用：
+<span class="math display">$$\begin{align}
+\lim _{n \rightarrow 0} \frac{\ln (1+n\langle\ln Z\rangle)}{n}=\lim _{n
+\rightarrow 0} \frac{\ln \left\langle Z^n\right\rangle}{n}
+\end{align}$$</span></p>
+<p>其中 <span class="math inline"><em>n</em></span>
+足够小，可以利用展开<span
+class="math inline"><em>Z</em><sup><em>n</em></sup> = <em>e</em><sup><em>n</em>ln <em>Z</em></sup> = 1+</span>
+<span class="math inline"><em>n</em>ln <em>Z</em> + ⋯</span>.
+每个自旋的平均值可以写为：</p>
+<p><span class="math display">$$\begin{align}
+f=\lim _{n \rightarrow 0} \lim _{N \rightarrow \infty} \frac{-\ln
+\left\langle Z^n\right\rangle}{\beta n N} .
+\end{align}$$</span></p>
+<h1 id="replica-symmetry-and-replica-symmetry-breaking">Replica Symmetry
+and Replica Symmetry Breaking</h1>
+<p>在<a href="/2022/11/15/Phys/Hopfield/Hopfield3/" title="Hopfield Model 相图">Hopfield Model 相图</a>中已经展示了复本技巧的使用，得到相图：</p>
+<figure>
+<img src="./diagram.png" alt="diagram" />
+<figcaption aria-hidden="true">diagram</figcaption>
+</figure>
+<p>在虚线下方将会得到非物理的解，这个现象的发生是因为之前进行的复本对称假设过于简陋，需要使用更高阶的近似——复本对称破缺。</p>
+<h2 id="generalized-free-energy-and-complexity-of-states">Generalized
+Free Energy and Complexity of States</h2>
+<figure>
+<img src="./landscape.png" alt="free energy landscape" />
+<figcaption aria-hidden="true">free energy landscape</figcaption>
+</figure>
+<p>随着温度的下降，一整个自由能的解，将会分裂为几个部分。每一最小值点对应TAP方程或者信念传播方程的解。为了解开Gibbs
+measure中的耦合，需要引入额外的一项刻画自由能的波动，定义为<span
+class="math inline"><em>y</em></span>。有如下的关系：</p>
+<p><span class="math display">$$\begin{align}
+e^{-y \Phi}=\sum_\alpha e^{-y F_\alpha}=\int \mathrm{d} f e^{N(-y
+f+\Sigma(f))} \label{RSB}
+\end{align}$$</span></p>
+<p>其中<span
+class="math inline">∑(<em>f</em>)</span>是指数多个态的集合体；<span
+class="math inline"><em>Φ</em></span>表示复本（广义）自由能；通过自由能密度<span
+class="math inline"><em>f</em><sub><em>α</em></sub></span>表示波动。这个式子也被叫做
+1-RSB 。</p>
+<p>自由能表达式<span class="math inline">$F=-\frac{1}{\beta}\ln
+Z$</span>，可以得到<span
+class="math inline"><em>Z</em> = exp [−<em>β</em><em>F</em>]</span>;同时配分函数为<span
+class="math inline"><em>Z</em> = ∑<sub><strong>S</strong></sub>exp [−<em>β</em><em>H</em>(<strong>S</strong>)]</span>。将两项结合有<span
+class="math inline">exp [−<em>β</em><em>F</em>] = <em>Z</em> = ∑<sub><strong>S</strong></sub>exp [−<em>β</em><em>H</em>(<strong>S</strong>)]</span>。将<span
+class="math inline"><em>Φ</em></span>类比<span
+class="math inline"><em>F</em></span>；<span
+class="math inline"><em>α</em></span>类比<span
+class="math inline"><strong>S</strong></span>，由此可以得到<span
+class="math inline">$\eqref{RSB}$</span>中第一个等号。</p>
+<p>将自由能写成平均值表达方式<span
+class="math inline"><em>F</em><sub><em>α</em></sub> = <em>N</em><em>f</em><sub><em>α</em></sub></span>，其中<span
+class="math inline"><em>f</em><sub><em>α</em></sub></span>为<span
+class="math inline"><em>α</em></span>构型下的自由能密度，则<span
+class="math inline"><em>e</em><sup>−<em>y</em><em>F</em><sub><em>α</em></sub></sup> = <em>e</em><sup>−<em>N</em><em>y</em><em>f</em><sub><em>α</em></sub></sup></span>。对所有构型求和<span
+class="math inline">∑<sub><em>α</em></sub></span>不能直接写为积分，因为可能出现简并度问题，需要引入额外的简并度参数<span
+class="math inline"><em>C</em>(<em>f</em>)</span>：<span
+class="math inline">∑<sub><em>α</em></sub><em>e</em><sup>−<em>y</em><em>F</em><sub><em>α</em></sub></sup> = ∫d<em>f</em><em>C</em>(<em>f</em>)<em>e</em><sup><em>N</em>(−<em>y</em><em>f</em>)</sup></span>，将<span
+class="math inline"><em>C</em>(<em>f</em>)</span>写在指数上可以得到<span
+class="math inline">∫d<em>f</em><em>e</em><sup><em>N</em>(−<em>y</em><em>f</em> + <em>Σ</em>(<em>f</em>))</sup></span>。不难发现<span
+class="math inline"><em>Σ</em>(<em>f</em>)</span>是<span
+class="math inline"><em>f</em></span>数量的熵。由此可以得到<span
+class="math inline">$\eqref{RSB}$</span>中第二个等号。</p>
+<p>对于第三项，在热力学极限下，结合 Laplace 近似得到： <span
+class="math display">$$\begin{align}
+-y \phi =\max _f\{\Sigma(f)-y f\} \label{laplace}
+\end{align}$$</span></p>
+<p>求极值点，可知 <span class="math inline">$y=\frac{\partial
+\Sigma(f)}{\partial
+f}$</span>，这里已经符合勒让德变化的前提条件了。<span
+class="math inline"><em>ϕ</em></span>表示复本自由能密度（自旋的平均值）。通过勒让德变换，得到如下的关系：
+<span class="math display">$$
+\begin{align}
+f &amp; =\frac{\partial(y \phi)}{\partial y} \label{94}\\
+\Sigma &amp; =y(f-\phi)=y^2 \frac{\partial \phi}{\partial y} \label{95}
+\end{align}
+$$</span></p>
+<p><span class="math inline"><em>y</em></span>也被称作Parisi参数。</p>
+<h2 id="claculate-generalized-free-energy">Claculate Generalized Free
+Energy</h2>
+<p>利用一阶复本对称破缺的空腔方法可以计算<span
+class="math inline"><em>ϕ</em></span>。空腔方法首先是构建因子图，利用功能节点与变量节点表示整个计算目标，然后通过分析功能节点与变量节点增删对整体变化的影响，将整个计算目标表示为功能节点与变量节点的变化点关系。</p>
+<p>首先在因子图上增加一个变量节点，在增加节点前后变化如下：</p>
+<p><span class="math display">$$
+\begin{align}
+e^{-y \phi_i^{\text {new }}} &amp; =\sum_\alpha e^{-y F^\alpha-y \Delta
+F_i^\alpha}=e^{-y \phi^{\text {old }}} \sum_\alpha \omega(\alpha) e^{-y
+\Delta F_i^\alpha} \\
+&amp; =e^{-y \phi^{\text {old }}}\left\langle e^{-y \Delta
+F_i}\right\rangle
+\end{align}
+$$</span> 其中<span class="math inline">$\omega(\alpha)=\frac{e^{-y
+F^\alpha}}{\sum_a e^{-y F^\alpha}}$</span>，并且<span
+class="math inline">⟨⋅⟩</span>表示所有<span
+class="math inline"><em>α</em></span>构型的平均。
+对于增加功能节点有关系式： <span class="math display">$$\begin{align}
+e^{-y \phi_a^{\text {new }}}=e^{-y \phi^{\mathrm{old}}}\left\langle
+e^{-y \Delta F_a}\right\rangle
+\end{align}$$</span> 由此复本自由能转变为空腔操作： <span
+class="math display">$$
+\begin{align}
+&amp; -y \Delta \phi_i=\ln \left\langle e^{-y \Delta F_i}\right\rangle
+\\
+&amp; -y \Delta \phi_a=\ln \left\langle e^{-y \Delta F_a}\right\rangle
+\end{align}
+$$</span></p>
+<p>最后利用Bethe近似，复本自由能得到表示为： <span
+class="math display">$$\begin{align}
+\phi=\sum_i \Delta \phi_i-\sum_a(|\partial a|-1) \Delta \phi_a,
+\end{align}$$</span> 因此<span
+class="math inline">$\eqref{94}$</span>和<span
+class="math inline">$\eqref{95}$</span>表示为： <span
+class="math display">$$
+\begin{aligned}
+f &amp; =\frac{\left\langle\Delta F_i e^{-y \Delta
+F_i}\right\rangle}{\left\langle e^{-y \Delta
+F_i}\right\rangle}-\sum_a(|\partial a|-1) \frac{\left\langle\Delta F_a
+e^{-y \Delta F_a}\right\rangle}{\left\langle e^{-y \Delta
+F_a}\right\rangle} \\
+\Sigma &amp; =y(f-\phi)
+\end{aligned}
+$$</span></p>
+<h2 id="cavity">Cavity</h2>
+<h3 id="energy-cavity">Energy Cavity</h3>
+<p>已知 Parisi 参量<span
+class="math inline"><em>y</em></span>与逆温度<span
+class="math inline"><em>β</em></span>，引入新的参数<span
+class="math inline"><em>m</em></span>构建极限情况下这两者的关系：</p>
+<p><span class="math display">$$\begin{align}
+\lim_{\beta\to\infty,m\to 0}\beta m=y
+\end{align}$$</span></p>
+<p>广义自由能与能量之间的关系为： <span
+class="math display">$$\begin{align}
+\exp[-y\Phi]&amp;=\sum_{\alpha,S}\exp[-m\beta H_\alpha(S)] \\
+&amp;= \sum_{\alpha}Z^m_\alpha
+\end{align}$$</span></p>
+<p>利用Laplace近似，<span
+class="math inline">$\eqref{laplace}写为$</span>：</p>
+<p><span class="math display">$$\begin{align}
+-\beta m \phi(\beta, m)=\max _{s, \epsilon}\{\Sigma(s,
+\epsilon)+m(s-\beta \epsilon)\} \label{913}
+\end{align}$$</span></p>
+<p>其中将自由能写为熵和能量的依赖关系<span
+class="math inline">−<em>β</em><em>f</em> = <em>s</em> − <em>β</em><em>ϵ</em></span>。</p>
+<p>如果看能量的关系，将<span
+class="math inline">$\eqref{913}$</span>中熵固定，有关系： <span
+class="math display">$$\begin{align}
+\phi_\epsilon(y)=\max _\epsilon\{\Sigma(\epsilon)-y \epsilon\} .
+\end{align}$$</span></p>
+<p><span
+class="math inline"><em>Σ</em>(<em>ϵ</em>)</span>表示在能量密度为<span
+class="math inline"><em>ϵ</em></span>的情况下，集团的数目。以K-SAT问题为例，其中<span
+class="math inline"><em>ϵ</em></span>表示能量（如果全部满足则<span
+class="math inline"><em>ϵ</em> = 0</span>，存在不满足的情况时则<span
+class="math inline"><em>ϵ</em> &gt; 0</span>）；<span
+class="math inline"><em>Σ</em>(<em>ϵ</em>)</span>表示在该能量的情况下有多少个解的数目，当<span
+class="math inline">lim <em>ϵ</em> → 0</span>的时候就表示全部满足的解的数目。</p>
+<h3 id="entropic-cavity">Entropic Cavity</h3>
+<p>将<span class="math inline">$\eqref{913}$</span>中能量固定，得到：
+<span class="math display">$$\begin{align}
+\phi(m) = \max_{s}\{\Sigma(s)+ms\}
+\end{align}$$</span></p>
+<p>并且有勒让德变化关系： <span class="math display">$$\begin{align}
+s=&amp;\frac{\partial \phi(m)}{\partial m}\\
+\Sigma(s)&amp;=\phi(m)-ms
+\end{align}$$</span></p>
+<figure>
+<img src="./ms.png" alt="ms" />
+<figcaption aria-hidden="true">ms</figcaption>
+</figure>
+<p>上图中的小图斜率为<span class="math inline">$-m=\frac{\partial
+\Sigma(s)}{\partial s}$</span>，只有<span
+class="math inline">0 ≤ <em>m</em></span>的部分有意义，随着熵<span
+class="math inline"><em>s</em></span>增大广义熵<span
+class="math inline"><em>Σ</em></span>开始减少，对于优化问题对应含义为：当组合优化问题中（例如k-SAT问题）一个特定问题（给定参数）的解的数量增加时候（<span
+class="math inline"><em>s</em></span>增加），则组合优化问题（没有指定具体参数）存在这样解的问题数量将会减少（<span
+class="math inline"><em>Σ</em></span>变小）；小图中<span
+class="math inline"><em>m</em> = 0</span>的点，对应上面讨论的<span
+class="math inline"><em>ϵ</em> = 0</span>的情况，即问题只需满足有解条件。大图是<span
+class="math inline"><em>m</em></span>与k-SAT问题中<span
+class="math inline"><em>α</em></span>的关系，当问题比较容易的时候(<span
+class="math inline"> ≤ <em>α</em><sub><em>c</em></sub></span>)<span
+class="math inline"><em>m</em> = 1</span>，随着问题的难度增加（<span
+class="math inline"><em>α</em></span>变大），<span
+class="math inline"><em>m</em></span>开始变小，逐渐出现小图中的的关系，当达到一定程度（<span
+class="math inline"> = <em>α</em><sub><em>c</em></sub></span>）的时候成为是否有解的阈值。</p>
+<figure>
+<img src="./sigma_alpha.png" alt="sigma-alpha" />
+<figcaption aria-hidden="true">sigma-alpha</figcaption>
+</figure>
+<p>上图中两条曲线是两条相变线。<span
+class="math inline"><em>m</em> = 1</span>的红线是动力学相变线，遍历性开始破缺，从此线开始问题对应的解的数量开始变少，例如蒙卡模拟临界慢化；<span
+class="math inline"><em>m</em> = 0</span>是熵为<span
+class="math inline">0</span>的线，分别基态与激发态，判别是否有解。</p>
+<h3 id="rsb">1RSB</h3>
+<p>之前已经将Cavity
+用于计算一个构型的自由能，接下来将其引入复本技巧中，计算不同构型自由能之间的耦合。</p>
+<p><span class="math display">$$\begin{align}
+P\left(m_{i \rightarrow a}\right)=\frac{1}{\mathcal{Z}_{i \rightarrow
+a}} \prod_{b \in \partial i \backslash a} \int \mathrm{d} \hat{m}_{b
+\rightarrow i} \delta\left(m_{i \rightarrow
+a}-\mathcal{F}\left(\left\{\hat{m}_{b \rightarrow
+a}\right\}\right)\right) Z_{i \rightarrow a}^m
+\end{align}$$</span></p>
+<p>其中必须考虑一个构型自由能变化，导致对其它自由能构型的扰动，这一项用<span
+class="math inline"><em>Z</em><sub><em>i</em> → <em>a</em></sub><sup><em>m</em></sup></span>表示。<font color='red'>可以尝试使用变分导出。</font></p>
+<p>当<span class="math inline"><em>m</em> = 1</span>的时候，<span
+class="math inline">$\eqref{913}$</span>有: <span
+class="math display">$$\begin{align}
+\phi(\beta,m=1)=\epsilon-\frac{\Sigma(s,\epsilon)+s}{\beta}=\epsilon-Ts_\text{tot}
+\end{align}$$</span> 其中<span
+class="math inline"><em>s</em><sub>tot</sub> = <em>Σ</em> + <em>s</em></span>是总解的数目，<span
+class="math inline"><em>Σ</em></span>为构型数目，<span
+class="math inline"><em>s</em></span>为一个构型中解的数目，两者相乘则得到<span
+class="math inline"><em>s</em><sub>tot</sub></span>。这个公式说明了
+Cavity的方法在1阶复本破缺的情况下适用的原因。</p>
+<p>接下来讨论冻结（Frozen）的情况，也即是每一个构型只有一个解的情况，此时<span
+class="math inline"><em>s</em> = 0</span>： <span
+class="math display">$$\begin{align}
+e^{-N \beta m \phi(\beta, m)}=\sum_\alpha e^{-N \beta m
+f_\alpha}=\sum_\alpha e^{-N \beta m \epsilon_\alpha}=e^{-N \beta m
+f_{\mathrm{RS}}(\beta m)}
+\end{align}$$</span></p>
+<p>存在冻结温度<span
+class="math inline"><em>s</em><sub>RS</sub>(<em>β</em><sub><em>s</em></sub>) = 0</span>，此时有<span
+class="math inline">$m=\frac{\beta_s}{\beta}=1$</span>。<span
+class="math inline"><em>m</em></span>的含义为<span
+class="math inline">$1-m=\sum_\alpha\overline{\omega_\alpha^2}$</span>，其中<span
+class="math inline"><em>ω</em></span>为构型权重，更多的参考<a
+target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Storage-capacity-of-memory-networks-with-binary-Krauth-M%C3%A9zard/。5c7af8e28ed12cbfb07cbbcfb001919f6a081d5a">Storage
+capacity of memory networks with binary couplings</a>。
+<font color='red'>阅读这篇文献。</font></p>
+<h2 id="more-steps-of-replica-symmetry-breaking">More Steps of Replica
+Symmetry Breaking</h2>
+<p>由于使用了空腔方法，在具备长程关联的情况下将会变得不精确。解正确的必要条件是spin
+glass susceptibility <span class="math inline"><em>χ</em><sub>SG
+</sub></span>没有发散:</p>
+<p><span class="math display">$$\begin{align}
+\chi_{\mathrm{SG}}=\frac{1}{N} \sum_{i, j}
+\overline{\left(\left\langle\sigma_i
+\sigma_j\right\rangle-\left\langle\sigma_i\right\rangle\left\langle\sigma_j\right\rangle\right)^2}
+\end{align}$$</span> 其中<span
+class="math inline">⟨⋅⟩</span>是热力学平均，上划线是无序平均。当这个条件不满足的时候，需要引入更高阶的复本对称。</p>
+<h1 id="optimization">Optimization</h1>
+<p>参考 Spin Glass Theory and Beyound 书籍。</p>
+<h1 id="append">Append</h1>
+<h2 id="勒让德变换">勒让德变换</h2>
+<p>勒让德变换（Legendre
+transform）是一种数学工具，用于在物理学和数学中将一个函数转换为其共轭变量的函数。它在经典力学、热力学、统计力学以及最优化问题中有重要应用。勒让德变换能够将一个变量的依赖关系转化为另一变量的依赖关系，从而简化问题的求解。</p>
+<h3 id="定义">定义</h3>
+<p>设 <span class="math inline"><em>f</em>(<em>x</em>)</span>
+是一个实函数，其导数 <span
+class="math inline"><em>f</em><sup>′</sup>(<em>x</em>)</span>
+单调且严格递增，这样 <span
+class="math inline"><em>f</em><sup>′</sup>(<em>x</em>)</span> 的反函数
+<span
+class="math inline"><em>x</em> = (<em>f</em><sup>′</sup>)<sup>−1</sup>(<em>p</em>)</span>
+存在。勒让德变换将函数 <span
+class="math inline"><em>f</em>(<em>x</em>)</span> 转换为一个新函数 <span
+class="math inline"><em>g</em>(<em>p</em>)</span>，其中 <span
+class="math inline"><em>p</em></span> 是 <span
+class="math inline"><em>f</em>(<em>x</em>)</span> 的导数 <span
+class="math inline"><em>p</em> = <em>f</em><sup>′</sup>(<em>x</em>)</span>。勒让德变换定义为：</p>
+<p><span
+class="math display"><em>g</em>(<em>p</em>) = <em>x</em><em>p</em> − <em>f</em>(<em>x</em>)</span></p>
+<p>其中， <span class="math inline"><em>x</em></span> 满足 <span
+class="math inline"><em>p</em> = <em>f</em><sup>′</sup>(<em>x</em>)</span>。这个过程可以逆转过来得到
+<span class="math inline"><em>f</em>(<em>x</em>)</span>，即</p>
+<p><span
+class="math display"><em>f</em>(<em>x</em>) = <em>x</em><em>p</em> − <em>g</em>(<em>p</em>)</span></p>
+<p>其中，<span class="math inline"><em>p</em></span> 满足 <span
+class="math inline"><em>x</em> = <em>g</em><sup>′</sup>(<em>p</em>)</span>。</p>
+<h3 id="性质">性质</h3>
+<ol type="1">
+<li><strong>对偶关系</strong>：勒让德变换是自反的，即对 <span
+class="math inline"><em>f</em>(<em>x</em>)</span> 进行勒让德变换得到
+<span class="math inline"><em>g</em>(<em>p</em>)</span>，再对 <span
+class="math inline"><em>g</em>(<em>p</em>)</span> 进行勒让德变换会返回到
+<span class="math inline"><em>f</em>(<em>x</em>)</span>。</li>
+<li><strong>凸函数</strong>：勒让德变换通常用于凸函数。对于一个凸函数
+<span class="math inline"><em>f</em>(<em>x</em>)</span>，其勒让德变换
+<span class="math inline"><em>g</em>(<em>p</em>)</span> 也是凸的。</li>
+</ol>
+<h3 id="应用">应用</h3>
+<ol type="1">
+<li><p><strong>热力学</strong>：在热力学中，勒让德变换用于将内能 <span
+class="math inline"><em>U</em>(<em>S</em>, <em>V</em>)</span>
+转换为其他热力学势，例如亥姆霍兹自由能 <span
+class="math inline"><em>F</em>(<em>T</em>, <em>V</em>)</span>、吉布斯自由能
+<span class="math inline"><em>G</em>(<em>T</em>, <em>P</em>)</span> 和焓
+<span
+class="math inline"><em>H</em>(<em>S</em>, <em>P</em>)</span>。这些不同的热力学势对应于不同的自然变量，可以更方便地描述系统的平衡状态。</p>
+<ul>
+<li>亥姆霍兹自由能：<span
+class="math inline"><em>F</em>(<em>T</em>, <em>V</em>) = <em>U</em> − <em>T</em><em>S</em></span></li>
+<li>吉布斯自由能：<span
+class="math inline"><em>G</em>(<em>T</em>, <em>P</em>) = <em>U</em> − <em>T</em><em>S</em> + <em>P</em><em>V</em></span></li>
+<li>焓：<span
+class="math inline"><em>H</em>(<em>S</em>, <em>P</em>) = <em>U</em> + <em>P</em><em>V</em></span></li>
+</ul></li>
+<li><p><strong>经典力学</strong>：在哈密顿力学中，勒让德变换将拉格朗日函数
+<span class="math inline"><em>L</em>(<em>q</em>, <em>q̇</em>)</span>
+转换为哈密顿函数 <span
+class="math inline"><em>H</em>(<em>q</em>, <em>p</em>)</span>： <span
+class="math display"><em>H</em>(<em>q</em>, <em>p</em>) = <em>q̇</em><em>p</em> − <em>L</em>(<em>q</em>, <em>q̇</em>)</span>
+其中，<span class="math inline">$p = \frac{\partial L}{\partial
+\dot{q}}$</span>。</p></li>
+<li><p><strong>优化理论</strong>：勒让德变换在优化问题中也有应用，特别是在凸优化问题中，它将原函数的最小化问题转换为共轭函数的最小化问题。</p></li>
+</ol>
+<h3 id="例子">例子</h3>
+<p>考虑一个简单的函数 <span class="math inline">$f(x) = \frac{1}{2} k
+x^2$</span>，其中 <span class="math inline"><em>k</em></span>
+是常数。我们可以计算其勒让德变换 <span
+class="math inline"><em>g</em>(<em>p</em>)</span>：</p>
+<ol type="1">
+<li>计算导数：<span
+class="math inline"><em>p</em> = <em>f</em><sup>′</sup>(<em>x</em>) = <em>k</em><em>x</em></span></li>
+<li>解出 <span class="math inline"><em>x</em></span>：<span
+class="math inline">$x = \frac{p}{k}$</span></li>
+<li>代入勒让德变换公式：<span class="math inline">$g(p) = x p - f(x) =
+\frac{p}{k} p - \frac{1}{2} k \left( \frac{p}{k} \right)^2 =
+\frac{p^2}{2k}$</span></li>
+</ol>
+<p>所以， <span class="math inline">$f(x) = \frac{1}{2} k x^2$</span>
+的勒让德变换是 <span class="math inline">$g(p) =
+\frac{p^2}{2k}$</span>。</p>
+<p>总结来说，勒让德变换是一个强大的数学工具，用于在不同变量之间进行转换，从而简化物理和数学问题的求解过程。</p>
+<h2 id="k-sat">K-SAT</h2>
+<p>K-SAT问题是计算复杂性理论和计算机科学中一个著名的逻辑难题，属于布尔可满足性问题（Boolean
+satisfiability problem,
+SAT）的一个特例。K-SAT问题被广泛研究，因为它在理论计算机科学中具有重要意义，并且是NP完全问题的典型代表。</p>
+<h3 id="k-sat问题的定义">K-SAT问题的定义</h3>
+<ol type="1">
+<li><p><strong>布尔变量</strong>：K-SAT问题涉及一组布尔变量 <span
+class="math inline"><em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>n</em></sub></span>，每个变量可以取值为真（True,
+1）或假（False, 0）。</p></li>
+<li><p><strong>子句</strong>：一个子句是布尔变量的若干文字（变量或其否定）的或（OR）运算。例如，((x_1
+x_2 x_3)) 是一个包含三个文字的子句。</p></li>
+<li><p><strong>K个文字</strong>：在K-SAT问题中，每个子句包含恰好K个不同的文字（变量或其否定）。</p></li>
+<li><p><strong>公式</strong>：K-SAT问题给定一个布尔公式，是这些子句的与（AND）运算。例如，一个3-SAT问题的公式可能是：
+<span
+class="math display">(<em>x</em><sub>1</sub> ∨ ¬<em>x</em><sub>2</sub> ∨ <em>x</em><sub>3</sub>) ∧ (¬<em>x</em><sub>1</sub> ∨ <em>x</em><sub>2</sub> ∨ <em>x</em><sub>4</sub>) ∧ (<em>x</em><sub>2</sub> ∨ ¬<em>x</em><sub>3</sub> ∨ ¬<em>x</em><sub>4</sub>)</span></p></li>
+</ol>
+<h3 id="问题描述">问题描述</h3>
+<p>K-SAT问题的目标是确定是否存在一个布尔变量的赋值，使得整个公式为真。换句话说，找到一种布尔变量的赋值，使得所有子句都为真。</p>
+<h3 id="重要性">重要性</h3>
+<ol type="1">
+<li><p><strong>NP完全性</strong>：对于 <span
+class="math inline"><em>K</em> ≥ 3</span>，K-SAT问题是NP完全的，这意味着它是NP问题中最难的一类。如果可以找到一个多项式时间算法来解决任意的3-SAT问题，那么所有NP问题都可以在多项式时间内解决。</p></li>
+<li><p><strong>应用</strong>：K-SAT问题在计算机科学和工程中有广泛的应用，包括电路设计、软件验证、人工智能中的约束满足问题、规划和调度等。</p></li>
+<li><p><strong>理论研究</strong>：K-SAT问题是计算复杂性理论的重要研究对象，许多复杂性理论的基本结果都是通过研究K-SAT问题得到的。</p></li>
+</ol>
+<h3 id="特例">特例</h3>
+<ol type="1">
+<li><p><strong>2-SAT问题</strong>：2-SAT问题是K-SAT问题的一个特例，其中每个子句包含恰好两个文字。2-SAT问题可以在多项式时间内解决，不像K-SAT问题（对于
+<span
+class="math inline"><em>K</em> ≥ 3</span>）那样是NP完全的。</p></li>
+<li><p><strong>1-SAT问题</strong>：1-SAT问题是最简单的特例，其中每个子句只包含一个文字。显然，1-SAT问题可以在线性时间内解决。</p></li>
+</ol>
+<h3 id="示例">示例</h3>
+<p>考虑以下3-SAT问题： <span
+class="math display">(<em>x</em><sub>1</sub> ∨ ¬<em>x</em><sub>2</sub> ∨ <em>x</em><sub>3</sub>) ∧ (¬<em>x</em><sub>1</sub> ∨ <em>x</em><sub>2</sub> ∨ <em>x</em><sub>4</sub>) ∧ (<em>x</em><sub>2</sub> ∨ ¬<em>x</em><sub>3</sub> ∨ ¬<em>x</em><sub>4</sub>)</span></p>
+<p>我们需要找到一种布尔变量的赋值，使得上述公式为真。例如，赋值 <span
+class="math inline"><em>x</em><sub>1</sub> = <em>T</em><em>r</em><em>u</em><em>e</em>, <em>x</em><sub>2</sub> = <em>F</em><em>a</em><em>l</em><em>s</em><em>e</em>, <em>x</em><sub>3</sub> = <em>T</em><em>r</em><em>u</em><em>e</em>, <em>x</em><sub>4</sub> = <em>F</em><em>a</em><em>l</em><em>s</em><em>e</em></span>
+可以使得每个子句都为真，从而满足整个公式。</p>
+<h3 id="结论">结论</h3>
+<p>K-SAT问题在计算机科学中具有重要意义，尤其是作为NP完全问题的代表。它不仅在理论研究中扮演重要角色，也在许多实际应用中得到广泛应用。通过研究和解决K-SAT问题，计算机科学家可以更好地理解复杂问题的本质以及开发有效的算法。</p>
+<p><font color='red'>stop</font></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spin-Glass/" rel="tag"># Spin Glass</a>
+              <a href="/tags/Replica-Method/" rel="tag"># Replica Method</a>
+              <a href="/tags/Hopfield-Model/" rel="tag"># Hopfield Model</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/12/Phys/Hopfield/Hopfield/" rel="prev" title="Hopfield Model">
+      <i class="fa fa-chevron-left"></i> Hopfield Model
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/11/13/Phys/Hopfield/Hopfield1/" rel="next" title="Hopfield Model 自由能">
+      Hopfield Model 自由能 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#average"><span class="nav-number">1.</span> <span class="nav-text">Average</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#replica-method"><span class="nav-number">2.</span> <span class="nav-text">Replica Method</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#replica-symmetry-and-replica-symmetry-breaking"><span class="nav-number">3.</span> <span class="nav-text">Replica Symmetry
+and Replica Symmetry Breaking</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#generalized-free-energy-and-complexity-of-states"><span class="nav-number">3.1.</span> <span class="nav-text">Generalized
+Free Energy and Complexity of States</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#claculate-generalized-free-energy"><span class="nav-number">3.2.</span> <span class="nav-text">Claculate Generalized Free
+Energy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cavity"><span class="nav-number">3.3.</span> <span class="nav-text">Cavity</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#energy-cavity"><span class="nav-number">3.3.1.</span> <span class="nav-text">Energy Cavity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#entropic-cavity"><span class="nav-number">3.3.2.</span> <span class="nav-text">Entropic Cavity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rsb"><span class="nav-number">3.3.3.</span> <span class="nav-text">1RSB</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#more-steps-of-replica-symmetry-breaking"><span class="nav-number">3.4.</span> <span class="nav-text">More Steps of Replica
+Symmetry Breaking</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#optimization"><span class="nav-number">4.</span> <span class="nav-text">Optimization</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#append"><span class="nav-number">5.</span> <span class="nav-text">Append</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8B%92%E8%AE%A9%E5%BE%B7%E5%8F%98%E6%8D%A2"><span class="nav-number">5.1.</span> <span class="nav-text">勒让德变换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">5.1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%A7%E8%B4%A8"><span class="nav-number">5.1.2.</span> <span class="nav-text">性质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">5.1.3.</span> <span class="nav-text">应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BE%8B%E5%AD%90"><span class="nav-number">5.1.4.</span> <span class="nav-text">例子</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#k-sat"><span class="nav-number">5.2.</span> <span class="nav-text">K-SAT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#k-sat%E9%97%AE%E9%A2%98%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">5.2.1.</span> <span class="nav-text">K-SAT问题的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0"><span class="nav-number">5.2.2.</span> <span class="nav-text">问题描述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E6%80%A7"><span class="nav-number">5.2.3.</span> <span class="nav-text">重要性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E4%BE%8B"><span class="nav-number">5.2.4.</span> <span class="nav-text">特例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">5.2.5.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%93%E8%AE%BA"><span class="nav-number">5.2.6.</span> <span class="nav-text">结论</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

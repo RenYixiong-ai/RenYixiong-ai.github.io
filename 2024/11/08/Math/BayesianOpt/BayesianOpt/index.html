@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="贝叶斯优化（Bayesian Optimization）是一种基于贝叶斯定理: $$ P(A|B) &#x3D; \frac{P(B|A) \cdot P(A)}{P(B)} $$ 的全局优化方法，通常用于在计算代价高昂的情况下优化黑箱函数。它主要用于高效地寻找目标函数的最优解，尤其在函数不可微、函数形状复杂、或者评估函数代价昂贵（如深度学习模型的超参数优化）时特别有效。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Bayesian Optimization">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/11/08/Math/BayesianOpt/BayesianOpt/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="贝叶斯优化（Bayesian Optimization）是一种基于贝叶斯定理: $$ P(A|B) &#x3D; \frac{P(B|A) \cdot P(A)}{P(B)} $$ 的全局优化方法，通常用于在计算代价高昂的情况下优化黑箱函数。它主要用于高效地寻找目标函数的最优解，尤其在函数不可微、函数形状复杂、或者评估函数代价昂贵（如深度学习模型的超参数优化）时特别有效。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-11-08T12:58:00.000Z">
+<meta property="article:modified_time" content="2025-04-03T08:43:45.293Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Bayesian Optimization">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/11/08/Math/BayesianOpt/BayesianOpt/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Bayesian Optimization | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/11/08/Math/BayesianOpt/BayesianOpt/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Bayesian Optimization
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-11-08 20:58:00" itemprop="dateCreated datePublished" datetime="2024-11-08T20:58:00+08:00">2024-11-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-04-03 16:43:45" itemprop="dateModified" datetime="2025-04-03T16:43:45+08:00">2025-04-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4.3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>8 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>贝叶斯优化（Bayesian Optimization）是一种基于贝叶斯定理:</p>
+<p><span class="math display">$$
+P(A|B) = \frac{P(B|A) \cdot P(A)}{P(B)}
+$$</span></p>
+<p>的全局优化方法，通常用于在计算代价高昂的情况下优化黑箱函数。它主要用于高效地寻找目标函数的最优解，尤其在函数不可微、函数形状复杂、或者评估函数代价昂贵（如深度学习模型的超参数优化）时特别有效。</p>
+<span id="more"></span>
+<h1 id="贝叶斯优化基本思想">贝叶斯优化基本思想</h1>
+<p>贝叶斯优化的核心是利用已有的观测数据，构建目标函数的近似模型（通常是高斯过程或其他代理模型），然后在这个近似模型上寻找最优解。具体来说，贝叶斯优化通过以下步骤进行：</p>
+<ol type="1">
+<li><p><strong>构建代理模型</strong>：使用已有的观测数据构建一个代理模型（如高斯过程回归），该模型可以近似目标函数。这个代理模型既能预测目标函数的输出，也能量化预测的不确定性。</p></li>
+<li><p><strong>选择采样点</strong>：基于代理模型的输出和不确定性，使用一种称为<strong>采集函数</strong>（Acquisition
+Function）的策略，确定下一步要评估的采样点。采集函数在模型不确定性大的区域更倾向于采样，确保探索性。</p></li>
+<li><p><strong>更新代理模型</strong>：在新的采样点上评估目标函数并获取真实值，将新数据加入已有数据中，以更新代理模型。</p></li>
+<li><p><strong>迭代进行</strong>：重复采样、更新代理模型和优化采集函数，直到满足预设的停止条件（如达到指定次数或精度要求）。</p></li>
+</ol>
+<p>通过上述步骤，贝叶斯优化逐步将代理模型拟合得更加精准，以更少的评估次数找到目标函数的最优解。</p>
+<h1 id="采集函数acquisition-function">采集函数（Acquisition
+Function）</h1>
+<p>采集函数用于在当前代理模型的基础上选择下一步的采样点，它平衡了探索（探索不确定区域）和开发（在最优点附近深入搜索）的需求。常见的采集函数有：</p>
+<ul>
+<li><strong>期望提升（Expected Improvement,
+EI）</strong>：在当前最优解的基础上，期望获得提升的采样点。</li>
+<li><strong>置信上限（Upper Confidence Bound,
+UCB）</strong>：考虑模型预测的均值和不确定性，选择具有高置信上限的采样点。</li>
+<li><strong>概率提升（Probability of Improvement,
+PI）</strong>：选择在当前最优值基础上改进概率最大的采样点。</li>
+</ul>
+<p>不同的采集函数适用于不同的应用场景，可根据具体需求选择。</p>
+<h1 id="示例">示例</h1>
+<p>使用 <code>sklearn</code>
+中的高斯过程（GaussianProcessRegressor）作为代理模型。使用基本的库为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.stats <span class="keyword">import</span> norm</span><br><span class="line"><span class="keyword">from</span> sklearn.gaussian_process <span class="keyword">import</span> GaussianProcessRegressor</span><br><span class="line"><span class="keyword">from</span> sklearn.gaussian_process.kernels <span class="keyword">import</span> Matern</span><br></pre></td></tr></table></figure>
+<p>定义目标函数，为简单起见，使用一个一维抛物线函数。实际应用中，这个目标函数可以是昂贵的黑箱函数。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">objective_function</span>(<span class="params">x</span>):</span><br><span class="line">    <span class="keyword">return</span> (x - <span class="number">2</span>) ** <span class="number">2</span> + <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<p>使用期望提升（Expected Improvement,
+EI）采集函数来选择下一个评估点。EI 采集函数的公式如下：</p>
+<p><span
+class="math display">EI(<em>x</em>) = max (0, <em>μ</em>(<em>x</em>) − <em>f</em>(<em>x</em><sup>+</sup>) − <em>ξ</em>) × <em>Φ</em>(<em>z</em>) + <em>σ</em>(<em>x</em>)<em>ϕ</em>(<em>z</em>)</span></p>
+<p>其中 <span class="math inline"><em>μ</em>(<em>x</em>)</span> 和 <span
+class="math inline"><em>σ</em>(<em>x</em>)</span> 是代理模型在 <span
+class="math inline"><em>x</em></span> 处的预测均值和标准差，<span
+class="math inline"><em>f</em>(<em>x</em><sup>+</sup>)</span>
+是当前最优值，<span class="math inline"><em>ξ</em></span>
+是平衡探索和开发的参数（通常设为 0.01）。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">expected_improvement</span>(<span class="params">X, X_sample, Y_sample, model, xi=<span class="number">0.01</span></span>):</span><br><span class="line">    mu, sigma = model.predict(X, return_std=<span class="literal">True</span>)</span><br><span class="line">    mu_sample_opt = np.<span class="built_in">min</span>(Y_sample)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">with</span> np.errstate(divide=<span class="string">&#x27;warn&#x27;</span>):</span><br><span class="line">        imp = mu_sample_opt - mu - xi</span><br><span class="line">        Z = imp / sigma</span><br><span class="line">        ei = imp * norm.cdf(Z) + sigma * norm.pdf(Z)</span><br><span class="line">        ei[sigma == <span class="number">0.0</span>] = <span class="number">0.0</span></span><br><span class="line">    <span class="keyword">return</span> ei</span><br></pre></td></tr></table></figure>
+<p><span class="math inline"><em>Φ</em>(<em>Z</em>)</span>
+是标准正态分布的累积分布函数，<span
+class="math inline"><em>ϕ</em>(<em>Z</em>)</span>
+是标准正态分布的概率密度函数。</p>
+<p>根据 EI
+值找到最优的候选点，我们在定义的搜索空间内对采集函数进行最大化。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">propose_location</span>(<span class="params">acquisition, X_sample, Y_sample, model, bounds, n_restarts=<span class="number">25</span></span>):</span><br><span class="line">    dim = X_sample.shape[<span class="number">1</span>]</span><br><span class="line">    min_val = <span class="number">1</span></span><br><span class="line">    min_x = <span class="literal">None</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> x0 <span class="keyword">in</span> np.random.uniform(bounds[:, <span class="number">0</span>], bounds[:, <span class="number">1</span>], size=(n_restarts, dim)):</span><br><span class="line">        res = minimize(<span class="keyword">lambda</span> x: -acquisition(x.reshape(-<span class="number">1</span>, dim), X_sample, Y_sample, model), </span><br><span class="line">                       x0=x0, bounds=bounds, method=<span class="string">&#x27;L-BFGS-B&#x27;</span>)</span><br><span class="line">        <span class="keyword">if</span> res.fun &lt; min_val:</span><br><span class="line">            min_val = res.fun</span><br><span class="line">            min_x = res.x</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> min_x.reshape(-<span class="number">1</span>, <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>在初始化采样点后，我们不断进行以下循环：更新代理模型、选择新的评估点、更新数据，直到达到预设条件。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 定义搜索空间</span></span><br><span class="line">bounds = np.array([[-<span class="number">5.0</span>, <span class="number">5.0</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化样本点</span></span><br><span class="line">X_sample = np.random.uniform(bounds[:, <span class="number">0</span>], bounds[:, <span class="number">1</span>], size=(<span class="number">5</span>, <span class="number">1</span>))</span><br><span class="line">Y_sample = objective_function(X_sample)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置高斯过程代理模型</span></span><br><span class="line">kernel = Matern(length_scale=<span class="number">1.0</span>)</span><br><span class="line">model = GaussianProcessRegressor(kernel=kernel, alpha=<span class="number">1e-6</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 优化主循环</span></span><br><span class="line">n_iterations = <span class="number">10</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(n_iterations):</span><br><span class="line">    <span class="comment"># 更新代理模型</span></span><br><span class="line">    model.fit(X_sample, Y_sample)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 选择下一个评估点</span></span><br><span class="line">    X_next = propose_location(expected_improvement, X_sample, Y_sample, model, bounds)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 评估目标函数</span></span><br><span class="line">    Y_next = objective_function(X_next)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 更新样本集合</span></span><br><span class="line">    X_sample = np.vstack((X_sample, X_next))</span><br><span class="line">    Y_sample = np.vstack((Y_sample, Y_next))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出找到的最优解</span></span><br><span class="line">best_index = np.argmin(Y_sample)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;最佳输入点:&quot;</span>, X_sample[best_index])</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;最佳输出值:&quot;</span>, Y_sample[best_index])</span><br></pre></td></tr></table></figure>
+<h1 id="采集函数与active-learning和mcts的异同">采集函数与Active
+Learning和MCTS的异同</h1>
+<p>贝叶斯优化中的采集函数、主动学习（Active
+Learning）、蒙特卡洛树搜索（MCTS）中的探索与利用策略，这三者确实在概念和策略上有很多相似之处，但它们的目标和应用场景有所不同。它们共享的核心思想是
+<strong>平衡探索和利用</strong>，即在信息不足的情况下找到最佳的选择。然而，三者的具体实现方式、关注点和目标存在一些差异。</p>
+<h3 id="共同点探索与利用的平衡">1. 共同点：探索与利用的平衡</h3>
+<p>贝叶斯优化、主动学习和 MCTS
+都试图在有限资源下（如计算次数、样本数量、计算成本）高效地做出最优决策。为此，它们都需要在
+<strong>探索</strong>（了解更多新的信息）和
+<strong>利用</strong>（利用已有信息获得最优解）之间找到平衡。具体来说：</p>
+<ul>
+<li><strong>探索</strong>：在不确定性较高的地方进行采样、选点或扩展，使得对系统（目标函数、分类边界、搜索树）的了解更全面。</li>
+<li><strong>利用</strong>：集中在已知效果较好的地方进行进一步优化，尽快找到最佳解或正确答案。</li>
+</ul>
+<h3 id="三者的区别">2. 三者的区别</h3>
+<h4 id="贝叶斯优化">1) 贝叶斯优化</h4>
+<ul>
+<li><strong>目标</strong>：贝叶斯优化的目标是
+<strong>优化复杂且代价高昂的黑箱函数</strong>。它通过少量采样逐步找到目标函数的最优值。</li>
+<li><strong>采集函数</strong>：通过代理模型（如高斯过程）预测函数的均值和不确定性，并通过采集函数（如期望提升、置信上限）选择最优采样点。</li>
+<li><strong>探索与利用的平衡</strong>：采集函数的设计考虑了对最优解改进的潜力和不确定性，使得采样点既能优化当前最优值又能探索未观测区域。</li>
+</ul>
+<h4 id="主动学习active-learning">2) 主动学习（Active Learning）</h4>
+<ul>
+<li><strong>目标</strong>：主动学习的目标是
+<strong>在标签代价高昂的情况下，通过有选择地标注数据提升模型性能</strong>。它在机器学习场景中选择对模型改进最有效的未标注样本，从而用最少的标注成本提升模型准确性。</li>
+<li><strong>策略</strong>：主动学习的策略往往基于样本的
+<strong>不确定性</strong> 或
+<strong>信息量</strong>，例如选择模型预测最不确定的样本（最大熵、最小置信度）或对决策边界贡献最大的样本。</li>
+<li><strong>探索与利用的平衡</strong>：在主动学习中，探索和利用的平衡意味着在选择样本时既要减少模型的不确定性，也要选择对决策边界有贡献的样本，使模型尽快准确地覆盖数据分布。</li>
+</ul>
+<h4 id="蒙特卡洛树搜索mcts">3) 蒙特卡洛树搜索（MCTS）</h4>
+<ul>
+<li><strong>目标</strong>：MCTS 主要用于
+<strong>决策问题中的路径选择</strong>，如在游戏中找到最优策略。MCTS
+是一种
+<strong>树搜索算法</strong>，通过模拟和采样在巨大搜索空间中找到最优行动路径。</li>
+<li><strong>策略</strong>：MCTS 的策略在于对节点进行扩展和选择，常用
+<strong>上置信上限（UCB）</strong> 来决定探索和利用。UCB
+通过平衡节点的获胜概率和探索价值，决定是否深入已有路径或探索新路径。</li>
+<li><strong>探索与利用的平衡</strong>：MCTS
+的探索利用平衡在于确保既不会忽略高潜力的节点，也不会在当前优节点过度深入。它动态地在不同节点之间分配模拟次数，逐步找到全局最优路径。</li>
+</ul>
+<h3 id="关系与差异总结">3. 关系与差异总结</h3>
+<table>
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 26%" />
+<col style="width: 21%" />
+<col style="width: 36%" />
+</colgroup>
+<thead>
+<tr>
+<th>方法</th>
+<th>应用场景</th>
+<th>主要目标</th>
+<th>探索/利用实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>贝叶斯优化</td>
+<td>黑箱函数优化</td>
+<td>最小化评估代价，找最优值</td>
+<td>采集函数（EI、UCB、PI等）</td>
+</tr>
+<tr>
+<td>主动学习</td>
+<td>样本选择、模型训练</td>
+<td>最少样本提升模型准确性</td>
+<td>不确定性采样、信息量最大化</td>
+</tr>
+<tr>
+<td>MCTS</td>
+<td>决策、路径规划</td>
+<td>找到最优路径</td>
+<td>上置信上限（UCB）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="三者是否是同样的东西">三者是否是同样的东西？</h3>
+<p>尽管三者具有相似的探索-利用平衡机制，它们
+<strong>不是完全相同的</strong>。具体来说：</p>
+<ul>
+<li><strong>贝叶斯优化</strong>
+是一个基于概率模型的黑箱优化方法，目的是在复杂函数中找到全局最优解。</li>
+<li><strong>主动学习</strong>
+是一种选择性采样策略，用于通过最少标注数据训练出高性能模型。</li>
+<li><strong>MCTS</strong>
+是一种决策树搜索算法，用于路径和策略选择。</li>
+</ul>
+<p>三者共享的思想是
+<strong>在信息不完全或资源有限的情况下，通过探索-利用平衡来找到最优解</strong>。这使得它们在本质上有相通之处，但因目标和应用场景不同，它们的实现细节和关注点各不相同。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Bayesian-Optimization/" rel="tag"># Bayesian Optimization</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/11/07/CS/data_law/data_law/" rel="prev" title="A law of data separation in deep learning">
+      <i class="fa fa-chevron-left"></i> A law of data separation in deep learning
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2025/04/07/LLM/MultiAgentFail/MultiAgentFail/" rel="next" title="Why Do Multi-Agent LLM Systems Fail?">
+      Why Do Multi-Agent LLM Systems Fail? <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96%E5%9F%BA%E6%9C%AC%E6%80%9D%E6%83%B3"><span class="nav-number">1.</span> <span class="nav-text">贝叶斯优化基本思想</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%87%E9%9B%86%E5%87%BD%E6%95%B0acquisition-function"><span class="nav-number">2.</span> <span class="nav-text">采集函数（Acquisition
+Function）</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%87%E9%9B%86%E5%87%BD%E6%95%B0%E4%B8%8Eactive-learning%E5%92%8Cmcts%E7%9A%84%E5%BC%82%E5%90%8C"><span class="nav-number">4.</span> <span class="nav-text">采集函数与Active
+Learning和MCTS的异同</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E5%90%8C%E7%82%B9%E6%8E%A2%E7%B4%A2%E4%B8%8E%E5%88%A9%E7%94%A8%E7%9A%84%E5%B9%B3%E8%A1%A1"><span class="nav-number">4.0.1.</span> <span class="nav-text">1. 共同点：探索与利用的平衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E8%80%85%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.0.2.</span> <span class="nav-text">2. 三者的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%B4%9D%E5%8F%B6%E6%96%AF%E4%BC%98%E5%8C%96"><span class="nav-number">4.0.2.1.</span> <span class="nav-text">1) 贝叶斯优化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BB%E5%8A%A8%E5%AD%A6%E4%B9%A0active-learning"><span class="nav-number">4.0.2.2.</span> <span class="nav-text">2) 主动学习（Active Learning）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%92%99%E7%89%B9%E5%8D%A1%E6%B4%9B%E6%A0%91%E6%90%9C%E7%B4%A2mcts"><span class="nav-number">4.0.2.3.</span> <span class="nav-text">3) 蒙特卡洛树搜索（MCTS）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E7%B3%BB%E4%B8%8E%E5%B7%AE%E5%BC%82%E6%80%BB%E7%BB%93"><span class="nav-number">4.0.3.</span> <span class="nav-text">3. 关系与差异总结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E8%80%85%E6%98%AF%E5%90%A6%E6%98%AF%E5%90%8C%E6%A0%B7%E7%9A%84%E4%B8%9C%E8%A5%BF"><span class="nav-number">4.0.4.</span> <span class="nav-text">三者是否是同样的东西？</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

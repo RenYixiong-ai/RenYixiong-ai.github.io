@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="讨论Hopfield Model 的相关内容，包含其本身的一些性值以及其在组合优化问题中的应用。 Reference: * Neural networks and physical systems with emergent collective computational abilities * “Neural” Computation of Decisions in Optimization">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hopfield Model">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2022/11/12/Phys/Hopfield/Hopfield/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="讨论Hopfield Model 的相关内容，包含其本身的一些性值以及其在组合优化问题中的应用。 Reference: * Neural networks and physical systems with emergent collective computational abilities * “Neural” Computation of Decisions in Optimization">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/12/Phys/Hopfield/Hopfield/Hopfield.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/12/Phys/Hopfield/Hopfield/landscape.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2022/11/12/Phys/Hopfield/Hopfield/TSP1.png">
+<meta property="article:published_time" content="2022-11-12T12:37:00.000Z">
+<meta property="article:modified_time" content="2025-05-08T10:15:05.885Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Spin Glass">
+<meta property="article:tag" content="Combinatorial Optimization Methods">
+<meta property="article:tag" content="Hopfield Model">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2022/11/12/Phys/Hopfield/Hopfield/Hopfield.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2022/11/12/Phys/Hopfield/Hopfield/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Hopfield Model | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2022/11/12/Phys/Hopfield/Hopfield/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hopfield Model
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-12 20:37:00" itemprop="dateCreated datePublished" datetime="2022-11-12T20:37:00+08:00">2022-11-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-08 18:15:05" itemprop="dateModified" datetime="2025-05-08T18:15:05+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>2.1k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>讨论Hopfield Model
+的相关内容，包含其本身的一些性值以及其在组合优化问题中的应用。</p>
+<p>Reference: * <a
+target="_blank" rel="noopener" href="https://www.pnas.org/doi/10.1073/pnas.79.8.2554">Neural networks
+and physical systems with emergent collective computational
+abilities</a> * <a
+target="_blank" rel="noopener" href="https://link.springer.com/article/10.1007/BF00339943">“Neural”
+Computation of Decisions in Optimization Problems</a> * <a
+target="_blank" rel="noopener" href="https://www.labxing.com/lab/666/news/677">神经网络的统计力学</a> *
+<a
+target="_blank" rel="noopener" href="https://www.researchgate.net/publication/220669035_Neural_Networks_for_Combinatorial_Optimization_A_Review_of_More_Than_a_Decade_of_Research?enrichId=rgreq-c2245af59a8dd59271293a87e4cf98fc-XXX&amp;enrichSource=Y292ZXJQYWdlOzIyMDY2OTAzNTtBUzo5OTQ4NzkzODc3NzExM0AxNDAwNzMxMTgxOTMy&amp;el=1_x_3&amp;_esc=publicationCoverPdf">Neural
+Networks for Combinatorial Optimization: A Review of More Than a Decade
+of Research</a></p>
+<p>Link: * <a href="/2022/11/13/Phys/Hopfield/Hopfield1/" title="Hopfield Model 自由能">Hopfield 自由能求解</a></p>
+<span id="more"></span>
+<h1 id="hopfield-model">Hopfield Model</h1>
+<p><img src="./Hopfield.png" alt="Hopfield Model" />
+由上图所示网络，格点<span
+class="math inline"><em>s</em></span>取分立的<span
+class="math inline">−1, +1</span>两个值，任意两个格点之间都有连接权重为<span
+class="math inline"><em>ω</em></span>. 假定一种二进制的状态<span
+class="math inline"><em>ξ</em></span>，利用Hebbian rule设定权重<span
+class="math inline"><em>ω</em></span>为：</p>
+<p><span class="math display">$$\begin{equation}
+\begin{aligned}
+\omega_{ij}&amp;=\frac{1}{N}\xi_i\xi_j \quad i\neq j\\
+\omega_{ii}&amp;=0
+\end{aligned} \label{omega}
+\end{equation}
+$$</span></p>
+<p>其中<span
+class="math inline"><em>N</em></span>总格点数。这种状态<span
+class="math inline"><em>ξ</em></span>就是一个吸引子，是能量最低点（由于对称性，反号也是最低点）。也可以设定多个状态<span
+class="math inline"><em>ξ</em></span>，通过平均将其结合在一起：</p>
+<p><span class="math display">$$\begin{align}
+\omega_{ij}&amp;=\frac{1}{N}\sum_{l}^{P}\xi_i^{(l)}\xi_j^{(l)} \quad
+i\neq j\\
+\omega_{ii}&amp;=0
+\end{align}$$</span></p>
+<p>其中<span class="math inline"><em>M</em></span>吸引子的数量。</p>
+<p>如何从任意初始状态转变到吸引子的状态呢？接下来设计动力学过程：</p>
+<p><span class="math display">$$\begin{align}
+S_i(t+1) \leftarrow \operatorname{sgn}\left(\sum_j w_{i j}
+S_j(t)-\theta_i\right)
+\end{align}$$</span></p>
+<p>其中<span
+class="math inline"><em>θ</em><sub><em>i</em></sub></span>是一个偏置项。这个过程本质就是一个零温的蒙特卡洛模拟过程。</p>
+<figure>
+<img src="./landscape.png" alt="landscape" />
+<figcaption aria-hidden="true">landscape</figcaption>
+</figure>
+<p>Hamiltonian写为： <span class="math display">$$\begin{equation}
+H=-\frac{1}{2} \sum_{i, j}^N w_{i j} S_i S_j \label{hamiltonian}
+\end{equation}$$</span></p>
+<p>接下来的讨论假设每一个模式都是完全随机选取的，即<span
+class="math inline"><em>P</em>(<em>ξ</em> = ±1) = 1/2</span>。<font color='blue'>则是一个很强的设定。</font></p>
+<h1 id="组合优化问题中的应用">组合优化问题中的应用</h1>
+<p>旅行商问题是给出一些地点，以及这些地点两两之间的距离，从一个点出发走完所有点，要求花费的路层最短。</p>
+<p>难点在于如何将旅行商问题转化为 hopfield
+形式。以五个城市ABCDE为例，将每一个城市由五位二进制编码，例如B对应<span
+class="math inline">01000</span>、D对应<span
+class="math inline">00010</span>。这样履行路径可以表示为： <span
+class="math display">$$
+\begin{array}{l|lllll}
+&amp; 1 &amp; 2 &amp; 3 &amp; 4 &amp; 5 \\
+\hline A &amp; 0 &amp; 1 &amp; 0 &amp; 0 &amp; 0 \\
+B &amp; 0 &amp; 0 &amp; 0 &amp; 1 &amp; 0 \\
+C &amp; 1 &amp; 0 &amp; 0 &amp; 0 &amp; 0 \\
+D &amp; 0 &amp; 0 &amp; 0 &amp; 0 &amp; 1 \\
+E &amp; 0 &amp; 0 &amp; 1 &amp; 0 &amp; 0
+\end{array}
+$$</span></p>
+<p>一个由<span
+class="math inline"><em>n</em></span>个城市组成的问题，可以利用<span
+class="math inline"><em>n</em><sup>2</sup></span>个节点组成的Hopfield网络表示。</p>
+<p>首先这样的表示有一些约束，约束的能量项表示为： <span
+class="math display">$$\begin{align}
+E_{c}=  A / 2 \sum_X \sum_i \sum_{j \neq i} V_{X i} V_{X j}+B / 2 \sum_i
+\sum_X \sum_{X \neq Y} V_{X i} V_{Y i}+C / 2\left(\sum_X \sum_i V_{X
+i}-n\right)^2
+\end{align}$$</span> 其中<span
+class="math inline"><em>V</em><sub><em>X</em><em>i</em></sub></span>表示Hopfield网络中节点，代表城市<span
+class="math inline"><em>X</em></span>以旅行位置<span
+class="math inline"><em>i</em></span>。在这个能量项中，第一项约束在旅行中每次只能访问一个城市，第二项表示每个城市只能被访问一次，第三项表示每个城市都应该被访问一次。如果所有的约束条件都满足<span
+class="math inline"><em>E</em><sub><em>c</em></sub> = 0</span>。</p>
+<p>用于计算路程的项写为：</p>
+<p><span class="math display">$$\begin{align}
+E_l = \frac{1}{2} D \sum_X \sum_{Y \neq X} \sum_i d_{X Y} V_{X
+i}\left(V_{Y, i+1}+V_{Y, i-1}\right)
+\end{align}$$</span></p>
+<p>总能量项目为: <span class="math display">$$\begin{align}
+E=E_c+E_l
+\end{align}$$</span></p>
+<p>至此已经将旅行商问题转化为Hopfield网络上，只需要迭代求解即可。<font color='red'>此时的参数其实十分关键，并且作者对动力学更新方程有新的参数加入。</font></p>
+<p><font color='red'>这样就构建了一个桥梁，将组合优化问题转移到Spin
+Glass中，怎么更加清晰的分析这个问题就十分有趣了。</font></p>
+<figure>
+<img src="./TSP1.png" alt="TSP1" />
+<figcaption aria-hidden="true">TSP1</figcaption>
+</figure>
+<a href="/2022/11/13/Phys/Hopfield/Hopfield1/" title="Hopfield Model 自由能">Hopfield 自由能求解</a>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spin-Glass/" rel="tag"># Spin Glass</a>
+              <a href="/tags/Combinatorial-Optimization-Methods/" rel="tag"># Combinatorial Optimization Methods</a>
+              <a href="/tags/Hopfield-Model/" rel="tag"># Hopfield Model</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/09/16/CS/git/git/" rel="prev" title="Git Note">
+      <i class="fa fa-chevron-left"></i> Git Note
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/11/13/Phys/replica/replica/" rel="next" title="Replica">
+      Replica <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#hopfield-model"><span class="nav-number">1.</span> <span class="nav-text">Hopfield Model</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%84%E5%90%88%E4%BC%98%E5%8C%96%E9%97%AE%E9%A2%98%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">组合优化问题中的应用</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

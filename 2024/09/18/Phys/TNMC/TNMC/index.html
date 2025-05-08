@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Tensor Network Monte Carlo (TNMC) method将张量网络和蒙特卡洛模拟结合，是一种新的模拟方法。本文分为两个部分，介绍TNMC方法，以及其在随机二维Ising模型上的实验。 Link: * Tensor network Monte Carlo simulations for the two-dimensional random-bond Ising model *">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tensor network Monte Carlo simulations for the two-dimensional random-bond Ising model">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/09/18/Phys/TNMC/TNMC/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="Tensor Network Monte Carlo (TNMC) method将张量网络和蒙特卡洛模拟结合，是一种新的模拟方法。本文分为两个部分，介绍TNMC方法，以及其在随机二维Ising模型上的实验。 Link: * Tensor network Monte Carlo simulations for the two-dimensional random-bond Ising model *">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/09/18/Phys/TNMC/TNMC/fig1a.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/09/18/Phys/TNMC/TNMC/fig2.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/09/18/Phys/TNMC/TNMC/fig3.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/09/18/Phys/TNMC/TNMC/fig4.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/09/18/Phys/TNMC/TNMC/fig6.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/09/18/Phys/TNMC/TNMC/fig7.png">
+<meta property="article:published_time" content="2024-09-18T03:11:00.000Z">
+<meta property="article:modified_time" content="2025-05-08T10:18:15.650Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Monte Carlo">
+<meta property="article:tag" content="Computer Physics">
+<meta property="article:tag" content="Tensor Network">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/09/18/Phys/TNMC/TNMC/fig1a.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/09/18/Phys/TNMC/TNMC/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Tensor network Monte Carlo simulations for the two-dimensional random-bond Ising model | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/09/18/Phys/TNMC/TNMC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Tensor network Monte Carlo simulations for the two-dimensional random-bond Ising model
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-09-18 11:11:00" itemprop="dateCreated datePublished" datetime="2024-09-18T11:11:00+08:00">2024-09-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-08 18:18:15" itemprop="dateModified" datetime="2025-05-08T18:18:15+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>3.3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>6 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Tensor Network Monte Carlo (TNMC)
+method将张量网络和蒙特卡洛模拟结合，是一种新的模拟方法。本文分为两个部分，介绍TNMC方法，以及其在随机二维Ising模型上的实验。</p>
+<p>Link: * <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.06538">Tensor network
+Monte Carlo simulations for the two-dimensional random-bond Ising
+model</a> * <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1507.00767">Unbiased Monte
+Carlo for the age of tensor networks</a></p>
+<p>Code: * <a target="_blank" rel="noopener" href="https://github.com/Fermichen99/TNMC">TNMC</a></p>
+<span id="more"></span>
+<h1 id="metropolis-hasting-method">Metropolis-Hasting method</h1>
+<blockquote>
+<p>In particular, the local moves can get trapped in local minima,
+especially in disordered systems, because due to the nature of the
+rugged energy landscape, the probability of moving to a higher-energy
+state is low.</p>
+</blockquote>
+<p>对于传统的蒙卡，主要存在两个问题：临界慢化和阻锉模型基态问题，这两个问题是由完全不同的因素造成的。临界慢化的原因是在临界点会形成团簇，单个格点翻转接受概率低，这种阻碍也称为磁畴壁，有效的解决方案是从单一格点翻转改为集体翻转；基态问题是由于模型结构自身具有的阻锉引起的。</p>
+<p>这两个问题也可以从自由能的角度看待。自由能是通过熵和能量的竞争得到的，临界慢化对应相变点，此时系统倾向于处于熵极大的构型，也就是在能量相同的情况下拥有尽可能多的构型，但是这样就会遇到采样的困难，目标构型是非常稀疏的；同时还有另一个问题，熵并不容易衡量，这就意味着在穷尽结果前并不知道自己选取的构型是否为目标构型。没有评价指标和稀疏采样，造成临界慢化的困难性。那么提升方案（Swendsen-wang、Wolff）为什么有效呢？它们并没有设计机制解决稀疏采样和无评价指标的问题，而是利用在临界点特性。这些算法敏锐的觉察到，这些目标构型之间存在关联，因此从一个目标构型出发可以快速采样到其它的目标构型。基于此，接受率成为一个很好的评价指标。</p>
+<p>那接下来从自由能的角度分析基态。由于温度趋近于零，此时自由能等于能量，而基态的构型是由模型决定的，因此这是具有特定解的问题，同时评价构型优劣的指标为能量，能量越低是更倾向于选择的构型。此时的难点在于如何搜索。主要有两个方面，首先在穷举之前并不清楚目前低能量构型是最低能量构型；其次如何找到高效的搜索的方法。优化策略我认为有两种，首先是通过启发式的方法搜索，给出一个撒点的方式；另一方面是通过将构型的表示方法进行编码，在编码的空间进行搜索，将一些非凸的结构转化为凸性。</p>
+<p><font color='red'>竟然没有在博客中写过这个内容…之后想写的话添加上引用。</font></p>
+<p><span class="math display">$$\begin{align}
+\frac{P\left(\mathbf{s}_b\right)}{P\left(\mathbf{s}_a\right)}&amp;=e^{\beta
+E\left(\mathbf{s}_a\right)-\beta E\left(\mathbf{s}_b\right)} \\
+P(\mathbf{s})&amp;=\prod_{i=1}^N P\left(s_i \mid
+\mathbf{s}_{&lt;i}\right)\\
+P\left(s_i \mid
+\mathbf{s}_{&lt;\mathbf{i}}\right)&amp;=\frac{\sum_{\mathbf{s}_{&gt;i}}
+e^{-\beta E\left(s_i, \mathbf{s}_{&lt;i}\right)}}{\sum_{s_i,
+\mathbf{s}_{&gt;i}} e^{-\beta E\left(s_i,
+\mathbf{s}_{&lt;i}\right)}}=\frac{Z\left(s_i,
+\mathbf{s}_{&lt;i}\right)}{\sum_{s_i} Z\left(s_i,
+\mathbf{s}_{&lt;i}\right)} \label{5}
+\end{align}$$</span></p>
+<h1 id="tensor-network-proposals">Tensor network proposals</h1>
+<p>将Ising模型求解配分函数的过程转化为张量网络。首先将整个网格表示为：</p>
+<figure>
+<img src="./fig1a.png" alt="tensor network" />
+<figcaption aria-hidden="true">tensor network</figcaption>
+</figure>
+<p>由节点<span class="math inline"><em>δ</em></span>和转移矩阵<span
+class="math inline"><em>W</em></span>组成。其中节点<span
+class="math inline"><em>δ</em></span>的具体表达式，根据其连接边的数目（腿）决定，例如<span
+class="math inline"><em>δ</em><sub>1</sub></span>有2条腿、<span
+class="math inline"><em>δ</em><sub>2</sub></span>有3条腿、<span
+class="math inline"><em>δ</em><sub>5</sub></span>有4条腿。 <img
+src="./tensor.png" alt="tensor" />
+每一个节点，通过其腿的标号表示，例如<span
+class="math inline"><em>δ</em><sub>2</sub> = <em>δ</em><sub><em>m</em><em>n</em><em>o</em></sub>, <em>δ</em><sub>6</sub> = <em>δ</em><sub><em>i</em><em>j</em><em>k</em><em>l</em></sub></span>，由于Ising模型只有<span
+class="math inline">±1</span>，因此每条腿的选项只有<span
+class="math inline">1, 2</span>两个，并且<span
+class="math inline"><em>δ</em></span>的取值定为：</p>
+<p><span class="math display">$$\begin{align}
+\delta_{ijkl}= \begin{cases}1 &amp; i=j=k=l \\ 0 &amp; \text { else }
+\quad(i, j, k, l=1,2)\end{cases}
+\end{align}$$</span></p>
+<p>每一条腿表示对应格点的自旋取值，因此同一个自旋外延出来的腿应该具有相同的取值。</p>
+<p>然后定义转移矩阵：</p>
+<p><span class="math display">$$\begin{align}
+W_{i j}=\left(\begin{array}{cc}
+e^{\beta J_{i j}} &amp; e^{-\beta J_{i j}} \\
+e^{-\beta J_{i j}} &amp; e^{\beta J_{i j}}
+\end{array}\right)
+\end{align}$$</span></p>
+<p>其中 <span
+class="math inline"><em>W</em><sub>11</sub> = <em>W</em><sub>22</sub> = exp (<em>β</em><em>J</em><sub><em>i</em><em>j</em></sub>), <em>W</em><sub>12</sub> = <em>W</em><sub>21</sub> = exp (−<em>β</em><em>J</em><sub><em>i</em><em>j</em></sub>)</span>，<span
+class="math inline"><em>J</em><sub><em>i</em><em>j</em></sub></span>表示相邻的相互作用系数（Ising模型中是相同的，在spin
+glass）。</p>
+<p>接下来需要进一步对矩阵进行收缩，将转移矩阵收缩进格点中，表示为 <img
+src="./fig1b.png" alt="tensor" /></p>
+<p>在之前的模型中，箭头表示收缩的方向，由下及上、由左及右。例如<span
+class="math inline"><em>δ</em><sub>5</sub></span>会收缩两个方向的，因此将<span
+class="math inline"><em>l</em>, <em>k</em></span>进行求和：</p>
+<p><span class="math display">$$\begin{align}
+T_5 = T_{ijqr}=\sum_l\sum_k \delta_{ijkl} W_{kq}W_{lr}
+\end{align}$$</span></p>
+<p><span class="math inline"><em>δ</em><sub>2</sub></span>同理：</p>
+<p><span class="math display">$$\begin{align}
+T_2 = T_{mis}=\sum_o\sum_n \delta_{nmo} W_{oi}W_{ns}
+\end{align}$$</span></p>
+<p>接下来对于<span
+class="math inline"><em>T</em><sub>2</sub><em>T</em><sub>5</sub></span>的收缩，可以通过对<span
+class="math inline"><em>i</em></span>的求和，表示为<span
+class="math inline">∑<sub><em>i</em></sub><em>T</em><sub><em>m</em><em>i</em><em>s</em></sub><em>T</em><sub><em>i</em><em>j</em><em>q</em><em>r</em></sub></span>。</p>
+<p>因此求配分函数，接下来就是通过指标的收缩求和。 <img src="./fig2.png"
+alt="tensor network contraction process" /></p>
+<p>精确求解这个张量网络会遇到维数增长的问题，可以通过singular-value-decomposition（SVD）近似的方法解决这个问题。</p>
+<h1
+id="computing-the-partition-function-using-tensor-networks">Computing
+the partition function using tensor networks</h1>
+<p>计算蒙卡的接受效率，需要通过计算<span
+class="math inline">$\eqref{5}$</span>。因此，接下来描述如何利用张量网络结合采样，计算<span
+class="math inline">$\eqref{5}$</span>。</p>
+<p>以计算<span
+class="math inline"><em>s</em><sub>4</sub></span>为例，那么已经提前知道采样<span
+class="math inline"><em>s</em><sub>1</sub>, <em>s</em><sub>2</sub>, <em>s</em><sub>3</sub></span>的值。此时张量网络可以表示为：</p>
+<figure>
+<img src="./fig3.png" alt="sample tensor" />
+<figcaption aria-hidden="true">sample tensor</figcaption>
+</figure>
+<p>当自旋确定，改变的是在自旋收缩的时候，不再是求和而是直接固定。上图展示了如何通过指标的收缩，表示<span
+class="math inline">∑<sub><em>s</em><sub>4</sub></sub><em>Z</em>(<em>s</em><sub>4</sub>, <strong>s</strong><sub> &lt; 4</sub>)</span>。对于计算<span
+class="math inline"><em>Z</em>(<em>s</em><sub>4</sub>, <strong>s</strong><sub> &lt; 4</sub>)</span>则需要将，<span
+class="math inline"><em>δ</em><sub>4</sub></span>改为固定的<span
+class="math inline"><em>s</em><sub>4</sub></span>：</p>
+<figure>
+<img src="./fig4.png" alt="sample tensor2" />
+<figcaption aria-hidden="true">sample tensor2</figcaption>
+</figure>
+<p>其中<span
+class="math inline"><em>f</em>(<em>s</em><sub>4</sub>) = <em>e</em><sup><em>β</em><em>J</em><sub>14</sub><em>s</em><sub>1</sub><em>s</em><sub>4</sub></sup></span>，张量两边为<span
+class="math inline"><em>s</em><sub>4</sub></span>的取值。然后逐渐增加位置，直到完成整体的采样。</p>
+<p>通过如上的计算方式，便可以计算<span
+class="math inline">$\eqref{5}$</span>。其中，存在一些小技巧：为了加速，在计算的时候可以存储之前的计算结果，之后相似的构型可以直接查表。</p>
+<p>然而这个计算方式也存在问题，看似解决了之前迭代速度慢的问题，但每次迭代比之前要花费更多的时间。这个算法真正有效的地方在于临界行为处，当处理复杂的能量面时候，这个算法能够更快速的迭代，而不是传统蒙卡被困于无穷关联长度中。</p>
+<h1 id="result">Result</h1>
+<p>接下来在随机二维Ising模型上进行实验，随机体现在自旋之间的相互作用<span
+class="math inline"><em>J</em></span>正负是以<span
+class="math inline"><em>p</em></span>和<span
+class="math inline">1 − <em>p</em></span>的概率选取。</p>
+<p>该算法的核心点在于接受率的提升，所以第一个数据展示在SVD不同维度的情况，以及不同温度、不同尺寸的情况下接受率的变化。</p>
+<figure>
+<img src="./fig6.png" alt="result" />
+<figcaption aria-hidden="true">result</figcaption>
+</figure>
+<p>第二个实验展示了CPU用时和内存消耗。</p>
+<figure>
+<img src="./fig7.png" alt="result2" />
+<figcaption aria-hidden="true">result2</figcaption>
+</figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Monte-Carlo/" rel="tag"># Monte Carlo</a>
+              <a href="/tags/Computer-Physics/" rel="tag"># Computer Physics</a>
+              <a href="/tags/Tensor-Network/" rel="tag"># Tensor Network</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/08/27/Phys/Annealing_root_finding/Annealing_root_finding/" rel="prev" title="Annealing approach to root finding">
+      <i class="fa fa-chevron-left"></i> Annealing approach to root finding
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/10/16/DL/ActiveLearning/ActiveLearning/" rel="next" title="Active Learning Literature Survey">
+      Active Learning Literature Survey <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#metropolis-hasting-method"><span class="nav-number">1.</span> <span class="nav-text">Metropolis-Hasting method</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tensor-network-proposals"><span class="nav-number">2.</span> <span class="nav-text">Tensor network proposals</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#computing-the-partition-function-using-tensor-networks"><span class="nav-number">3.</span> <span class="nav-text">Computing
+the partition function using tensor networks</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#result"><span class="nav-number">4.</span> <span class="nav-text">Result</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

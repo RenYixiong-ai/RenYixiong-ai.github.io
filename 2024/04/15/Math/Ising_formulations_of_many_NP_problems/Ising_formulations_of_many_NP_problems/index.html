@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="为许多NP-complete和NP-hard问题提供了Ising形式，包括Karp的21个NP完全问题中的所有问题。这收集并扩展了从分区、覆盖和可满足性到Ising模型的映射。在每种情况下，所需的自旋数最多是问题大小的三次方。这项工作可能对设计绝热量子优化算法有用。别的优化算法同样有用。 文献： * 本文Ising formulations of many NP problems * On the">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ising formulations of many NP problems">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/04/15/Math/Ising_formulations_of_many_NP_problems/Ising_formulations_of_many_NP_problems/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="为许多NP-complete和NP-hard问题提供了Ising形式，包括Karp的21个NP完全问题中的所有问题。这收集并扩展了从分区、覆盖和可满足性到Ising模型的映射。在每种情况下，所需的自旋数最多是问题大小的三次方。这项工作可能对设计绝热量子优化算法有用。别的优化算法同样有用。 文献： * 本文Ising formulations of many NP problems * On the">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-04-15T09:30:00.000Z">
+<meta property="article:modified_time" content="2025-04-03T08:43:45.293Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="NP problems">
+<meta property="article:tag" content="Ising">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/04/15/Math/Ising_formulations_of_many_NP_problems/Ising_formulations_of_many_NP_problems/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Ising formulations of many NP problems | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/04/15/Math/Ising_formulations_of_many_NP_problems/Ising_formulations_of_many_NP_problems/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Ising formulations of many NP problems
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-04-15 17:30:00" itemprop="dateCreated datePublished" datetime="2024-04-15T17:30:00+08:00">2024-04-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-04-03 16:43:45" itemprop="dateModified" datetime="2025-04-03T16:43:45+08:00">2025-04-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Math/" itemprop="url" rel="index"><span itemprop="name">Math</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>3.9k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>7 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>为许多NP-complete和NP-hard问题提供了Ising形式，包括<a
+target="_blank" rel="noopener" href="https://www.semanticscholar.org/topic/Karp%27s-21-NP-complete-problems/1887346">Karp的21个NP完全问题</a>中的所有问题。这收集并扩展了从分区、覆盖和可满足性到Ising模型的映射。在每种情况下，所需的自旋数最多是问题大小的三次方。这项工作可能对设计绝热量子优化算法有用。<font color='gree'>别的优化算法同样有用。</font></p>
+<p>文献： * 本文<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1302.5843v3">Ising
+formulations of many NP problems</a> * <a
+target="_blank" rel="noopener" href="https://iopscience.iop.org/article/10.1088/0305-4470/15/10/028">On
+the computational complexity of Ising spin glass models</a> * <a
+target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/pii/S0166218X01003419">E.
+Boros and P.L. Hammer. “Pseudo-Boolean optimization”, Discrete Applied
+Mathematics 123 155 (2002).</a> * <a
+target="_blank" rel="noopener" href="https://link.springer.com/chapter/10.1007/978-1-4684-2001-2_9">Reducibility
+among Combinatorial Problems</a> * <a
+target="_blank" rel="noopener" href="https://academic.oup.com/book/6337?login=true">M. Me ́zard and A.
+Montanari. Information, Physics and Computation (2009)</a> * <a
+target="_blank" rel="noopener" href="https://iopscience.iop.org/article/10.1088/0305-4470/19/9/033/meta">Y.
+Fu and P.W. Anderson. “Application of statistical mechanics to
+NP-complete problems in combinatorial optimisation”, Journal of Physics
+A19 1605 (1986).</a></p>
+<span id="more"></span>
+<p>名词解释： * adiabatic quantum optimization (AQO) * NP problem
+(Nondeterministic Polynomial)
+NP问题是指可以在多项式时间内验证一个解的问题。换句话说，如果给定一个问题的解，存在一个多项式时间的算法来验证这个解是否正确。NP问题是决定性问题的复杂度类，它包含所有那些解可以在多项式时间内被验证的问题。
+* NP-hard problem
+NP-hard问题是指至少和NP中的最困难问题一样困难的问题。更严格地说，NP-hard问题是指不可能在多项式时间内解决的所有问题，除非P=NP（目前还未知是否成立）。所有的NP-hard问题也属于NP问题，因为你可以在多项式时间内验证一个假想的解（尽管找到解本身非常困难）。
+* NP-complete
+NP-complete问题既是NP问题又是NP-hard问题。这意味着NP-complete问题在NP中是“最难”的问题，并且很难找到这些问题的确切解，但是如果给出了解，可以在多项式时间内验证它。NP-complete问题在计算复杂性理论中非常重要，因为它们可能是P问题（能够在多项式时间内解决的问题）之外的最难问题类别。
+* NP-complete decision problem NP-complete decision
+problem是一类特殊的NP-complete问题，它们只要求回答“是”或“否”。也就是说，这类问题是决策问题，其解答为真或假，而不是提供一个具体的解。例如，在一个图中寻找哈密顿路径是一个NP-complete问题，但判断一个图是否含有哈密顿路径就是一个NP-complete
+decision problem。 * Chimera graph Chimera
+graph是量子计算中一个非常重要的概念，它通常与二次无约束二值优化问题（QUBOs）和量子退火算法相关联。在Chimera图中，节点代表目标函数的变量，边则表示变量之间的相互作用。这种图结构允许我们将问题的解映射到量子处理器上，其中节点映射为量子位，边映射为耦合器。通过这样的映射，可以解决如旅行商优化问题等复杂的组合优化问题。
+* Complete graph 完全图</p>
+<h1 id="introduction">Introduction</h1>
+<p>众所周知<a
+target="_blank" rel="noopener" href="https://iopscience.iop.org/article/10.1088/0305-4470/15/10/028">Ising自旋模型是NP-hard模型</a>，因此自然相让其余的NP问题映射到Ising自旋模型上。从数学上讲，如果一个问题是NP完全的，意味着总是能在多项式时间内将其映射到一个Ising问题上。这个映射过程被重新定义为<a
+target="_blank" rel="noopener" href="https://www.sciencedirect.com/science/article/pii/S0166218X01003419">pseudo-Boolean
+optimization problem</a>。</p>
+<p>这篇文章主要目的是展示Ising模型Hamilton的一些精巧构造，这些构造如何帮助映射其它的NP问题。同时还将回顾一下，之前如何将覆盖、满足问题映射到Ising自旋模型上，特别是包括如何将所有的NP问题转化为Ising问题，但Ising模型的自旋数目将会是问题的多项式，并且不低于<span
+class="math inline"><em>N</em><sup>3</sup></span>。</p>
+<p>在量子计算中利用模拟退火算法的求解优化问题，是通过嵌合图（chimera
+graph）完成，然而将完全图（complete
+graph）转化为嵌合图是低效的，参考文献<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/0804.4884">1</a>和<a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/1001.3116">2</a>。</p>
+<h1 id="partitioning-problems">Partitioning Problems</h1>
+<p>分割问题是将一个集合分为两个或者多个子集。这里回顾了分割问题到自旋玻璃的映射，并提出了一个新的基于类似思想（团问题）的映射。</p>
+<h2 id="number-partitioning">Number Partitioning</h2>
+<p>Number partitioning 问题描述如下：</p>
+<p>在一个包含<span
+class="math inline"><em>N</em></span>个正数的集合<span
+class="math inline"><em>S</em> = {<em>n</em><sub>1</sub>, …, <em>n</em><sub><em>N</em></sub>}</span>，将该集合分为两个不互相包含的集合
+<span class="math inline"><em>R</em></span> 和 <span
+class="math inline"><em>S</em> − <em>R</em></span>。是否能够使得两子集元素之和相等？</p>
+<p>该问题已经知道是一个<a
+target="_blank" rel="noopener" href="https://link.springer.com/chapter/10.1007/978-1-4684-2001-2_9">NP-complete问题</a>，将该问题转化为一个Ising模型：</p>
+<p>令<span
+class="math inline"><em>n</em><sub><em>i</em></sub>(<em>i</em> = 1, …, <em>N</em> = |<em>S</em>|)</span>
+描述集合<span
+class="math inline"><em>S</em></span>中的元素，然后定义Hamilton： <span
+class="math display">$$\begin{align}
+H=A\left(\sum_{i=1}^N n_i s_i\right)^2
+\end{align}$$</span> 其中<span
+class="math inline"><em>s</em><sub><em>i</em></sub> = ±1</span>
+是自旋取值，其中<span
+class="math inline"><em>A</em> &gt; 0</span>是正约束条件，通常会被取为1,但是保留这个参数可以区分不同能量尺度，<a
+target="_blank" rel="noopener" href="https://academic.oup.com/book/6337?login=true">参考文献</a>。</p>
+<p>该Hamilton的描述是显然的，<span
+class="math inline"><em>s</em></span>用于区分两类，<span
+class="math inline"><em>n</em></span>表示值，如果两类值相等，那么<span
+class="math inline"><em>H</em> = 0</span>。同时也说明，<span
+class="math inline"><em>H</em></span>越低划分越好。</p>
+<h2 id="graph-partitioning">Graph Partitioning</h2>
+<p><a
+target="_blank" rel="noopener" href="https://iopscience.iop.org/article/10.1088/0305-4470/19/9/033/meta">图分割</a>是最初进行统计物理与NP问题关联的例子。问题描述如下：</p>
+<p>考虑图<span
+class="math inline"><em>G</em> = (<em>V</em>, <em>E</em>)</span>，有偶数个节点<span
+class="math inline"><em>N</em> = |<em>V</em>|</span>，需要解决如何将集合<span
+class="math inline"><em>V</em></span>分割成大小相等的两个子集，每个子集的大小为<span
+class="math inline"><em>N</em>/2</span>，同时使得连接这两个子集的边数最小化？</p>
+<p>将这个问题转化为Ising模型，放置自旋<span
+class="math inline"><em>s</em><sub><em>v</em></sub> = ±1</span>在节点<span
+class="math inline"><em>v</em> ∈ <em>V</em></span>，并且<span
+class="math inline">±1</span>表示两类。设计Hamilton为：</p>
+<p><span class="math display">$$\begin{align}
+H=&amp;H_A+H_B \\
+H_A=&amp;A\left(\sum_{n=1}^N s_i\right)^2 \\
+H_B=&amp;B \sum_{(u v) \in E} \frac{1-s_u s_v}{2}
+\end{align}$$</span></p>
+<p>当<span class="math inline"><em>A</em> &gt; 0</span>时候，<span
+class="math inline"><em>H</em><sub><em>A</em></sub></span>是对两个集合数量不相等惩罚项目，相差越大<span
+class="math inline"><em>H</em><sub><em>A</em></sub></span>越大；当<span
+class="math inline"><em>B</em> &gt; 0</span>时候，<span
+class="math inline"><em>H</em><sub><em>B</em></sub></span>是对边数量的惩罚，连接数量越多<span
+class="math inline"><em>H</em><sub><em>B</em></sub></span>越大。</p>
+<h2 id="cliques">Cliques</h2>
+<p>Cliques 问题描述如下：</p>
+<p>在无向图<span
+class="math inline"><em>G</em> = (<em>V</em>, <em>E</em>)</span>中，大小为<span
+class="math inline"><em>K</em></span>的团簇（clique）是一个顶点子集<span
+class="math inline"><em>W</em> ⊆ <em>V</em></span>，其大小为<span
+class="math inline">|<em>W</em>| = <em>K</em></span>，使得子图<span
+class="math inline">(<em>W</em>, <em>E</em><sub><em>W</em></sub>)</span>（其中<span
+class="math inline"><em>E</em><sub><em>W</em></sub></span>是将边集<span
+class="math inline"><em>E</em></span>限制在<span
+class="math inline"><em>W</em></span>中节点之间的边上）是一个完全图。即图中所有可能的<span
+class="math inline">$\frac{K(K -
+1)}{2}$</span>条边都存在，因为团簇中的每个顶点都与其他每个顶点相连。简单描述为给定图<span
+class="math inline"><em>G</em></span>和顶点数<span
+class="math inline"><em>K</em></span>，能否从<span
+class="math inline"><em>G</em></span>中选取<span
+class="math inline"><em>K</em></span>个顶点构成完全图。</p>
+<p>将这个问题转化为Ising模型，放置自旋<span
+class="math inline"><em>s</em><sub><em>v</em></sub> = ±1</span>在节点<span
+class="math inline"><em>v</em> ∈ <em>V</em></span>。通常将<span
+class="math inline"><em>s</em><sub><em>α</em></sub></span>修改取值范围为<span
+class="math inline"><em>x</em><sub><em>α</em></sub></span>： <span
+class="math display">$$
+x_\alpha \equiv \frac{s_\alpha+1}{2}
+$$</span> 将Hamliton写为： <span class="math display">$$\begin{align}
+H=A\left(K-\sum_v x_v\right)^2+B\left[\frac{K(K-1)}{2}-\sum_{(u v) \in
+E} x_u x_v\right]
+\end{align}$$</span> 其中<span
+class="math inline"><em>A</em>, <em>B</em> &gt; 0</span>，在基态的时候<span
+class="math inline"><em>H</em> = 0</span>。第一项要求满足节点数量为<span
+class="math inline"><em>K</em></span>，第二项要求这些节点构成完全图。</p>
+<p>对于<span
+class="math inline"><em>H</em> ≠ 0</span>的其他情况，该问题可以转化为：
+<span class="math display">$$\begin{align}
+H_{\min }(n)=&amp;A(n-K)^2+B \frac{K(K-1)-n(n-1)}{2} \\
+=&amp;(n-K)\left[A(n-K)-B \frac{n+K-1}{2}\right]
+\end{align}$$</span></p>
+<p>另一方面，需要寻找最大的
+Cliques。同时原文中也提出了将该问题规模从<span
+class="math inline"><em>N</em></span> 减少到 <span
+class="math inline">log <em>N</em></span>的方案。</p>
+<h1 id="binary-integer-linear-programming">Binary Integer Linear
+Programming</h1>
+<p>令<span
+class="math inline"><em>x</em><sub>1</sub>, …, <em>x</em><sub><em>N</em></sub></span>
+是 <span class="math inline"><em>N</em></span> 个二值变量，表示为<span
+class="math inline"><strong>x</strong></span>。The binary integer linear
+programming (ILP) 问题定义为： <span class="math display">$$
+\begin{aligned}
+&amp; \max _x \sum_{j=1}^n c_j x_j \\
+&amp; \text { s.t. } \sum_{j=1}^n a_j x_j = b \\
+&amp; x \in\{0,1\}^n \\
+&amp;
+\end{aligned}
+$$</span></p>
+<p>Ising Hamiltonian <span
+class="math inline"><em>H</em> = <em>H</em><sub><em>A</em></sub> + <em>H</em><sub><em>B</em></sub></span>，可写为：
+<span class="math display">$$\begin{align}
+H_A=&amp;A \sum_{j=1}^m\left[b_j-\sum_{i=1}^N S_{j i} x_i\right]^2 \\
+H_B=&amp;-B \sum_{i=1}^N c_i x_i
+\end{align}$$</span> 其中 <span
+class="math inline"><em>A</em> &gt; 0</span>，<span
+class="math inline"><em>H</em><sub><em>A</em></sub></span>将约束转化为惩项；
+<span
+class="math inline">0 &lt; <em>B</em> ≪ <em>A</em></span>，为优化目标。</p>
+<h1 id="covering-and-packing-problems">Covering and Packing
+Problems</h1>
+<h1 id="problems-with-inequalities">Problems with Inequalities</h1>
+<h1 id="coloring-problems">Coloring Problems</h1>
+<h1 id="hamiltonian-cycles">Hamiltonian Cycles</h1>
+<h1 id="tree-problems">Tree Problems</h1>
+<h1 id="graph-isomorphisms">Graph Isomorphisms</h1>
+<h1 id="conclusions">Conclusions</h1>
+<p>这篇文章聚焦于如何将 NP-complete/hard problems
+转化为可以利用Ising类型Hamilton可表示的形式。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/NP-problems/" rel="tag"># NP problems</a>
+              <a href="/tags/Ising/" rel="tag"># Ising</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/04/15/CS/anchor_point/anchor_point/" rel="prev" title="Markdown 文章中的交叉引用（利用锚点）">
+      <i class="fa fa-chevron-left"></i> Markdown 文章中的交叉引用（利用锚点）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/" rel="next" title="Machine Learning with Graphs">
+      Machine Learning with Graphs <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#partitioning-problems"><span class="nav-number">2.</span> <span class="nav-text">Partitioning Problems</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#number-partitioning"><span class="nav-number">2.1.</span> <span class="nav-text">Number Partitioning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#graph-partitioning"><span class="nav-number">2.2.</span> <span class="nav-text">Graph Partitioning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#cliques"><span class="nav-number">2.3.</span> <span class="nav-text">Cliques</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#binary-integer-linear-programming"><span class="nav-number">3.</span> <span class="nav-text">Binary Integer Linear
+Programming</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#covering-and-packing-problems"><span class="nav-number">4.</span> <span class="nav-text">Covering and Packing
+Problems</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#problems-with-inequalities"><span class="nav-number">5.</span> <span class="nav-text">Problems with Inequalities</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#coloring-problems"><span class="nav-number">6.</span> <span class="nav-text">Coloring Problems</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#hamiltonian-cycles"><span class="nav-number">7.</span> <span class="nav-text">Hamiltonian Cycles</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#tree-problems"><span class="nav-number">8.</span> <span class="nav-text">Tree Problems</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#graph-isomorphisms"><span class="nav-number">9.</span> <span class="nav-text">Graph Isomorphisms</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#conclusions"><span class="nav-number">10.</span> <span class="nav-text">Conclusions</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

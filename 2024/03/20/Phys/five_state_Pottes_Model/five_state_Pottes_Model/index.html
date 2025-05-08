@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这篇文章并未读完，更多的内容在于知识上的补充 Abstract 共形对称发生在临界点，，但是在重整化群的相变点相撞的时候，这种对称性会消失。认为这种实平面的固定点将会变到复平面中。这篇工作，利用非厄米量子5态Potts模型，成功提取到了复平面的高度。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="这篇文章并未读完，更多的内容在于知识上的补充 Abstract 共形对称发生在临界点，，但是在重整化群的相变点相撞的时候，这种对称性会消失。认为这种实平面的固定点将会变到复平面中。这篇工作，利用非厄米量子5态Potts模型，成功提取到了复平面的高度。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap2-1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap2-2.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap3-1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap3-2.png">
+<meta property="article:published_time" content="2024-03-20T04:00:00.000Z">
+<meta property="article:modified_time" content="2025-05-08T10:14:33.149Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Potts Model">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/ap2-1.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/03/20/Phys/five_state_Pottes_Model/five_state_Pottes_Model/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Reclaiming the Lost Conformality in a non-Hermitian Quantum 5-state Potts Model
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-03-20 12:00:00" itemprop="dateCreated datePublished" datetime="2024-03-20T12:00:00+08:00">2024-03-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-08 18:14:33" itemprop="dateModified" datetime="2025-05-08T18:14:33+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>2.5k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>5 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><font color='red'>这篇文章并未读完，更多的内容在于知识上的补充</font></p>
+<h1 id="abstract">Abstract</h1>
+<p>共形对称发生在临界点，，但是在重整化群的相变点相撞的时候，这种对称性会消失。认为这种实平面的固定点将会变到复平面中。这篇工作，利用非厄米量子5态Potts模型，成功提取到了复平面的高度。</p>
+<span id="more"></span>
+<h1 id="the-potts-model">The Potts Model</h1>
+<p><span class="math display">$$\begin{align}
+H = -\sum_{&lt;ij&gt;}J(\theta_{ij})
+\end{align}$$</span></p>
+<p>planar Potts model: <span class="math display">$$\begin{align}
+\theta_{ij}=&amp;\theta_{n_i}-\theta_{n_j} \\
+J(\theta) =&amp; -\epsilon_1\cos \theta_{ij}
+\end{align}$$</span></p>
+<p>standard Potts model (simply the Potts model): <span
+class="math display">$$\begin{align}
+J(\theta_{ij}) =&amp; \epsilon_2\delta(n_i, n_j)
+\end{align}$$</span></p>
+<p>以下讨论针对标准的Potts模型。分别用转移矩阵、乘积展开、染色多项式三种方法，得到配分函数。</p>
+<ol type="1">
+<li><p>转移矩阵法 <span
+class="math display"><em>Z</em><sub><em>N</em></sub> = Tr <em>V</em><sup><em>N</em></sup></span></p>
+<p>其中 $$ $$</p>
+<p>于是配分函数也就是 <span
+class="math display"><em>Z</em><sub><em>N</em></sub> = (<em>e</em><sup><em>β</em><em>J</em></sup> + <em>q</em> − 1)<sup><em>N</em></sup> + (<em>q</em> − 1)(<em>e</em><sup><em>β</em><em>J</em></sup> − 1)<sup><em>N</em></sup></span></p></li>
+<li><p>乘积展开 <span class="math display">$$
+\begin{aligned}
+Z_N &amp; =\sum_{\{\sigma\}} \exp \left[\beta J \sum_{\langle i
+j\rangle} \delta\left(\sigma_i, \sigma_j\right)\right] \\
+&amp; =\sum_{\{\sigma\}} \prod_{\langle i j\rangle}\left[1+v
+\delta\left(\sigma_i, \sigma_j\right)\right]
+\end{aligned}
+$$</span></p>
+<p>其中 <span
+class="math inline"><em>v</em> = <em>e</em><sup><em>β</em><em>J</em></sup> − 1</span>
+。</p></li>
+</ol>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/101045691">关于Pottes
+Model相变精确解，与纽结理论的联系</a></p>
+<h1 id="append">Append</h1>
+<h2 id="共形对称">共形对称</h2>
+<p>共形对称（Conformal
+symmetry）是一种特殊类型的全局对称性，它指的是一个理论或系统在共形变换下保持不变的性质。</p>
+<p>共形变换是一类特殊的坐标变换，它们不仅包括了普通的平移和旋转，还包括了尺度变换（即缩放）和特殊的非线性变换。共形对称在物理学中尤其重要，因为它通常与系统的尺度不变性相关联，这意味着物理规律在不同的长度尺度上都是相同的。</p>
+<h2 id="高低温展开">高低温展开</h2>
+<p><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/409549219">Ising模型与Duality——相变温度</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/409603668">Ising模型与Duality——特殊的相变</a></p>
+<p><a
+target="_blank" rel="noopener" href="https://ocw.mit.edu/courses/8-334-statistical-mechanics-ii-statistical-physics-of-fields-spring-2014/pages/lecture-notes/">MIT
+notes</a></p>
+<p>以2-D Ising 模型为例，配分函数写为： <span
+class="math display"><em>Z</em> = ∑<sub>{<em>s</em><sub><em>i</em></sub>}</sub>exp (−<em>β</em><em>H</em>) = ∑<sub>{<em>s</em><sub><em>i</em></sub>}</sub>exp (<em>K</em>∑<sub> &lt; <em>i</em>, <em>j</em>&gt;</sub><em>s</em><sub><em>i</em></sub><em>s</em><sub><em>j</em></sub>)</span>
+其中<span
+class="math inline"><em>K</em> = <em>β</em><em>J</em></span>。</p>
+<p>高温展开，即<span class="math inline"><em>K</em> → 0</span>为： <span
+class="math display">$$\begin{equation}
+\begin{aligned}
+Z= &amp; \sum_{\left\{s_i\right\}} \prod_{&lt;i, j&gt;} \exp \left(K s_i
+s_j\right) \\
+= &amp; \sum_{\left\{s_i\right\}} \prod_{&lt;i, j&gt;}\left[\sinh
+\left(K s_i s_j\right)+\cosh \left(K s_i s_j\right)\right] \\
+= &amp; (\cosh K)^{2 N} \sum_{\left\{s_i\right\}} \prod_{&lt;i,
+j&gt;}\left[1+s_i s_j \tanh K\right] \\
+= &amp; (\cosh K)^{2 N}\left[\sum_{\left\{s_i\right\}} 1+\tanh K
+\sum_{\left\{s_i\right\}&lt;i, j&gt;} s_i s_j
++(\tanh K)^2 \sum_{\left\{s_i\right\}} \sum_{&lt;i, j&gt;} \sum_i s_j
+s_n s_m+\cdots \right ]\\
+=&amp; (\cosh K)^{2 N} 2^N\left[1+N(\tanh K)^4+2 N(\tanh K)^6 +(4
+N+N(N-5))(\tanh K)^8 \cdots\right]
+\end{aligned}
+\end{equation}$$</span></p>
+<figure>
+<img src="./ap2-1.png" alt="高温展开" />
+<figcaption aria-hidden="true">高温展开</figcaption>
+</figure>
+<p>低温展开，即<span
+class="math inline"><em>K</em> → +∞</span>，零温极限： <span
+class="math display"><em>Z</em> = 2<em>e</em><sup>2<em>K</em><em>N</em></sup>[1 + <em>N</em>exp (−2<em>K</em>)<sup>4</sup> + 2<em>N</em>exp (−2<em>K</em>)<sup>6</sup> + (4<em>N</em> + (<em>N</em> − 5)<em>N</em>)exp (−2<em>K</em>)<sup>8</sup>⋯]</span>
+<img src="./ap2-2.png" alt="低温展开" /></p>
+<h3 id="对偶">对偶</h3>
+<p>至此我们已经发现对于正方格点上的二维Ising模型,
+高温理论的形式与低温理论一致。我们可以在热力学极限下计算自由能 <span
+class="math display">$$
+F=-\frac{\ln Z}{N}=-\ln 2-2 \ln \cosh K-g(\tanh K)=-2 K-g(\exp (-2 K))
+$$</span></p>
+<p>后面两项分别是高温展开的自由能与低温展开的自由能。其中 <span
+class="math inline"><em>g</em>(<em>x</em>) = ln (1 + <em>N</em><em>x</em><sup>4</sup> + 2<em>N</em><em>x</em><sup>6</sup>⋯)/<em>N</em></span>.
+我们知道 2 维Ising模型只有两相, 也就是自由能有且只有一个奇异点。也就是
+<span class="math inline">g(x)</span>
+有且只有一个奇异点。对于上面两个表达式, 奇异点对应的 <span
+class="math inline"><em>K</em><sub><em>c</em></sub></span>
+一定相同.那就意味着 <span class="math display">$$
+\begin{aligned}
+\tanh K_c &amp; =\exp \left(-2 K_c\right) \\
+\exp \left(4 K_c\right)-2 \exp \left(2 K_c\right)-1 &amp; =0 \\
+K_c &amp; =\frac{\ln (1+\sqrt{2})}{2} \approx 0.4407
+\end{aligned}
+$$</span></p>
+<h2 id="dual-lattice">dual lattice</h2>
+<figure>
+<img src="./ap3-1.png" alt="dual lattice" />
+<figcaption aria-hidden="true">dual lattice</figcaption>
+</figure>
+<p>上图实心格点表示原晶格，然后在原格点围城的最小面积上，构造一个新的格点，用空心原点表示，代表对偶晶格。</p>
+<p>在几何上将原晶格和对偶晶格联系起来，如下图所示，其中格点内的正负代表原晶格，如果反平行边线用实线条连接，平行则不连接。这样便可以把格点转化为图进行研究。</p>
+<figure>
+<img src="./ap3-2.png" alt="dual lattice" />
+<figcaption aria-hidden="true">dual lattice</figcaption>
+</figure>
+<h2 id="self-duality">Self-duality</h2>
+<p>高温展开与低温展开在无限项的情况下是严格的，因此其对应的相应该有相同的关系。利用自对偶的性质求解相变温度。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Potts-Model/" rel="tag"># Potts Model</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/" rel="prev" title="Deconstructing Denoising Diffusion Models for Self-Supervised Learning">
+      <i class="fa fa-chevron-left"></i> Deconstructing Denoising Diffusion Models for Self-Supervised Learning
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/04/08/Math/KL_divergence_in_code/KL_divergence_in_code/" rel="next" title="KL散度在VAE中的代码实现">
+      KL散度在VAE中的代码实现 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#abstract"><span class="nav-number">1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#the-potts-model"><span class="nav-number">2.</span> <span class="nav-text">The Potts Model</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#append"><span class="nav-number">3.</span> <span class="nav-text">Append</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B1%E5%BD%A2%E5%AF%B9%E7%A7%B0"><span class="nav-number">3.1.</span> <span class="nav-text">共形对称</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%AB%98%E4%BD%8E%E6%B8%A9%E5%B1%95%E5%BC%80"><span class="nav-number">3.2.</span> <span class="nav-text">高低温展开</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%B9%E5%81%B6"><span class="nav-number">3.2.1.</span> <span class="nav-text">对偶</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dual-lattice"><span class="nav-number">3.3.</span> <span class="nav-text">dual lattice</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#self-duality"><span class="nav-number">3.4.</span> <span class="nav-text">Self-duality</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

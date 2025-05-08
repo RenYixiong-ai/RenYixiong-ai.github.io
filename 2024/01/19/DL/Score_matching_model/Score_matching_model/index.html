@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="简介 这篇文章主要描述基于得分匹配（Score matching model）的想法，以及之后主要的修改思路。这种思路是生成模型的一种，与GAN、normal-flow等模型具备同样的功能。 本篇文章大量借鉴棒棒生博客，推荐阅读原文博客。本文章在其基础上加入一些作者本人的思考，并且统一符号，增加阅读流畅性。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Score matching model">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/01/19/DL/Score_matching_model/Score_matching_model/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="简介 这篇文章主要描述基于得分匹配（Score matching model）的想法，以及之后主要的修改思路。这种思路是生成模型的一种，与GAN、normal-flow等模型具备同样的功能。 本篇文章大量借鉴棒棒生博客，推荐阅读原文博客。本文章在其基础上加入一些作者本人的思考，并且统一符号，增加阅读流畅性。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/01/19/DL/Score_matching_model/Score_matching_model/gradient.png">
+<meta property="article:published_time" content="2024-01-19T09:08:51.000Z">
+<meta property="article:modified_time" content="2025-05-08T10:09:55.274Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Score matching model">
+<meta property="article:tag" content="Explicit Score Matching">
+<meta property="article:tag" content="Implicit Score Matching">
+<meta property="article:tag" content="Denoising Score Matching">
+<meta property="article:tag" content="Sliced Score Matching">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/01/19/DL/Score_matching_model/Score_matching_model/gradient.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/01/19/DL/Score_matching_model/Score_matching_model/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Score matching model | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/01/19/DL/Score_matching_model/Score_matching_model/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Score matching model
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-01-19 17:08:51" itemprop="dateCreated datePublished" datetime="2024-01-19T17:08:51+08:00">2024-01-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-08 18:09:55" itemprop="dateModified" datetime="2025-05-08T18:09:55+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>9.5k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>17 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="简介">简介</h1>
+<p>这篇文章主要描述基于得分匹配（Score matching
+model）的想法，以及之后主要的修改思路。这种思路是生成模型的一种，与GAN、normal-flow等模型具备同样的功能。</p>
+<p>本篇文章大量借鉴<a
+target="_blank" rel="noopener" href="https://bobondemon.github.io/2022/01/08/Estimation-of-Non-Normalized-Statistical-Models-by-Score-Matching/">棒棒生博客</a>，推荐阅读原文博客。本文章在其基础上加入一些作者本人的思考，并且统一符号，增加阅读流畅性。</p>
+<span id="more"></span>
+<h1 id="得分匹配算法score-matching-model">得分匹配算法（Score matching
+model）</h1>
+<p>得分匹配这种思想首先发表于论文–Estimation of Non-Normalized
+Statistical Models by Score Matching。</p>
+<h2 id="拟合目标">拟合目标</h2>
+<p>图像、声音、热力学过程等在数学形式上应该是一种概率分布，想要模仿生成相应的事物需要的就是能够得知这种概率分布。但是这种概率分布往往在一个高维空间，难以凭借人类的经验直接获得，因此此时借助神经网络的拟合能力，完成概率密度分布函数的拟合。</p>
+<p>利用 <span class="math inline">$\bf{x}$</span>
+生成一个随机的目标概率密度分布 <span
+class="math inline">$p_{\bf{x}}(\cdot)$</span>，接下来尝试拟合该目标函数，拟合函数的概率密度分布记为<span
+class="math inline"><em>p</em>(⋅; <em>θ</em>)</span>，其中<span
+class="math inline"><em>θ</em></span>是一个m维空间的向量。目标是从<span
+class="math inline">$\bf{x}$</span>中估计<span
+class="math inline"><em>θ</em></span>。</p>
+<p>将拟合函数<span
+class="math inline"><em>p</em>(⋅; <em>θ</em>)</span>进一步分解开来：
+<span
+class="math display">$$p(\xi;\theta)=\frac{1}{Z(\theta)}q(\xi;\theta)$$</span>
+其中：<span
+class="math inline"><em>Z</em>(<em>θ</em>) = ∫<sub><em>ξ</em> ∈ ℝ<sup><em>n</em></sup></sub><em>q</em>(<em>ξ</em>; <em>θ</em>)d<em>ξ</em></span>。这样只需要生成函数<span
+class="math inline"><em>q</em>(⋅; <em>θ</em>)</span>，不需要关心归一化的问题。</p>
+<p>通常非归一化采样的方法是马尔科夫链蒙特卡洛模拟。典型的是Ising模型的模拟过程。在得到一系列数据<span
+class="math inline">{<em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, <em>x</em><sub>3</sub>...}</span>后，使用极大似然估计方法（Maximum
+Likelihood Estimation, MLE）估计<span
+class="math inline"><em>θ</em></span>： <span
+class="math display">$$\theta_{MLE}=\text{argmax}_{\theta}\sum_{t=1}^T
+\text{ln} p(x_t;\theta)$$</span></p>
+<p>然而在实际中这种方案是行不通的，因为配分函数<span
+class="math inline"><em>Z</em>(<em>θ</em>)</span>难以计算。计算配分函数是一块难啃的骨头，许多物理学上的困难本质就是来源于如何高效计算配分函数，因此很多方法例如高温展开、信念传播算法等本质就是在解决如何在牺牲一些精确性的条件下，高效计算配分函数。</p>
+<p>直接计算存在困难，并且配分函数作为一个仅仅为<span
+class="math inline"><em>θ</em></span>的函数存在，那就转而计算梯度，试图将配分函数在求梯度的过程中磨消。定义：</p>
+<p><span class="math display">$$
+\psi(\xi;\theta)=
+    \left(
+        \begin{matrix}
+            \frac{\partial ln p(\xi;\theta)}{\partial \xi_1} \\
+            \cdots \\
+            \frac{\partial ln p(\xi;\theta)}{\partial \xi_n}
+        \end{matrix}
+    \right)
+=
+    \left(
+        \begin{matrix}
+            \psi_1 (\xi;\theta) \\
+            \cdots \\
+            \psi_n (\xi;\theta)
+        \end{matrix}
+    \right)
+=\nabla_\xi ln p(\xi;\theta)
+$$</span></p>
+<p>本质上求偏导并不依赖于<span
+class="math inline"><em>Z</em>(<em>θ</em>)</span>，可以获得： <span
+class="math display"><em>ψ</em>(<em>ξ</em>; <em>θ</em>) = ∇<sub><em>ξ</em></sub><em>l</em><em>n</em><em>q</em>(<em>ξ</em>; <em>θ</em>)</span></p>
+<figure>
+<img src="./gradient.png" title="考虑一个分布的梯度图像"
+alt="梯度图片" />
+<figcaption aria-hidden="true">梯度图片</figcaption>
+</figure>
+<p>上方是一个分布的梯度图像，可以看出如果梯度方向大小均相同的情况下，两个应该是同一种分布。这里可以通过分析下面的函数得到，如果<span
+class="math inline"><em>J</em>(<em>θ</em>) = 0</span>,由于<span
+class="math inline"><em>p</em><sub><em>x</em></sub>(<em>ξ</em>) ≥ 0</span>，必然存在<span
+class="math inline"><em>ψ</em>(<em>ξ</em>; <em>θ</em>) − <em>ψ</em><sub><em>x</em></sub>(<em>ξ</em>) ≡ 0</span>，则说明<span
+class="math inline"><em>θ</em> = <em>θ</em><sup>*</sup></span>，成功学习到分布。这也证明了解的存在唯一性。</p>
+<h2
+id="直观的目标函数explicit-score-matchingesm">直观的目标函数（Explicit
+Score Matching，ESM）</h2>
+<p>将任务目标函数写为考虑两个函数的梯度的均方误差(MSE)： <span
+class="math display">$$\begin{equation} J_{ESM}(\theta)=\frac{1}{2}
+\int_{\xi\in\mathbb{R}^n}p_x(\xi)||\psi(\xi;\theta)-\psi_x(\xi)||^2\mathrm{d}\xi
+\end{equation}$$</span> 其中<span
+class="math inline"><em>ψ</em><sub><em>x</em></sub>(<em>ξ</em>) = ∇<sub><em>ξ</em></sub><em>l</em><em>n</em><em>p</em><sub><em>x</em></sub>(<em>ξ</em>)</span>，为目标概率密度分布的梯度分布。优化目标为：
+<span
+class="math display"><em>θ̂</em> = argmax<sub><em>θ</em></sub><em>J</em>(<em>θ</em>)</span></p>
+<p>可以通过重要性采样得到<span
+class="math inline"><em>T</em></span>个数据点<span
+class="math inline">$\bf{x}(1), \bf{x}(2)
+\cdots\bf{x}(T)$</span>，从而计算经验期望值： <span
+class="math display">$$\begin{equation}
+\tilde{J}_{ESM}(\theta)=\frac{1}{T}\sum_{t=1}^T\sum_{i=1}^n[\psi(\xi;\theta)-\psi_x(\xi)]^2
+\end{equation}$$</span></p>
+<h2
+id="隐藏的目标函数implicit-score-matchingism">隐藏的目标函数（Implicit
+Score Matching，ISM）</h2>
+<p>在计算均方误差的时候，需要知道<span
+class="math inline"><em>ψ</em><sub><em>x</em></sub>(<em>ξ</em>)</span>，然而知道确切的目标函数形式是不可能的。因此，虽然以上逻辑是合理的，但是本质上是不计算实施的，需要进行一定的调整。
+<span class="math display">$$
+\begin{align*}
+J(\theta)&amp;=\frac{1}{2}
+\int_{\xi\in\mathbb{R}^n}p_x(\xi)||\psi(\xi;\theta)-\psi_x(\xi)||^2\mathrm{d}\xi
+\\
+&amp;=\int_{\xi\in\mathbb{R}^n}p_x(\xi)[\frac{1}{2}
+\psi(\xi;\theta)^2+\frac{1}{2}
+\psi_x(\xi)^2-\psi(\xi;\theta)\psi_x(\xi)]\mathrm{d}\xi \\
+\end{align*}
+$$</span></p>
+<p>针对后一部分结果进行简化，将<span
+class="math inline"><em>ψ</em></span>展开为具体的第<span
+class="math inline"><em>i</em></span>部分： <span
+class="math display">$$
+\begin{align*}
+&amp;\int_{\xi\in\mathbb{R}^n}-p_x(\xi)\psi(\xi;\theta)\psi_x(\xi)\mathrm{d}\xi
+\\
+&amp;=
+-\sum_i\int_{\xi\in\mathbb{R}^n}p_x(\xi)\psi_i(\xi;\theta)\psi_{x,i}(\xi)\mathrm{d}\xi
+\\
+&amp;=-\sum_i\int_{\xi\in\mathbb{R}^n}p_x(\xi)\psi_i(\xi;\theta)\frac{\partial\psi_{x}(\xi)}{\partial
+\xi_i} \mathrm{d}\xi \\
+&amp;=-\sum_i\int_{\xi\in\mathbb{R}^n}p_x(\xi)\psi_i(\xi;\theta)\frac{\partial
+ln p_x(\xi)}{\partial \xi_i} \mathrm{d}\xi \\
+&amp;=-\sum_i\int_{\xi\in\mathbb{R}^n}\psi_i(\xi;\theta)\frac{\partial
+p_x(\xi)}{\partial \xi_i} \mathrm{d}\xi \\
+&amp;=-\sum_i\left[ \psi_i(\xi;\theta)p_x(\xi)
+|_{\xi_i=-\infty}^{\xi_i=\infty} - \int_{\xi\in\mathbb{R}^n}
+p_x(\xi)\frac{\partial \psi_i(\xi;\theta)}{\partial \xi_i} \mathrm{d}\xi
+\right]\\
+\end{align*}
+$$</span></p>
+<p>将其中第一部分进行更详细的展开： <span class="math display">$$
+\begin{align*}
+\psi_1(\xi;\theta)p_x(\xi) |_{\xi_1=-\infty}^{\xi_1=\infty}
+&amp;=  \lim\limits_{a\to
+\infty,b\to\infty}[\psi(a,\xi_2\cdots\xi_n;\theta)p_x(a,\xi_2\cdots\xi_n;\theta)-\psi(b,\xi_2\cdots\xi_n;\theta)p_x(b,\xi_2\cdots\xi_n;\theta)]
+\\
+&amp;= 0
+\end{align*}
+$$</span> 后面的原因来源于一个简单的假设，当<span
+class="math inline">||<em>ξ</em>|| → ∞</span>： <span
+class="math display"><em>p</em><sub><em>x</em></sub>(<em>ξ</em>)<em>ψ</em>(<em>ξ</em>; <em>θ</em>) → 0</span></p>
+<p>可以这样理解该假设，当采样数量巨大或者分布为连续，单一采样所占概率分布很小，可以视为直接为0。因此得到最后的结果：
+<span class="math display">$$
+\begin{align*}
+\int_{\xi\in\mathbb{R}^n}-p_x(\xi)\psi(\xi;\theta)\psi_x(\xi)\mathrm{d}\xi
+&amp;=\sum_i \int_{\xi\in\mathbb{R}^n} p_x(\xi)\frac{\partial
+\psi_i(\xi;\theta)}{\partial \xi_i} \mathrm{d}\xi\\
+&amp;=\int_{\xi\in\mathbb{R}^n} p_x(\xi)\partial_{i} \psi_i(\xi;\theta)
+\mathrm{d}\xi\\
+\end{align*}
+$$</span></p>
+<p>$$ $$</p>
+<p>其中第二项为目标函数的积分，结果应该为一个常数，对于优化目标函数来说一个常数并没有实际意义，因此可以直接消去：
+<span class="math display">$$
+\begin{align}
+J_{ISM}(\theta) &amp;= \int_{\xi\in\mathbb{R}^n}p_x(\xi)[\frac{1}{2}
+\psi(\xi;\theta)^2+\partial_{i} \psi_i(\xi;\theta)]\mathrm{d}\xi \\
+&amp;= \mathbb{E}_{p_x(\xi)}[\frac{1}{2}
+\psi(\xi;\theta)^2+\text{tr}(\nabla_{\xi} \psi_{\xi}(\xi;\theta))] \\
+\tilde{J}_{ISM}(\theta) &amp;=
+\frac{1}{T}\sum_{t=1}^T\sum_{i=1}^n[\frac{1}{2}
+\psi(x_t;\theta)^2+\partial_{i} \psi_i(x_t;\theta)]
+\end{align}
+$$</span></p>
+<h2 id="总结">总结</h2>
+<p>首先通过概率密度分布拟合明确了任务目标，通过调节参数<span
+class="math inline"><em>θ</em></span>使得<span
+class="math inline">$p_{\bf X}(\cdot)$</span>与<span
+class="math inline"><em>p</em>(⋅; <em>θ</em>)</span>分布尽可能相同。但是直接计算<span
+class="math inline"><em>p</em>(⋅; <em>θ</em>)</span>存在困难，因此将任务目标进行改变，转而寻<strong>求概率分布密度函数的梯度</strong>尽可能相似。然后求解公式中包含目标函数，无法直接求解，通过分布积分的方法转化为只需要拟合函数便可以求解。</p>
+<p>然而在计算ISM的时候存在两点问题： *
+需要计算二次导数，这会导致计算图大小升高 *
+当输入数据维度很大的时候很难处理</p>
+<h1 id="噪声得分匹配denoising-score-matchingdsm">噪声得分匹配（Denoising
+Score Matching，DSM）</h1>
+<p>本算法的思想来源于A Connection Between Score Matching and Denoising
+Autoencoders。</p>
+<p>DSM的提出，可以很好的解决ISM存在的两个问题。</p>
+<h2 id="噪声">噪声</h2>
+<p>将目标函数加入噪声 <span
+class="math inline"><em>p</em><sub><em>x</em><sub><em>σ</em></sub></sub></span>，其中<span
+class="math inline"><em>σ</em></span>表示噪声，那么ESM与ISM可以改写为：</p>
+<p><span class="math display">$$
+\begin{align}
+J_{ESM,p_{\sigma}}(\theta) &amp;=\mathbb{E}_{p_\sigma(\xi)}\left[
+\frac{1}{2} ||\psi(\xi;\theta)-\psi_{x_\sigma}(\xi)||^2\right] \\
+&amp;= \mathbb{E}_{p_\sigma(\xi)}\left[ \frac{1}{2}
+||\psi(\xi;\theta)-\frac{\partial ln p_{\sigma}(\xi)}{\partial
+\xi}||^2\right] \\
+J_{ISM,p_\sigma}(\theta) &amp;= \mathbb{E}_{p_\sigma(\xi)}\left[
+\frac{1}{2} \psi(\xi;\theta)^2+\text{tr}(\nabla_{\xi} \psi
+(\xi;\theta))\right] \\
+\end{align}
+$$</span></p>
+<p>这两个式子在变化前后，形式基本一样。区别的地方那个在于学习的目标函数区别，后者学习的目标函数是包含噪音之后的目标函数。而且可以看出，在变化之后，同样计算二阶导数，计算难度依然没有发生改变。</p>
+<p>引入联合概率密度分布<span class="math inline">$p_\sigma(\tilde{\bf
+x}, {\bf x})=p_\sigma(\tilde{\bf x}|{\bf x})p_0({\bf
+x})$</span>，其中<span
+class="math inline"><em>x̃</em></span>是在准确分布<span
+class="math inline"><em>x</em></span>基础上的随机取值，定义噪音得分匹配(DSM)：</p>
+<p><span class="math display">$$
+J_{DSM,p_{\sigma}}(\theta)=\mathbb{E}_{p_\sigma(\tilde x,x)}\left[
+\frac{1}{2} ||\psi(\tilde x;\theta)-\frac{\partial ln p_{\sigma}(\tilde
+x|x)}{\partial \tilde x}||^2\right]
+$$</span></p>
+<p>假设为高斯核函数关系<span class="math inline">$p_\sigma(\tilde
+x|x)=e^{-\frac{||x-\tilde x||^2}{2\sigma^2}}$</span>：</p>
+<p><span class="math display">$$
+\frac{\partial p_{\sigma}(\tilde x|x)}{\partial \tilde x} =
+\frac{x-\tilde x}{\sigma^2}
+$$</span></p>
+<p>因此： <span class="math display">$$
+\begin{equation}
+J_{DSM,p_{\sigma}}(\theta)=\mathbb{E}_{p_\sigma(\tilde x,x)}\left[
+\frac{1}{2} ||\psi(\tilde x;\theta)-\frac{x-\tilde
+x}{\sigma^2}||^2\right]
+\end{equation}
+$$</span></p>
+<p>可以发现，在通过引入噪声函数之后，成功避免了二次导数的计算。然而DSM的引入是直接定义，并没有证明ESM的等价性。</p>
+<h2 id="等价性证明">等价性证明</h2>
+<p><span class="math display">$$
+\begin{align*}
+J_{ESM,p_{\sigma}}(\theta) &amp;= \mathbb{E}_{p_\sigma(\tilde x)}\left[
+\frac{1}{2} ||\psi(\tilde x;\theta)-\frac{\partial ln p_{\sigma}(\tilde
+x)}{\partial \tilde x}||^2\right] \\
+&amp;= \mathbb{E}_{p_\sigma(\tilde x)}\left[ \frac{1}{2} ||\psi(\tilde
+x;\theta)||^2\right]-S(\theta)+C_2\\
+\end{align*}
+$$</span></p>
+<p>其中<span class="math inline">$C_2=\mathbb{E}_{p_\sigma(\tilde
+x)}\left[ \frac{1}{2}||\frac{\partial ln p_{\sigma}(\tilde x)}{\partial
+\tilde x}||^2 \right]$</span>，并不依赖于参数<span
+class="math inline"><em>θ</em></span>，可以直接忽略。</p>
+<p><span class="math display">$$
+\begin{align*}
+S(\theta) &amp;= \mathbb{E}_{p_\sigma(\tilde x)} \left[
+&lt;\psi(\tilde{\bf x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf
+x})}{\partial \tilde{\bf x}}&gt; \right] \\
+&amp;= \int_{\tilde{\bf x}} p_\sigma(\tilde{\bf x})&lt;\psi(\tilde{\bf
+x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf x})}{\partial \tilde{\bf
+x}}&gt; \mathrm{d}\tilde{\bf x} \\
+&amp;= \int_{\tilde{\bf x}} p_\sigma(\tilde{\bf x})&lt;\psi(\tilde{\bf
+x};\theta),\frac{1}{p_\sigma(\tilde{\bf x})} \frac{\partial
+p_\sigma(\tilde{\bf x})}{\partial \tilde{\bf x}}&gt;
+\mathrm{d}\tilde{\bf x} \\
+&amp;= \int_{\tilde{\bf x}} &lt;\psi(\tilde{\bf x};\theta),
+\frac{\partial p_\sigma(\tilde{\bf x})}{\partial \tilde{\bf x}}&gt;
+\mathrm{d}\tilde{\bf x} \\
+&amp;= \int_{\tilde{\bf x}} &lt;\psi(\tilde{\bf x};\theta),
+\frac{\partial \int_{\bf x} p_\sigma(\tilde{\bf x}|{\bf x})p_\sigma({\bf
+x})\mathrm{d}{\bf x}}{\partial \tilde{\bf x}}&gt; \mathrm{d}\tilde{\bf
+x} \\
+&amp;= \int_{\tilde{\bf x}} \int_{\bf x} p_\sigma({\bf
+x})&lt;\psi(\tilde{\bf x};\theta), \frac{\partial p_\sigma(\tilde{\bf
+x}|{\bf x})}{\partial \tilde{\bf x}}&gt; \mathrm{d}{\bf x}
+\mathrm{d}\tilde{\bf x} \\
+&amp;= \int_{\tilde{\bf x}} \int_{\bf x} p_\sigma({\bf
+x})p_\sigma(\tilde{\bf x}|{\bf x})&lt;\psi(\tilde{\bf x};\theta),
+\frac{\partial ln p_\sigma(\tilde{\bf x}|{\bf x})}{\partial \tilde{\bf
+x}}&gt; \mathrm{d}{\bf x} \mathrm{d}\tilde{\bf x} \\
+&amp;= \int_{\tilde{\bf x}} \int_{\bf x} p_\sigma(\tilde{\bf x},{\bf
+x})&lt;\psi(\tilde{\bf x};\theta), \frac{\partial ln p_\sigma(\tilde{\bf
+x}|{\bf x})}{\partial \tilde{\bf x}}&gt; \mathrm{d}{\bf x}
+\mathrm{d}\tilde{\bf x} \\
+&amp;= \mathbb{E}_{p_\sigma(\tilde x, x)} \left[ &lt;\psi(\tilde{\bf
+x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf x}|{\bf x})}{\partial
+\tilde{\bf x}}&gt; \right] \\
+\end{align*}
+$$</span></p>
+<p>从而得到： <span class="math display">$$
+\begin{align*}
+J_{ESM,p_{\sigma}}(\theta) &amp;= \mathbb{E}_{p_\sigma(\tilde x)}\left[
+\frac{1}{2} ||\psi(\tilde
+x;\theta)||^2\right]-\mathbb{E}_{p_\sigma(\tilde x, x)} \left[
+&lt;\psi(\tilde{\bf x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf
+x}|{\bf x})}{\partial \tilde{\bf x}}&gt; \right]+C_2\\
+\end{align*}
+$$</span></p>
+<p>另一方面，针对DSM进行分解： <span class="math display">$$
+\begin{align*}
+J_{DSM,p_{\sigma}}(\theta)&amp;=\mathbb{E}_{p_\sigma(\tilde x,x)}\left[
+\frac{1}{2} ||\psi(\tilde x;\theta)-\frac{\partial ln p_{\sigma}(\tilde
+x|x)}{\partial \tilde x}||^2\right] \\
+&amp;= \mathbb{E}_{p_\sigma(\tilde x)}\left[ \frac{1}{2} ||\psi(\tilde
+x;\theta)||^2 \right]-\mathbb{E}_{p_\sigma(\tilde x, x)} \left[
+&lt;\psi(\tilde{\bf x};\theta),\frac{\partial lnp_\sigma(\tilde{\bf
+x}|{\bf x})}{\partial \tilde{\bf x}}&gt; \right]+C_3
+\end{align*}
+$$</span></p>
+<p>其中<span class="math inline">$C_3=\mathbb{E}_{p_\sigma(\tilde x,
+x)}\left[\frac{1}{2}||\frac{\partial ln p_{\sigma}(\tilde x|x)}{\partial
+\tilde x}||^2\right]$</span>，同样不依赖于<span
+class="math inline"><em>θ</em></span>参数，可以认为是一个常量。因此可以得到DSM与ESM的关系：
+<span class="math display">$$
+\begin{align}
+J_{DSM,p_{\sigma}}(\theta) = J_{ESM,p_{\sigma}}(\theta)-C_3+C_2
+\end{align}
+$$</span></p>
+<p>其中<span
+class="math inline"><em>C</em><sub>2</sub>, <em>C</em><sub>3</sub></span>与优化目标<span
+class="math inline"><em>θ</em></span>无关，因此可以直接忽略。因此可以证明两者是等价的。</p>
+<h2 id="总结与分析">总结与分析</h2>
+<p>相对于ESM方法，引入噪音简化二阶偏导为一个关于方差<span
+class="math inline"><em>σ</em></span>的函数。并且成功证明，两者等价。</p>
+<p>然而这个方法存在一些问题： * 学习到的是加上噪音之后的分布，不是原分布
+* 加入的方差<span class="math inline"><em>σ</em></span>很难控制调整</p>
+<h1 id="切片匹配得分sliced-score-matchingssm">切片匹配得分（Sliced Score
+Matching，SSM）</h1>
+<p>来源于文章——Sliced Score Matching: A Scalable Approach to Density and
+Score Estimation。</p>
+<h2 id="降维思想">降维思想</h2>
+<p>直接对梯度进行比较，会因为维度较高产生问题，可以尝试通过一个函数<span
+class="math inline"><em>V</em></span>，将高维度映射到低纬度上。</p>
+<p><span class="math display">$$
+\begin{align*}
+J_{SSM}(\theta)&amp;=\mathbb{E}_{\xi}\left[\frac{1}{2}||{\bf v}^T
+\psi(\xi;\theta)- {\bf v}^T\psi_x(\xi)||^2\right]\\
+&amp;= \mathbb{E}_{p_x(\xi)}[\frac{1}{2} {\bf v}^T \psi(\xi;\theta)^2
+{\bf v}+\text{tr}({\bf v}^T\nabla_{\xi} \psi_{\xi}(\xi;\theta){\bf v})]
+\\
+\end{align*}
+$$</span></p>
+<p>要求<span class="math inline">${\bf v}\sim p_v, \mathbb{E}_{p_v}[{\bf
+v}{\bf v}^T]&gt;0, \mathbb{E}_{p_v}[||{\bf
+v}||^2_2]&lt;\infty$</span>，这是因为需要最后出一个与<span
+class="math inline"><em>θ</em></span>无关的常数。这种分布也是容易找到的，例如正态分布、均匀分布等。</p>
+<!--
+# Score Matching model with Langevin Dynamics
+
+The idea from paper -- Generative Modeling by Estimating Gradients of the
+Data Distribution.
+
+## Langevin Dynamics
+-->
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Score-matching-model/" rel="tag"># Score matching model</a>
+              <a href="/tags/Explicit-Score-Matching/" rel="tag"># Explicit Score Matching</a>
+              <a href="/tags/Implicit-Score-Matching/" rel="tag"># Implicit Score Matching</a>
+              <a href="/tags/Denoising-Score-Matching/" rel="tag"># Denoising Score Matching</a>
+              <a href="/tags/Sliced-Score-Matching/" rel="tag"># Sliced Score Matching</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/" rel="prev" title="Boltzmann Machine">
+      <i class="fa fa-chevron-left"></i> Boltzmann Machine
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/01/22/DL/diffusion_process/diffusion_process/" rel="next" title="Deep Unsupervised Learning using Nonequilibrium Thermodynamics">
+      Deep Unsupervised Learning using Nonequilibrium Thermodynamics <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BE%97%E5%88%86%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95score-matching-model"><span class="nav-number">2.</span> <span class="nav-text">得分匹配算法（Score matching
+model）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8B%9F%E5%90%88%E7%9B%AE%E6%A0%87"><span class="nav-number">2.1.</span> <span class="nav-text">拟合目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B4%E8%A7%82%E7%9A%84%E7%9B%AE%E6%A0%87%E5%87%BD%E6%95%B0explicit-score-matchingesm"><span class="nav-number">2.2.</span> <span class="nav-text">直观的目标函数（Explicit
+Score Matching，ESM）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E7%9A%84%E7%9B%AE%E6%A0%87%E5%87%BD%E6%95%B0implicit-score-matchingism"><span class="nav-number">2.3.</span> <span class="nav-text">隐藏的目标函数（Implicit
+Score Matching，ISM）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.4.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%99%AA%E5%A3%B0%E5%BE%97%E5%88%86%E5%8C%B9%E9%85%8Ddenoising-score-matchingdsm"><span class="nav-number">3.</span> <span class="nav-text">噪声得分匹配（Denoising
+Score Matching，DSM）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%99%AA%E5%A3%B0"><span class="nav-number">3.1.</span> <span class="nav-text">噪声</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%89%E4%BB%B7%E6%80%A7%E8%AF%81%E6%98%8E"><span class="nav-number">3.2.</span> <span class="nav-text">等价性证明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%E4%B8%8E%E5%88%86%E6%9E%90"><span class="nav-number">3.3.</span> <span class="nav-text">总结与分析</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%87%E7%89%87%E5%8C%B9%E9%85%8D%E5%BE%97%E5%88%86sliced-score-matchingssm"><span class="nav-number">4.</span> <span class="nav-text">切片匹配得分（Sliced Score
+Matching，SSM）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%8D%E7%BB%B4%E6%80%9D%E6%83%B3"><span class="nav-number">4.1.</span> <span class="nav-text">降维思想</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="这篇文章研究机器学习过程中，隐藏层对数据的处理方式，发现数据在等几何定律的分离，并且可以观察到类别的出现，因此总结归纳了一个可以量化的规律。 Reference: * A law of data separation in deep learning * github地址">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A law of data separation in deep learning">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/11/07/CS/data_law/data_law/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="这篇文章研究机器学习过程中，隐藏层对数据的处理方式，发现数据在等几何定律的分离，并且可以观察到类别的出现，因此总结归纳了一个可以量化的规律。 Reference: * A law of data separation in deep learning * github地址">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/11/07/CS/data_law/data_law/1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/11/07/CS/data_law/data_law/2.png">
+<meta property="article:published_time" content="2024-11-07T03:57:00.000Z">
+<meta property="article:modified_time" content="2025-05-08T09:58:30.715Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Spin Glass">
+<meta property="article:tag" content="Fermi Bose Machine">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/11/07/CS/data_law/data_law/1.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/11/07/CS/data_law/data_law/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>A law of data separation in deep learning | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/11/07/CS/data_law/data_law/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          A law of data separation in deep learning
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-11-07 11:57:00" itemprop="dateCreated datePublished" datetime="2024-11-07T11:57:00+08:00">2024-11-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-08 17:58:30" itemprop="dateModified" datetime="2025-05-08T17:58:30+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>1.6k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>3 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这篇文章研究机器学习过程中，隐藏层对数据的处理方式，发现数据在等几何定律的分离，并且可以观察到类别的出现，因此总结归纳了一个可以量化的规律。</p>
+<p>Reference: * <a
+target="_blank" rel="noopener" href="https://www.pnas.org/doi/10.1073/pnas.2221704120">A law of data
+separation in deep learning</a> * <a
+target="_blank" rel="noopener" href="https://github.com/HornHehhf/Equi-Separation">github地址</a></p>
+<span id="more"></span>
+<p>其针对监督学习任务，接下来讨论的参数均是在同一层中，<span
+class="math inline"><em>x</em><sub><em>k</em><em>i</em></sub></span>表示第<span
+class="math inline"><em>k</em></span>个类别第<span
+class="math inline"><em>i</em></span>个输出值，<span
+class="math inline"><em>x̄</em><sub><em>k</em></sub></span>表示第<span
+class="math inline"><em>k</em></span>个类别的均值，<span
+class="math inline"><em>x̄</em></span>表示<span
+class="math inline"><em>k</em></span>个类别的均值。</p>
+<p>定义两个距离矩阵，首先是类别间(between)的距离<span
+class="math inline"><em>S</em><em>S</em><sub><em>b</em></sub></span>：
+<span class="math display">$$
+SS_b = \frac{1}{n}\sum_{k=1}^K n_k(\bar{x}_k - \bar{x})(\bar{x}_k -
+\bar{x})^T,
+$$</span> 其中<span
+class="math inline"><em>n</em></span>是总样本量，通过求<span
+class="math inline"><em>S</em><em>S</em><sub><em>b</em></sub></span>的逆（伪逆）可以定义类别间的相似性<span
+class="math inline"><em>S</em><em>S</em><sub><em>b</em></sub><sup>†</sup></span>。同时可以定义同一类(within)中的距离<span
+class="math inline"><em>S</em><em>S</em><sub><em>w</em></sub></span>：
+<span class="math display">$$
+SS_w = \frac{1}{n}
+\sum_{k-1}^K\sum_{i=1}^{n_k}(x_{ki}-\bar{x}_k)(x_{ki}-\bar{x}_k)^T.
+$$</span></p>
+<p>基于以上内容，定义距离上的“逆信噪比”： <span
+class="math display"><em>D</em> = Tr(<em>S</em><em>S</em><sub><em>w</em></sub><em>S</em><em>S</em><sub><em>b</em></sub><sup>†</sup>).</span></p>
+<p>将不同类别间的相似性作为信号，而统一类别间的距离作为噪音，这个量的设计十分自然。并且当<span
+class="math inline"><em>D</em></span>越小，代表分割越好。</p>
+<p>同时在这里我们需要提出一个问题，对于分类任务，类别在高维空间中如何分布是一个很好的构型，等价于我们该从哪几个指标评判在高维空间类别分布。这里引入概念<strong>Equiangular
+Tight Frame</strong>。</p>
+<blockquote>
+<p><a
+target="_blank" rel="noopener" href="https://www.pnas.org/doi/epdf/10.1073/pnas.2015509117">Prevalence
+of Neural Collapse during the terminal phase of deep learning
+training</a></p>
+</blockquote>
+<p>他要求向量具有如下的性质：</p>
+<ul>
+<li>等角性：任意两个不同的框架向量之间的内积绝对值相同。这样保证了最大的分离。</li>
+<li>紧框架：ETF
+满足能量在向量组中的“紧”分布，这意味着向量组能够均匀地表示信号，满足帧不等式的等式情况。该要求使得模型的鲁棒性质提升。</li>
+</ul>
+<p>在实验中发现：</p>
+<figure>
+<img src="./1.png" alt="SGD" />
+<figcaption aria-hidden="true">SGD</figcaption>
+</figure>
+<p>其中每幅图的纵坐标表示<span
+class="math inline"><em>D</em></span>，随着网络深度的加深，网络的分割能力越强。</p>
+<figure>
+<img src="./2.png" alt="SGD" />
+<figcaption aria-hidden="true">SGD</figcaption>
+</figure>
+<p>通过降维，可以发现网络分类能力越来越强。</p>
+<p>基于此文章总结了下降规律为：</p>
+<p><span
+class="math display"><em>D</em><sub><em>l</em></sub> = <em>ρ</em><sup><em>l</em></sup><em>D</em><sub>0</sub></span></p>
+<p>其中<span
+class="math inline"><em>ρ</em> ∈ [0, 1]</span>是一个由网络结构与训练方式决定的量，<span
+class="math inline"><em>D</em><sub>0</sub></span>是初始的差别。</p>
+<h1 id="append">Append</h1>
+<ol type="1">
+<li><p><strong>定义与特性</strong>：Equiangular Tight Frame (ETF)
+是一种具有等角性（Equiangularity）和紧帧性（Tightness）特征的向量集合。</p>
+<ul>
+<li><strong>等角性</strong>：ETF
+中任意两个向量之间的内积绝对值相同，这种等角特性使得向量之间的夹角是均匀的。</li>
+<li><strong>紧帧性</strong>：ETF
+满足紧帧条件，即每个向量的投影平方和在整个帧上均匀分布，保证了信号的能量在所有帧向量中保持一致。</li>
+</ul></li>
+<li><p><strong>Simplex ETF</strong>：Simplex ETF 是一种特殊的
+ETF，它的向量构成了一个正交单纯形的顶点。这种向量集合具有最均匀的分布，可以看作是理想的分散性参考，用于分析类别或信号分布的均匀性。</p></li>
+<li><p><strong>用途和优势</strong>：</p>
+<ul>
+<li><strong>信号处理与压缩感知</strong>：ETF
+的等角和紧帧特性使其非常适合用于稀疏信号的重构和能量均匀分布的信号表示。</li>
+<li><strong>数据分析与分类</strong>：ETF
+提供了类别分散度的理想参考，通过比较类别特征向量与 Simplex ETF
+结构的相似性，可以评估类别在特征空间中的分布均匀性。</li>
+<li><strong>鲁棒性和冗余表示</strong>：ETF
+的冗余和紧帧特性使得即使部分帧向量丢失，信号依然可以较好地重建，因此在存在噪声或缺失信息时表现出较强的鲁棒性。</li>
+</ul></li>
+<li><p><strong>几何结构和构造</strong>：在实际应用中，ETF
+向量集通常构成一个等距或等角的几何结构（如正交单纯形的顶点），提供了一种理想的框架来衡量和评估向量之间的角度和距离分布。</p></li>
+</ol>
+<p>ETF
+是一种在信号处理、压缩感知和数据分析中广泛应用的框架结构，凭借其均匀的能量分布和等角特性，在高维空间中提供了对称性、均匀性和冗余性。ETF
+尤其适用于需要均匀分布和高鲁棒性的场景，是一种用于信号重构、类别分布分析和特征提取的理想框架。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spin-Glass/" rel="tag"># Spin Glass</a>
+              <a href="/tags/Fermi-Bose-Machine/" rel="tag"># Fermi Bose Machine</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/10/16/DL/ActiveLearning/ActiveLearning/" rel="prev" title="Active Learning Literature Survey">
+      <i class="fa fa-chevron-left"></i> Active Learning Literature Survey
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/11/08/Math/BayesianOpt/BayesianOpt/" rel="next" title="Bayesian Optimization">
+      Bayesian Optimization <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#append"><span class="nav-number">1.</span> <span class="nav-text">Append</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

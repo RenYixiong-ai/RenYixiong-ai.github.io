@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="介绍Active Learning的基本概念与算法，以及相关python库——ALiPy的使用。  The key idea behind active learning is that a machine learning algorithm can achieve greater accuracy with fewer labeled training instances if it is a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Active Learning Literature Survey">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/10/16/DL/ActiveLearning/ActiveLearning/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="介绍Active Learning的基本概念与算法，以及相关python库——ALiPy的使用。  The key idea behind active learning is that a machine learning algorithm can achieve greater accuracy with fewer labeled training instances if it is a">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/10/16/DL/ActiveLearning/ActiveLearning/fig1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/10/16/DL/ActiveLearning/ActiveLearning/fig2.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/10/16/DL/ActiveLearning/ActiveLearning/fig4.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/10/16/DL/ActiveLearning/ActiveLearning/fig5.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/10/16/DL/ActiveLearning/ActiveLearning/fig6.png">
+<meta property="article:published_time" content="2024-10-16T08:06:00.000Z">
+<meta property="article:modified_time" content="2025-05-08T09:59:47.864Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Activate Learning">
+<meta property="article:tag" content="ALiPy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/10/16/DL/ActiveLearning/ActiveLearning/fig1.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/10/16/DL/ActiveLearning/ActiveLearning/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Active Learning Literature Survey | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/10/16/DL/ActiveLearning/ActiveLearning/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Active Learning Literature Survey
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-10-16 16:06:00" itemprop="dateCreated datePublished" datetime="2024-10-16T16:06:00+08:00">2024-10-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-08 17:59:47" itemprop="dateModified" datetime="2025-05-08T17:59:47+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>3.5k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>6 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>介绍Active
+Learning的基本概念与算法，以及相关python库——ALiPy的使用。</p>
+<blockquote>
+<p>The key idea behind active learning is that a machine learning
+algorithm can achieve greater accuracy with fewer labeled training
+instances if it is allowed to choose the data from which is learns.</p>
+</blockquote>
+<p>Reference: * <a
+target="_blank" rel="noopener" href="https://www.semanticscholar.org/paper/Active-Learning-Literature-Survey-Settles/818826f356444f3daa3447755bf63f171f39ec47">Active
+Learning Literature Survey</a> * <a
+target="_blank" rel="noopener" href="https://arxiv.org/pdf/1901.03802">ALiPy: Active Learning in
+Python</a> * <a
+target="_blank" rel="noopener" href="https://github.com/NUAA-AL/alipy">GitHub:ALiPy</a></p>
+<span id="more"></span>
+<h1 id="introduction">Introduction</h1>
+<figure>
+<img src="./fig1.png" alt="active learning" />
+<figcaption aria-hidden="true">active learning</figcaption>
+</figure>
+<p>active
+learning的任务是利用可选择标注的样本的优势，在使用较少的情况下以高正确率完成训练。上图中说明，active
+learning从没有标签的<span
+class="math inline"><em>u</em></span>中选择数据，让人工对其进行标注。</p>
+<figure>
+<img src="./fig2.png" alt="example" />
+<figcaption aria-hidden="true">example</figcaption>
+</figure>
+<p>上图很好的说明这个问题，(a)是需要分类的两个数据，(b)为随机选取30个点进行分类的结果，(c)是通过active
+learning 选择的30个样本，其结果与正确分类十分一致。</p>
+<h1 id="scenarios">Scenarios</h1>
+<p>其中包含三个主要方案： * membership query synthesis * stream-based
+selective sampling * pool-based active learning</p>
+<figure>
+<img src="./fig4.png" alt="Scenarios" />
+<figcaption aria-hidden="true">Scenarios</figcaption>
+</figure>
+<h2 id="membership-query-synthesis">Membership Query Synthesis</h2>
+<p>这种方案不依赖于事先的分布，可以从相空间中随意选取。优势是非常直接且直观，但是问题是该方案很容易生成一些没有特征指标的内容，在人类标注的过程中会困惑，例如手写数字体识别给出四不像的内容。</p>
+<h2 id="stream-based-selective-sampling">Stream-Based Selective
+Sampling</h2>
+<p>首先从真实的分布中进行选取，然后由learner从中决定是否打标签，这一过程称之为（stream-based
+or sequential active learning）</p>
+<h2 id="pool-based-active-learning">Pool-Based Active Learning</h2>
+<p>真实世界中，很多样本可以单次批量化标注，因此一些方案是将大的未标注区域分为小的未标注区域，然后集中进行标注。</p>
+<h1 id="query-strategy-frameworks">Query Strategy Frameworks</h1>
+<p>active
+learning需要计算未标注数据的信息，该章节总结了通常的计算框架。定义<span
+class="math inline"><em>x</em><sub><em>A</em></sub><sup>*</sup></span>为通过算法A最富有信息的实例。</p>
+<h2 id="uncertainty-sampling">Uncertainty Sampling</h2>
+<p>通常uncertainty
+sampling策略使用熵（entropy）作为不确定性的测量，在分类任务中熵写为：</p>
+<p><span class="math display">$$
+x_{E N T}^*=\underset{x}{\operatorname{argmax}}-\sum_i P\left(y_i \mid x
+; \theta\right) \log P\left(y_i \mid x ; \theta\right)
+$$</span></p>
+<p>其中<span
+class="math inline"><em>y</em><sub><em>i</em></sub></span>遍历所有已经标注的数据点。</p>
+<p>另一判据是最小置信构型（least confident）:</p>
+<p><span class="math display">$$
+x_{L C}^*=\underset{x}{\operatorname{argmin}} P\left(y^* \mid x ;
+\theta\right)
+$$</span></p>
+<p>其中 <span
+class="math inline"><em>y</em><sup>*</sup> = argmax<sub><em>y</em></sub><em>P</em>(<em>y</em> ∣ <em>x</em>; <em>θ</em>)</span>
+是概率最高的标签。对于二分类任务，这个方法等价于熵判据。</p>
+<h2 id="query-by-committee">Query-By-Committee</h2>
+<p>通过多个模型的评判选择，当多数模型反对一个样本分类的时候，说明这个样本有最大的信息。这个方法背后的逻辑是通过最小化相空间</p>
+<figure>
+<img src="./fig5.png" alt="最小化相空间" />
+<figcaption aria-hidden="true">最小化相空间</figcaption>
+</figure>
+<p>如果机器学习的任务是在相空间中寻找最小化构型，那么active
+learning的目标就是在小样本的情况下尽可能的限制相空间的采样范围。为了度量反对的指标，设计了一些度量函数，其中一个是投票熵：</p>
+<p><span class="math display">$$
+x_{V E}^*=\underset{x}{\operatorname{argmax}}-\sum_i
+\frac{V\left(y_i\right)}{C} \log \frac{V\left(y_i\right)}{C}
+$$</span></p>
+<p>其中<span
+class="math inline"><em>y</em><sub><em>i</em></sub></span>重复所有可能的标签，<span
+class="math inline"><em>V</em>(<em>y</em><sub><em>i</em></sub>)</span>是从多个模型处所收到的反对票。另一种衡量距离的方法是通过KL散度：</p>
+<p><span class="math display">$$
+\begin{gathered}x_{K L}^*=\underset{x}{\operatorname{argmax}}
+\frac{1}{C} \sum_{c=1}^C D\left(P_{\theta^{(c)}} \|
+P_{\mathcal{C}}\right) \\
+D\left(P_{\theta^{(c)}} \| P_{\mathcal{C}}\right)=\sum_i P\left(y_i \mid
+x ; \theta^{(c)}\right) \log \frac{P\left(y_i \mid x ;
+\theta^{(c)}\right)}{P\left(y_i \mid x ;
+\mathcal{C}\right)}\end{gathered}$$</span></p>
+<p>其中<span class="math inline">$P\left(y_i \mid x ;
+\mathcal{C}\right)=\frac{1}{C} \sum_{c=1}^C P\left(y_i \mid x ;
+\theta^{(c)}\right)$</span>，这个度量就是希望选取最偏离平均值的点，减少不同模型之间的差异，希望最后的结果与平均值接近。</p>
+<h2 id="expected-model-change">Expected Model Change</h2>
+<p>该方案的出发点为，寻找哪些如果打标签将会极大改变当前模型的样本。令<span
+class="math inline">∇<em>ℓ</em>(ℒ; <em>θ</em>)</span>为目标函数<span
+class="math inline"><em>ℓ</em></span>的梯度，并且<span
+class="math inline">∇<em>ℓ</em>(ℒ ∪ ⟨<em>x</em>, <em>y</em>⟩; <em>θ</em>)</span>为在添加数据<span
+class="math inline">⟨<em>x</em>, <em>y</em>⟩</span>之后的新梯度。由于不知道现在样本的真实标签，因此通过概率计算：</p>
+<p><span class="math display">$$x_{E G
+L}^*=\underset{x}{\operatorname{argmax}} \sum_i P\left(y_i \mid x ;
+\theta\right)\left\|\nabla \ell\left(\mathcal{L} \cup\left\langle x,
+y_i\right\rangle ; \theta\right)\right\|$$</span></p>
+<p>其中<span class="math inline">∥⋅∥</span>是欧式范数，并且<span
+class="math inline">∇<em>ℓ</em>(ℒ; <em>θ</em>)</span>在之前的训练之后，往往会趋近于<span
+class="math inline">0</span>，因此使用近似<span
+class="math inline">∇<em>ℓ</em>(ℒ ∪ ⟨<em>x</em>, <em>y</em><sub><em>i</em></sub>⟩; <em>θ</em>) ≈ ∇<em>ℓ</em>(⟨<em>x</em>, <em>y</em><sub><em>i</em></sub>⟩; <em>θ</em>)</span>加速计算。</p>
+<h2 id="variance-reduction-and-fisher-information-ratio">Variance
+Reduction and Fisher Information Ratio</h2>
+<p>这个方法可以用于回归任务。模型生成误差可以描述为：</p>
+<p><span class="math display">$$\begin{aligned} E_T\left[(o-y)^2 \mid
+x\right]= &amp; E\left[(y-E[y \mid x])^2\right] \\
+&amp; +\left(E_{\mathcal{L}}[o]-E[y \mid x]\right)^2 \\
+&amp;
++E_{\mathcal{L}}\left[\left(o-E_{\mathcal{L}}[o]\right)^2\right]\end{aligned}$$</span></p>
+<p>其中<span
+class="math inline"><em>E</em><sub>ℒ</sub>[⋅]</span>是给定标签集<span
+class="math inline">ℒ</span>的期望，<span
+class="math inline"><em>E</em>[⋅]</span>是候选密度<span
+class="math inline"><em>P</em>(<em>y</em>|<em>x</em>)</span>的期望，<span
+class="math inline"><em>E</em><sub><em>T</em></sub></span>是两者的期望。<span
+class="math inline"><em>o</em> = <em>g</em>(<em>x</em>; <em>θ</em>)</span>是模型预测的记号，<span
+class="math inline"><em>g</em></span>是学习的函数。<span
+class="math inline"><em>E</em>[(<em>y</em> − <em>E</em>[<em>y</em> ∣ <em>x</em>])<sup>2</sup>]</span>是噪声，表示真实值
+<span class="math inline"><em>y</em></span>
+与其条件期望值之间的偏差平方的期望，这项源于数据本身的性质，不受模型的影响，也称为噪声。$(E_{}[o]-E[y
+x])^2 <span
+class="math inline"><em>是</em><em>表</em><em>示</em><em>模</em><em>型</em><em>的</em><em>偏</em><em>差</em>（<em>B</em><em>i</em><em>a</em><em>s</em>），<em>即</em><em>模</em><em>型</em><em>预</em><em>测</em><em>的</em><em>期</em><em>望</em><em>值</em><em>与</em><em>真</em><em>实</em><em>期</em><em>望</em><em>值</em><em>之</em><em>间</em><em>的</em><em>差</em><em>异</em><em>平</em><em>方</em>。</span>E_{})^2]$
+表示模型的方差（Variance），即模型预测的变化性或不确定性，反映了模型的Epistemic
+Uncertainty（认知不确定性），可以通过获取更多数据或改进模型来减少。</p>
+<h2 id="estimated-error-reduction">Estimated Error Reduction</h2>
+<h2 id="density-weighted-methods">Density-Weighted Methods</h2>
+<p>从未标注的池子里面寻找有争议的点进行标注，例如SVM算法要区分间隔。</p>
+<figure>
+<img src="./fig6.png" alt="Density-Weighted Methods" />
+<figcaption aria-hidden="true">Density-Weighted Methods</figcaption>
+</figure>
+<h1 id="analysis-of-active-learning">Analysis of Active Learning</h1>
+<p>这部分讨论了为什么active learning是有效的。</p>
+<h1 id="problem-setting-variants">Problem Setting Variants</h1>
+<p>这部分讨论如何把active learning问题进行推广。</p>
+<h1 id="related-research-areas">Related Research Areas</h1>
+<p>Active learning 有两个要素： * 可以主动选择学习的目标 *
+未标注的数据是可以获取的</p>
+<h2 id="semi-supervised-learning">Semi-Supervised Learning</h2>
+<h2 id="reinforcement-learning">Reinforcement Learning</h2>
+<p>强化学习需要在exploration-exploitation之间进行取舍。</p>
+<h2 id="equivalence-query-learning">Equivalence Query Learning</h2>
+<h2 id="active-class-selection">Active Class Selection</h2>
+<p><font color='red'>end</font></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Activate-Learning/" rel="tag"># Activate Learning</a>
+              <a href="/tags/ALiPy/" rel="tag"># ALiPy</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/09/18/Phys/TNMC/TNMC/" rel="prev" title="Tensor network Monte Carlo simulations for the two-dimensional random-bond Ising model">
+      <i class="fa fa-chevron-left"></i> Tensor network Monte Carlo simulations for the two-dimensional random-bond Ising model
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/11/07/CS/data_law/data_law/" rel="next" title="A law of data separation in deep learning">
+      A law of data separation in deep learning <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#scenarios"><span class="nav-number">2.</span> <span class="nav-text">Scenarios</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#membership-query-synthesis"><span class="nav-number">2.1.</span> <span class="nav-text">Membership Query Synthesis</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#stream-based-selective-sampling"><span class="nav-number">2.2.</span> <span class="nav-text">Stream-Based Selective
+Sampling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pool-based-active-learning"><span class="nav-number">2.3.</span> <span class="nav-text">Pool-Based Active Learning</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#query-strategy-frameworks"><span class="nav-number">3.</span> <span class="nav-text">Query Strategy Frameworks</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#uncertainty-sampling"><span class="nav-number">3.1.</span> <span class="nav-text">Uncertainty Sampling</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#query-by-committee"><span class="nav-number">3.2.</span> <span class="nav-text">Query-By-Committee</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#expected-model-change"><span class="nav-number">3.3.</span> <span class="nav-text">Expected Model Change</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#variance-reduction-and-fisher-information-ratio"><span class="nav-number">3.4.</span> <span class="nav-text">Variance
+Reduction and Fisher Information Ratio</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#estimated-error-reduction"><span class="nav-number">3.5.</span> <span class="nav-text">Estimated Error Reduction</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#density-weighted-methods"><span class="nav-number">3.6.</span> <span class="nav-text">Density-Weighted Methods</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#analysis-of-active-learning"><span class="nav-number">4.</span> <span class="nav-text">Analysis of Active Learning</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#problem-setting-variants"><span class="nav-number">5.</span> <span class="nav-text">Problem Setting Variants</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#related-research-areas"><span class="nav-number">6.</span> <span class="nav-text">Related Research Areas</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#semi-supervised-learning"><span class="nav-number">6.1.</span> <span class="nav-text">Semi-Supervised Learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#reinforcement-learning"><span class="nav-number">6.2.</span> <span class="nav-text">Reinforcement Learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#equivalence-query-learning"><span class="nav-number">6.3.</span> <span class="nav-text">Equivalence Query Learning</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#active-class-selection"><span class="nav-number">6.4.</span> <span class="nav-text">Active Class Selection</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

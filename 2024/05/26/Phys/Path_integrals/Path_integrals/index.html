@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="考虑到状态的演化，最直接的想法是通过经典力学通过拉格朗日量来构建经典的运动路径。如何处理的问题不是精确的状态，而是概率密度的分布，如何求概率密度分布的演化？路径积分则是十分自然的想法。将每一个小的状态，以任意的路径进行演化，最后得到最终转态的概率分布。这样处理的麻烦在于，不是每一条路径都是等价的，有一些路径发生的概率高一些，另一些则低一些。如何表示这样的概率分布，以及实际得到演化后的概率分布，则是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Feynman path integrals">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/05/26/Phys/Path_integrals/Path_integrals/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="考虑到状态的演化，最直接的想法是通过经典力学通过拉格朗日量来构建经典的运动路径。如何处理的问题不是精确的状态，而是概率密度的分布，如何求概率密度分布的演化？路径积分则是十分自然的想法。将每一个小的状态，以任意的路径进行演化，最后得到最终转态的概率分布。这样处理的麻烦在于，不是每一条路径都是等价的，有一些路径发生的概率高一些，另一些则低一些。如何表示这样的概率分布，以及实际得到演化后的概率分布，则是">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/05/26/Phys/Path_integrals/Path_integrals/path_integral.png">
+<meta property="article:published_time" content="2024-05-26T07:18:00.000Z">
+<meta property="article:modified_time" content="2025-05-08T10:16:44.589Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Quantum Field Theory">
+<meta property="article:tag" content="Path Integrals">
+<meta property="article:tag" content="Path Integrals Monte Carlo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/05/26/Phys/Path_integrals/Path_integrals/path_integral.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/05/26/Phys/Path_integrals/Path_integrals/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Feynman path integrals | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/05/26/Phys/Path_integrals/Path_integrals/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Feynman path integrals
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-05-26 15:18:00" itemprop="dateCreated datePublished" datetime="2024-05-26T15:18:00+08:00">2024-05-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-08 18:16:44" itemprop="dateModified" datetime="2025-05-08T18:16:44+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>33k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>1:01</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>考虑到状态的演化，最直接的想法是通过经典力学通过拉格朗日量来构建经典的运动路径。如何处理的问题不是精确的状态，而是概率密度的分布，如何求概率密度分布的演化？路径积分则是十分自然的想法。将每一个小的状态，以任意的路径进行演化，最后得到最终转态的概率分布。这样处理的麻烦在于，不是每一条路径都是等价的，有一些路径发生的概率高一些，另一些则低一些。如何表示这样的概率分布，以及实际得到演化后的概率分布，则是本文要探讨的。</p>
+<p>当然，这只是一个简单的版本，需要更多的讨论。</p>
+<p>参考： * <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/275827978">QM -
+路径积分 (Path Integral) PT. 1 - 基本构架</a> * <a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/270684456">QM - 路径积分 (Path
+Integral) PT. 2 - 求解实例</a></p>
+<span id="more"></span>
+<h1 id="路径积分的基本构架">路径积分的基本构架</h1>
+<p><font color='red'></p>
+<p>本部分的目标： 1. 构建传播子 2. 相空间、位形空间的形式 3.
+以自由粒子为例，展示两种形式</p>
+<p></font></p>
+<p>传播子是研究态随时间演化的方法，这样演化过程由基本方程确定，在量子力学中这样的方程是薛定谔方程。但是随时间演化的方程有很多，这些同样可以在传播子的框架下研究。</p>
+<p>由于薛定谔方程过于出名，接下来的讨论在薛定谔方程下进行。</p>
+<h2 id="传播子">传播子</h2>
+<p>定义一个算符 <span
+class="math inline"><em>U</em></span>，它的作用是给出演化结果:</p>
+<p><span class="math display">$$\begin{align}
+U\left(t-t_0\right)\left|\psi\left(t_0\right)\right\rangle=|\psi(t)\rangle
+\end{align}$$</span></p>
+<p>然后求解 <span class="math inline"><em>U</em></span>
+的表达式，研究时间演化最熟悉的是薛定谔方程: <span
+class="math display">$$\begin{align}
+&amp; i \hbar \frac{\mathrm{d}}{\mathrm{d}
+t}|\psi(t)\rangle=H|\psi(t)\rangle \\
+\Rightarrow &amp; \frac{\mathrm{d}}{\mathrm{d} t}
+U\left(t-t_0\right)\left|\psi\left(t_0\right)\right\rangle=-i
+\frac{H}{\hbar}
+U\left(t-t_0\right)\left|\psi\left(t_0\right)\right\rangle \\
+\Rightarrow &amp; \frac{\mathrm{d}}{\mathrm{d} t} U\left(t-t_0\right)=-i
+\frac{H}{\hbar} U\left(t-t_0\right) \\
+\Rightarrow &amp; \mathrm{d} \ln U\left(t-t_0\right)=-i \frac{H}{\hbar}
+\mathrm{d} t \\
+\Rightarrow &amp; U\left(t-t_0\right)=e^{-i \frac{H}{\hbar} t} \cdot
+\text { const }
+\end{align}$$</span></p>
+<p>如果时间不变自然不发生演化，以此作为初始条件，即 <span
+class="math inline"><em>t</em> = <em>t</em><sub>0</sub> ⇒ <em>U</em> = <em>I</em></span>。确定系数之后得到了么正时间演化算符的表达式:
+<span class="math display">$$\begin{align}
+U\left(t-t_0\right)=e^{-i \frac{H}{\hbar}\left(t-t_0\right)}
+\end{align}$$</span></p>
+<p>在形式上地使用： <span class="math display">$$\begin{align}
+|\psi(t)\rangle=U\left(t-t_0\right)\left|\psi\left(t_0\right)\right\rangle
+\label{1_U}
+\end{align}$$</span></p>
+<p>接下来<span
+class="math inline">$\eqref{1_U}$</span>式取坐标表象，即左乘 <span
+class="math inline">⟨<em>r⃗</em>|</span>，再插入完备性关系式 <span
+class="math inline"><em>I</em> = ∫|<em>r⃗</em><sub>0</sub>⟩⟨<em>r⃗</em><sub>0</sub>|d<em>r⃗</em><sub>0</sub></span>，可得：
+<span class="math display">$$\begin{align}
+\psi(\vec{r}, t)&amp;=\int\left\langle\vec{r}\left|U\left(t,
+t_0\right)\right| \vec{r}_0\right\rangle\left\langle\vec{r}_0 \mid
+\psi\left(t_0\right)\right\rangle \mathrm{d} \vec{r}_0 \\
+&amp;=\int K\left(\vec{r}, t ; \vec{r}_0, t_0\right)
+\psi\left(\vec{r}_0, t_0\right) \mathrm{d} \vec{r}_0 \\
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right) &amp;=
+\left\langle\vec{r}\left|U\left(t, t_0\right)\right|
+\vec{r}_0\right\rangle
+\end{align}$$</span></p>
+<p>其中 <span
+class="math inline"><em>K</em>(<em>r⃗</em>, <em>t</em>; <em>r⃗</em><sub>0</sub>, <em>t</em><sub>0</sub>)</span>
+称作传播子, 作用如上所示, 路径积分的最终目的就是得到其具体表达式。</p>
+<h2 id="传播子的性质">传播子的性质</h2>
+<p>设置时间节点（无特殊声明全文适用）：</p>
+<p><span class="math display">$$\begin{align}
+t_0&lt;t_n \leq t=t_N, n \in\{1,2,3, \cdots, N\}
+\end{align}$$</span></p>
+<p>注意不平均分割时间。由传播子的定义，我们不难发现它具有如下特性：</p>
+<p><span class="math display">$$\begin{align}
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right) &amp;
+=\left\langle\vec{r}\left|U\left(t, t_0\right)\right|
+\vec{r}_0\right\rangle \\
+&amp; =\left\langle\vec{r}\left|U\left(t, t_1\right) U\left(t_1,
+t_0\right)\right| \vec{r}_0\right\rangle \\
+&amp; =\int\left\langle\vec{r}\left|U\left(t, t_1\right)\right|
+\vec{r}_1\right\rangle\left\langle\vec{r}_1\left|U\left(t_1,
+t_0\right)\right| \vec{r}_0\right\rangle \mathrm{d} \vec{r}_1 \\
+&amp; =\int\left\langle\vec{r}\left|U\left(t, t_2\right)\right|
+\vec{r}_2\right\rangle\left\langle\vec{r}_2\left|U\left(t_2,
+t_1\right)\right|
+\vec{r}_1\right\rangle\left\langle\vec{r}_1\left|U\left(t_1,
+t_0\right)\right| \vec{r}_0\right\rangle \mathrm{d} \vec{r}_1
+\mathrm{~d} \vec{r}_2 \\
+&amp; =\int K\left(\vec{r}, t ; \vec{r}_2, t_2\right) K\left(\vec{r}_2,
+t_2 ; \vec{r}_1, t_1\right) K\left(\vec{r}_1, t_1 ; \vec{r}_0,
+t_0\right) \mathrm{d} \vec{r}_1 \mathrm{~d} \vec{r}_2
+\end{align}$$</span></p>
+<p>注意我们要求上式中恒满足关系 <span
+class="math inline"><em>r⃗</em><sub><em>N</em></sub> = <em>r⃗</em>, <em>t</em><sub><em>N</em></sub> = <em>t</em>, <em>a</em> &gt; <em>b</em> ⇔ <em>t</em><sub><em>a</em></sub> &gt; <em>t</em><sub><em>b</em></sub></span>。利用该性质进行无穷分割:</p>
+<p><span class="math display">$$\begin{align}
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right)&amp;=\int\left[\prod_{n=1}^N
+K\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)\right] \mathrm{d}
+\vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
+\max \left\{t_n-t_{n-1}\right\} &amp;\rightarrow 0
+\end{align}$$</span></p>
+<p>将积分号里边儿的那个无穷小过程传播子换一个符号, 记为:</p>
+<p><span class="math display">$$\begin{align}
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right)=\int\left[\prod_{n=1}^N
+\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)\right]
+\mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1}{ }^{[2]}
+\end{align}$$</span></p>
+<h2 id="相空间的路径积分">相空间的路径积分</h2>
+<p>要求 <span
+class="math inline"><em>K</em>(<em>r⃗</em>, <em>t</em>; <em>r⃗</em><sub>0</sub>, <em>t</em><sub>0</sub>)</span>
+，需先处理 <span
+class="math inline">𝒦(<em>r⃗</em><sub><em>n</em></sub>, <em>t</em><sub><em>n</em></sub>; <em>r⃗</em><sub><em>n</em> − 1</sub>, <em>t</em><sub><em>n</em> − 1</sub>)</span>
+。</p>
+<p><span class="math display">$$\begin{align}
+\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1},
+t_{n-1}\right)&amp;=\left\langle\vec{r}_n\left|U\left(t_n,
+t_{n-1}\right)\right|
+\vec{r}_{n-1}\right\rangle=\left\langle\vec{r}_n\left|e^{-\frac{i
+H}{\hbar} \Delta t_n}\right| \vec{r}_{n-1}\right\rangle\\
+e^{-\frac{i}{\hbar} H \Delta
+t_n}&amp;=e^{-\frac{i}{\hbar}\left[\frac{p^2}{2 m}+V\left(\vec{R},
+t_n\right)\right] \Delta t_n \Delta t_n \rightarrow 0}
+e^{-\frac{i}{\hbar} V\left(\vec{R}, t_n\right) \Delta t_n}
+e^{-\frac{i}{\hbar} \frac{p^2}{2 m} \Delta t_n}
+\end{align}$$</span></p>
+<p><span
+class="math inline">𝒦</span>表示极短时间内从一个状态到另一个状态，在极限情况下式精确的；<span
+class="math inline"><em>K</em></span>是一段时间的跳跃。因此有 <span
+class="math inline"><em>K</em> ≠ 𝒦</span>，在一些情况下这两个是相等的例如自由粒子。</p>
+<p>可以推知：</p>
+<p><span class="math display">$$\begin{align}
+\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right) &amp;
+=\left\langle\vec{r}_n\left|e^{-\frac{i}{\hbar} V\left(\vec{R},
+t_n\right) \Delta t_n} e^{-\frac{i}{\hbar} \frac{p^2}{2 m} \Delta
+t_n}\right| \vec{r}_{n-1}\right\rangle \\
+&amp; =e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta
+t_n}\left\langle\vec{r}_n\left|e^{-\frac{i}{\hbar} \frac{P^2}{2 m}
+\Delta t_n}\right| \vec{r}_{n-1}\right\rangle \\
+&amp; =\int e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta
+t_n}\left\langle\vec{r}_n \mid
+\vec{p}_n\right\rangle\left\langle\vec{p}_n\left|e^{-\frac{i}{\hbar}
+\frac{P^2}{2 m} \Delta t_n}\right| \vec{r}_{n-1}\right\rangle \mathrm{d}
+\vec{p}_n \\
+&amp; =\int e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta
+t_n}\left\langle\vec{r}_n \mid \vec{p}_n\right\rangle
+e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n}\left\langle\vec{p}_n
+\mid \vec{r}_{n-1}\right\rangle \mathrm{d} \vec{p}_n \\
+&amp; =\frac{1}{(2 \pi \hbar)^3} \int e^{-\frac{i}{\hbar}
+V\left(\vec{r}_n, t_n\right) \Delta t_n} e^{i \frac{\vec{p}_n}{\hbar}
+\cdot \Delta \vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta
+t_n} \mathrm{~d} \vec{p}_n \\
+&amp; =\frac{1}{(2 \pi \hbar)^3} \int e^{\frac{i}{\hbar}\left[\vec{p}_n
+\cdot \frac{\Delta \vec{r}_n}{\Delta t_n}-H\left(\vec{r}_n, \vec{p}_n,
+t_n\right)\right] \Delta t_n} \mathrm{~d} \vec{p}_n \\
+&amp; =\frac{1}{(2 \pi \hbar)^3} \int e^{\frac{i}{\hbar}\left[\vec{p}_n
+\cdot \vec{r}_n-H\left(\vec{r}_n, \vec{p}_n, t_n\right)\right] \Delta
+t_n} \mathrm{~d} \vec{p}_n \\
+&amp; =\frac{1}{(2 \pi \hbar)^3} \int e^{i \frac{L\left(\vec{r}_n,
+\vec{p}_n, t_n\right) \Delta t_n}{\hbar}} \mathrm{d} \vec{p}_n
+\end{align}$$</span></p>
+<p>将上式代回传播子的表达式就得到相空间的路径积分:</p>
+<p><span class="math display">$$\begin{align}
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right) &amp; =\int\left[\prod_{n=1}^N
+\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)\right]
+\mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
+&amp; =\int \prod_{n=1}^N\left[\frac{1}{(2 \pi \hbar)^3} \int
+e^{\frac{i}{\hbar} L\left(\vec{r}_n, \vec{p}_n, t_n\right) \Delta t_n}
+\mathrm{~d} \vec{p}_n\right] \mathrm{d} \vec{r}_1 \cdots \mathrm{d}
+\vec{r}_{N-1} \\
+&amp; =\frac{1}{(2 \pi \hbar)^{3 N}} \int\left[\int e^{\frac{i}{\hbar}
+\sum_{n=1}^N L\left(\vec{r}_n, \vec{p}_n, t_n\right) \Delta t_n}
+\mathrm{~d} \vec{p}_1 \cdots \mathrm{d} \vec{p}_N\right] \mathrm{d}
+\vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
+&amp; \stackrel{\text { limit }}{=} \frac{1}{(2 \pi \hbar)^{3 N}} \int
+e^{\frac{i}{\hbar} \int L(\vec{r}, \vec{p}, \tau) \mathrm{d} \tau}
+\mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \mathrm{~d}
+\vec{p}_1 \cdots \mathrm{d} \vec{p}_N \\
+&amp; =\frac{1}{(2 \pi \hbar)^{3 N}} \int \mathcal{D} \vec{r}
+\mathcal{D} \vec{p} e^{i \frac{S(\vec{r}, \vec{p}, t)}{\hbar}}
+\end{align}$$</span></p>
+<p>其中的 <span class="math inline">𝒟</span>
+表征对各种怪异路径进行积分。注意位置积分比动量积分少一重，因为端点是固定的。</p>
+<h2 id="位形空间的路径积分">位形空间的路径积分</h2>
+<p>位形空间的路径积分，就是把动量先积掉：</p>
+<p><span class="math display">$$\begin{align}
+\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right) &amp;
+=\frac{1}{(2 \pi \hbar)^3} \int e^{-\frac{i}{\hbar} V\left(\vec{r}_n,
+t_n\right) \Delta t_n} e^{i \frac{\vec{p}_n}{\hbar} \cdot \Delta
+\vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n} \mathrm{~d}
+\vec{p}_n \\
+&amp; =\frac{1}{(2 \pi \hbar)^3} e^{-\frac{i}{\hbar} V\left(\vec{r}_n,
+t_n\right) \Delta t_n} \int e^{i \frac{\vec{p}_n}{\hbar} \cdot \Delta
+\vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n} \mathrm{~d}
+\vec{p}_n
+\end{align}$$</span></p>
+<p>显然后面的积分在自由粒子的格林函数中求解过, 这里直接而代入结论:</p>
+<p><span class="math display">$$
+\frac{1}{(2 \pi \hbar)^3} \int e^{i \frac{\vec{p}_n}{\hbar} \cdot \Delta
+\vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n} \mathrm{~d}
+\vec{p}_n=\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}}
+\exp \left[i \frac{m\left(\Delta \vec{\Delta}_n\right)^2}{2 \hbar \Delta
+t_n}\right]
+$$</span></p>
+<p>将上式代回无穷小间隔传播子表达式得:</p>
+<p><span class="math display">$$\begin{align}
+\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right) &amp;
+=\frac{1}{(2 \pi \hbar)^3} \int e^{-\frac{i}{\hbar} V\left(\vec{r}_n,
+t_n\right) \Delta t_n} e^{i \frac{\vec{p}_n}{\hbar} \cdot \Delta
+\vec{r}_n} e^{-\frac{i}{\hbar} \frac{p_n^2}{2 m} \Delta t_n} \mathrm{~d}
+\vec{p}_n \\
+&amp; =\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}}
+e^{-\frac{i}{\hbar} V\left(\vec{r}_n, t_n\right) \Delta t_n} e^{i
+\frac{m\left(\Delta \vec{F}_n\right)^2}{2 \hbar \Delta t_n}} \\
+&amp; =\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}}
+e^{\frac{i}{\hbar}\left[\frac{1}{2} m \frac{\left(\Delta
+\vec{r}_n\right)^2}{\left(\Delta t_n\right)^2}-V\left(\vec{r}_n,
+t_n\right)\right] \Delta t_n} \\
+&amp; =\left(\frac{m}{2 \pi i \hbar \Delta t_n}\right)^{\frac{3}{2}}
+e^{\frac{i}{\hbar}\left[\frac{1}{2} m
+\dot{\vec{r}}_n^2-V\left(\vec{r}_n, t_n\right)\right] \Delta t_n}
+\end{align}$$</span></p>
+<p>将上述结果代回传播子的表达式得到位形空间的路径积分:</p>
+<p><span class="math display">$$\begin{align}
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right) &amp; =\int\left[\prod_{n=1}^N
+\mathcal{K}\left(\vec{r}_n, t_n ; \vec{r}_{n-1}, t_{n-1}\right)\right]
+\mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
+&amp; =\int\left[\prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta
+t_n}\right)^{\frac{3}{2}} e^{\frac{i}{\hbar}\left[\frac{1}{2} m
+\dot{\vec{r}}_n^2-V\left(\vec{r}_n, t_n\right)\right] \Delta t_n}\right]
+\mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
+&amp; =\prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta
+t_n}\right)^{\frac{3}{2}} \int e^{\frac{i}{\hbar}
+\sum_{n=1}^N\left[\frac{1}{2} m \dot{\vec{r}}_n^2-V\left(\vec{r}_n,
+t_n\right)\right] \Delta t_n} \mathrm{~d} \vec{r}_1 \cdots \mathrm{d}
+\vec{r}_{N-1} \\
+&amp; \stackrel{\text { limit }}{=} \prod_{n=1}^N\left(\frac{m}{2 \pi i
+\hbar \Delta t_n}\right)^{\frac{3}{2}} \int e^{\frac{i}{\hbar}
+\int_{t_0}^t \frac{1}{2} m \dot{\vec{r}}_n^2-V(\vec{r}, \tau) \mathrm{d}
+\tau} \mathrm{d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \\
+&amp; =\prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta
+t_n}\right)^{\frac{3}{2}} \int \mathcal{D} \vec{r} e^{i
+\frac{S\left(\vec{r}, \vec{r}_t, t\right)}{\hbar}}
+\end{align}$$</span></p>
+<h2 id="传播子的两类表达式">传播子的两类表达式</h2>
+<p>综上所述, 路径积分中的传播子就表达为: <span
+class="math display">$$\begin{align}
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right)= &amp; \frac{1}{(2 \pi
+\hbar)^{3 N}} \int \mathcal{D} \vec{r} \mathcal{D} \vec{p} e^{i
+\frac{S(\vec{r}, \vec{p}, t)}{\hbar}} \\
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right)= &amp;
+\prod_{n=1}^N\left(\frac{m}{2 \pi i \hbar \Delta
+t_n}\right)^{\frac{3}{2}} \int \mathcal{D} \vec{r} e^{i \frac{S(\vec{r},
+\vec{r}, t)}{\hbar}} \label{1_weixin}
+\end{align}$$</span></p>
+<p>实际运算中需要用到:</p>
+<p><span class="math display">$$
+\left\{\begin{array}{l}
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right)=\frac{1}{(2 \pi \hbar)^{3 N}}
+\int e^{\frac{i}{\hbar} \sum_{n=1}^N\left[\vec{p}_n \cdot
+\dot{\vec{r}}_n-H\left(\vec{r}_n, \vec{p}_n, t_n\right)\right] \Delta
+t_n} \mathrm{~d} \vec{r}_1 \cdots \mathrm{d} \vec{r}_{N-1} \mathrm{~d}
+\vec{p}_1 \cdots \mathrm{d} \vec{p}_N \\
+K\left(\vec{r}, t ; \vec{r}_0, t_0\right)=\prod_{n=1}^N\left(\frac{m}{2
+\pi i \hbar \Delta t_n}\right)^{\frac{3}{2}} \int e^{\frac{i}{\hbar}
+\sum_{n=1}^N\left[\frac{1}{2} m \dot{\vec{r}}_n^2-V\left(\vec{r}_n,
+t_n\right)\right] \Delta t_n} \mathrm{~d} \vec{r}_1 \cdots \mathrm{d}
+\vec{r}_{N-1}
+\end{array}\right.
+$$</span></p>
+<p>其中 <span class="math inline">$\left\{\begin{array}{l}\Delta
+t_n=t_n-t_{n-1} \\ \Delta \vec{r}_n=\vec{r}_n-\vec{r}_{n-1} \\
+\dot{\vec{r}}_n=\Delta \vec{r}_n / \Delta t_n \\ n \in\{1,2,3, \cdots,
+N\}\end{array} \quad\right.$</span> 且规定 <span
+class="math inline">$\left\{\begin{array}{l}\vec{r}_N=\vec{r} \\ t_N=t
+\\ t_0&lt;t_n \leq t \\ a&gt;b \Leftrightarrow t_a&gt;t_b \\ \min
+\left\{t_n-t_{n-1}\right\} \rightarrow 0\end{array}\right.$</span>
+根号下的虚数单位 <span class="math inline"><em>i</em></span> 定义为
+<span class="math inline">exp [<em>i</em><em>π</em>/2]</span>。</p>
+<h1 id="自由粒子---利用对角化求解路径积分">自由粒子 -
+利用对角化求解路径积分</h1>
+<p><font color='red'></p>
+<p>已完成内容： 1. 路径积分的两种形式 2. 自由粒子的路径积分</p>
+<p>本部分的目标： 1.
+讨论自由粒子在位形空间的路径积分，得到传播子的具体形式 2.
+讨论自由粒子在相空间的路径积分，得到传播子的具体形式所属</p>
+<p></font></p>
+<p>对时间采用平均分割的方案<span class="math inline">$\Delta
+t_n=\frac{t-t_0}{N}=\varepsilon$</span>，在极限情况下讨论<span
+class="math inline"><em>N</em> → ∞  or  <em>ε</em> → ∞</span>。由<span
+class="math inline">$\eqref{1_weixin}$</span>可知自由粒子位形空间传播子为：</p>
+<p><span class="math display">$$\begin{align}
+K\left(x, t ; x_0, t_0\right)&amp;=\left(\frac{m}{2 \pi i \hbar
+\varepsilon}\right)^{\frac{N}{2}} \int \mathrm{D} x e^{i
+\frac{S}{\hbar}} \\
+S&amp;=\int \frac{1}{2} m v^2 dt\\
+&amp;=\sum_{n=1}^N \frac{1}{2} m \frac{\left(\Delta
+x_n\right)^2}{\varepsilon^2} \varepsilon \\
+&amp;=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(x_n-x_{n-1}\right)^2
+\label{free_partial_S}
+\end{align}$$</span></p>
+<p>将位置<span
+class="math inline"><em>x</em><sub><em>n</em></sub></span>表示成经典路径<span
+class="math inline"><em>x</em><sub><em>n</em></sub><sup><em>c</em></sup></span>与路径扰动<span
+class="math inline"><em>y</em><sub><em>n</em></sub></span>两个部分，其中下标表示时刻<span
+class="math inline"><em>t</em><sub><em>n</em></sub></span>：</p>
+<p><span class="math display">$$\begin{align}
+x_n&amp;=x_n^c+y_n \\
+x_n^{\mathrm{c}}&amp;=x^{\mathrm{c}}\left(t_n\right)=x^{\mathrm{c}}\left(t_0+n
+\varepsilon\right) \\
+\end{align}$$</span></p>
+<p>并且有边界条件，在端点是固定不动的：</p>
+<p><span class="math display">$$\begin{align}
+\left\{
+    \begin{array}
+    {l}x_0^{\mathrm{c}}=x^{\mathrm{c}}\left(t_0\right)=x_0 \\
+    x_N^{\mathrm{c}}=x^{\mathrm{c}}\left(t_N\right)=x_N=x
+    \end{array}
+\right.
+\end{align}$$</span></p>
+<p>以及关系：</p>
+<p><span class="math display">$$\begin{aligned}
+t_N&amp;=t_0+N \varepsilon \\
+\Delta t_2+\Delta t_1&amp;=t_2-t_0 \Rightarrow \sum_{n=1}^N \Delta t_n=N
+\varepsilon=t_N-t_0
+\end{aligned}$$</span></p>
+<p>代入<span class="math inline">$\eqref{free_partial_S}$</span>后：</p>
+<p><span class="math display">$$\begin{align}
+S&amp;=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta x_n\right)^2 \\
+&amp;=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta
+x_n^{\mathrm{c}}+\Delta y_n\right)^2\\
+&amp;=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta
+x_n^{\mathrm{c}}\right)^2+\frac{m}{2 \varepsilon}
+\sum_{n=1}^N\left(\Delta y_n\right)^2+\frac{m}{\varepsilon} \sum_{n=1}^N
+\Delta x_n^{\mathrm{c}} \Delta y_n
+\end{align}$$</span></p>
+<p>分为三个部分：</p>
+<p><span class="math display">$$\begin{align}
+S^{\mathrm{c}}&amp;= \frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta
+x_n^{\mathrm{c}}\right)^2 \\
+S^{\prime} &amp;= \frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta
+y_n\right)^2 \\
+S^{\times} &amp;= \frac{m}{\varepsilon} \sum_{n=1}^N \Delta
+x_n^{\mathrm{c}} \Delta y_n
+\end{align}$$</span></p>
+<figure>
+<img src="./path_integral.png" alt="Path Integral" />
+<figcaption aria-hidden="true">Path Integral</figcaption>
+</figure>
+<p>如上图所示，表示在固定初始与终点的路径积分，每条线表示可能的路径，其中红线为经典路径。</p>
+<p>针对交叉项：</p>
+<p><span class="math display">$$\begin{align}
+S^{\times} &amp;= \frac{m}{\varepsilon} \sum_{n=1}^N \Delta
+x_n^{\mathrm{c}} \Delta y_n \\
+&amp;=m \sum_{n=1}^N \dot{x}_n^{\mathrm{c}}\left(y_n-y_{n-1}\right) \\
+&amp; =m\left(\sum_{n=1}^N \dot{x}_n^{\mathrm{c}} y_n-\sum_{n=1}^N
+\dot{x}_n^{\mathrm{c}} y_{n-1}\right) \\
+&amp; \stackrel{y_{N=0}}{=} m\left(\sum_{n=1}^{N-1}
+\dot{x}_n^{\mathrm{c}} y_n-\sum_{n=0}^{N-1} \dot{x}_{n+1}^{\mathrm{c}}
+y_n\right) \\
+&amp; \stackrel{y_{0=0}}{=} m\left(\sum_{n=1}^{N-1}
+\dot{x}_n^{\mathrm{c}} y_n-\sum_{n=1}^{N-1} \dot{x}_{n+1}^{\mathrm{c}}
+y_n\right) \\
+&amp;=-m \varepsilon \sum_{n=1}^{N-1} \frac{\Delta
+\dot{x}_{n+1}^{\mathrm{c}}}{\varepsilon} y_n \\
+&amp;=-m \varepsilon \sum_{n=1}^{N-1} \ddot{x}_{n+1}^{\mathrm{c}} y_n
+\end{align}$$</span></p>
+<p>考虑到自由粒子<span
+class="math inline">$F=ma=m\ddot{x}^{\mathrm{c}}=0$</span>，因此交叉项<span
+class="math inline"><em>S</em><sup>×</sup> = 0</span>。</p>
+<p>对于经典路径项<span
+class="math inline"><em>S</em><sup>c</sup></span>：</p>
+<p><span class="math display">$$\begin{align}
+S^{\mathrm{c}}&amp;=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(\Delta
+x_n^{\mathrm{c}}\right)^2 \\
+&amp;=\frac{m \varepsilon}{2} \sum_{n=1}^N \frac{\left(\Delta
+x_n^{\mathrm{c}}\right)^2}{\varepsilon^2} \\
+&amp;=\frac{m \varepsilon}{2}
+\sum_{n=1}^N\left(\dot{x}_n^{\mathrm{c}}\right)^2 \\
+&amp;\stackrel{\varepsilon \rightarrow 0}{=} \frac{m}{2}
+\int_{t_0}^t\left(\dot{x}^{\mathrm{c}}\right)^2 \mathrm{~d} \tau
+\end{align}$$</span></p>
+<p>经典自由粒子解的 <span
+class="math inline"><em>ẋ</em><sup><em>c</em></sup></span> 是一个常数,
+且知道 <span
+class="math inline">$\dot{x}^{\mathrm{c}}=\frac{x-x_0}{t-t_0}$</span>。所以：</p>
+<p><span class="math display">$$\begin{align}
+S^{\mathrm{c}}&amp;=\frac{m}{2}
+\int_{t_0}^t\left(\dot{x}^{\mathrm{c}}\right)^2 \mathrm{~d} \tau \\
+&amp;=\frac{m}{2}\left(\frac{x-x_0}{t-t_0}\right)^2 \int_{t_0}^t
+\mathrm{~d} \tau\\
+&amp;=\frac{m\left(x-x_0\right)^2}{2\left(t-t_0\right)}
+\end{align}$$</span></p>
+<p>端点给定，并且把经典路径分离出来，因此可以将传播子写为：</p>
+<p><span class="math display">$$\begin{align}
+K\left(x, t ; x_0, t_0\right)=e^{i
+\frac{S^{\mathrm{c}}}{\hbar}}\left(\frac{m}{2 \pi i \hbar
+\varepsilon}\right)^{\frac{N}{2}} \int e^{\frac{i}{\hbar} S^{\prime}}
+\mathrm{d} y_1 \cdots \mathrm{d} y_{N-1}
+\end{align}$$</span></p>
+<p>接下来要化简的是<span
+class="math inline"><em>S</em><sup>′</sup></span>，考虑到在两端点附近<span
+class="math inline"><em>y</em><sub>0</sub> = <em>y</em><sub><em>N</em></sub> = 0</span>：</p>
+<p><span class="math display">$$\begin{align}
+S^{\prime} &amp; =\frac{m}{2 \varepsilon}
+\sum_{n=1}^N\left(y_n-y_{n-1}\right)^2 \\
+&amp; =\frac{m}{2
+\varepsilon}\left[y_1^2+\left(y_2-y_1\right)^2+\cdots+\left(y_{N-1}-y_{N-2}\right)^2+y_{N-1}^2\right]
+\\
+&amp; =\frac{m}{2 \varepsilon}\left(2 \sum_{n=1}^{N-1} y_n^2-2
+\sum_{n=1}^{N-1} y_n y_{n-1}\right) \\
+&amp; =\frac{m}{2 \varepsilon} \sum_{n=1}^{N-1}\left(2 y_n^2-2 y_n
+y_{n-1}\right) \\
+&amp;=\frac{m}{2 \varepsilon} \sum_{n, m=1}^{N-1} y_m A_{m n}
+y_n=\frac{m}{2 \varepsilon} y^{\mathrm{T}} A y
+\end{align}$$</span></p>
+<p>其中<span
+class="math inline"><em>A</em></span>是一个实对称矩阵，<span
+class="math inline"><em>A</em><sub><em>m</em><em>n</em></sub> = 2<em>δ</em><sub><em>m</em>, <em>n</em></sub> − <em>δ</em><sub><em>m</em>, <em>n</em> − 1</sub> − <em>δ</em><sub><em>m</em> − 1, <em>n</em></sub></span>，如果不去掉端点的话，就会造成不是一个实对称矩阵。既然已经写成对称矩阵的形式了，那接下来就是精确对角化，将其耦合项解耦，从而方便积分。</p>
+<p><span class="math display">$$\begin{align}
+R^{\mathrm{T}} A R=\Lambda=\operatorname{diag}\left(\lambda_1,
+\lambda_2, \cdots, \lambda_{N-1}\right),
+\end{align}$$</span></p>
+<p>其中 <span class="math inline"><em>R</em></span> 是正交矩阵，满足
+<span
+class="math inline"><em>R</em><sup>T</sup><em>R</em> = |<em>R</em>| = 1</span>
+同时注意么正变换不改变本征值:</p>
+<p><span class="math display">$$\begin{align}
+&amp;A \varphi=\lambda \varphi \\
+&amp;\Rightarrow R^{\mathrm{T}} A R R^{\mathrm{T}} \varphi=\lambda
+R^{\mathrm{T}} \varphi \\
+&amp;\Rightarrow \Lambda \varphi^{\prime}=\lambda \varphi^{\prime}
+\end{align}$$</span></p>
+<p>令:</p>
+<p><span class="math display">$$\begin{align}
+y=R u \Rightarrow y^{\mathrm{T}} A y=u^{\mathrm{T}} R^{\mathrm{T}} A R
+u=u^{\mathrm{T}} \Lambda u=\sum_{n=1}^{N-1} \lambda_n u_n^2
+\end{align}$$</span></p>
+<p>再进行变量代换:</p>
+<p><span class="math display">$$\begin{align}
+\mathrm{d} y_1 \cdots \mathrm{d} y_{N-1}&amp;=|\operatorname{det} R|
+\mathrm{d} u_1 \cdots \mathrm{d} u_{N-1} \\
+&amp;=\mathrm{d} u_1 \cdots \mathrm{d} u_{N-1}
+\end{align}$$</span></p>
+<p>因此传播子可以写为：</p>
+<p><span class="math display">$$\begin{align}
+K\left(x, t ; x_0, t_0\right) &amp; =e^{i
+\frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar
+\varepsilon}\right)^{\frac{N}{2}} \int e^{i \frac{m}{2 \hbar
+\varepsilon} \sum_{n=1}^{N-1} \lambda_n u_n^2} \mathrm{~d} u_1 \cdots
+\mathrm{d} u_{N-1} \\
+&amp; =e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar
+\varepsilon}\right)^{\frac{N}{2}} \prod_{n=1}^{N-1} \int e^{-\frac{m
+\lambda_n}{2 i \hbar \varepsilon} u_n^2} \mathrm{~d} u_n \\
+&amp; =e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar
+\varepsilon}\right)^{\frac{N}{2}} \prod_{n=1}^{N-1} \sqrt{\frac{2 \pi i
+\hbar \varepsilon}{m \lambda_n}}\\
+&amp;=e^{i \frac{s^c}{\hbar}} \sqrt{\frac{m}{2 \pi i \hbar
+\varepsilon}}\left(\prod_{n=1}^{N-1} \lambda_n\right)^{-\frac{1}{2}}
+\label{3_propagator}
+\end{align}$$</span></p>
+<p>从<span
+class="math inline">$\eqref{3_propagator}$</span>可以看出，传播子最后只与特征值的连乘积有关，下面就是求解<span
+class="math inline">$\prod_{n=1}^{N-1}
+\lambda_n$</span>的值。求解本征的可通过本征多项式直接得到。根据<span
+class="math inline"><em>A</em></span> 的本征多项式 <span
+class="math inline">|<em>A</em> − <em>λ</em><em>I</em>| = <em>P</em><sub><em>N</em> − 1</sub>(<em>λ</em>)</span>，构造多项式：</p>
+<p><span class="math display">$$\begin{align}
+P_n(\lambda)=\left|\begin{array}{cccccc}
+2-\lambda &amp; -1 &amp; 0 &amp; 0 &amp; \cdots &amp; 0 \\
+-1 &amp; 2-\lambda &amp; -1 &amp; 0 &amp; \cdots &amp; 0 \\
+0 &amp; -1 &amp; 2-\lambda &amp; -1 &amp; \cdots &amp; 0 \\
+0 &amp; 0 &amp; -1 &amp; 2-\lambda &amp; \cdots &amp; 0 \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots
+\\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; \cdots &amp; 2-\lambda
+\end{array}\right|
+\end{align}$$</span></p>
+<p>将<span
+class="math inline"><em>P</em><sub><em>n</em></sub>(<em>λ</em>)</span>从第一行展开得到：</p>
+<p><span class="math display">$$\begin{align}
+&amp;P_n = (2-\lambda)P_{n-1}-P_{n-2} \\
+&amp;P_n + (\lambda-2)P_{n+1}+P_{n+2} = 0 \label{2_P}
+\end{align}$$</span></p>
+<p>定义一个能提升多项式阶数的线性算子<span
+class="math inline"><em>L</em> : <em>L</em><em>P</em><sub><em>n</em> − 1</sub> = <em>P</em><sub><em>n</em></sub></span>，然后将其代入递推关系<span
+class="math inline">$\eqref{2_P}$</span>：</p>
+<p><span class="math display">$$\begin{align}
+0&amp;=[L^2+(\lambda-2)L+1]P_n \\
+&amp;= (L-\alpha)(L-\beta)P_n \\
+\alpha &amp;= \frac{2-\lambda+\sqrt{\lambda^2-4\lambda}}{2} \\
+\beta &amp;= \frac{2-\lambda-\sqrt{\lambda^2-4\lambda}}{2} \\
+\end{align}$$</span></p>
+<p>接下来分别求解<span
+class="math inline">(<em>L</em> − <em>α</em>)<em>P</em><sub><em>n</em></sub> = 0</span>与<span
+class="math inline">(<em>L</em> − <em>β</em>)<em>P</em><sub><em>n</em></sub> = 0</span>：</p>
+<p><span class="math display">$$\begin{align}
+(L-\alpha)P_n&amp;=0 \\
+LP_n&amp;=\alpha P_n \\
+P_n&amp;=\alpha P_{n-1}=\alpha^2 P_{n-2} \\
+&amp;=\alpha^n P_0^n = c_1\alpha^n
+\end{align}$$</span></p>
+<p>同理可得：</p>
+<p><span class="math display">$$\begin{align}
+P_n&amp;=c_2\beta^n
+\end{align}$$</span></p>
+<p>因此通解为：</p>
+<p><span class="math display">$$\begin{align}
+P_n&amp;=c_1\alpha^n + c_2\beta^n
+\end{align}$$</span></p>
+<p>根据多项式<span
+class="math inline"><em>P</em><sub>1</sub> = 2 − <em>λ</em></span>与<span
+class="math inline"><em>P</em><sub>2</sub> = (2 − <em>λ</em>)<sup>2</sup> − 1</span>可知<span
+class="math inline"><em>P</em><sub>1</sub> = 1</span>，由此解得：</p>
+<p><span class="math display">$$\begin{align}
+c_1 &amp;= \frac{\alpha}{\alpha-\beta} \\
+c_2 &amp;= \frac{-\beta}{\alpha-\beta} \\
+P_n&amp;= \frac{\alpha^{n+1}-\beta^{n+1}}{\alpha-\beta} \\
+&amp;=\alpha^n+\alpha^{n-1}\beta+\alpha^{n-2}\beta^2+\cdots+\alpha\beta^{n-1}+\beta^n
+\end{align}$$</span></p>
+<p>对于连乘积有<span class="math inline">$\prod_{n=1}^{N-1}
+\lambda_n=|A|$</span>，根据<span
+class="math inline">|<em>A</em> − <em>λ</em><em>I</em>| = <em>P</em><sub><em>N</em> − 1</sub>(<em>λ</em>)</span>可得到<span
+class="math inline">|<em>A</em>| = <em>P</em><sub><em>N</em> − 1</sub>(0) = <em>N</em></span>，并将结论代入<span
+class="math inline">$\eqref{3_propagator}$</span>：</p>
+<p><span class="math display">$$\begin{align}
+K\left(x, t ; x_0, t_0\right) &amp;=e^{i \frac{s^c}{\hbar}}
+\sqrt{\frac{m}{2 \pi i \hbar \varepsilon}}\frac{1}{\sqrt{N}} \\
+&amp;=e^{i \frac{s^c}{\hbar}} \sqrt{\frac{m}{2 \pi i \hbar (t-t_0)}} \\
+&amp;=\sqrt{\frac{m}{2 \pi i \hbar (t-t_0)}}\exp{\left[i
+\frac{m(x-x_0)^2}{2\hbar(t-t_0)}\right]}
+\end{align}$$</span></p>
+<h1 id="谐振子---利用对角化求解路径积分">谐振子 -
+利用对角化求解路径积分</h1>
+<p><font color='red'></p>
+<p>已完成内容：</p>
+<ol type="1">
+<li>自由粒子的路径积分</li>
+</ol>
+<p>本部分的目标：</p>
+<ol type="1">
+<li>讨论谐振子的路径积分</li>
+</ol>
+<p></font></p>
+<p>对于一维谐振子势<span
+class="math inline">$V=\frac{1}{2}m\omega^2X^2$</span>，研究从<span
+class="math inline"><em>t</em><sub>0</sub> → <em>t</em></span>的演化结果。位形空间传播子：</p>
+<p><span class="math display">$$\begin{align}
+K\left(x, t ; x_0, t_0\right)&amp;=\left(\frac{m}{2 \pi i \hbar
+\varepsilon}\right)^{\frac{N}{2}} \int \mathrm{D} x e^{i
+\frac{S}{\hbar}} \\
+S&amp;=\int \frac{1}{2} m v^2 - \frac{1}{2}m\omega^2X^2 dt\\
+&amp;=\sum_{n=1}^N \left[\frac{1}{2} m \frac{\left(\Delta
+x_n\right)^2}{\varepsilon^2} - \frac{1}{2}m\omega^2x_n^2
+\right]\varepsilon
+\end{align}$$</span></p>
+<p>同样进行代换，分离为经典路径和扰动项<span
+class="math inline"><em>x</em><sub><em>n</em></sub> = <em>x</em><sub><em>n</em></sub><sup>c</sup> + <em>y</em><sub><em>n</em></sub></span>：</p>
+<p><span class="math display">$$\begin{align}
+S&amp;=\sum_{n=1}^N \left[\frac{1}{2} m \frac{\left(\Delta
+x_n\right)^2}{\varepsilon^2} - \frac{1}{2}m\omega^2x_n^2
+\right]\varepsilon \\
+&amp;= \sum_{n=1}^N \left[\left(\Delta x_n\right)^2 - \omega^2x_n^2
+\varepsilon^2\right]\frac{m}{2\varepsilon} \\
+&amp;= \sum_{n=1}^N \left[\left(\Delta x_n^{\mathrm{c}}+\Delta
+y_n\right)^2 - \omega^2(x_n^{\mathrm{c}}+y_n)^2
+\varepsilon^2\right]\frac{m}{2\varepsilon} \\
+&amp; \begin{aligned}
+=&amp;\sum_{n=1}^N \left[\left(\Delta x_n^{\mathrm{c}}\right)^2 -
+\omega^2(x_n^{\mathrm{c}})^2 \varepsilon^2\right]\frac{m}{2\varepsilon}
+\\
+&amp;+ \sum_{n=1}^N \left[\left(\Delta y_n\right)^2 - \omega^2(y_n)^2
+\varepsilon^2\right]\frac{m} {2\varepsilon} \\
+&amp;+ \sum_{n=1}^N \left[2\Delta x_n^{\mathrm{c}}\Delta y_n - 2\omega^2
+x_n^{\mathrm{c}}y_n \varepsilon^2\right]\frac{m}{2\varepsilon}\\
+\end{aligned}
+\end{align}$$</span></p>
+<p>同样分为三部分：</p>
+<p><span class="math display">$$\begin{align}
+&amp; S^{\mathrm{c}}=\frac{m}{2 \varepsilon}
+\sum_{n=1}^N\left[\left(\Delta x_n^{\mathrm{c}}\right)^2-\varepsilon^2
+\omega^2\left(x_n^{\mathrm{c}}\right)^2\right] \\
+&amp; S^{\prime}=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left[\left(\Delta
+y_n\right)^2-\varepsilon^2 \omega^2 y_n^2\right] \\
+&amp; S^{\times}=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(2 \Delta
+x_n^{\mathrm{c}} \Delta y_n-\varepsilon^2 \omega^2 2 x_n^{\mathrm{c}}
+y_n\right)
+\end{align}$$</span></p>
+<p>先利用<span
+class="math inline"><em>y</em><sub><em>n</em></sub></span>的边界条件计算交叉项<span
+class="math inline"><em>S</em><sup>×</sup></span>：</p>
+<p><span class="math display">$$\begin{align}
+S^{\times} &amp; =\frac{m}{2 \varepsilon} \sum_{n=1}^N\left(2 \Delta
+x_n^{\mathrm{c}} \Delta y_n-\varepsilon^2 \omega^2 2 x_n^{\mathrm{c}}
+y_n\right) \\
+&amp; =m
+\sum_{n=1}^N\left[\dot{x}_n^{\mathrm{c}}\left(y_n-y_{n-1}\right)-\varepsilon
+\omega^2 x_n^{\mathrm{c}} y_n\right] \\
+&amp; =m \sum_{n=1}^N \dot{x}_n^{\mathrm{c}} y_n-m \sum_{n=1}^N
+\dot{x}_n^{\mathrm{c}} y_{n-1}-m \sum_{n=1}^N \varepsilon \omega^2
+x_n^{\mathrm{c}} y_n \\
+&amp; \stackrel{y_{N=0}}{=} m \sum_{n=1}^{N-1} \dot{x}_n^{\mathrm{c}}
+y_n-m \sum_{n=0}^{N-1} \dot{x}_{n+1}^{\mathrm{c}} y_n-m \sum_{n=1}^{N-1}
+\varepsilon \omega^2 x_n^{\mathrm{c}} y_n \\
+&amp; \stackrel{y_{0=0}}{=} m \sum_{n=1}^{N-1} \dot{x}_n^{\mathrm{c}}
+y_n-m \sum_{n=1}^{N-1} \dot{x}_{n+1}^{\mathrm{c}} y_n-m \sum_{n=1}^{N-1}
+\varepsilon \omega^2 x_n^{\mathrm{c}} y_n \\
+&amp; =-\left(m \varepsilon \sum_{n=1}^{N-1}
+\frac{\dot{x}_{n+1}^{\mathrm{c}}-\dot{x}_n^{\mathrm{c}}}{\varepsilon}
+y_n+\sum_{n=1}^{N-1} m \varepsilon \omega^2 x_n^{\mathrm{c}} y_n\right)
+\\
+&amp; =-\varepsilon \sum_{n=1}^{N-1}\left(m
+\ddot{x}_{n+1}^{\mathrm{c}}+m \omega^2 x_n^{\mathrm{c}}\right) y_n
+\end{align}$$</span></p>
+<p>根据经典方程<span
+class="math inline">$m\ddot{x}^{\mathrm{c}}=-\frac{\partial V}{\partial
+x^{\mathrm{c}}}=-m\omega^2x^\mathrm{c}$</span>，则有<span
+class="math inline"><em>S</em><sup>×</sup> = 0</span>。</p>
+<p>再计算经典路径<span
+class="math inline"><em>S</em><sup>c</sup></span>：</p>
+<p><span class="math display">$$\begin{align}
+S^{\mathrm{c}} &amp; =\frac{m}{2 \varepsilon}
+\sum_{n=1}^N\left[\left(\Delta x_n^{\mathrm{c}}\right)^2-\varepsilon^2
+\omega^2\left(x_n^{\mathrm{c}}\right)^2\right] \\
+&amp; =\frac{m \varepsilon}{2}
+\sum_{n=1}^N\left[\left(\dot{x}_n^{\mathrm{c}}\right)^2-\omega^2\left(x_n^{\mathrm{c}}\right)^2\right]
+\\
+&amp;=\frac{m}{2}
+\int_{t_0}^t\left[\left(\dot{x}^{\mathrm{c}}\right)^2-\omega^2\left(x^{\mathrm{c}}\right)^2\right]
+\mathrm{d} \tau \label{3_classical}
+\end{align}$$</span></p>
+<p>接下来计算经典路径的形式：</p>
+<p><span class="math display">$$\begin{align}
+m\ddot{x}^{\mathrm{c}}&amp;=-m\omega^2 x^{\mathrm{c}} \\
+x^{\mathrm{c}}(t_0) &amp;= x_0 \\
+x^{\mathrm{c}}(t) &amp;= x
+\end{align}$$</span></p>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">DSolve</span><span class="punctuation">[</span><span class="punctuation">&#123;</span><span class="variable">m</span> <span class="built_in">D</span><span class="punctuation">[</span><span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">t</span><span class="operator">,</span> <span class="number">2</span><span class="punctuation">&#125;</span><span class="punctuation">]</span> <span class="operator">==</span> <span class="operator">-</span><span class="variable">m</span> <span class="variable">\[Omega]</span><span class="operator">^</span><span class="number">2</span> <span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">,</span> <span class="variable">x</span><span class="punctuation">[</span><span class="variable">t0</span><span class="punctuation">]</span> <span class="operator">==</span> <span class="variable">x0</span><span class="operator">,</span> </span><br><span class="line">   <span class="variable">x</span><span class="punctuation">[</span><span class="variable">tend</span><span class="punctuation">]</span> <span class="operator">==</span> <span class="variable">xend</span><span class="punctuation">&#125;</span><span class="operator">,</span> <span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">,</span> <span class="variable">t</span><span class="punctuation">]</span> <span class="operator">//</span> <span class="built_in">Simplify</span></span><br></pre></td></tr></table></figure>
+<p>得到结果：</p>
+<p><span class="math display">$$\begin{align}
+x^{\mathrm{c}} &amp; =\frac{x \sin
+\left[\omega\left(\tau-t_0\right)\right]-x_0 \sin [\omega(\tau-t)]}{\sin
+\left[\omega\left(t-t_0\right)\right]} \label{classical}
+\end{align}$$</span></p>
+<p>将经典路径的表达形式<span
+class="math inline">$\eqref{classical}$</span>代入经典路径的路径积分中<span
+class="math inline">$\eqref{3_classical}$</span>，可以得到路径积分的具体表达式。</p>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span> <span class="operator">=</span> <span class="operator">-</span><span class="built_in">Csc</span><span class="punctuation">[</span><span class="punctuation">(</span><span class="variable">t0</span> <span class="operator">-</span> <span class="variable">tend</span><span class="punctuation">)</span> <span class="variable">\[Omega]</span><span class="punctuation">]</span> <span class="punctuation">(</span><span class="variable">xend</span> <span class="built_in">Sin</span><span class="punctuation">[</span><span class="punctuation">(</span><span class="variable">t</span> <span class="operator">-</span> <span class="variable">t0</span><span class="punctuation">)</span> <span class="variable">\[Omega]</span><span class="punctuation">]</span> <span class="operator">-</span> </span><br><span class="line">     <span class="variable">x0</span> <span class="built_in">Sin</span><span class="punctuation">[</span><span class="punctuation">(</span><span class="variable">t</span> <span class="operator">-</span> <span class="variable">tend</span><span class="punctuation">)</span> <span class="variable">\[Omega]</span><span class="punctuation">]</span><span class="punctuation">)</span><span class="operator">;</span></span><br><span class="line"><span class="built_in">Integrate</span><span class="punctuation">[</span></span><br><span class="line">  <span class="variable">m</span><span class="operator">/</span><span class="number">2</span> <span class="punctuation">(</span><span class="built_in">D</span><span class="punctuation">[</span><span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">t</span><span class="operator">,</span> <span class="number">1</span><span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="operator">^</span><span class="number">2</span> <span class="operator">-</span> <span class="variable">\[Omega]</span><span class="operator">^</span><span class="number">2</span> <span class="variable">x</span><span class="punctuation">[</span><span class="variable">t</span><span class="punctuation">]</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">)</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">t</span><span class="operator">,</span> <span class="variable">t0</span><span class="operator">,</span> </span><br><span class="line">   <span class="variable">tend</span><span class="punctuation">&#125;</span><span class="punctuation">]</span> <span class="operator">//</span> <span class="built_in">FullSimplify</span></span><br></pre></td></tr></table></figure>
+<p><span class="math display">$$\begin{align}
+S^{\mathrm{C}}&amp;=\frac{m \omega}{2}\left\{\left(x^2+x_0^2\right) \cot
+\left[\omega\left(t-t_0\right)\right]-2 x x_0 \csc
+\left[\omega\left(t-t_0\right)\right]\right\} \\
+K\left(x, t ; x_0, t\right)&amp;=\left(\frac{m}{2 \pi i \hbar
+\varepsilon}\right)^{\frac{N}{2}} \int e^{i
+\frac{\left(S^c+S^{\prime}+S^{\times}\right)}{\hbar}} \mathrm{d} x_1
+\cdots \mathrm{d} x_{N-1} \\
+&amp; =e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar
+\varepsilon}\right)^{\frac{N}{2}} \int e^{i \frac{S^{\prime}}{\hbar}}
+\mathrm{d} y_1 \cdots \mathrm{d} y_{N-1}
+\end{align}$$</span></p>
+<p>路径 <span
+class="math inline"><em>x</em><sub><em>n</em></sub><sup>c</sup> = <em>x</em><sup>c</sup>(<em>t</em><sub><em>n</em></sub>)</span>
+都是给定的,故: <span
+class="math display">d<em>x</em><sub><em>n</em></sub><sup>c</sup> = 0 ⇒ d<em>x</em><sub><em>n</em></sub> = d(<em>x</em><sub><em>n</em></sub><sup>c</sup> + <em>y</em><sub><em>n</em></sub>) = d<em>y</em><sub><em>n</em></sub></span></p>
+<p>接下来需要解决的是：</p>
+<p><span class="math display">$$\begin{align}
+S^{\prime}=\frac{m}{2 \varepsilon} \sum_{n=1}^N\left[\left(\Delta
+y_n\right)^2-\varepsilon^2 \omega^2 y_n^2\right] \label{3_Sprime}
+\end{align}$$</span></p>
+<p>首先将<span
+class="math inline"><em>Δ</em><em>y</em><sub><em>n</em></sub></span>利用差分的办法改写为矩阵形式：</p>
+<p><span class="math display">$$\begin{align}
+\sum_{n=1}^N\left(\Delta y_n\right)^2 &amp;
+=\sum_{n=1}^N\left(y_n-y_{n-1}\right)^2 \\
+&amp; =\sum_{n=1}^N y_n^2+\sum_{n=1}^N y_{n-1}^2-2 \sum_{n=1}^N y_n
+y_{n-1} \\
+&amp; \stackrel{y_{N=0}}{=} \sum_{n=1}^{N-1} y_n^2+\sum_{n=0}^{N-1}
+y_n^2-2 \sum_{n=1}^{N-1} y_n y_{n-1} \\
+&amp; \stackrel{y_0=0}{=} \sum_{n=1}^{N-1} y_n^2+\sum_{n=1}^{N-1}
+y_n^2-2 \sum_{n=1}^{N-1} y_n y_{n-1}\\
+&amp; =\sum_{n=1}^{N-1}\left(2 y_n^2-2 y_n y_{n-1}\right)=y^{\mathrm{T}}
+A y \\
+A_{mn}&amp;= 2\delta_{m,n}-\delta_{m-1,n}-\delta_{m,n-1}
+\end{align}$$</span></p>
+<p>与自由粒子一样，因为是实正定矩阵，可以将其对角化。</p>
+<p><span class="math display">$$\begin{align}
+K\left(x, t ; x_0, t\right) = &amp; e^{i
+\frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar
+\varepsilon}\right)^{\frac{N}{2}} \int e^{i \frac{m}{2 \hbar
+\varepsilon}\left(y^{\mathrm{T}} A y-\varepsilon^2 \omega^2
+y^{\mathrm{T}} y\right)} \mathrm{d} y_1 \cdots \mathrm{d} y_{N-1} \\
+= &amp; e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar
+\varepsilon}\right)^{\frac{N}{2}} \int e^{i \frac{m}{2 \hbar
+\varepsilon} \sum_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2
+\omega^2\right) u_n^2} \mathrm{~d} u_1 \cdots \mathrm{d} u_{N-1} \\
+= &amp; e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar
+\varepsilon}\right)^{\frac{N}{2}} \prod_{n=1}^{N-1} \int
+e^{-\frac{m\left(\lambda_n-\varepsilon^2 \omega^2\right)}{2 i \hbar
+\varepsilon} u_n^2} \mathrm{~d} u_n \\
+= &amp; e^{i \frac{S^c}{\hbar}}\left(\frac{m}{2 \pi i \hbar
+\varepsilon}\right)^{\frac{N}{2}} \prod_{n=1}^{N-1} \sqrt{\frac{2 \pi i
+\hbar \varepsilon}{m\left(\lambda_n-\varepsilon^2 \omega^2\right)}}\\
+=&amp;e^{i \frac{S^c}{\hbar}} \sqrt{\frac{m}{2 \pi i \hbar
+\varepsilon}}\left[\prod_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2
+\omega^2\right)\right]^{-\frac{1}{2}}
+\end{align}$$</span></p>
+<p>接下来解决连乘积<span
+class="math inline">$\prod_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2
+\omega^2\right)$</span>，对<span
+class="math inline">$\eqref{3_Sprime}$</span>的本征多项式入手，与自由粒子的区别在于对角线上会多出来一项：</p>
+<p><span class="math display">$$\begin{align}
+P_n(\lambda)=\left|\begin{array}{cccccc}
+2-\varepsilon^2 \omega^2-\lambda &amp; -1 &amp; 0 &amp; 0 &amp; \cdots
+&amp; 0 \\
+-1 &amp; 2-\varepsilon^2 \omega^2-\lambda &amp; -1 &amp; 0 &amp; \cdots
+&amp; 0 \\
+0 &amp; -1 &amp; 2-\varepsilon^2 \omega^2-\lambda &amp; -1 &amp; \cdots
+&amp; 0 \\
+0 &amp; 0 &amp; -1 &amp; 2-\varepsilon^2 \omega^2-\lambda &amp; \cdots
+&amp; 0 \\
+\vdots &amp; \vdots &amp; \vdots &amp; \vdots &amp; \ddots &amp; \vdots
+\\
+0 &amp; 0 &amp; 0 &amp; 0 &amp; \cdots &amp; 2-\varepsilon^2
+\omega^2-\lambda
+\end{array}\right|
+\end{align}$$</span></p>
+<p>对第一行进行展开，可以得到递推关系：</p>
+<p><span class="math display">$$\begin{align}
+&amp; P_n(\lambda) = (2-\varepsilon^2
+\omega^2-\lambda)P_{n-1}(\lambda)-P_{n-2}(\lambda) \\
+&amp; P_{n+2}(\lambda)+ P_{n}(\lambda) + (\varepsilon^2
+\omega^2+\lambda-2)P_{n+1}(\lambda) = 0 \label{3_ditui}
+\end{align}$$</span></p>
+<p>定义线性算子<span
+class="math inline"><em>L</em><em>P</em><sub><em>n</em></sub>(<em>λ</em>) = <em>P</em><sub><em>n</em> + 1</sub>(<em>λ</em>)</span>，并将其代入递推关系可以得到：</p>
+<p><span class="math display">$$\begin{align}
+&amp;\left[L^2+ (\varepsilon^2
+\omega^2+\lambda-2)L+1\right]P_{n}(\lambda) = 0
+\end{align}$$</span></p>
+<p>进行分解：</p>
+<p><span class="math display">$$\begin{align}
+(L-\alpha)(L-\beta)P_{n}(\lambda) &amp;= \left[L^2+ (\varepsilon^2
+\omega^2+\lambda-2)L+1\right]P_{n}(\lambda) \\
+\alpha &amp;= \frac{1}{2} \left(-\lambda +\sqrt{\left(\lambda +\omega ^2
+\varepsilon ^2-2\right)^2-4}-\omega ^2 \varepsilon ^2+2\right) \\
+\beta &amp;= \frac{1}{2} \left(-\lambda -\sqrt{\left(\lambda +\omega ^2
+\varepsilon ^2-2\right)^2-4}-\omega ^2 \varepsilon ^2+2\right)
+\end{align}$$</span></p>
+<p>接下来分别求解<span
+class="math inline">(<em>L</em> − <em>β</em>)<em>P</em><sub><em>n</em></sub> = 0</span>与<span
+class="math inline">(<em>L</em> − <em>α</em>)<em>P</em><sub><em>n</em></sub> = 0</span>:</p>
+<p><span class="math display">$$\begin{aligned}
+(L-\alpha)P_{n}&amp;=0 \\
+LP_{n} &amp;= \alpha P_{n}\\
+P_{n+1} &amp;=\alpha P_{n} \\
+P_{n} &amp;= \alpha P_{n-1} = \alpha^n P_0(\alpha) \\
+P_{n} &amp;= \beta P_{n-1} = \beta^n P_0(\beta) \\
+\end{aligned}$$</span></p>
+<p>因此<span class="math inline"><em>P</em></span>通项写为：</p>
+<p><span
+class="math display"><em>P</em><sub><em>n</em></sub> = <em>c</em><sub>1</sub><em>α</em><sup><em>n</em></sup> + <em>c</em><sub>2</sub><em>β</em><sup><em>n</em></sup></span></p>
+<p>代入初始条件：</p>
+<p><span class="math display">$$\begin{align}
+P_1(\lambda) &amp;= 2-\varepsilon^2 \omega^2-\lambda \\
+P_2(\lambda) &amp;= (2-\varepsilon^2 \omega^2-\lambda)^2 - 1 \\
+\end{align}$$</span></p>
+<p>由递推关系<span
+class="math inline">$\eqref{3_ditui}$</span>可以得到<span
+class="math inline"><em>P</em><sub>0</sub> = 1</span>，<span
+class="math inline"><em>P</em><sub><em>n</em></sub></span>的表达式：</p>
+<p><span class="math display">$$\begin{align}
+c_1 &amp;= -\frac{\beta +\lambda +\omega ^2 \varepsilon ^2-2}{\alpha
+-\beta }\\
+c_2 &amp;= \frac{\alpha +\lambda +\omega ^2 \varepsilon ^2-2}{\alpha
+-\beta } \\
+P_{n}(\lambda) &amp;= c_1 \alpha^n+ c_2 \beta^n \\
+&amp;= \frac{\beta ^n \left(\alpha -1\right)-\alpha ^n \left(\beta
+-1\right)}{\alpha-\beta }
+\end{align}$$</span></p>
+<p>通过以上讨论已经成功将特征多项<span
+class="math inline">$\eqref{3_ditui}$</span>通项表达形式写出来。接下来需要具体写出
+<span class="math inline"><em>α</em></span> 与 <span
+class="math inline"><em>β</em></span>
+的表达形式。结合需要具体求解的问题<span
+class="math inline">$\prod_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2
+\omega^2\right)=|P_{N-1}(\lambda=0)|$</span>，可知<span
+class="math inline"><em>λ</em> = 0</span>:</p>
+<p><span class="math display">$$\begin{align}
+\lambda &amp;= 0 \\
+\alpha &amp;= \frac{1}{2} \left(\sqrt{\left(\omega ^2 \varepsilon
+^2-2\right)^2-4}-\omega ^2 \varepsilon ^2+2\right) \\
+&amp;\stackrel{\varepsilon \to 0}{=} \frac{1}{2}
+\left(\omega  \varepsilon\sqrt{-4}+2\right)\\
+\beta &amp;= \frac{1}{2} \left( -\sqrt{\left(\omega ^2 \varepsilon
+^2-2\right)^2-4}-\omega ^2 \varepsilon ^2+2\right) \\
+&amp;\stackrel{\varepsilon \to 0}{=} \frac{1}{2} \left(-\omega
+\varepsilon\sqrt{-4}+2\right)\\
+\end{align}$$</span></p>
+<p>可以得到：</p>
+<p><span class="math display">$$\begin{align}
+\prod_{n=1}^{N-1}\left(\lambda_n-\varepsilon^2
+\omega^2\right)&amp;=P_{N-1}(\lambda=0) \\
+&amp;= \frac{(1+i \omega \varepsilon)^N-(1-i \omega \varepsilon)^N}{1+i
+\omega \varepsilon-1+i \omega \varepsilon} \\
+&amp;= \frac{1}{2 i \omega \varepsilon}\left\{\left[1+\frac{i
+\omega\left(t-t_0\right)}{N}\right]^N-\left[1-\frac{i
+\omega\left(t-t_0\right)}{N}\right]^N\right\} \\
+&amp; \stackrel{N \rightarrow \infty}{=} \frac{1}{2 i \omega
+\varepsilon}\left[e^{i \omega\left(t-t_0\right)}-e^{-i
+\omega\left(t-t_0\right)}\right] \\
+&amp;=\frac{\sin \left[\omega\left(t-t_0\right)\right]}{\omega
+\varepsilon}
+\end{align}$$</span></p>
+<p>所以谐振子的传播子写为：</p>
+<p><span class="math display">$$\begin{align}
+K\left(x, t ; x_0, t_0\right)&amp;=e^{i \frac{S^c}{\hbar}} \sqrt{\frac{m
+\omega}{2 \pi i \hbar \sin \left[\omega\left(t-t_0\right)\right]}} \\
+S^{\mathrm{c}}&amp;=\frac{m \omega}{2}\left\{\left(x^2+x_0^2\right) \cot
+\left[\omega\left(t-t_0\right)\right]-2 x x_0 \csc
+\left[\omega\left(t-t_0\right)\right]\right\}
+\end{align}$$</span></p>
+<p><font color='red'>应该考虑相位了，但现在还没出现问题，之再说吧。详细讨论看上面引用的内容。</font></p>
+<h1 id="路径积分蒙特卡洛">路径积分蒙特卡洛</h1>
+<p>参考： * <a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/509118112">路径积分蒙特卡洛
+PIMC</a></p>
+<p>考虑量子力学中的哈密顿量以及波函数：</p>
+<p><span class="math display">$$\begin{align}
+H&amp;=-\hbar^2 \sum_i \frac{1}{2 m_i} \frac{\partial^2}{\partial
+\mathbf{r}_i^2}+V(\mathcal{R}) \\
+\psi(\mathcal{R}, t)&amp;=\left\langle\mathcal{R}\left|e^{-i t H /
+\hbar}\right| \psi\right\rangle
+\end{align}$$</span></p>
+<p>在使用蒙卡数值计算的过程中存在两个问题： *
+指数是复数，不能用使用正实数概率分布表示 * <span
+class="math inline"><em>H</em></span>是量子力学算符，动能与势能不对易</p>
+<h2 id="continuing-to-imaginary-time">Continuing to Imaginary Time</h2>
+<p>解决复数问题。</p>
+<p>通过引入虚时<span
+class="math inline"><em>τ</em> = −<em>i</em><em>t</em></span>，将复数变为一个实数处理，这种做法也出现在扩散蒙特卡洛（diffusion
+Monte Carlo, DMC）。通过定义配分函数，产生与统计力学的联系：</p>
+<p><span class="math display">$$\begin{align}
+Z(\beta)&amp;=\int d^{N d}
+\mathcal{R}\left\langle\mathcal{R}\left|e^{-\tau H / \hbar}\right|
+\mathcal{R}\right\rangle=\operatorname{Tr} e^{-\beta H}, \quad
+\beta=\frac{\tau}{\hbar} \\
+k_{\mathrm{B}} T&amp;=1 / \beta=\hbar / \tau
+\end{align}$$</span></p>
+<h2 id="discretizing-the-time-dimension">Discretizing the Time
+Dimension</h2>
+<p>解决不对易的问题。</p>
+<p>将时间<span class="math inline"><em>t</em></span>放在<span
+class="math inline"><em>M</em></span>的时间格点上，<span
+class="math inline"><em>Δ</em><em>τ</em> = <em>τ</em>/<em>M</em></span>，这样有<span
+class="math inline"><em>M</em> − 1</span>个中间时间。在每一个中间的时间步骤中都有完整的本征态：</p>
+<p><span class="math display">$$\begin{align}
+\mathbf{1}=\int d^{N d}
+\mathcal{R}_i\left|\mathcal{R}_i\right\rangle\left\langle\mathcal{R}_i\right|,
+\quad i=1, \ldots, M-1
+\end{align}$$</span></p>
+<p>然后沿着时间的顺序将配分函数分解：</p>
+<p><span class="math display">$$\begin{align}
+&amp; Z(\beta)= \int d^{N d}
+\mathcal{R}\left\langle\mathcal{R}\left|e^{-\tau H / \hbar}\right|
+\mathcal{R}\right\rangle \\
+&amp;=\int d \mathcal{R}_0 \int d \mathcal{R}_1 \ldots \int d
+\mathcal{R}_{M-1}\left\langle\mathcal{R}_0\left|e^{-\Delta \tau H /
+\hbar}\right| \mathcal{R}_{M-1}\right\rangle\times
+\ldots\times\left\langle\mathcal{R}_2\left|e^{-\Delta \tau H /
+\hbar}\right|
+\mathcal{R}_1\right\rangle\left\langle\mathcal{R}_1\left|e^{-\Delta \tau
+H / \hbar}\right| \mathcal{R}_0\right\rangle
+\end{align}$$</span></p>
+<p>根据时间分割，将一段时间的演化过程，转变为几个“瞬间”的演化过程<span
+class="math inline"><em>Δ</em><em>τ</em> → 0</span>。这其实就是路径积分的思想。</p>
+<p>接下来通过这样的小量，解决不对易的关系。根据 Baker-Campbell-Hausdorff
+(BCH)定理：</p>
+<p><span class="math display">$$\begin{align}
+e^{\mathcal{A}} e^{\mathcal{B}}&amp;=e^{\mathcal{C}} \\
+\mathcal{C}&amp;=\mathcal{A}+\mathcal{B}+\frac{1}{2}[\mathcal{A},
+\mathcal{B}]+\cdots
+\end{align}$$</span></p>
+<p>把这个关系用在短时演化的过程中：</p>
+<p><span class="math display">$$\begin{align}
+\mathcal{C}&amp;=-\Delta \tau H / \hbar\\
+\mathcal{B}&amp;=-\Delta \tau V / \hbar\\
+\mathcal{A}&amp;=-\Delta \tau K / \hbar \\
+K&amp;=-\hbar^2 \sum_i \frac{1}{2 m_i} \frac{\partial^2}{\partial
+\mathbf{r}_i^2}
+\end{align}$$</span></p>
+<p>通过BCH定理可以知道，将<span
+class="math inline"><em>H</em></span>分为两项，需要计算交叉项。但是这个交叉项是<span
+class="math inline"><em>Δ</em><em>τ</em></span>的高阶小量可以直接忽略。</p>
+<p><span class="math display">$$\begin{align}
+\left\langle\mathcal{R}_1\left|e^{-\Delta \tau H / \hbar}\right|
+\mathcal{R}_0\right\rangle
+&amp;\simeq\left\langle\mathcal{R}_1\left|e^{-\Delta \tau K / \hbar}
+e^{-\Delta \tau V / \hbar}\right|
+\mathcal{R}_0\right\rangle=\left\langle\mathcal{R}_1\left|e^{-\Delta
+\tau K / \hbar}\right| \mathcal{R}_0\right\rangle e^{-\Delta \tau
+V\left(\mathcal{R}_0\right) / \hbar} \\
+\left\langle\mathcal{R}_1\left|e^{-\Delta \tau K / \hbar}\right|
+\mathcal{R}_0\right\rangle &amp; =\int d \mathcal{P}_0 \int d
+\mathcal{P}_1\left\langle\mathcal{R}_1 \mid
+\mathcal{P}_1\right\rangle\left\langle\mathcal{P}_1\left|e^{-\Delta \tau
+K / \hbar}\right| \mathcal{P}_0\right\rangle\left\langle\mathcal{P}_0
+\mid \mathcal{R}_0\right\rangle \\
+&amp; =\left(\frac{m}{2 \pi \hbar \Delta \tau}\right)^{N d / 2} \exp
+\left[-\frac{m \Delta \tau}{2 \hbar} \sum_i\left(\frac{\mathbf{r}_{i
+1}-\mathbf{r}_{i 0}}{\Delta \tau}\right)^2\right]
+\end{align}$$</span></p>
+<h2 id="path-integral-monte-carlo-algorithm">Path Integral Monte Carlo
+Algorithm</h2>
+<p>配分函数的最终表达式为：</p>
+<p><span class="math display">$$\begin{align}
+Z(\beta) \simeq\left(\frac{m}{2 \pi \hbar \Delta \tau}\right)^{M N d /
+2} \int d \mathcal{R}_0 \int d \mathcal{R}_1 \ldots \int d
+\mathcal{R}_{M-1} \quad \times \exp \left\{-\frac{\Delta \tau}{\hbar}
+\sum_{j=0}^{M-1}\left[\frac{m}{2}\left(\frac{\mathcal{R}_{j+1}-\mathcal{R}_j}{\Delta
+\tau}\right)^2+V\left(\mathcal{R}_j\right)\right]\right\}
+\end{align}$$</span></p>
+<p>看这个形式，对比统计晶格中的形式。具有一定的对应关系，路径积分等价于晶格所有构型的求和，因此真正需要关心的是“能量项”：</p>
+<p><span class="math display">$$\begin{align}
+\sum_{j=0}^{M-1}\left[\frac{m}{2}\left(\frac{\mathcal{R}_{j+1}-\mathcal{R}_j}{\Delta
+\tau}\right)^2+V\left(\mathcal{R}_j\right)\right]
+\end{align}$$</span></p>
+<p>将每一格运动区间进行计算，从而得出最终的“能量”，更准确应该是作用量。然后利用
+Metropolis algorithm 进行重要性抽样，将不同权重的路径进行加权运算。</p>
+<h2 id="code">Code</h2>
+<p>以下是一个对于一维谐振子的实现，核心部分在<code>sample</code>模块中。这个实现，每次只对前一次路径中一步进行修改，然后接受概率设为<code>exp(-DeltaE * Delta_t / hbar)</code>，这里作者将<span
+class="math inline">ℏ = 1</span>进行无量纲化了。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">PathIntegral</span>:</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, nt=<span class="number">100</span>, tmax = <span class="number">2</span>*np.pi</span>):</span><br><span class="line">        <span class="variable language_">self</span>.nt = nt</span><br><span class="line">        <span class="variable language_">self</span>.tmax = tmax</span><br><span class="line">        <span class="variable language_">self</span>.t = np.linspace(<span class="number">0</span>, <span class="variable language_">self</span>.tmax, nt)</span><br><span class="line">        <span class="variable language_">self</span>.sample_idx = []</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">sample</span>(<span class="params">self, steps=<span class="number">100000</span></span>):</span><br><span class="line">        <span class="comment"># 1. initialize the path</span></span><br><span class="line">        x = np.zeros_like(<span class="variable language_">self</span>.t)</span><br><span class="line">        dt = <span class="variable language_">self</span>.t[<span class="number">1</span>] - <span class="variable language_">self</span>.t[<span class="number">0</span>]</span><br><span class="line">        ilist = np.random.choice(<span class="built_in">range</span>(<span class="number">1</span>, <span class="variable language_">self</span>.nt-<span class="number">1</span>), size=steps)</span><br><span class="line">        dxlist = np.random.uniform(-<span class="number">1</span>, <span class="number">1</span>, size=steps)</span><br><span class="line">        sampled = []           </span><br><span class="line">        <span class="comment"># randomly pick x[i]</span></span><br><span class="line">        <span class="comment"># do random walk x[i] -&gt; x[i] + r </span></span><br><span class="line">        <span class="comment"># if DeltaE &lt; 0: accept</span></span><br><span class="line">        <span class="comment"># elif DeltaE &gt; 0: accept with probability exp(-DeltaE * Delta_t / hbar)</span></span><br><span class="line">        <span class="keyword">for</span> n <span class="keyword">in</span> tqdm(<span class="built_in">range</span>(steps)):</span><br><span class="line">            i = ilist[n]</span><br><span class="line">            dx = dxlist[n]</span><br><span class="line">            </span><br><span class="line">            <span class="comment">#if x[i] + dx &lt;= 0.0: continue</span></span><br><span class="line">            ds = (<span class="variable language_">self</span>.kinetic_energy(x[i-<span class="number">1</span>], x[i]+dx, dt) -</span><br><span class="line">                  <span class="variable language_">self</span>.kinetic_energy(x[i-<span class="number">1</span>], x[i], dt) +</span><br><span class="line">                  <span class="variable language_">self</span>.kinetic_energy(x[i]+dx, x[i+<span class="number">1</span>], dt) -</span><br><span class="line">                  <span class="variable language_">self</span>.kinetic_energy(x[i], x[i+<span class="number">1</span>], dt) + </span><br><span class="line">                  <span class="variable language_">self</span>.potential(x[i]+dx) -</span><br><span class="line">                  <span class="variable language_">self</span>.potential(x[i])</span><br><span class="line">                 ) * dt</span><br><span class="line">            </span><br><span class="line">            <span class="keyword">if</span> ds &lt; <span class="number">0</span>: </span><br><span class="line">                x[i] = x[i] + dx</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                r = np.random.rand()</span><br><span class="line">                <span class="keyword">if</span> r &lt; np.exp(-ds):</span><br><span class="line">                    x[i] = x[i] + dx</span><br><span class="line">            sampled.append(x[i])</span><br><span class="line">            </span><br><span class="line">            <span class="variable language_">self</span>.sample_idx.append(i)</span><br><span class="line">        <span class="keyword">return</span> sampled, <span class="variable language_">self</span>.sample_idx</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">kinetic_energy</span>(<span class="params">self, x1, x2, dt</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.5</span> * (x2 - x1)**<span class="number">2</span> / dt**<span class="number">2</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">potential</span>(<span class="params">self, x</span>):</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0.5</span> * x**<span class="number">2</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">plot</span>(<span class="params">self</span>):</span><br><span class="line">        tmax = <span class="variable language_">self</span>.tmax</span><br><span class="line">        plt.vlines(<span class="variable language_">self</span>.t, ymin=-tmax, ymax=tmax, color=<span class="string">&#x27;k&#x27;</span>, linestyles=<span class="string">&#x27;dotted&#x27;</span>, alpha=<span class="number">0.9</span>)</span><br><span class="line">        dt = <span class="variable language_">self</span>.t[<span class="number">1</span>] - <span class="variable language_">self</span>.t[<span class="number">0</span>]</span><br><span class="line">        xi = np.random.uniform(-<span class="number">1</span>, <span class="number">1</span>, <span class="variable language_">self</span>.nt)</span><br><span class="line">        xi[<span class="number">0</span>] = <span class="number">0</span></span><br><span class="line">        xi = np.cumsum(xi)</span><br><span class="line">        xi[-<span class="number">1</span>] = <span class="number">0</span></span><br><span class="line">        plt.plot(<span class="variable language_">self</span>.t, xi)</span><br><span class="line">        plt.ylabel(<span class="string">r&#x27;x $\rightarrow$&#x27;</span>, loc=<span class="string">&#x27;center&#x27;</span>)</span><br><span class="line">        plt.xlabel(<span class="string">r&#x27;t $\rightarrow$&#x27;</span>, loc=<span class="string">&#x27;center&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Quantum-Field-Theory/" rel="tag"># Quantum Field Theory</a>
+              <a href="/tags/Path-Integrals/" rel="tag"># Path Integrals</a>
+              <a href="/tags/Path-Integrals-Monte-Carlo/" rel="tag"># Path Integrals Monte Carlo</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/05/08/DL/Kolmogorov%E2%80%93Arnold_Networks/Kolmogorov%E2%80%93Arnold_Networks/" rel="prev" title="KAN: Kolmogorov–Arnold Networks">
+      <i class="fa fa-chevron-left"></i> KAN: Kolmogorov–Arnold Networks
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/06/01/DL/DRL_COM/DRL_COM/" rel="next" title="Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning">
+      Research Reviews of Combinatorial Optimization Methods Based on Deep Reinforcement Learning <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E7%A7%AF%E5%88%86%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%9E%84%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">路径积分的基本构架</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E6%92%AD%E5%AD%90"><span class="nav-number">1.1.</span> <span class="nav-text">传播子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E6%92%AD%E5%AD%90%E7%9A%84%E6%80%A7%E8%B4%A8"><span class="nav-number">1.2.</span> <span class="nav-text">传播子的性质</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B8%E7%A9%BA%E9%97%B4%E7%9A%84%E8%B7%AF%E5%BE%84%E7%A7%AF%E5%88%86"><span class="nav-number">1.3.</span> <span class="nav-text">相空间的路径积分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E5%BD%A2%E7%A9%BA%E9%97%B4%E7%9A%84%E8%B7%AF%E5%BE%84%E7%A7%AF%E5%88%86"><span class="nav-number">1.4.</span> <span class="nav-text">位形空间的路径积分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%A0%E6%92%AD%E5%AD%90%E7%9A%84%E4%B8%A4%E7%B1%BB%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">1.5.</span> <span class="nav-text">传播子的两类表达式</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E7%94%B1%E7%B2%92%E5%AD%90---%E5%88%A9%E7%94%A8%E5%AF%B9%E8%A7%92%E5%8C%96%E6%B1%82%E8%A7%A3%E8%B7%AF%E5%BE%84%E7%A7%AF%E5%88%86"><span class="nav-number">2.</span> <span class="nav-text">自由粒子 -
+利用对角化求解路径积分</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B0%90%E6%8C%AF%E5%AD%90---%E5%88%A9%E7%94%A8%E5%AF%B9%E8%A7%92%E5%8C%96%E6%B1%82%E8%A7%A3%E8%B7%AF%E5%BE%84%E7%A7%AF%E5%88%86"><span class="nav-number">3.</span> <span class="nav-text">谐振子 -
+利用对角化求解路径积分</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B7%AF%E5%BE%84%E7%A7%AF%E5%88%86%E8%92%99%E7%89%B9%E5%8D%A1%E6%B4%9B"><span class="nav-number">4.</span> <span class="nav-text">路径积分蒙特卡洛</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#continuing-to-imaginary-time"><span class="nav-number">4.1.</span> <span class="nav-text">Continuing to Imaginary Time</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#discretizing-the-time-dimension"><span class="nav-number">4.2.</span> <span class="nav-text">Discretizing the Time
+Dimension</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#path-integral-monte-carlo-algorithm"><span class="nav-number">4.3.</span> <span class="nav-text">Path Integral Monte Carlo
+Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#code"><span class="nav-number">4.4.</span> <span class="nav-text">Code</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

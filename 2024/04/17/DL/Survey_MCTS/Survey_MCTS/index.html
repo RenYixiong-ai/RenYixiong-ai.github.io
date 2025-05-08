@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="本文为蒙特卡洛树搜索综述节选。 蒙特卡洛树搜索（Monte Carlo Tree Search，简称MCTS）是一种用于决策过程的模拟和搜索算法，特别适用于解决复杂的顺序决策问题。以下是MCTS的几个核心步骤：  选择（Selection）：从根节点开始，根据某种策略（如UCB1公式），选择一条路径直到达到一个未扩展的节点。 拓展（Expansion）：在当前选中的节点上添加一个新的子节点。 模拟">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A Survey of Monte Carlo Tree Search Methods">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/04/17/DL/Survey_MCTS/Survey_MCTS/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="本文为蒙特卡洛树搜索综述节选。 蒙特卡洛树搜索（Monte Carlo Tree Search，简称MCTS）是一种用于决策过程的模拟和搜索算法，特别适用于解决复杂的顺序决策问题。以下是MCTS的几个核心步骤：  选择（Selection）：从根节点开始，根据某种策略（如UCB1公式），选择一条路径直到达到一个未扩展的节点。 拓展（Expansion）：在当前选中的节点上添加一个新的子节点。 模拟">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/17/DL/Survey_MCTS/Survey_MCTS/3_A_1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/17/DL/Survey_MCTS/Survey_MCTS/3_A_2.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/17/DL/Survey_MCTS/Survey_MCTS/3_B_1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/17/DL/Survey_MCTS/Survey_MCTS/3_B_2_1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/17/DL/Survey_MCTS/Survey_MCTS/3_B_2_2.png">
+<meta property="article:published_time" content="2024-04-17T04:00:00.000Z">
+<meta property="article:modified_time" content="2025-05-08T10:10:36.056Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Reinforcement Learning">
+<meta property="article:tag" content="Monte Carlo">
+<meta property="article:tag" content="Monte Carlo Tree Search">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/04/17/DL/Survey_MCTS/Survey_MCTS/3_A_1.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/04/17/DL/Survey_MCTS/Survey_MCTS/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>A Survey of Monte Carlo Tree Search Methods | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/04/17/DL/Survey_MCTS/Survey_MCTS/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          A Survey of Monte Carlo Tree Search Methods
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-04-17 12:00:00" itemprop="dateCreated datePublished" datetime="2024-04-17T12:00:00+08:00">2024-04-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-08 18:10:36" itemprop="dateModified" datetime="2025-05-08T18:10:36+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>7k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>13 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>本文为<a
+target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/6145622">蒙特卡洛树搜索综述</a>节选。</p>
+<p>蒙特卡洛树搜索（Monte Carlo Tree
+Search，简称MCTS）是一种用于决策过程的模拟和搜索算法，特别适用于解决复杂的顺序决策问题。以下是MCTS的几个核心步骤：</p>
+<ol type="1">
+<li>选择（Selection）：从根节点开始，根据某种策略（如UCB1公式），选择一条路径直到达到一个未扩展的节点。</li>
+<li>拓展（Expansion）：在当前选中的节点上添加一个新的子节点。</li>
+<li>模拟（Simulation）：从新扩展的节点开始进行随机模拟（即走子），直到游戏结束，并记录结果。</li>
+<li>反向传播（Backpropagation）：将模拟的结果回传，更新沿途节点的统计信息。</li>
+</ol>
+<p>值得一提的是，MCTS通过不断重复上述过程，逐渐构建出一个代表不同行动及其结果概率的搜索树。最终，算法会选择具有最高胜率的行动作为推荐的行动。</p>
+<p>此外，MCTS与传统的博弈树搜索相比，它不需要构建整个博弈树，而是通过模拟来评估局面，这使得它能够处理更大规模的搜索空间。然而，MCTS也存在一些局限性，比如对于非零和游戏的适应性、在面对随机性或不完全信息时的表现等问题。尽管如此，MCTS仍然是现代人工智能领域的一个重要工具，尤其是在棋类游戏中的应用，如AlphaGo/Zero等著名程序就是基于MCTS的变体。</p>
+<span id="more"></span>
+<h1 id="background">Background</h1>
+<p>包含决策过程（decision theory）、博弈论（game theory）、Monte Carlo
+以及 bandit-based methods。</p>
+<h2 id="decision-theory">Decision Theory</h2>
+<p>本质是马尔可夫决策决策过程（Markov Decision Processes，简记为
+MDPs），通过一系列 状态-动作-回报 系列完成对于决策过程的刻画。</p>
+<p>部分观测的MDP（Partially Observable
+MDPs，简记为POMDP），每次获得的状态只是整体状态的一部。</p>
+<h2 id="game-theory">Game Theory</h2>
+<h2 id="monte-carlo-methods">Monte Carlo Methods</h2>
+<h2 id="bandit-based-methods">Bandit-Based Methods</h2>
+<p>多臂老虎机问题（Multi-armed Bandit
+problems）是知名的系列决策问题。该问题的难点在于平衡探索与开发（Exploration
+and
+Exploitation），以推荐系统为例，在已经知道用户兴趣点之后需要进行“开发”，但是现有的兴趣点可能不是用户最感兴趣的，或者该兴趣点会随着时间改变，因此需要进行“探索”，不断试探用户新的感兴趣内容。在Spin
+Glass求基态问题中，表现为是在这个结构中继续降低能量，还是选择升高温度跳出当前局域范围进行探索。<a
+target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/80261581">Bandit
+算法</a>用于解决该问题。</p>
+<p>一种有效的方案是基于上置信界（upper confidence bound
+简记UCB）。最简单的UCB算法为<a
+target="_blank" rel="noopener" href="https://link.springer.com/article/10.1023/A:1013689704352">UCB1</a>。</p>
+<p><font color='red'>细致平衡和这个感觉类似，这两者是否有关系？</font></p>
+<h1 id="monte-carlo-tree-search">Monte Carlo Tree Search</h1>
+<p>MCTS依靠于两个基本概念：动作的真实回报，可以依靠随机模拟近似；这些回报可以有效的调整策略去接近最优策略。</p>
+<h2 id="algorithm">Algorithm</h2>
+<p>基础算法通过迭代构建树，从根节点出发搜索子节点，然后选取最好的子节点作为下一次搜索的根节点。在这个迭代过程中有4个典型步骤：
+1)
+<strong>选择</strong>：从根节点开始递归应用子节点选择策略遍历整个树，直到达到收敛节点。
+2) <strong>探索</strong>：产生动作，将更多节点添加进树中。 3)
+<strong>模拟评估</strong>：通过策略模拟给出一个节点的评估分数。 4)
+<strong>反向传播</strong>：通树结构反向传播模拟评估结果。</p>
+<p>采用以下两个直接的策略： 1) Tree policy:
+从搜索树中选择或者探索一个叶子节点。<font color='red'>如何平衡探索与贪心选择，是这个算法的关键。</font>
+2) Default policy:
+模拟评估非终止状态的分数。<font color='red'>这里一直没有明白，算法并没有对该模型的知识，如何评估一个局面的好坏呢？如果已经对这个问题已经有了很好的了解，那直接贪心就可以了，为什么还要有MCTS？</font></p>
+<p>伪代码为： <img src="./3_A_1.png" alt="Algorithm" /></p>
+<p><span class="math inline"><em>v</em><sub>0</sub></span>是根节点<span
+class="math inline"><em>s</em><sub>0</sub></span>的评分，其中<span
+class="math inline"><em>v</em><sub><em>l</em></sub></span>是叶子节点<span
+class="math inline"><em>s</em><sub><em>l</em></sub></span>的评分，<span
+class="math inline"><em>Δ</em></span>是从探索节点返回的值。</p>
+<figure>
+<img src="./3_A_2.png" alt="general MCTS approach" />
+<figcaption aria-hidden="true">general MCTS approach</figcaption>
+</figure>
+<p>上面展示了一次过程的示意图。</p>
+<h2 id="development">Development</h2>
+<figure>
+<img src="./3_B_1.png" alt="development of MCTS" />
+<figcaption aria-hidden="true">development of MCTS</figcaption>
+</figure>
+<h2 id="tree-policy">Tree policy</h2>
+<p>Upper Confidence Bound for Trees (UCT)算法是Tree
+policy中的一种，用于解决exploration–exploitation dilemma.</p>
+<p>在子节点<span class="math inline"><em>j</em></span>去选择最大化：
+<span class="math display">$$\begin{align}
+\mathrm{UCT}=\bar{X}_j+2 C_p \sqrt{\frac{2 \ln n}{n_j}} \label{UCB}
+\end{align}$$</span></p>
+<p>其中 <span class="math inline"><em>n</em></span>
+是当前节点被遍历过的次数，<span
+class="math inline"><em>n</em><sub><em>j</em></sub></span>是子节点<span
+class="math inline"><em>j</em></span>被遍历过的次数，并且限制<span
+class="math inline"><em>C</em><sub><em>p</em></sub> &gt; 0</span>。如果超过一个子节点有相同的最大值，通常随机选择。<span
+class="math inline"><em>X</em><sub><em>i</em>, <em>t</em></sub></span>和<span
+class="math inline"><em>X̄</em><sub><em>j</em></sub></span>是选择<span
+class="math inline"><em>j</em></span>的平均回报，值在范围<span
+class="math inline">[0, 1]</span>上。通常设置<span
+class="math inline"><em>n</em><sub><em>j</em></sub> = 0</span>用于鼓励探索未曾探索过的区域。<span
+class="math inline"><em>C</em><sub><em>p</em></sub></span>可以用来调节探索的倾向，有很多文献对这个的选择有很多讨论。</p>
+<p><span
+class="math inline">$\eqref{UCB}$</span>存在这样的一种思想，如果子节点都探索过，倾向于选择收益高的节点；如果子节点存在没有探索过的节点，倾向于选择没有探索过的节点。</p>
+<h2 id="default-policy">Default policy</h2>
+<blockquote>
+<p>In the simplest case, this default policy is uniformly random.</p>
+</blockquote>
+<p>最简单的处理方案是随机产生。</p>
+<p><font color='blue'>看这部分算法原本目的是想要了解这部分内容，但是现在发现MCTS的核心思想在于如何平衡探索和开发。这部分策略本质上是评价函数，如何构建评价函数，从而可以对状态进行评分。这其实是强化学习的任务。MCTS的任务是在知道这部分内容的前提下，将评估函数很好的与实际应用结合。</font></p>
+<p>该函数的设计本质上是一个很难的问题。综述中给出了如下的设计提升方案：
+* Rule-Based Simulation Policy * Contextual Monte Carlo Search * Fill
+the Board * Learning a Simulation Policy * Using History Heuristics *
+Evaluation Function * Simulation Balancing * Last Good Reply *
+Patterns</p>
+<h1 id="code">Code</h1>
+<p><img src="./3_B_2_1.png" alt="UCB" /> <img src="./3_B_2_2.png"
+alt="UCB" /> 以上式算法的伪代码。</p>
+<p>下面分析GitHub上关于MCTS的实现，<a
+target="_blank" rel="noopener" href="https://github.com/suragnair/alpha-zero-general/blob/master/MCTS.py">代码地址</a>。</p>
+<p>首先导入相关的包：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> logging</span><br><span class="line"><span class="keyword">import</span> math</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line">EPS = <span class="number">1e-8</span></span><br><span class="line"></span><br><span class="line">log = logging.getLogger(__name__)</span><br></pre></td></tr></table></figure>
+<p>接下来创建名为<code>MCTS</code>的类：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MCTS</span>():</span><br><span class="line">    <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    This class handles the MCTS tree.</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, game, nnet, args</span>):</span><br><span class="line">        <span class="variable language_">self</span>.game = game</span><br><span class="line">        <span class="variable language_">self</span>.nnet = nnet</span><br><span class="line">        <span class="variable language_">self</span>.args = args</span><br><span class="line">        <span class="comment"># 以下内容全部用字典表示，key是状态对应的字符串</span></span><br><span class="line">        <span class="comment"># 存储状态的Q值</span></span><br><span class="line">        <span class="variable language_">self</span>.Qsa = &#123;&#125;  <span class="comment"># stores Q values for s,a (as defined in the paper)</span></span><br><span class="line">        <span class="comment"># 存储已经探索过状态-动作对的次数</span></span><br><span class="line">        <span class="variable language_">self</span>.Nsa = &#123;&#125;  <span class="comment"># stores #times edge s,a was visited</span></span><br><span class="line">        <span class="comment"># 存储已经探索过状态的次数</span></span><br><span class="line">        <span class="variable language_">self</span>.Ns = &#123;&#125;  <span class="comment"># stores #times board s was visited</span></span><br><span class="line">        <span class="comment"># 存储初始策略</span></span><br><span class="line">        <span class="variable language_">self</span>.Ps = &#123;&#125;  <span class="comment"># stores initial policy (returned by neural net)</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 存储游戏终止状态</span></span><br><span class="line">        <span class="variable language_">self</span>.Es = &#123;&#125;  <span class="comment"># stores game.getGameEnded ended for board s</span></span><br><span class="line">        <span class="comment"># 存储该状态下接下来合法移动</span></span><br><span class="line">        <span class="variable language_">self</span>.Vs = &#123;&#125;  <span class="comment"># stores game.getValidMoves for board s</span></span><br></pre></td></tr></table></figure>
+<p>以下<code>search</code>与<code>getActionProb</code>函数，均是<code>MCTS</code>类中的函数。</p>
+<p><code>search</code>函数执行一次搜索过程，从一个节点开始，不断探索子节点，直到达到终态。每一步选择最大UCB的过程。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MCTS</span>():</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, game, nnet, args</span>):</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">search</span>(<span class="params">self, canonicalBoard</span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        This function performs one iteration of MCTS. It is recursively called</span></span><br><span class="line"><span class="string">        till a leaf node is found. The action chosen at each node is one that</span></span><br><span class="line"><span class="string">        has the maximum upper confidence bound as in the paper.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Once a leaf node is found, the neural network is called to return an</span></span><br><span class="line"><span class="string">        initial policy P and a value v for the state. This value is propagated</span></span><br><span class="line"><span class="string">        up the search path. In case the leaf node is a terminal state, the</span></span><br><span class="line"><span class="string">        outcome is propagated up the search path. The values of Ns, Nsa, Qsa are</span></span><br><span class="line"><span class="string">        updated.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        NOTE: the return values are the negative of the value of the current</span></span><br><span class="line"><span class="string">        state. This is done since v is in [-1,1] and if v is the value of a</span></span><br><span class="line"><span class="string">        state for the current player, then its value is -v for the other player.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">            v: the negative of the value of the current canonicalBoard</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将状态转化为字符串的形式</span></span><br><span class="line">        s = <span class="variable language_">self</span>.game.stringRepresentation(canonicalBoard)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 如果状态不在之前是否记录表中，则重新检测是否为终态。</span></span><br><span class="line">        <span class="keyword">if</span> s <span class="keyword">not</span> <span class="keyword">in</span> <span class="variable language_">self</span>.Es:</span><br><span class="line">            <span class="comment"># 是终态返回 1 or -1（表示胜负结果），不是终态返回 0</span></span><br><span class="line">            <span class="variable language_">self</span>.Es[s] = <span class="variable language_">self</span>.game.getGameEnded(canonicalBoard, <span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 如果已经终止，直接返回结果</span></span><br><span class="line">        <span class="keyword">if</span> <span class="variable language_">self</span>.Es[s] != <span class="number">0</span>:</span><br><span class="line">            <span class="comment"># terminal node</span></span><br><span class="line">            <span class="keyword">return</span> -<span class="variable language_">self</span>.Es[s]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 如果不在策略的记录表中，产生初始策略</span></span><br><span class="line">        <span class="keyword">if</span> s <span class="keyword">not</span> <span class="keyword">in</span> <span class="variable language_">self</span>.Ps:</span><br><span class="line">            <span class="comment"># leaf node</span></span><br><span class="line">            <span class="comment"># 神经网络评估该状态价值</span></span><br><span class="line">            <span class="variable language_">self</span>.Ps[s], v = <span class="variable language_">self</span>.nnet.predict(canonicalBoard)</span><br><span class="line">            <span class="comment"># 产生所有合法移动</span></span><br><span class="line">            valids = <span class="variable language_">self</span>.game.getValidMoves(canonicalBoard, <span class="number">1</span>)</span><br><span class="line">            <span class="comment"># 遮盖不合法移动</span></span><br><span class="line">            <span class="variable language_">self</span>.Ps[s] = <span class="variable language_">self</span>.Ps[s] * valids  <span class="comment"># masking invalid moves</span></span><br><span class="line">            sum_Ps_s = np.<span class="built_in">sum</span>(<span class="variable language_">self</span>.Ps[s])</span><br><span class="line">            <span class="keyword">if</span> sum_Ps_s &gt; <span class="number">0</span>:</span><br><span class="line">                <span class="variable language_">self</span>.Ps[s] /= sum_Ps_s  <span class="comment"># renormalize</span></span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="comment"># if all valid moves were masked make all valid moves equally probable</span></span><br><span class="line"></span><br><span class="line">                <span class="comment"># NB! All valid moves may be masked if either your NNet architecture is insufficient or you&#x27;ve get overfitting or something else.</span></span><br><span class="line">                <span class="comment"># If you have got dozens or hundreds of these messages you should pay attention to your NNet and/or training process.   </span></span><br><span class="line">                log.error(<span class="string">&quot;All valid moves were masked, doing a workaround.&quot;</span>)</span><br><span class="line">                <span class="variable language_">self</span>.Ps[s] = <span class="variable language_">self</span>.Ps[s] + valids</span><br><span class="line">                <span class="variable language_">self</span>.Ps[s] /= np.<span class="built_in">sum</span>(<span class="variable language_">self</span>.Ps[s])</span><br><span class="line"></span><br><span class="line">            <span class="variable language_">self</span>.Vs[s] = valids</span><br><span class="line">            <span class="variable language_">self</span>.Ns[s] = <span class="number">0</span></span><br><span class="line">            <span class="keyword">return</span> -v</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 给予当前状态的合法移动</span></span><br><span class="line">        valids = <span class="variable language_">self</span>.Vs[s]</span><br><span class="line">        <span class="comment"># 初始化当前最好UCB，当前最好选择</span></span><br><span class="line">        cur_best = -<span class="built_in">float</span>(<span class="string">&#x27;inf&#x27;</span>)</span><br><span class="line">        best_act = -<span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># pick the action with the highest upper confidence bound</span></span><br><span class="line">        <span class="comment"># 选择UCB最高的动作，返回所有可能的动作状态数</span></span><br><span class="line">        <span class="keyword">for</span> a <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.game.getActionSize()):</span><br><span class="line">            <span class="keyword">if</span> valids[a]:   <span class="comment">#检测是否合法</span></span><br><span class="line">                <span class="comment"># 计算UCB</span></span><br><span class="line">                <span class="keyword">if</span> (s, a) <span class="keyword">in</span> <span class="variable language_">self</span>.Qsa:</span><br><span class="line">                    u = <span class="variable language_">self</span>.Qsa[(s, a)] + <span class="variable language_">self</span>.args.cpuct * <span class="variable language_">self</span>.Ps[s][a] * math.sqrt(<span class="variable language_">self</span>.Ns[s]) / (</span><br><span class="line">                            <span class="number">1</span> + <span class="variable language_">self</span>.Nsa[(s, a)])</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    u = <span class="variable language_">self</span>.args.cpuct * <span class="variable language_">self</span>.Ps[s][a] * math.sqrt(<span class="variable language_">self</span>.Ns[s] + EPS)  <span class="comment"># Q = 0 ?</span></span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> u &gt; cur_best:</span><br><span class="line">                    cur_best = u</span><br><span class="line">                    best_act = a</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 选择子节点并更新状态</span></span><br><span class="line">        a = best_act</span><br><span class="line">        next_s, next_player = <span class="variable language_">self</span>.game.getNextState(canonicalBoard, <span class="number">1</span>, a)</span><br><span class="line">        next_s = <span class="variable language_">self</span>.game.getCanonicalForm(next_s, next_player)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 子节点进行迭代</span></span><br><span class="line">        v = <span class="variable language_">self</span>.search(next_s)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 更新X与Nsa</span></span><br><span class="line">        <span class="keyword">if</span> (s, a) <span class="keyword">in</span> <span class="variable language_">self</span>.Qsa:</span><br><span class="line">            <span class="variable language_">self</span>.Qsa[(s, a)] = (<span class="variable language_">self</span>.Nsa[(s, a)] * <span class="variable language_">self</span>.Qsa[(s, a)] + v) / (<span class="variable language_">self</span>.Nsa[(s, a)] + <span class="number">1</span>)</span><br><span class="line">            <span class="variable language_">self</span>.Nsa[(s, a)] += <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="variable language_">self</span>.Qsa[(s, a)] = v</span><br><span class="line">            <span class="variable language_">self</span>.Nsa[(s, a)] = <span class="number">1</span></span><br><span class="line"></span><br><span class="line">        <span class="variable language_">self</span>.Ns[s] += <span class="number">1</span></span><br><span class="line">        <span class="keyword">return</span> -v</span><br></pre></td></tr></table></figure>
+<p><code>getActionProb</code>为MCTS的每一步搜索</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MCTS</span>():</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self, game, nnet, args</span>):</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 温度相当于给予不同动作一个概率，如果temp=1则直接贪心选择 </span></span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">getActionProb</span>(<span class="params">self, canonicalBoard, temp=<span class="number">1</span></span>):</span><br><span class="line">        <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        This function performs numMCTSSims simulations of MCTS starting from</span></span><br><span class="line"><span class="string">        canonicalBoard.</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">        Returns:</span></span><br><span class="line"><span class="string">            probs: a policy vector where the probability of the ith action is</span></span><br><span class="line"><span class="string">                   proportional to Nsa[(s,a)]**(1./temp)</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span></span><br><span class="line">        <span class="comment"># 进行多次模拟</span></span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.args.numMCTSSims):</span><br><span class="line">            <span class="variable language_">self</span>.search(canonicalBoard)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 将状态编码为字符串</span></span><br><span class="line">        s = <span class="variable language_">self</span>.game.stringRepresentation(canonicalBoard)</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 遍历当前状态下，所有合法动作已经探索过的次数</span></span><br><span class="line">        counts = [<span class="variable language_">self</span>.Nsa[(s, a)] <span class="keyword">if</span> (s, a) <span class="keyword">in</span> <span class="variable language_">self</span>.Nsa <span class="keyword">else</span> <span class="number">0</span> <span class="keyword">for</span> a <span class="keyword">in</span> <span class="built_in">range</span>(<span class="variable language_">self</span>.game.getActionSize())]</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 如果温度为0则贪心的返回</span></span><br><span class="line">        <span class="keyword">if</span> temp == <span class="number">0</span>:</span><br><span class="line">            bestAs = np.array(np.argwhere(counts == np.<span class="built_in">max</span>(counts))).flatten()</span><br><span class="line">            bestA = np.random.choice(bestAs)</span><br><span class="line">            probs = [<span class="number">0</span>] * <span class="built_in">len</span>(counts)</span><br><span class="line">            probs[bestA] = <span class="number">1</span></span><br><span class="line">            <span class="keyword">return</span> probs</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 温度非0,给予每个动作一个归一化的被选择几率值</span></span><br><span class="line">        counts = [x ** (<span class="number">1.</span> / temp) <span class="keyword">for</span> x <span class="keyword">in</span> counts]</span><br><span class="line">        counts_sum = <span class="built_in">float</span>(<span class="built_in">sum</span>(counts))</span><br><span class="line">        probs = [x / counts_sum <span class="keyword">for</span> x <span class="keyword">in</span> counts]</span><br><span class="line">        <span class="keyword">return</span> probs</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Reinforcement-Learning/" rel="tag"># Reinforcement Learning</a>
+              <a href="/tags/Monte-Carlo/" rel="tag"># Monte Carlo</a>
+              <a href="/tags/Monte-Carlo-Tree-Search/" rel="tag"># Monte Carlo Tree Search</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/04/15/book/Machine_Learning_with_Graphs/Machine_Learning_with_Graphs/" rel="prev" title="Machine Learning with Graphs">
+      <i class="fa fa-chevron-left"></i> Machine Learning with Graphs
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/" rel="next" title="Machine-learning-assisted Monte Carlo fails at sampling computationally hard problems">
+      Machine-learning-assisted Monte Carlo fails at sampling computationally hard problems <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#background"><span class="nav-number">1.</span> <span class="nav-text">Background</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#decision-theory"><span class="nav-number">1.1.</span> <span class="nav-text">Decision Theory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#game-theory"><span class="nav-number">1.2.</span> <span class="nav-text">Game Theory</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#monte-carlo-methods"><span class="nav-number">1.3.</span> <span class="nav-text">Monte Carlo Methods</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#bandit-based-methods"><span class="nav-number">1.4.</span> <span class="nav-text">Bandit-Based Methods</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#monte-carlo-tree-search"><span class="nav-number">2.</span> <span class="nav-text">Monte Carlo Tree Search</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#algorithm"><span class="nav-number">2.1.</span> <span class="nav-text">Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#development"><span class="nav-number">2.2.</span> <span class="nav-text">Development</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tree-policy"><span class="nav-number">2.3.</span> <span class="nav-text">Tree policy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#default-policy"><span class="nav-number">2.4.</span> <span class="nav-text">Default policy</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#code"><span class="nav-number">3.</span> <span class="nav-text">Code</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

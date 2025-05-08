@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="文中有一些问题仍未处理，缺失具体代码的解读，对于TRPO算法的认知仍然存在不清楚的地方，高阶梯度怎么算的 Abstract 这是一篇关于策略梯度算法的总结。首先给出梯度策略，介绍其基本含义，但是初始方案存在一个问题，可以知道梯度变化的方向，不知道梯度的步长。然后，提出自然梯度算法，通过加入约束的方案计算出梯度的步长。接下来，Trust Region Policy Optimization（TRPO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Policy Gradients In Reinforcement">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/03/08/RL/PPO/PPO/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="文中有一些问题仍未处理，缺失具体代码的解读，对于TRPO算法的认知仍然存在不清楚的地方，高阶梯度怎么算的 Abstract 这是一篇关于策略梯度算法的总结。首先给出梯度策略，介绍其基本含义，但是初始方案存在一个问题，可以知道梯度变化的方向，不知道梯度的步长。然后，提出自然梯度算法，通过加入约束的方案计算出梯度的步长。接下来，Trust Region Policy Optimization（TRPO">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/RL/PPO/PPO/REINFORCE.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/RL/PPO/PPO/figure1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/RL/PPO/PPO/figure2.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/RL/PPO/PPO/natural_gradients.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/RL/PPO/PPO/TRPO.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/RL/PPO/PPO/TRPO2.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/RL/PPO/PPO/CLIP.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/03/08/RL/PPO/PPO/PPO_Clip.png">
+<meta property="article:published_time" content="2024-03-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-05-08T10:20:12.698Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Reinforcement Learning">
+<meta property="article:tag" content="Natural Gradients">
+<meta property="article:tag" content="PPO">
+<meta property="article:tag" content="TRPO">
+<meta property="article:tag" content="Policy Gradients">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/03/08/RL/PPO/PPO/REINFORCE.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/03/08/RL/PPO/PPO/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Policy Gradients In Reinforcement | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/03/08/RL/PPO/PPO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Policy Gradients In Reinforcement
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-03-08 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-08T00:00:00+08:00">2024-03-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-08 18:20:12" itemprop="dateModified" datetime="2025-05-08T18:20:12+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>17k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>30 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><font color='red'>文中有一些问题仍未处理，缺失具体代码的解读，对于TRPO算法的认知仍然存在不清楚的地方，高阶梯度怎么算的</font></p>
+<h1 id="abstract">Abstract</h1>
+<p>这是一篇关于策略梯度算法的总结。首先给出梯度策略，介绍其基本含义，但是初始方案存在一个问题，可以知道梯度变化的方向，不知道梯度的步长。然后，提出自然梯度算法，通过加入约束的方案计算出梯度的步长。接下来，Trust
+Region Policy
+Optimization（TRPO）算法在此基础上进一步优化，进一步提出约束，使得满足该约束条件的样本可以稳定提升策略性能。最后，虽然TRPO十分优秀，但是大量的计算使其效率不高，因此进行简化提出Proximal
+Policy Optimization（PPO）算法。</p>
+<p><strong>基于值函数的强化学习</strong>：通过递归，求解bellman
+方程维护Q值（离散列表或者神经网络），每次选择动作会选择该状态下对应Q值最大的动作。使得期望奖励值最大。</p>
+<p><strong>基于策略的强化学习</strong>：不再通过价值函数确定动作，而是直接学习策略本身，通过一组参数<span
+class="math inline"><em>θ</em></span>对策略进行参数化，并通过神经网络优化<span
+class="math inline"><em>θ</em></span>。</p>
+<span id="more"></span>
+<p>Reference: * 十分推荐的博客，其延伸阅读有很多关于策略梯度的资料<a
+target="_blank" rel="noopener" href="https://towardsdatascience.com/policy-gradients-in-reinforcement-learning-explained-ecec7df94245">Policy
+Gradients In Reinforcement Learning Explained</a> *
+基于策略强化学习的开篇鼻祖<a
+target="_blank" rel="noopener" href="https://link.springer.com/article/10.1007/BF00992696">Simple
+Statistical Gradient-Following Algorithms for Connectionist
+Reinforcement Learning</a> * 自然梯度算法<a
+target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/abstract/document/6790500">Natural
+Gradient Works Efficiently in Learning</a> * 对自然梯度算法很好的总结<a
+target="_blank" rel="noopener" href="https://arxiv.org/pdf/2209.01820.pdf">Natural Policy Gradients In
+Reinforcement Learning Explained</a> * CMU深度强化学习<a
+target="_blank" rel="noopener" href="https://www.andrew.cmu.edu/course/10-403/#readings">课程主页</a><a
+target="_blank" rel="noopener" href="https://cmudeeprl.github.io/403_website/lectures/">GitHub地址</a>
+* <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1502.05477">Trust Region Policy
+Optimization</a> * <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1707.06347">Proximal
+Policy Optimization Algorithms</a> * <a
+target="_blank" rel="noopener" href="https://sham.seas.harvard.edu/publications/approximately-optimal-approximate-reinforcement-learning">Approximately
+Optimal Approximate Reinforcement Learning</a> * Berkeley深度强化学习<a
+target="_blank" rel="noopener" href="https://rail.eecs.berkeley.edu/deeprlcourse-fa17/">课程主页</a> *
+<a
+target="_blank" rel="noopener" href="https://www.telesens.co/2018/06/09/efficiently-computing-the-fisher-vector-product-in-trpo/">Efficiently
+Computing the Fisher Vector Product in TRPO</a> * 代码库<a
+target="_blank" rel="noopener" href="https://spinningup.openai.com/en/latest/index.html">Spinning Up in
+Deep RL</a></p>
+<h1
+id="policy-approximation-methods-moving-to-stochastic-policies">Policy
+approximation methods : Moving to stochastic policies</h1>
+<p>在策略近似的方法中，忽略传统的价值函数，直接调整策略本身。通过<span
+class="math inline"><em>θ</em></span>（可能是神经网络参数）参数化策略<span
+class="math inline"><em>π</em><sub><em>θ</em></sub></span>。</p>
+<p>需要解决的问题： 1. 如何评估策略的质量 2. 如何更新<span
+class="math inline"><em>θ</em></span></p>
+<p>策略梯度算法有很多种，这篇文章聚焦于likelihood ratio policy
+gradients。这种算法的核心思想是将策略转化为一种概率分布<span
+class="math inline"><em>π</em><sub><em>θ</em></sub>(<em>a</em>|<em>s</em>) = <em>P</em>(<em>a</em>|<em>s</em>; <em>θ</em>)</span>，从而返回的不是一个单一的结果，而是动作的分布概率，然后进行采样。</p>
+<h2 id="establishing-the-objective-function">Establishing the objective
+function</h2>
+<p>在进行一系列决策之后，得到状态-动作轨迹<span
+class="math inline"><em>τ</em> = (<em>s</em><sub>1</sub>, <em>a</em><sub>1</sub>⋯<em>s</em><sub><em>T</em></sub>, <em>a</em><sub><em>T</em></sub>)</span>，每一条轨迹有相应的概率<span
+class="math inline"><em>P</em>(<em>τ</em>)</span>和积累回报<span
+class="math inline"><em>R</em>(<em>τ</em>) = ∑<em>γ</em><sup><em>t</em></sup><em>R</em><sub><em>t</em></sub></span>（<span
+class="math inline"><em>γ</em></span>是折扣率，<span
+class="math inline"><em>R</em><sub><em>t</em></sub></span>是<span
+class="math inline"><em>t</em></span>时刻回报），同时定义目标函数：</p>
+<p><span class="math display">$$\begin{align}
+J(\theta)&amp;=\mathbb{E}_{\tau \sim\pi_{\theta}}R(\tau)=\sum_\tau
+P(\tau;\theta)R(\tau) \\
+\max_{\theta}J(\theta)&amp;=\max_{\theta}E_{\tau
+\sim\pi_{\theta}}R(\tau)=\max_{\theta}\sum_\tau P(\tau;\theta)R(\tau)
+\end{align}$$</span></p>
+<h2 id="defining-trajectory-probabilities">Defining trajectory
+probabilities</h2>
+<p>接下来的主要任务是如何计算<span
+class="math inline"><em>P</em>(<em>τ</em>; <em>θ</em>)</span>。</p>
+<p>需要处理两类概率： * <strong>策略概率分布</strong>：<span
+class="math inline"><em>π</em><sub><em>θ</em></sub>(<em>a</em>|<em>s</em>) = <em>P</em>(<em>a</em>|<em>s</em>; <em>θ</em>)</span>，描述在给定状态与参数下，动作的概率。
+* <strong>概率转移分布</strong>：<span
+class="math inline"><em>P</em>(<em>s</em><sub><em>t</em> + 1</sub>|<em>s</em><sub><em>t</em></sub>, <em>a</em><sub><em>t</em></sub>)</span>。在相同的状态下，作出相同的动作，环境也会以概率返回不同的状态。该参数描述在相同环境中，同一动作，下一状态分布的几率。</p>
+<p>轨迹<span class="math inline"><em>τ</em></span>在策略<span
+class="math inline"><em>π</em><sub><em>θ</em></sub>(<em>a</em>|<em>s</em>)</span>下发生的概率定义为：
+<span class="math display">$$\begin{align}
+P(\tau;\theta)=\left[\prod_{t=0}^T P(s_{t+1}|s_t,a_t)\cdot
+\pi_{\theta}(a_t|s_t) \right]
+\end{align}$$</span></p>
+<h2 id="deriving-the-policy-gradient">Deriving the policy gradient</h2>
+<p>为了得到<span
+class="math inline">max<sub><em>θ</em></sub><em>J</em>(<em>θ</em>)</span>，可以利用求极值的方法（一阶导数为零），方法采用牛顿梯度迭代法。</p>
+<p>为了优化<span
+class="math inline"><em>θ</em></span>，计算目标参数<span
+class="math inline"><em>J</em>(<em>θ</em>)</span>对<span
+class="math inline"><em>θ</em></span>的导数。</p>
+<p><span class="math display">$$\begin{align}
+\nabla_{\theta}J(\theta) &amp;= \nabla_{\theta} \mathbb{E}_{\tau
+\sim\pi_{\theta}}R(\tau)\\
+&amp;= \sum_\tau \nabla_{\theta} P(\tau;\theta)R(\tau) \\
+&amp;= \sum_\tau P(\tau;\theta)\frac{\nabla_{\theta}
+P(\tau;\theta)}{P(\tau;\theta)}R(\tau) \\
+&amp;= \sum_\tau P(\tau;\theta) \nabla_{\theta} \ln P(\tau;\theta)
+R(\tau) \\
+&amp;= \mathbb{E}_{\tau \sim\pi_{\theta}} R(\tau)  \nabla_{\theta} \ln
+P(\tau;\theta) \\
+&amp;= \mathbb{E}_{\tau \sim\pi_{\theta}} R(\tau)
+\nabla_{\theta}\ln\left[\prod_{t=0}^T P(s_{t+1}|s_t,a_t)\cdot
+\pi_{\theta}(a_t|s_t) \right] \\
+&amp;= \mathbb{E}_{\tau \sim\pi_{\theta}} R(\tau)
+\left[\nabla_{\theta}\sum_{t=0}^T \ln P(s_{t+1}|s_t,a_t)+
+\nabla_{\theta}\sum_{t=0}^T\ln\pi_{\theta}(a_t|s_t) \right] \\
+&amp;= \mathbb{E}_{\tau \sim\pi_{\theta}} R(\tau)
+\nabla_{\theta}\sum_{t=0}^T\ln\pi_{\theta}(a_t|s_t) \\
+\end{align}$$</span></p>
+<p>直接计算存在困难，需要近似处理： <span
+class="math display">$$\begin{align}
+\nabla_{\theta}J(\theta) &amp;= \mathbb{E}_{\tau \sim\pi_{\theta}}
+R(\tau)  \nabla_{\theta} \ln P(\tau;\theta) \\
+&amp;\approx \frac{1}{m}\sum_{i=0}^m R(\tau^i)  \nabla_{\theta} \ln
+P(\tau^i;\theta) \\
+&amp;= \frac{1}{m}\sum_{i=0}^m R(\tau^i) \sum_{t^i=0}^{T^i}
+\nabla_{\theta} \ln \pi_{\theta}(a_{t^i}|s_{t^i})\\
+&amp;\approx \frac{1}{n} \sum_{i=1}^n R(t^i) \nabla_{\theta} \ln
+\pi_{\theta}(a_{t^i}|s_{t^i})
+\end{align}$$</span></p>
+<p>现在梯度完全可以计算，只需要给出策略<span
+class="math inline"><em>π</em><sub><em>θ</em></sub></span>的定义，就可以计算出<span
+class="math inline">∇<sub><em>θ</em></sub><em>J</em>(<em>θ</em>)</span>，从而用策略梯度更新规则：
+<span class="math display">$$\begin{align}
+\theta \leftarrow \theta + \alpha \nabla_{\theta}J(\theta)
+\end{align}$$</span></p>
+<h2 id="examples-softmax-and-gaussian-policies">Examples: Softmax and
+Gaussian policies</h2>
+<p>为了说明以上策略的可行性，下面给出离散空间与连续空间的两个例子。其中<span
+class="math inline"><em>ϕ</em>(<em>s</em>, <em>a</em>)</span>一个包含基本信息的向量，包含当前状态的信息与动作信息，<span
+class="math inline"><em>θ</em></span>为权重因子。假设一个最简单的网络：<span
+class="math inline"><em>ϕ</em>(<em>s</em>, <em>a</em>)<sup><em>T</em></sup> ⋅ <em>θ</em></span>，乘积结果就是对当前状态与动作的评估。</p>
+<p>基于以上假设，下面两种常见策略： * Softmax策略
+对于离散动作空间，多使用Softmax策略。定义如下： <span
+class="math display">$$\begin{align}
+  \pi_{\theta}(a|s) &amp;= \frac{e^{\phi(s,a)^T \cdot
+\theta}}{\sum_{a'\in A}e^{\phi(s,a)^T \cdot \theta}}
+  \end{align}$$</span></p>
+<p>对应策略的梯度为： <span class="math display">$$\begin{align}
+  \nabla_\theta \ln \pi_{\theta}(a|s) = \phi(s,a)- \sum_{a'\in
+A}\pi_\theta(a|s)\phi(s,a')
+  \end{align}$$</span></p>
+<ul>
+<li>高斯策略 对于连续动作空间，经常使用高斯策略。定义如下： <span
+class="math display">$$\begin{align}
+\pi_{\theta}(a|s) &amp;=
+\frac{1}{\sqrt{2\pi}\sigma}e^{-\frac{(a-\mu_\theta)^2}{2\sigma^2}}
+\end{align}$$</span> 其中<span
+class="math inline"><em>μ</em><sub><em>θ</em></sub></span>是正态分布的均值，<span
+class="math inline"><em>σ</em><sub><em>θ</em></sub></span>是标准差（这里假设为一个不依赖于<span
+class="math inline"><em>θ</em></span>的超参），<font color='red'>实践中均值和方差（一般生成的是对数方差）均是由神经网络生成，具体论述参见VAE相关内容</font>。对应的策略梯度为：
+<span class="math display">$$\begin{align}
+\nabla_\theta \ln\pi_{\theta}(a|s) =
+\frac{(a-\mu_\theta)\phi(s)}{\sigma^2}
+\end{align}$$</span></li>
+</ul>
+<h2 id="loss-functions-and-algorithmic-implementation-reinforce">Loss
+functions and Algorithmic implementation (REINFORCE)</h2>
+<p>在实际的计算中不需要计算梯度，只需要设置损失函数，计算机自动求导就行（<span
+class="math inline"><em>r</em></span>是reward）： <span
+class="math display">$$\begin{align}
+\cal L(a,s,r) = -\ln(\pi_\theta(a|s))r
+\end{align}$$</span></p>
+<figure>
+<img src="./REINFORCE.png" alt="REINFORCE" />
+<figcaption aria-hidden="true">REINFORCE</figcaption>
+</figure>
+<h1 id="natural-gradients">Natural Gradients</h1>
+<p>尽管自然梯度已被TRPO和PPO等算法超越，但掌握它的基本原理对于理解这些当代RL算法至关重要。</p>
+<h2 id="the-problems-with-first-order-policy-gradients">The problems
+with first-order policy gradients</h2>
+<p>传统策略梯度算法只是提供了参数的更新方向，没有直接说明更新的步长。下面是众所周知的策略梯度更新方程：
+<span class="math display">$$\begin{align}
+\theta \leftarrow \theta + \alpha \nabla_{\theta}J(\theta)
+\end{align}$$</span> 传统方法基于目标函数梯度<span
+class="math inline">∇<sub><em>θ</em></sub><em>J</em>(<em>θ</em>)</span>与步长因子<span
+class="math inline"><em>α</em></span>。会导致以下两个常见的问题：</p>
+<ul>
+<li>Overshooting:更新直接错过目标。虽然在有监督学习中不成问题，可以通过逐步修改更新率接近目标值。但是在强化学习中，可能会因为新的值导致3梯度消失。
+<img src="./figure1.png" alt="overshoot" /></li>
+<li>Undershooting:步长因子<span
+class="math inline"><em>α</em></span>过小，无法收敛到目标位置。</li>
+</ul>
+<p>但是，并不能简单的限制更新步长<span
+class="math inline">||<em>Δ</em><em>θ</em>||</span>（Euclidian
+distance），例如： <span class="math display">$$\begin{align}
+\Delta \theta^* = \arg\max_{||\Delta\theta||&lt;\epsilon}J(\theta+\Delta
+\theta)
+\end{align}$$</span> 因为在不同的参数中，<span
+class="math inline"><em>θ</em></span>对于步长的敏感性不同。</p>
+<figure>
+<img src="./figure2.png" alt="fig2" />
+<figcaption aria-hidden="true">fig2</figcaption>
+</figure>
+<h2 id="capping-the-difference-between-policies">Capping the difference
+between policies</h2>
+<p>因为参数对于步长的敏感性不同，因此采用KL散度衡量参数变化前后对分布的影响，将参数<span
+class="math inline"><em>θ</em></span>的变化限制在一定的范围内。 <span
+class="math display">$$\begin{align}
+D_{KL}(\pi_\theta||\pi_{\theta+\Delta \theta}) = \sum_{x\in \mathcal
+x}\pi_\theta(x)\ln
+\left(\frac{\pi_\theta(x)}{\pi_{\theta+\Delta\theta}(x)}\right)
+\end{align}$$</span></p>
+<p>调整后的更新策略限制为： <span class="math display">$$\begin{align}
+\Delta \theta^* = \arg\max_{D_{KL}(\pi_\theta||\pi_{\theta+\Delta
+\theta})&lt;\epsilon}J(\theta+\Delta \theta)
+\end{align}$$</span></p>
+<p>这样处理之后，在参数空间进行更新，同时也能保证策略本身变化不会十分剧烈。但是遇到一个问题，在计算KL散度的时候需要对所有动作空间进行运算，这会对计算带来问题，下面是简化方法。</p>
+<p>使用Lagrangian方法，将约束项变成惩罚项： <span
+class="math display">$$\begin{align}
+\Delta \theta^* = \arg\max_{\Delta\theta}J(\theta+\Delta
+\theta)-\lambda(D_{KL}(\pi_\theta||\pi_{\theta+\Delta \theta})-\epsilon)
+\end{align}$$</span></p>
+<p>进行Taylor展开，为了记号统一，以下将<span
+class="math inline"><em>θ</em> = <em>θ</em><sub><em>o</em><em>l</em><em>d</em></sub> + <em>Δ</em><em>θ</em></span>：
+<span class="math display">$$\begin{align}
+\Delta \theta^* &amp;\approx \arg\max_{\Delta\theta}\left[
+J(\theta_{old})+ \nabla_\theta J(\theta)|_{\theta=\theta_{old}}\cdot
+\Delta\theta-\frac{1}{2}\lambda(\Delta\theta^T \nabla_{\theta}^2
+D_{KL}(\pi_{\theta_{old}}||\pi_{\theta}|_{\theta=\theta_{old}
+})\Delta\theta+\lambda \epsilon\right]\\
+\end{align}$$</span></p>
+<p>这里只计算<span
+class="math inline"><em>D</em><sub><em>K</em><em>L</em></sub></span>的二阶项，因为其零阶与一阶项均为零，证明如下：
+<span class="math display">$$\begin{align}
+D_{KL}(p_{\theta_{old}}||p_{\theta}）&amp;\approx
+D_{KL}(p_{\theta_{old}}||p_{\theta_{old}})+\Delta\theta^T\nabla_{\theta}D_{KL}(p_{\theta_{old}}|p_{\theta})+\frac{1}{2}\Delta\theta^T
+\nabla_{\theta}^2
+D_{KL}(\pi_{\theta_{old}}||\pi_{\theta}|_{\theta=\theta_{old}
+})\Delta\theta \\
+\nabla_{\theta}D_{KL}(p_{\theta_{old}}|p_{\theta})|_{\theta=\theta_{old}}
+&amp; = -\nabla_{\theta}\mathbb{E}_{x\sim p_{\theta_{old}}}\ln
+p_{\theta}(x)|_{\theta=\theta_{old}}+\nabla_{\theta}\mathbb{E}_{x\sim
+p_{\theta_{old}}}\ln p_{\theta_{old}}(x)|_{\theta=\theta_{old}} \\
+&amp;= -\mathbb{E}_{x\sim p_{\theta_{old}}}\nabla_{\theta}\ln
+p_{\theta}(x)|_{\theta=\theta_{old}} \\
+&amp;= -\mathbb{E}_{x\sim
+p_{\theta_{old}}}\frac{1}{p_{\theta_{old}}}\nabla_{\theta}
+p_{\theta}(x)|_{\theta=\theta_{old}} \\
+&amp;= -\int_x p_{\theta_{old}}\frac{1}{p_{\theta_{old}}}\nabla_{\theta}
+p_{\theta}(x)|_{\theta=\theta_{old}} \\
+&amp;= -\int_x \nabla_{\theta} p_{\theta}(x)|_{\theta=\theta_{old}} \\
+&amp;= -\nabla_{\theta} \int_x p_{\theta}(x)|_{\theta=\theta_{old}} \\
+&amp;= 0 \\
+\nabla_{\theta}^2
+D_{KL}(\pi_{\theta_{old}}||\pi_{\theta}|_{\theta=\theta_{old}
+})|_{\theta=\theta_{old}} &amp;= -\mathbb{E}_{x\sim
+p_{\theta_{old}}}\nabla_{\theta}^2\ln
+p_{\theta}(x)|_{\theta=\theta_{old}}  \\
+&amp;= -\mathbb{E}_{x\sim
+p_{\theta_{old}}}\nabla_{\theta}\left(\frac{\nabla_{\theta}
+p_{\theta}(x)}{p_{\theta}(x)}\right)|_{\theta=\theta_{old}}  \\
+&amp;= -\mathbb{E}_{x\sim p_{\theta_{old}}}\nabla_{\theta}\ln
+p_{\theta}\nabla_{\theta}\ln p_{\theta}^T|_{\theta=\theta_{old}}  \\
+\end{align}$$</span></p>
+<p><font color='red'>二阶导数可以表述为Hessian matrix，等价于Fisher
+information matrix（这两个矩阵有什么样的含义？）。</font></p>
+<p><span class="math display">$$\begin{align}
+F(\theta) &amp;= \mathbb{E}_{\theta}\nabla_{\theta}\ln
+p_{\theta}\nabla_{\theta}\ln p_{\theta}^T\\
+F(\theta_{old}) &amp;=\nabla^2_\theta
+D_{KL}(p_{\theta_{old}}||p_{\theta})|_{\theta=\theta_{old}} \\
+D_{KL}(p_{\theta_{old}}||p_{\theta}）&amp;\approx
+\frac{1}{2}\Delta\theta^T F(\theta_{old})\Delta\theta \\
+&amp;= \frac{1}{2}(\theta-\theta_{old})^T
+F(\theta_{old})(\theta-\theta_{old}) \\
+\end{align}$$</span></p>
+<p>根据以上证明可知： <span class="math display">$$\begin{align}
+\Delta \theta^* &amp;\approx \arg\max_{\Delta\theta}\left[
+J(\theta_{old})+ \nabla_\theta J(\theta)|_{\theta=\theta_{old}}\cdot
+\Delta\theta-\frac{1}{2}\lambda(\Delta\theta^T \nabla_{\theta}^2
+D_{KL}(\pi_{\theta_{old}}||\pi_{\theta}|_{\theta=\theta_{old}
+})\Delta\theta+\lambda \epsilon \right ]\\
+&amp;= \arg\max_{\Delta\theta} \left[ \nabla_\theta
+J(\theta)|_{\theta=\theta_{old}}\cdot
+\Delta\theta-\frac{1}{2}\lambda\Delta\theta^T
+F(\theta_{old})\Delta\theta\right]\\
+\end{align}$$</span></p>
+<p>计算梯度为零的点： <span class="math display">$$\begin{align}
+0 &amp;= \frac{\partial}{\partial \Delta \theta} \left[ \nabla_\theta
+J(\theta)|_{\theta=\theta_{old}}\cdot
+\Delta\theta-\frac{1}{2}\lambda\Delta\theta^T
+F(\theta_{old})\Delta\theta\right] \\
+&amp;= \nabla_\theta J(\theta)|_{\theta=\theta_{old}}-\frac{1}{2}\lambda
+F(\theta_{old})\Delta\theta \\
+\Delta\theta &amp;= \frac{2}{\lambda}F^{-1}(\theta_{old})\nabla_\theta
+J(\theta)|_{\theta=\theta_{old}}
+\end{align}$$</span></p>
+<p>其中<span
+class="math inline">$\frac{1}{\lambda}$</span>是一个常数，可以收缩进学习率<span
+class="math inline"><em>α</em></span>。并且根据对更新步长的限制关系，可以得到学习率表达式：
+<span class="math display">$$\begin{align}
+D_{KL}(p_{\theta_{old}}||p_{\theta}）&amp;\approx
+\frac{1}{2}(\Delta\theta)^T F(\theta_{old})(\Delta \theta) \\
+&amp;= \frac{1}{2}(\alpha g_N)^T F(\theta_{old})(\alpha g_N)
+&lt;\epsilon \\
+\alpha &amp;=\sqrt{\frac{2\epsilon}{(g_N^TFg_N)}} \\
+\end{align}$$</span> 其中<span
+class="math inline"><em>g</em><sub><em>N</em></sub> = <em>F</em><sup>−1</sup>(<em>θ</em>)∇<sub><em>θ</em></sub><em>J</em>(<em>θ</em>)</span>。自然梯度与更新权重可写为：
+<span class="math display">$$\begin{align}
+\tilde\nabla J(\theta) &amp;= F^{-1}(\theta)\nabla_\theta J(\theta) \\
+\Delta \theta &amp;= \alpha \tilde\nabla J(\theta) \\
+\theta &amp;= \theta_{old}+\alpha \tilde\nabla J(\theta)
+\end{align}$$</span></p>
+<p>该方案的核心思想在于通过引入KL散度，对不同参数的步长进行限制，缓解了Overshoot与Undershoot问题。</p>
+<h2 id="algorithm">Algorithm</h2>
+<figure>
+<img src="./natural_gradients.png" alt="Algorithm" />
+<figcaption aria-hidden="true">Algorithm</figcaption>
+</figure>
+<p>自然梯度方法在两个方面不同于传统的策略梯度算法： *
+考虑到策略对局部变化的敏感性，策略梯度由逆Fisher矩阵校正，而传统的梯度方法假定更新为欧几里得距离。
+* 更新步长 <span class="math inline"><em>α</em></span>
+具有适应梯度和局部敏感性的动态表达式，确保无论参数化如何，策略变化幅度为
+<span
+class="math inline"><em>ϵ</em></span>。在传统方法中，通常设置为一些标准值，如<span
+class="math inline">0.1</span>或<span
+class="math inline">0.01</span>。</p>
+<p>但是这个算法也存在缺陷： *
+Taylor提供了一个局域二阶近似，<font color='red'>这会导致Hessian可能非正定（为什么？）。</font>
+* Fisher information matrix
+计算量过大，尤其是神经网络这种大量参数的情况。</p>
+<h1 id="trust-region-policy-optimization">Trust Region Policy
+Optimization</h1>
+<p>Trust Region Policy
+Optimization（TRPO）算法保证了策略梯度算法每次更新始终会提升策略。</p>
+<p>定义<span
+class="math inline"><em>η</em></span>为期望折扣奖励（此处符号发生改变）：
+<span class="math display">$$\begin{align}
+\eta(\pi)=\mathbb{E}_{s_0, a_0, \ldots}\left[\sum_{t=0}^{\infty}
+\gamma^t r\left(s_t\right)\right]
+\end{align}$$</span></p>
+<p>定义状态-动作价值函数<span
+class="math inline"><em>Q</em><sub><em>π</em></sub>(<em>s</em><sub><em>t</em></sub>, <em>a</em><sub><em>t</em></sub>)</span>和价值函数<span
+class="math inline"><em>V</em><sub><em>π</em></sub></span>，以及优势函数<span
+class="math inline"><em>A</em><sub><em>π</em></sub></span>:</p>
+<p><span class="math display">$$\begin{align}
+Q_\pi\left(s_t, a_t\right)&amp;=\mathbb{E}_{s_{t+1}, a_{t+1},
+\ldots}\left[\sum_{l=0}^{\infty} \gamma^l r\left(s_{t+l}\right)\right]
+\\ V_\pi\left(s_t\right)&amp;=\mathbb{E}_{a_t, s_{t+1},
+\ldots}\left[\sum_{l=0}^{\infty} \gamma^l r\left(s_{t+l}\right)\right]
+\\
+A_\pi(s, a)&amp;=Q_\pi(s, a)-V_\pi(s) \\
+\quad a_t \sim \pi\left(a_t \mid s_t\right), &amp;s_{t+1} \sim
+P\left(s_{t+1} \mid s_t, a_t\right) \text { for } t \geq 0
+\end{align}$$</span></p>
+<p>其中优势函数，是在给定的策略和状态下，计算特定动作<span
+class="math inline"><em>a</em></span>的期望累积奖励与总体期望值（该状态的期望奖励）的差值。</p>
+<p>下面的式子表达了策略<span
+class="math inline"><em>π</em></span>与优势策略<span
+class="math inline"><em>π̃</em></span>之间的差异（详细证明参见原始论文附录A）：
+<span class="math display">$$\begin{equation}
+\eta(\tilde{\pi})=\eta(\pi)+\mathbb{E}_{s_0, a_0, \cdots \sim
+\tilde{\pi}}\left[\sum_{t=0}^{\infty} \gamma^t A_\pi\left(s_t,
+a_t\right)\right]
+\end{equation}$$</span> 其中<span
+class="math inline"><em>a</em><sub><em>t</em></sub></span>的采样概率为<span
+class="math inline"><em>π̃</em>(⋅|<em>s</em><sub><em>t</em></sub>)</span>，<span
+class="math inline"><em>s</em><sub><em>t</em></sub></span>的采样概率依赖于<span
+class="math inline"><em>ρ</em><sub><em>π</em></sub></span><strong>这里本质上是重要性采样</strong>:
+<span
+class="math display"><em>ρ</em><sub><em>π</em></sub>(<em>s</em>) = <em>P</em>(<em>s</em><sub>0</sub> = <em>s</em>) + <em>γ</em><em>P</em>(<em>s</em><sub>1</sub> = <em>s</em>) + <em>γ</em><sup>2</sup><em>P</em>(<em>s</em><sub>2</sub> = <em>s</em>) + …</span>
+因此将式改写为： <span class="math display">$$
+\begin{align}
+\eta(\tilde{\pi}) &amp; =\eta(\pi)+\sum_{t=0}^{\infty} \sum_s
+P\left(s_t=s \mid \tilde{\pi}\right) \sum_a \tilde{\pi}(a \mid s)
+\gamma^t A_\pi(s, a) \\
+&amp; =\eta(\pi)+\sum_s \sum_{t=0}^{\infty} \gamma^t P\left(s_t=s \mid
+\tilde{\pi}\right) \sum_a \tilde{\pi}(a \mid s) A_\pi(s, a) \\
+&amp; =\eta(\pi)+\sum_s \rho_{\tilde{\pi}}(s) \sum_a \tilde{\pi}(a \mid
+s) A_\pi(s, a) \\
+&amp;= \eta(\pi)+\sum_s \rho_{\tilde{\pi}}(s) \sum_a
+\pi(a|s)\frac{\tilde{\pi}(a \mid s)}{\pi(a|s)} A_\pi(s, a) \\
+&amp;=
+\eta(\pi)+\mathbb{E}_{s\sim\rho_{\theta_{old}},a\sim\pi_{\theta_{old}}}\left[\frac{\tilde{\pi}(a
+\mid s)}{\pi(a|s)} A_\pi(s, a)\right]
+\end{align}
+$$</span> 如果能够保证<span
+class="math inline">∑<sub><em>a</em></sub><em>π̃</em>(<em>a</em> ∣ <em>s</em>)<em>A</em><sub><em>π</em></sub>(<em>s</em>, <em>a</em>) ≥ 0</span>，策略将会始终得以提升或者等价，然而并不能保证为非负，因为一些动作可能导致<span
+class="math inline"><em>A</em></span>为负。而且由于<span
+class="math inline"><em>ρ</em><sub><em>π̃</em></sub></span>的存在，使得很难直接去优化，因此采用近似，用<span
+class="math inline"><em>ρ</em><sub><em>π</em></sub></span>替换<span
+class="math inline"><em>ρ</em><sub><em>π̃</em></sub></span>： <span
+class="math display">$$\begin{align}
+L_\pi(\tilde{\pi})=\eta(\pi)+\sum \rho_\pi(s) \sum \tilde{\pi}(a \mid s)
+A_\pi(s, a)
+\end{align}$$</span>
+可以证明该近似在一阶导数下是精确的，存在以下的关系<font color='red'>proof
+it</font>： <span class="math display">$$
+\begin{align}
+L_{\pi_{\theta_0}}\left(\pi_{\theta_0}\right) &amp;
+=\eta\left(\pi_{\theta_0}\right) \\
+\left.\nabla_\theta
+L_{\pi_{\theta_0}}\left(\pi_\theta\right)\right|_{\theta=\theta_0} &amp;
+=\left.\nabla_\theta
+\eta\left(\pi_\theta\right)\right|_{\theta=\theta_0}
+\end{align}
+$$</span>
+从实际含义上可以理解，如果策略不变，那么前后策略应当是相同的。第二部分保证，只要能提升<span
+class="math inline"><em>L</em><sub><em>π</em><sub><em>θ</em><sub>0</sub></sub></sub></span>，也会提升<span
+class="math inline"><em>η</em></span>。</p>
+<p>文献<a
+target="_blank" rel="noopener" href="https://sham.seas.harvard.edu/publications/approximately-optimal-approximate-reinforcement-learning">Approximately
+Optimal Approximate Reinforcement
+Learning</a><font color='red'>有时间看看</font>，给出了一种混合更新策略，并且证明了更新后的策略的下界。</p>
+<p><span class="math display">$$
+\begin{aligned}
+\pi_{\text {new }}(a \mid s)&amp;=(1-\alpha) \pi_{\text {old }}(a \mid
+s)+\alpha \pi^{\prime}(a \mid s) \\
+\eta\left(\pi_{\text {new }}\right) &amp; \geq L_{\pi_{\text {old
+}}}\left(\pi_{\text {new }}\right)-\frac{2 \epsilon
+\gamma}{(1-\gamma)^2} \alpha^2 \\
+\epsilon&amp;=\max _s\left|\mathbb{E}_{a \sim \pi^{\prime}(a \mid
+s)}\left[A_\pi(s, a)\right]\right|
+\end{aligned}
+$$</span></p>
+<h2
+id="monotonic-improvement-guarantee-for-general-stochastic-policies">Monotonic
+Improvement Guarantee for General Stochastic Policies</h2>
+<p>文章 Approximately Optimal Approximate Reinforcement Learning
+提出的混合策略过强不够普适用，同时不便于实践，不具备一般性。TRPO算法在此基础上进行弱化，但是同时要保证下界不变。</p>
+<p>引入总变差（Total Variation Distance）：<span
+class="math inline">$D_{T V}(p \| q)=\frac{1}{2}
+\sum_i\left|p_i-q_i\right|$</span>，将<span
+class="math inline"><em>α</em></span>定义如下：</p>
+<p>$$ $$</p>
+<p>上面计算下界的证明参见原文附录。根据TV与KL散度的关系<font color='red'>证明它</font>：
+<span class="math display">$$\begin{align}
+D_{T V}(p \| q)^2 \leq D_{\mathrm{KL}}(p \| q)
+\end{align}$$</span> 令<span
+class="math inline"><em>D</em><sub><em>T</em><em>V</em></sub><sup>max</sup>(<em>π</em>, <em>π̃</em>)<sup>2</sup> = max<sub><em>s</em></sub><em>D</em><sub>KL</sub>(<em>π</em>(⋅|<em>s</em>)∥<em>π̃</em>(⋅|<em>s</em>))</span>，可以得到如下的下界：
+<span class="math display">$$
+\begin{align}
+\eta(\tilde{\pi}) &amp;\geq L_\pi(\tilde{\pi})-C D_{\mathrm{KL}}^{\max
+}(\pi, \tilde{\pi}) \\
+C&amp;=\frac{4 \epsilon \gamma}{(1-\gamma)^2}
+\end{align}
+$$</span></p>
+<p>令<span
+class="math inline"><em>M</em><sub><em>i</em></sub>(<em>π</em>) = <em>L</em><sub><em>π</em><sub><em>i</em></sub></sub>(<em>π</em>) − <em>C</em><em>D</em><sub><em>K</em><em>L</em></sub><sup>max</sup>(<em>π</em><sub><em>i</em></sub>, <em>π</em>)</span>，利用这个下界证明单调性。</p>
+<p>首先: <span
+class="math display"><em>η</em>(<em>π</em><sub><em>i</em> + 1</sub>) ≥ <em>M</em><sub><em>i</em></sub>(<em>π</em><sub><em>i</em> + 1</sub>)</span>
+并且: <span
+class="math display"><em>η</em>(<em>π</em><sub><em>i</em></sub>) = <em>M</em><sub><em>i</em></sub>(<em>π</em><sub><em>i</em></sub>)</span>
+则： <span
+class="math display"><em>η</em>(<em>π</em><sub><em>i</em> + 1</sub>) − <em>η</em>(<em>π</em><sub><em>i</em></sub>) ≥ <em>M</em><sub><em>i</em></sub>(<em>π</em><sub><em>i</em> + 1</sub>) − <em>M</em>(<em>π</em><sub><em>i</em></sub>)</span>
+如果新策略<span
+class="math inline"><em>π</em><sub><em>i</em> + 1</sub></span>能使得<span
+class="math inline"><em>M</em><sub><em>i</em></sub></span>最大，就有<span
+class="math inline"><em>M</em><sub><em>i</em></sub>(<em>π</em><sub><em>i</em> + 1</sub>) − <em>M</em>(<em>π</em><sub><em>i</em></sub>) ≥ 0</span>，从而就保证了策略必然稳步提升。</p>
+<p>这样通过优化下界便可以使得策略得到稳定的提升。</p>
+<p>算法流程如下： <img src="./TRPO.png" alt="TRPO" /></p>
+<h2 id="optimization-of-parameterized-policies">Optimization of
+Parameterized Policies</h2>
+<p>下面将要基于以上的理论基础，在有限的空间以及任意参数下，给出具体的算法。首先更改符号注记，用<span
+class="math inline"><em>θ</em></span>表示重要的参数，而非策略<span
+class="math inline"><em>π</em><sub><em>θ</em></sub></span>。<span
+class="math inline"><em>η</em>(<em>θ</em>) := <em>η</em>(<em>π</em><sub><em>θ</em></sub>), <em>L</em><sub><em>θ</em></sub>(<em>θ̃</em>) := <em>L</em><sub><em>π</em><sub><em>θ</em></sub></sub>(<em>π</em><sub><em>θ̃</em></sub>), <em>D</em><sub><em>K</em><em>L</em></sub>(<em>θ</em>∥<em>θ̃</em>) := <em>D</em><sub><em>K</em><em>L</em></sub>(<em>π</em><sub><em>θ</em></sub>∥<em>π</em><sub><em>θ̃</em></sub>)</span></p>
+<p>可以将： <span class="math display">$$\begin{equation}
+\underset{\theta}{\operatorname{maximize}}\left[L_{\theta_{\text {old
+}}}(\theta)-C D_{\mathrm{KL}}^{\max }\left(\theta_{\text {old }},
+\theta\right)\right]
+\end{equation}$$</span> 改写为： <span
+class="math display">$$\begin{aligned}
+&amp; \underset{\theta}{\operatorname{maximize}} L_{\theta_{\text {old
+}}}(\theta) \\
+&amp; \text { subject to } D_{\mathrm{KL}}^{\max }\left(\theta_{\text
+{old }}, \theta\right) \leq \delta
+\end{aligned}$$</span> 由于<span
+class="math inline"><em>D</em><sub>KL</sub><sup>max</sup></span>的计算过于麻烦，采用带权重的近似替代：
+<span
+class="math display"><em>D̄</em><sub>KL</sub><sup><em>ρ</em></sup>(<em>θ</em><sub>1</sub>, <em>θ</em><sub>2</sub>) := 𝔼<sub><em>s</em> ∼ <em>ρ</em></sub>[<em>D</em><sub>KL</sub>(<em>π</em><sub><em>θ</em><sub>1</sub></sub>(⋅ ∣ <em>s</em>)∥<em>π</em><sub><em>θ</em><sub>2</sub></sub>(⋅ ∣ <em>s</em>))]</span></p>
+<p>基于此最终解决的优化问题形式是： <span
+class="math display">$$\begin{equation}
+\begin{aligned}
+&amp; \underset{\theta}{\operatorname{maximize}} L_{\theta_{\text {old
+}}}(\theta) \\
+&amp; \text { subject to } \bar{D}_{\mathrm{KL}}^{\rho_{\theta_{\text
+{old }}}}\left(\theta_{\text {old }}, \theta\right) \leq \delta .
+\end{aligned}
+\end{equation}$$</span></p>
+<h2 id="connections-with-natural-gradients">Connections with Natural
+Gradients</h2>
+<p>从TRPO算法最终解决问题的形式可以看出，这是一种针对特定形式优化问题的解决方案。通过计算惩罚因子，从而保证在每一次更新迭代之后就能保证策略得到稳定的提升。为了实现这个目标，引入了两个重要的机制：
+* Advantage Estimates *
+检查机制：随机采样并不能确定结果是否得到提升，但是可以检查采样结果，选取确实提升效果的样本，对于其他样本则直接放弃。</p>
+<p>对于自然梯度算法，也是其一个特例。 <span
+class="math display">$$\begin{equation}
+\begin{aligned}
+&amp;
+\underset{\theta}{\operatorname{maximize}}\left[\left.\nabla_\theta
+L_{\theta_{\text {old }}}(\theta)\right|_{\theta=\theta_{\text {old }}}
+\cdot\left(\theta-\theta_{\text {old }}\right)\right] \\
+&amp; \text { subject to } \frac{1}{2}\left(\theta_{\text {old
+}}-\theta\right)^T A\left(\theta_{\text {old
+}}\right)\left(\theta_{\text {old }}-\theta\right) \leq \delta \\
+&amp; \text { where } A\left(\theta_{\text {old }}\right)_{i j}= \left.
+\frac{\partial}{\partial \theta_i} \frac{\partial}{\partial \theta_j}
+\mathbb{E}_{s \sim \rho_\pi}\left[D_{\mathrm{KL}}\left(\pi\left(\cdot
+\mid s, \theta_{\text {old }}\right) \| \pi(\cdot \mid s,
+\theta)\right)\right]\right|_{\theta=\theta_{\text {old }}}
+\end{aligned}
+\end{equation}$$</span> 其中参数更新为<span
+class="math inline">$\theta_{\text {new }}=\theta_{\text {old
+}}+\left.\frac{1}{\lambda} A\left(\theta_{\text {old }}\right)^{-1}
+\nabla_\theta L(\theta)\right|_{\theta=\theta_{\text {old
+}}}$</span>，利用TRPO算法，可以限制惩罚项<span
+class="math inline">$\frac{1}{\lambda}$</span>，虽然这只是一个很小的算法参数，但是在大问题上显著提升了算法表现能力。</p>
+<p><font color='red'>缺失共轭梯度法，与算法简化的实现</font></p>
+<figure>
+<img src="./TRPO2.png" alt="TRPO structure" />
+<figcaption aria-hidden="true">TRPO structure</figcaption>
+</figure>
+<h1 id="proximal-policy-optimization-algorithms">Proximal Policy
+Optimization Algorithms</h1>
+<p>TRPO算法保证了稳定提升，但是由于计算二阶梯度，运算量十分巨大。为了解决运算量大的问题，提出了一种近似方法，通过对惩罚因子进行限制，大幅减少运算量。</p>
+<h2 id="clipped-surrogate-objective">Clipped Surrogate Objective</h2>
+<p>在TRPO中优化的目标为： <span class="math display">$$\begin{equation}
+L^{C P I}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t \mid
+s_t\right)}{\pi_{\theta_{\text {old }}}\left(a_t \mid s_t\right)}
+\hat{A}_t\right]=\hat{\mathbb{E}}_t\left[r_t(\theta) \hat{A}_t\right]
+\end{equation}$$</span> 其中<span
+class="math inline">$r_t(\theta)=\frac{\pi_\theta\left(a_t \mid
+s_t\right)}{\pi_{\theta_{\text {old }}}}$</span>，CPI指的是conservative
+policy iteration。</p>
+<p>调整TRPO的优化目标为： <span class="math display">$$\begin{equation}
+L^{C L I P}(\theta)=\hat{\mathbb{E}}_t\left[\min \left(r_t(\theta)
+\hat{A}_t, \operatorname{clip}\left(r_t(\theta), 1-\epsilon,
+1+\epsilon\right) \hat{A}_t\right)\right]
+\end{equation}$$</span> 其中<span
+class="math inline"><em>ϵ</em></span>为超参。该式的第一项表示<span
+class="math inline"><em>L</em><sup><em>C</em><em>P</em><em>I</em></sup></span>，第二项利用剪切权重调整了优势函数，将<span
+class="math inline"><em>r</em><sub><em>t</em></sub></span>限制在一个范围内。最后返回剪切与非剪切之后的较小值，这样将会返回一个下界。</p>
+<figure>
+<img src="./CLIP.png" alt="clip" />
+<figcaption aria-hidden="true">clip</figcaption>
+</figure>
+<p>算法框架如下：</p>
+<figure>
+<img src="./PPO_Clip.png" alt="PPO Clip" />
+<figcaption aria-hidden="true">PPO Clip</figcaption>
+</figure>
+<h2 id="adaptive-kl-penalty-coefficient">Adaptive KL Penalty
+Coefficient</h2>
+<p>另一种优化方案是针对惩罚项： <span
+class="math display">$$\begin{equation}
+L^{K L P E N}(\theta)=\hat{\mathbb{E}}_t\left[\frac{\pi_\theta\left(a_t
+\mid s_t\right)}{\pi_{\theta_{\text {old }}}\left(a_t \mid s_t\right)}
+\hat{A}_t-\beta \operatorname{KL}\left[\pi_{\theta_{\text {old
+}}}\left(\cdot \mid s_t\right), \pi_\theta\left(\cdot \mid
+s_t\right)\right]\right]
+\end{equation}$$</span> 然后计算KL散度，从而确定惩罚因子的大小。 <span
+class="math display">$$
+\begin{aligned}
+&amp;d=\hat{\mathbb{E}}_t\left[\operatorname{KL}\left[\pi_{\theta_{\text
+{old }}}\left(\cdot \mid s_t\right), \pi_\theta\left(\cdot \mid
+s_t\right)\right]\right] \\
+&amp; \quad-\text { If } d&lt;d_{\text {targ }} / 1.5, \beta \leftarrow
+\beta / 2 \\
+&amp; \quad-\text { If } d&gt;d_{\text {targ }} \times 1.5, \beta
+\leftarrow \beta \times 2
+\end{aligned}
+$$</span> 其中<span
+class="math inline">1.5, 2</span>是启发式得到，初始值<span
+class="math inline"><em>β</em></span>也是一个超参，但是对结果影响不大。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Reinforcement-Learning/" rel="tag"># Reinforcement Learning</a>
+              <a href="/tags/Natural-Gradients/" rel="tag"># Natural Gradients</a>
+              <a href="/tags/PPO/" rel="tag"># PPO</a>
+              <a href="/tags/TRPO/" rel="tag"># TRPO</a>
+              <a href="/tags/Policy-Gradients/" rel="tag"># Policy Gradients</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/" rel="prev" title="Neural Network Diffusion">
+      <i class="fa fa-chevron-left"></i> Neural Network Diffusion
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/03/15/DL/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/Deconstructing_Denoising_Diffusion_Models_for_Self_Supervised_Learning/" rel="next" title="Deconstructing Denoising Diffusion Models for Self-Supervised Learning">
+      Deconstructing Denoising Diffusion Models for Self-Supervised Learning <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#abstract"><span class="nav-number">1.</span> <span class="nav-text">Abstract</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#policy-approximation-methods-moving-to-stochastic-policies"><span class="nav-number">2.</span> <span class="nav-text">Policy
+approximation methods : Moving to stochastic policies</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#establishing-the-objective-function"><span class="nav-number">2.1.</span> <span class="nav-text">Establishing the objective
+function</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#defining-trajectory-probabilities"><span class="nav-number">2.2.</span> <span class="nav-text">Defining trajectory
+probabilities</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#deriving-the-policy-gradient"><span class="nav-number">2.3.</span> <span class="nav-text">Deriving the policy gradient</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#examples-softmax-and-gaussian-policies"><span class="nav-number">2.4.</span> <span class="nav-text">Examples: Softmax and
+Gaussian policies</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#loss-functions-and-algorithmic-implementation-reinforce"><span class="nav-number">2.5.</span> <span class="nav-text">Loss
+functions and Algorithmic implementation (REINFORCE)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#natural-gradients"><span class="nav-number">3.</span> <span class="nav-text">Natural Gradients</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#the-problems-with-first-order-policy-gradients"><span class="nav-number">3.1.</span> <span class="nav-text">The problems
+with first-order policy gradients</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#capping-the-difference-between-policies"><span class="nav-number">3.2.</span> <span class="nav-text">Capping the difference
+between policies</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#algorithm"><span class="nav-number">3.3.</span> <span class="nav-text">Algorithm</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#trust-region-policy-optimization"><span class="nav-number">4.</span> <span class="nav-text">Trust Region Policy
+Optimization</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#monotonic-improvement-guarantee-for-general-stochastic-policies"><span class="nav-number">4.1.</span> <span class="nav-text">Monotonic
+Improvement Guarantee for General Stochastic Policies</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#optimization-of-parameterized-policies"><span class="nav-number">4.2.</span> <span class="nav-text">Optimization of
+Parameterized Policies</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#connections-with-natural-gradients"><span class="nav-number">4.3.</span> <span class="nav-text">Connections with Natural
+Gradients</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#proximal-policy-optimization-algorithms"><span class="nav-number">5.</span> <span class="nav-text">Proximal Policy
+Optimization Algorithms</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#clipped-surrogate-objective"><span class="nav-number">5.1.</span> <span class="nav-text">Clipped Surrogate Objective</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#adaptive-kl-penalty-coefficient"><span class="nav-number">5.2.</span> <span class="nav-text">Adaptive KL Penalty
+Coefficient</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

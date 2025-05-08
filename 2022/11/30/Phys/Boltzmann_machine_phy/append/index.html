@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="逆Ising问题及其求解方法 引言 逆Ising问题涉及从观测数据中推断Ising模型的参数。Ising模型是一种简单的数学模型，用于描述磁性材料中的自旋系统。解决逆Ising问题的方法包括极大似然估计（MLE）、蒙特卡罗方法（MCMC）、平均场近似、伪似然估计（PLE）以及对比散度（CD）。 极大似然估计（MLE） 步骤  定义Hamiltonian: H(s) &#x3D; −∑i &lt; jJijs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Boltzmann Machine Append">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/append/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="逆Ising问题及其求解方法 引言 逆Ising问题涉及从观测数据中推断Ising模型的参数。Ising模型是一种简单的数学模型，用于描述磁性材料中的自旋系统。解决逆Ising问题的方法包括极大似然估计（MLE）、蒙特卡罗方法（MCMC）、平均场近似、伪似然估计（PLE）以及对比散度（CD）。 极大似然估计（MLE） 步骤  定义Hamiltonian: H(s) &#x3D; −∑i &lt; jJijs">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-11-30T13:37:00.000Z">
+<meta property="article:modified_time" content="2025-04-03T08:43:45.295Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Spin Glass">
+<meta property="article:tag" content="Boltzmann Machine">
+<meta property="article:tag" content="Replica Method">
+<meta property="article:tag" content="Energy-based Model">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/append/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Boltzmann Machine Append | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/append/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Boltzmann Machine Append
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-30 21:37:00" itemprop="dateCreated datePublished" datetime="2022-11-30T21:37:00+08:00">2022-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-04-03 16:43:45" itemprop="dateModified" datetime="2025-04-03T16:43:45+08:00">2025-04-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>5.4k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>10 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="逆ising问题及其求解方法">逆Ising问题及其求解方法</h1>
+<h2 id="引言">引言</h2>
+<p>逆Ising问题涉及从观测数据中推断Ising模型的参数。Ising模型是一种简单的数学模型，用于描述磁性材料中的自旋系统。解决逆Ising问题的方法包括极大似然估计（MLE）、蒙特卡罗方法（MCMC）、平均场近似、伪似然估计（PLE）以及对比散度（CD）。</p>
+<h2 id="极大似然估计mle">极大似然估计（MLE）</h2>
+<h3 id="步骤">步骤</h3>
+<ol type="1">
+<li><p><strong>定义Hamiltonian</strong>: <span
+class="math display"><em>H</em>(<strong>s</strong>) = −∑<sub><em>i</em> &lt; <em>j</em></sub><em>J</em><sub><em>i</em><em>j</em></sub><em>s</em><sub><em>i</em></sub><em>s</em><sub><em>j</em></sub></span></p></li>
+<li><p><strong>定义配分函数</strong>: <span
+class="math display"><em>Z</em> = ∑<sub><strong>s</strong></sub><em>e</em><sup>−<em>H</em>(<strong>s</strong>)</sup></span></p></li>
+<li><p><strong>定义似然函数</strong>: <span class="math display">$$
+L(J) = \prod_{k=1}^{N} P(\mathbf{s}^{(k)}|J) = \prod_{k=1}^{N}
+\frac{e^{-H(\mathbf{s}^{(k)})}}{Z}
+$$</span></p></li>
+<li><p><strong>取对数似然函数</strong>: <span class="math display">$$
+\log L(J) = -\sum_{k=1}^{N} H(\mathbf{s}^{(k)}) - N \log Z
+$$</span></p></li>
+<li><p><strong>优化对数似然函数</strong>:
+使用数值优化方法（如梯度下降）最大化对数似然函数。</p></li>
+</ol>
+<h3 id="示例代码">示例代码</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize</span><br><span class="line"></span><br><span class="line"><span class="comment"># 观测数据</span></span><br><span class="line">data = np.array([[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>], [-<span class="number">1</span>, <span class="number">1</span>], [-<span class="number">1</span>, -<span class="number">1</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义Hamiltonian</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">hamiltonian</span>(<span class="params">J, s</span>):</span><br><span class="line">    <span class="keyword">return</span> -J * s[<span class="number">0</span>] * s[<span class="number">1</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义配分函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">partition_function</span>(<span class="params">J</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="number">2</span> * (np.exp(J) + np.exp(-J))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义对数似然函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">log_likelihood</span>(<span class="params">J, data</span>):</span><br><span class="line">    logL = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> data:</span><br><span class="line">        logL += -hamiltonian(J, s)</span><br><span class="line">    logL -= <span class="built_in">len</span>(data) * np.log(partition_function(J))</span><br><span class="line">    <span class="keyword">return</span> -logL  <span class="comment"># 最小化负对数似然</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始猜测</span></span><br><span class="line">initial_J = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 优化参数</span></span><br><span class="line">result = minimize(log_likelihood, initial_J, args=(data,))</span><br><span class="line">optimal_J = result.x[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;MLE Estimated J: <span class="subst">&#123;optimal_J&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="蒙特卡罗方法mcmc">蒙特卡罗方法（MCMC）</h2>
+<h3 id="步骤-1">步骤</h3>
+<ol type="1">
+<li><strong>初始化模型参数</strong>。</li>
+<li><strong>生成样本</strong>：
+使用MCMC方法（如Metropolis-Hastings或Gibbs采样）生成自旋配置样本。</li>
+<li><strong>计算统计量</strong>：
+基于生成的样本，计算系统的期望统计量。</li>
+<li><strong>更新参数</strong>：
+使用梯度方法或其他优化技术调整模型参数。</li>
+<li><strong>重复步骤2-4</strong>，直到参数收敛。</li>
+</ol>
+<h3 id="示例代码-1">示例代码</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 观测数据</span></span><br><span class="line">data = np.array([[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>], [-<span class="number">1</span>, <span class="number">1</span>], [-<span class="number">1</span>, -<span class="number">1</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化参数</span></span><br><span class="line">J = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 吉布斯采样函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gibbs_sample</span>(<span class="params">J, num_samples, burn_in</span>):</span><br><span class="line">    samples = []</span><br><span class="line">    s = np.random.choice([-<span class="number">1</span>, <span class="number">1</span>], size=<span class="number">2</span>)</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(num_samples + burn_in):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">            prob = <span class="number">1</span> / (<span class="number">1</span> + np.exp(-<span class="number">2</span> * J * s[<span class="number">1</span> - i]))</span><br><span class="line">            s[i] = <span class="number">1</span> <span class="keyword">if</span> np.random.rand() &lt; prob <span class="keyword">else</span> -<span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> _ &gt;= burn_in:</span><br><span class="line">            samples.append(s.copy())</span><br><span class="line">    <span class="keyword">return</span> np.array(samples)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算期望统计量</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_statistics</span>(<span class="params">samples</span>):</span><br><span class="line">    correlations = np.mean(samples[:, <span class="number">0</span>] * samples[:, <span class="number">1</span>])</span><br><span class="line">    <span class="keyword">return</span> correlations</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新参数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">update_parameters</span>(<span class="params">J, samples, data</span>):</span><br><span class="line">    data_corr = np.mean(data[:, <span class="number">0</span>] * data[:, <span class="number">1</span>])</span><br><span class="line">    sample_corr = calculate_statistics(samples)</span><br><span class="line">    learning_rate = <span class="number">0.1</span></span><br><span class="line">    J += learning_rate * (data_corr - sample_corr)</span><br><span class="line">    <span class="keyword">return</span> J</span><br><span class="line"></span><br><span class="line"><span class="comment"># 蒙特卡罗迭代</span></span><br><span class="line">num_iterations = <span class="number">100</span></span><br><span class="line">num_samples = <span class="number">1000</span></span><br><span class="line">burn_in = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(num_iterations):</span><br><span class="line">    samples = gibbs_sample(J, num_samples, burn_in)</span><br><span class="line">    J = update_parameters(J, samples, data)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;Iteration <span class="subst">&#123;_&#125;</span>: J = <span class="subst">&#123;J&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Estimated J: <span class="subst">&#123;J&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="平均场近似mean-field-approximation">平均场近似（Mean Field
+Approximation）</h2>
+<h3 id="步骤-2">步骤</h3>
+<ol type="1">
+<li><strong>定义Hamiltonian</strong>。</li>
+<li><strong>引入平均场近似</strong>：
+每个自旋的影响被近似为一个平均场。</li>
+<li><strong>计算自旋期望值</strong>： 根据平均场计算自旋的期望值。</li>
+<li><strong>迭代求解</strong>：
+通过迭代更新每个自旋的期望值和相互作用参数。</li>
+<li><strong>更新相互作用参数</strong>：
+调整相互作用参数使得模型生成的期望值与观测数据的期望值匹配。</li>
+</ol>
+<h3 id="示例代码-2">示例代码</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 观测数据</span></span><br><span class="line">data = np.array([[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>], [-<span class="number">1</span>, <span class="number">1</span>], [-<span class="number">1</span>, -<span class="number">1</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化参数</span></span><br><span class="line">J = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算观测数据的期望值</span></span><br><span class="line">mean_s1 = np.mean(data[:, <span class="number">0</span>])</span><br><span class="line">mean_s2 = np.mean(data[:, <span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义迭代函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">mean_field_iteration</span>(<span class="params">J, mean_s1, mean_s2, max_iter=<span class="number">100</span>, tol=<span class="number">1e-5</span></span>):</span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(max_iter):</span><br><span class="line">        h1 = J * mean_s2</span><br><span class="line">        h2 = J * mean_s1</span><br><span class="line">        new_mean_s1 = np.tanh(h1)</span><br><span class="line">        new_mean_s2 = np.tanh(h2)</span><br><span class="line">        <span class="keyword">if</span> np.<span class="built_in">abs</span>(new_mean_s1 - mean_s1) &lt; tol <span class="keyword">and</span> np.<span class="built_in">abs</span>(new_mean_s2 - mean_s2) &lt; tol:</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        mean_s1, mean_s2 = new_mean_s1, new_mean_s2</span><br><span class="line">    <span class="keyword">return</span> mean_s1, mean_s2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 迭代求解期望值</span></span><br><span class="line">mean_s1, mean_s2 = mean_field_iteration(J, mean_s1, mean_s2)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新相互作用参数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">update_parameters</span>(<span class="params">J, mean_s1, mean_s2, data</span>):</span><br><span class="line">    observed_corr = np.mean(data[:, <span class="number">0</span>] * data[:, <span class="number">1</span>])</span><br><span class="line">    model_corr = mean_s1 * mean_s2</span><br><span class="line">    learning_rate = <span class="number">0.1</span></span><br><span class="line">    J += learning_rate * (observed_corr - model_corr)</span><br><span class="line">    <span class="keyword">return</span> J</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新参数</span></span><br><span class="line">J = update_parameters(J, mean_s1, mean_s2, data)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Estimated J: <span class="subst">&#123;J&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="伪似然估计ple">伪似然估计（PLE）</h2>
+<h3 id="步骤-3">步骤</h3>
+<ol type="1">
+<li><strong>定义条件概率</strong>： <span
+class="math display">$$\begin{align}
+P(s_i | \mathbf{s}_{\setminus i}) = \frac{e^{s_i h_i}}{e^{h_i} +
+e^{-h_i}}
+\end{align}$$</span></li>
+<li><strong>定义伪似然函数</strong>： <span
+class="math display">$$\begin{align}
+PL(J) = \prod_{i=1}^n \prod_{k=1}^N P(s_i^{(k)} | \mathbf{s}_{\setminus
+i}^{(k)})
+\end{align}$$</span></li>
+<li><strong>取对数伪似然函数</strong>： <span
+class="math display">$$\begin{align}
+\log PL(J) = \sum_{i=1}^n \sum_{k=1}^N \log P(s_i^{(k)} |
+\mathbf{s}_{\setminus i}^{(k)})
+\end{align}$$</span></li>
+<li><strong>优化对数伪似然函数</strong>：
+使用数值优化方法（如梯度下降）最大化对数伪似然函数。</li>
+</ol>
+<h3 id="示例代码-3">示例代码</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy.optimize <span class="keyword">import</span> minimize</span><br><span class="line"></span><br><span class="line"><span class="comment"># 观测数据</span></span><br><span class="line">data = np.array([[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>], [-<span class="number">1</span>, <span class="number">1</span>], [-<span class="number">1</span>, -<span class="number">1</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义条件概率</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">conditional_probability</span>(<span class="params">s_i, s_j, J</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span> / (<span class="number">1</span> + np.exp(-<span class="number">2</span> * J * s_i * s_j))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义对数伪似然函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">log_pseudolikelihood</span>(<span class="params">J, data</span>):</span><br><span class="line">    logPL = <span class="number">0</span></span><br><span class="line">    <span class="keyword">for</span> s <span class="keyword">in</span> data:</span><br><span class="line">        logPL += np.log(conditional_probability(s[<span class="number">0</span>], s[<span class="number">1</span>], J)) + np.log(conditional_probability(s[<span class="number">1</span>], s[<span class="number">0</span>], J))</span><br><span class="line">    <span class="keyword">return</span> -logPL  <span class="comment"># 最小化负对数伪似然</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始猜测</span></span><br><span class="line">initial_J = <span class="number">0.1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 优化参数</span></span><br><span class="line">result = minimize(log_pseudolikelihood, initial_J, args=(data,))</span><br><span class="line">optimal_J = result.x[<span class="number">0</span>]</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;Optimal J: <span class="subst">&#123;optimal_J&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="对比散度cd">对比散度（CD）</h2>
+<h3 id="步骤-4">步骤</h3>
+<ol type="1">
+<li><strong>定义能量函数</strong>： <span
+class="math display">$$\begin{align}
+E(\mathbf{s}) = -\sum_{i&lt;j} J_{ij} s_i s_j
+\end{align}$$</span></li>
+<li><strong>初始化模型参数</strong>。</li>
+<li><strong>正向采样（Positive Phase）</strong>：
+从观测数据中采样，计算数据分布下的期望值。</li>
+<li><strong>负向采样（Negative Phase）</strong>：
+使用Gibbs采样从模型分布中生成样本，计算模型分布下的期望值。</li>
+<li><strong>更新参数</strong>：
+根据正向采样和负向采样的期望值差异，更新相互作用参数。</li>
+<li><strong>迭代</strong>，直到参数收敛。</li>
+</ol>
+<h3 id="示例代码-4">示例代码</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"></span><br><span class="line"><span class="comment"># 观测数据</span></span><br><span class="line">data = np.array([[<span class="number">1</span>, <span class="number">1</span>], [<span class="number">1</span>, -<span class="number">1</span>], [-<span class="number">1</span>, <span class="number">1</span>], [-<span class="number">1</span>, -<span class="number">1</span>]])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 初始化参数</span></span><br><span class="line">J = <span class="number">0.1</span></span><br><span class="line">learning_rate = <span class="number">0.1</span></span><br><span class="line">num_iterations = <span class="number">100</span></span><br><span class="line">num_samples = <span class="number">1000</span></span><br><span class="line">burn_in = <span class="number">100</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算观测数据的期望值</span></span><br><span class="line">mean_s1s2_data = np.mean(data[:, <span class="number">0</span>] * data[:, <span class="number">1</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment"># 吉布斯采样函数</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">gibbs_sample</span>(<span class="params">J, num_samples, burn_in</span>):</span><br><span class="line">    samples = []</span><br><span class="line">    s = np.random.choice([-<span class="number">1</span>, <span class="number">1</span>], size=<span class="number">2</span>)  <span class="comment"># 初始自旋配置</span></span><br><span class="line">    <span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(num_samples + burn_in):</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">2</span>):</span><br><span class="line">            prob = <span class="number">1</span> / (<span class="number">1</span> + np.exp(-<span class="number">2</span> * J * s[<span class="number">1</span> - i]))</span><br><span class="line">            s[i] = <span class="number">1</span> <span class="keyword">if</span> np.random.rand() &lt; prob <span class="keyword">else</span> -<span class="number">1</span></span><br><span class="line">        <span class="keyword">if</span> _ &gt;= burn_in:</span><br><span class="line">            samples.append(s.copy())</span><br><span class="line">    <span class="keyword">return</span> np.array(samples)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 计算模型分布的期望值</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">calculate_model_expectation</span>(<span class="params">J, num_samples, burn_in</span>):</span><br><span class="line">    samples = gibbs_sample(J, num_samples, burn_in)</span><br><span class="line">    mean_s1s2_model = np.mean(samples[:, <span class="number">0</span>] * samples[:, <span class="number">1</span>])</span><br><span class="line">    <span class="keyword">return</span> mean_s1s2_model</span><br><span class="line"></span><br><span class="line"><span class="comment"># 对比散度更新</span></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(num_iterations):</span><br><span class="line">    mean_s1s2_model = calculate_model_expectation(J, num_samples, burn_in)</span><br><span class="line">    J += learning_rate * (mean_s1s2_data - mean_s1s2_model)</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">f&#x27;Iteration <span class="subst">&#123;_&#125;</span>: J = <span class="subst">&#123;J&#125;</span>&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&#x27;CD Estimated J: <span class="subst">&#123;J&#125;</span>&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="总结">总结</h2>
+<p>逆Ising问题涉及从观测数据中推断Ising模型的相互作用参数。本文介绍了五种求解方法：极大似然估计（MLE）、蒙特卡罗方法（MCMC）、平均场近似、伪似然估计（PLE）以及对比散度（CD）。每种方法都有其优缺点，选择合适的方法取决于具体问题的规模、数据特性和计算资源。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spin-Glass/" rel="tag"># Spin Glass</a>
+              <a href="/tags/Boltzmann-Machine/" rel="tag"># Boltzmann Machine</a>
+              <a href="/tags/Replica-Method/" rel="tag"># Replica Method</a>
+              <a href="/tags/Energy-based-Model/" rel="tag"># Energy-based Model</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/20/Phys/SK_model/SK_model1/" rel="prev" title="The Parisi solution of Sherrington-Kirkpatrick Model">
+      <i class="fa fa-chevron-left"></i> The Parisi solution of Sherrington-Kirkpatrick Model
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/" rel="next" title="Boltzmann Machine">
+      Boltzmann Machine <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%86ising%E9%97%AE%E9%A2%98%E5%8F%8A%E5%85%B6%E6%B1%82%E8%A7%A3%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">逆Ising问题及其求解方法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%95%E8%A8%80"><span class="nav-number">1.1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9E%81%E5%A4%A7%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1mle"><span class="nav-number">1.2.</span> <span class="nav-text">极大似然估计（MLE）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4"><span class="nav-number">1.2.1.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81"><span class="nav-number">1.2.2.</span> <span class="nav-text">示例代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%92%99%E7%89%B9%E5%8D%A1%E7%BD%97%E6%96%B9%E6%B3%95mcmc"><span class="nav-number">1.3.</span> <span class="nav-text">蒙特卡罗方法（MCMC）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4-1"><span class="nav-number">1.3.1.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81-1"><span class="nav-number">1.3.2.</span> <span class="nav-text">示例代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%B3%E5%9D%87%E5%9C%BA%E8%BF%91%E4%BC%BCmean-field-approximation"><span class="nav-number">1.4.</span> <span class="nav-text">平均场近似（Mean Field
+Approximation）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4-2"><span class="nav-number">1.4.1.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81-2"><span class="nav-number">1.4.2.</span> <span class="nav-text">示例代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%AA%E4%BC%BC%E7%84%B6%E4%BC%B0%E8%AE%A1ple"><span class="nav-number">1.5.</span> <span class="nav-text">伪似然估计（PLE）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4-3"><span class="nav-number">1.5.1.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81-3"><span class="nav-number">1.5.2.</span> <span class="nav-text">示例代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94%E6%95%A3%E5%BA%A6cd"><span class="nav-number">1.6.</span> <span class="nav-text">对比散度（CD）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4-4"><span class="nav-number">1.6.1.</span> <span class="nav-text">步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B%E4%BB%A3%E7%A0%81-4"><span class="nav-number">1.6.2.</span> <span class="nav-text">示例代码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">1.7.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

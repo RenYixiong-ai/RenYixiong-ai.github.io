@@ -1,0 +1,1162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。目的是掌握和熟悉复本方法的使用。 Reference: * Statistical Physics of Spin Glasses and Information Processing. Nishimori * Replica calculations for the SK model笔误有点多 Link: * Hop">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sherrington-Kirkpatrick Model">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2022/11/20/Phys/SK_model/SK_model/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="利用复本方法计算 Sherrington-Kirkpatrick（SK） 模型。目的是掌握和熟悉复本方法的使用。 Reference: * Statistical Physics of Spin Glasses and Information Processing. Nishimori * Replica calculations for the SK model笔误有点多 Link: * Hop">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-11-20T13:37:00.000Z">
+<meta property="article:modified_time" content="2025-04-03T08:43:45.311Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Spin Glass">
+<meta property="article:tag" content="Replica Method">
+<meta property="article:tag" content="Sherrington-Kirkpatrick Model">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2022/11/20/Phys/SK_model/SK_model/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Sherrington-Kirkpatrick Model | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2022/11/20/Phys/SK_model/SK_model/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Sherrington-Kirkpatrick Model
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-20 21:37:00" itemprop="dateCreated datePublished" datetime="2022-11-20T21:37:00+08:00">2022-11-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-04-03 16:43:45" itemprop="dateModified" datetime="2025-04-03T16:43:45+08:00">2025-04-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>20k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>35 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>利用复本方法计算 Sherrington-Kirkpatrick（SK）
+模型。目的是掌握和熟悉复本方法的使用。</p>
+<p>Reference: * Statistical Physics of Spin Glasses and Information
+Processing. Nishimori * <a
+target="_blank" rel="noopener" href="https://hzshan.github.io/replica_method_in_SK_model.pdf">Replica
+calculations for the SK model</a>笔误有点多</p>
+<p>Link: * <a href="/2022/11/12/Phys/Hopfield/Hopfield/" title="Hopfield Model">Hopfield Model</a> * <a href="/2022/11/13/Phys/replica/replica/" title="Replica">Replica</a> * <a href="/2022/11/20/Phys/SK_model/SK_model1/" title="The Parisi solution of Sherrington-Kirkpatrick Model">The Parisi solution of Sherrington-Kirkpatrick Model</a></p>
+<span id="more"></span>
+<h1 id="sherrington-kirkpatrick-model">Sherrington-Kirkpatrick
+Model</h1>
+<p><span class="math display">$$\begin{align}
+H=&amp;\sum_{i&lt;j} J_{i j} S_i S_j-h \sum_i S_i \label{1}\\
+P\left(J_{i j}\right)=&amp;\frac{1}{J} \sqrt{\frac{N}{2 \pi}} \exp
+\left(-\frac{N}{2 J^2}\left(J_{i j}-\frac{J_0}{N}\right)^2\right)\\
+\end{align}$$</span></p>
+<p><span class="math display">$$\begin{align}
+\text{mean}(J)=&amp;\frac{J_0}{N} \\
+\text{variance}(J)=&amp;\frac{J^2}{N}
+\end{align}$$</span></p>
+<p>其中<span
+class="math inline"><em>S</em>, <em>J</em></span>都是变量。考虑是在quneched状态。热力学平均是指对<span
+class="math inline"><em>S</em></span>的平均，记为<span
+class="math inline">⟨⋅⟩</span>；构型平均是对相互作用参数<span
+class="math inline"><em>J</em></span>的平均，记为<span
+class="math inline">[⋅]</span>。自由能写为：</p>
+<p><span class="math display">$$\begin{align}
+[F(\boldsymbol{s})]=-\frac{1}{\beta}[\ln
+Z(\boldsymbol{s})]=-\frac{1}{\beta}\left[\ln \sum_{\{\boldsymbol{s}\}}
+\exp (-\beta H(\boldsymbol{s}))\right]
+\end{align}$$</span></p>
+<h1 id="calculating-the-free-energy-with-replica-method">Calculating the
+free energy with replica method</h1>
+<p>由复本对称知：</p>
+<p><span class="math display">$$\begin{align}
+[\ln Z(s)]=\lim_{n\to 0}\frac{[Z^n]-1}{n}\label{4}
+\end{align}$$</span></p>
+<p>结合<span class="math inline">$\eqref{1}$</span>，<span
+class="math inline">[<em>Z</em><sup><em>n</em></sup>]</span>可写为：
+<span class="math display">$$\begin{align}
+\left[Z^n\right]=\int \prod_{i&lt;j} d J_{i j} P\left(J_{i j}\right)
+\sum_{\left\{\boldsymbol{s}^\alpha, \boldsymbol{s}^\beta, \ldots,
+\boldsymbol{s}^n\right\}} \exp \left(-\beta \sum_{i&lt;j} J_{i j}
+\sum_{\alpha=1}^n S_i^\alpha S_j^\alpha+\beta h \sum_{i=1}^N
+\sum_{\alpha=1}^n S_i^\alpha\right)
+\end{align}$$</span></p>
+<p>直接对<span class="math inline"><em>J</em></span>进行积分：</p>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">P</span> <span class="operator">=</span> <span class="number">1</span><span class="operator">/</span><span class="variable">J</span> <span class="built_in">Sqrt</span><span class="punctuation">[</span><span class="variable">NN</span><span class="operator">/</span><span class="punctuation">(</span><span class="number">2</span> <span class="built_in">Pi</span><span class="punctuation">)</span><span class="punctuation">]</span> <span class="built_in">Exp</span><span class="punctuation">[</span><span class="operator">-</span><span class="variable">NN</span><span class="operator">/</span><span class="punctuation">(</span><span class="number">2</span> <span class="variable">j</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">)</span> <span class="punctuation">(</span><span class="variable">jij</span> <span class="operator">-</span> <span class="variable">j0</span><span class="operator">/</span><span class="variable">NN</span><span class="punctuation">)</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">]</span><span class="operator">;</span></span><br><span class="line"><span class="built_in">Integrate</span><span class="punctuation">[</span></span><br><span class="line">  <span class="variable">P</span> <span class="built_in">Exp</span><span class="punctuation">[</span><span class="number">1</span><span class="operator">/</span><span class="variable">NN</span> <span class="punctuation">(</span><span class="operator">-</span><span class="variable">\[Beta]</span> <span class="variable">jij</span> <span class="variable">si</span> <span class="variable">sj</span> <span class="operator">+</span> <span class="variable">\[Beta]</span> <span class="variable">h</span> <span class="variable">si</span><span class="punctuation">)</span><span class="punctuation">]</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">jij</span><span class="operator">,</span> <span class="operator">-</span><span class="built_in">Infinity</span><span class="operator">,</span> </span><br><span class="line">   <span class="built_in">Infinity</span><span class="punctuation">&#125;</span><span class="punctuation">]</span> <span class="operator">//</span> <span class="built_in">FullSimplify</span></span><br></pre></td></tr></table></figure>
+<p><span class="math display">$$\begin{align}
+\left[Z^n\right]=C_1 \sum_{\left\{\boldsymbol{s}^\alpha,
+\boldsymbol{s}^\beta, \ldots, \boldsymbol{s}^n\right\}} \exp
+\left\{\frac{1}{N} \sum_{i&lt;j}\left(\frac{1}{2} \beta^2 J^2
+\sum_{\alpha, \beta} S_i^\alpha S_j^\alpha S_i^\beta S_j^\beta+\beta J_0
+\sum_\alpha S_i^\alpha S_j^\alpha\right)+\beta h \sum_{i=1}^N
+\sum_{\alpha=1}^n S_i^\alpha\right\} .
+\end{align}$$</span></p>
+<p>对其中一项进行拆分： <span class="math display">$$\begin{align}
+\sum_{\alpha, \beta} S_i^\alpha S_j^\alpha S_i^\beta S_j^\beta=2
+\sum_{\alpha&lt;\beta} S_i^\alpha S_j^\alpha S_i^\beta
+S_j^\beta+\sum_\alpha\left(S_i^\alpha S_j^\alpha\right)^2=2
+\sum_{\alpha&lt;\beta} S_i^\alpha S_j^\alpha S_i^\beta S_j^\beta+n
+\end{align}$$</span></p>
+<p>因此有：</p>
+<p><span class="math display">$$\begin{align}
+{\left[Z^n\right] } &amp; =C_1 \sum_{\left\{s^\alpha, s^\beta, \ldots,
+s^n\right\}} \exp \left\{\frac{1}{N} \sum_{i&lt;j}\left(\frac{1}{2}
+\beta^2 J^2\left(2 \sum_{\alpha&lt;\beta} S_i^\alpha S_j^\alpha
+S_i^\beta S_j^\beta+n\right)+\beta J_0 \sum_\alpha S_i^\alpha
+S_j^\alpha\right)+\beta h \sum_{i=1}^N \sum_{\alpha=1}^n
+S_i^\alpha\right\} \\
+&amp; =C_1 \sum_{\left\{s^\alpha, s^\beta, \ldots, s^n\right\}} \exp
+\left\{\frac{1}{N} \sum_{i&lt;j}\left(\frac{1}{2} \beta^2 J^2
+n+\frac{1}{2} \beta^2 J^2\left(2 \sum_{\alpha&lt;\beta} S_i^\alpha
+S_j^\alpha S_i^\beta S_j^\beta\right)+\beta J_0 \sum_\alpha S_i^\alpha
+S_j^\alpha\right)+\beta h \sum_{i=1}^N \sum_{\alpha=1}^n
+S_i^\alpha\right\} \\
+&amp; =C_1 \exp \left(\frac{(N-1) \beta^2 J^2 n}{4}\right)
+\sum_{\left\{s^\alpha, s^\beta, \ldots, s^n\right\}} \exp
+\left\{\frac{1}{N} \sum_{i&lt;j}\left(\beta^2 J^2 \sum_{\alpha&lt;\beta}
+S_i^\alpha S_j^\alpha S_i^\beta S_j^\beta+\beta J_0 \sum_\alpha
+S_i^\alpha S_j^\alpha\right)+\beta h \sum_{i=1}^N \sum_{\alpha=1}^n
+S_i^\alpha\right\}\label{9}
+\end{align}$$</span></p>
+<p>采用近似<span class="math inline">$\exp \left(\frac{(N-1) \beta^2 J^2
+n}{4}\right) \approx\exp \left(\frac{N \beta^2 J^2
+n}{4}\right)$</span>，接下来关注<span
+class="math inline">$\eqref{9}$</span>第二项中第一部分：</p>
+<p><span class="math display">$$\begin{align}
+\frac{1}{N} \sum_{i&lt;j} \beta^2 J^2 \sum_{\alpha&lt;\beta} S_i^\alpha
+S_j^\alpha S_i^\beta S_j^\beta &amp; =\frac{\beta^2 J^2}{2
+N}\left(\sum_{\alpha&lt;\beta}\left(\sum_i S_i^\alpha
+S_i^\beta\right)^2-\sum_i \sum_{\alpha&lt;\beta} S_i^\alpha S_i^\alpha
+S_i^\beta S_i^\beta\right) \\
+&amp; =\frac{\beta^2 J^2}{2 N} \sum_{\alpha&lt;\beta}\left(\sum_i
+S_i^\alpha S_i^\beta\right)^2-\frac{\beta^2 J^2}{2 N} \sum_i
+\sum_{\alpha&lt;\beta} 1 \label{9_1}
+\end{align}$$</span></p>
+<p>将常数项加入前面的系数，接下来分析<span
+class="math inline">$\eqref{9}$</span>第二项中第二部分：</p>
+<p><span class="math display">$$\begin{align}
+\frac{\beta J_0}{N} \sum_{i&lt;j} \sum_\alpha S_i^\alpha
+S_j^\alpha=\frac{\beta J_0}{2 N} \sum_\alpha\left(\sum_i
+S_i^\alpha\right)^2-\frac{\beta J_0}{2 N} \sum_i \sum_\alpha 1
+\label{9_2}
+\end{align}$$</span></p>
+<p>同样处理常数项目，结合<span
+class="math inline">$\eqref{9}\eqref{9_1}\eqref{9_2}$</span>，得到：</p>
+<p><span class="math display">$$\begin{align}
+\left[Z^n\right]=C_2 \exp \left(\frac{N \beta^2 J^2 n}{4}\right)
+\sum_{\left\{s^\alpha, s^\beta, \ldots, s^n\right\}} \exp
+\left\{\frac{\beta^2 J^2}{2 N} \sum_{\alpha&lt;\beta}\left(\sum_i
+S_i^\alpha S_i^\beta\right)^2+\frac{\beta J_0}{2 N}
+\sum_\alpha\left(\sum_i S_i^\alpha\right)^2+\beta h \sum_{i=1}^N
+\sum_{\alpha=1}^n S_i^\alpha\right\} \label{10}
+\end{align}$$</span></p>
+<p>需要将<span
+class="math inline">$\eqref{10}$</span>指数中的平方项转变为线性，使用Hubbard-Stratonovich
+替换：</p>
+<p><span class="math display">$$\begin{align}
+\exp \left(\frac{y^2}{2}\right)=\int_{-\infty}^{\infty} \frac{d
+x}{\sqrt{2 \pi}} \exp \left(-\frac{x^2}{2}\right) \exp (x y)\label{11}
+\end{align}$$</span></p>
+<p>可得：</p>
+<p><span class="math display">$$
+\begin{gather}
+\exp \frac{\beta^2 J^2}{2 N}\left(\sum_i S_i^\alpha
+S_i^\beta\right)^2=\int_{-\infty}^{\infty} \frac{N d q_{\alpha
+\beta}}{\sqrt{2 \pi}} \exp \left(-\beta^2 J^2 N \frac{q_{\alpha
+\beta}^2}{2}+\beta^2 J^2 q_{\alpha \beta} \sum_i S_i^\alpha
+S_i^\beta\right) \\
+\exp \frac{\beta J_0}{2 N}\left(\sum_i
+S_i^\alpha\right)^2=\int_{-\infty}^{\infty} \frac{N d m_\alpha}{\sqrt{2
+\pi}} \exp \left(-\beta J_0 N m_\alpha^2+\beta J_0 m_\alpha \sum_i
+S_i^\alpha\right)
+\end{gather}
+$$</span></p>
+<p>再将结果代入<span
+class="math inline">$\eqref{10}$</span>，然后得到结果：</p>
+<p><span class="math display">$$\begin{equation}
+\begin{aligned}
+&amp; {\left[Z^n\right]=} C_4 \exp \left(\frac{N \beta^2 J^2
+n}{4}\right) \int_{-\infty}^{\infty} \prod_{\alpha&lt;\beta} d q_{\alpha
+\beta} \prod_\alpha d m_\alpha \\
+&amp; \exp \left(-\frac{\beta^2 J^2 N}{2} \sum_{\alpha&lt;\beta}
+q_{\alpha \beta}^2-\frac{\beta J_0 N}{2} \sum_\alpha m_\alpha^2\right)
+\\
+&amp; \sum_{\left\{s^\alpha, s^\beta, \ldots, s^n\right\}} \exp
+\left(\beta^2 J^2 \sum_{\alpha&lt;\beta} q_{\alpha \beta} \sum_i
+S_i^\alpha S_i^\beta+\beta \sum_\alpha\left(J_0 m_\alpha+h\right) \sum_i
+S_i^\alpha\right)
+\end{aligned} \label{14}
+\end{equation}$$</span></p>
+<p>对于<span class="math inline">$\eqref{14}$</span>最后一项，改写为：
+<span class="math display">$$
+\prod_{i=1}^N \sum_{\left\{s_i^\alpha, s_i^\beta, \ldots, s_i^n\right)}
+\exp \left(\beta^2 J^2 \sum_{\alpha&lt;\beta} q_{\alpha \beta}
+S_i^\alpha S_i^\beta+\beta \sum_\alpha\left(J_0 m_\alpha+h\right)
+S_i^\alpha\right)
+$$</span></p>
+<p>由于对于任意<span class="math inline"><em>i</em></span>，有<span
+class="math inline"><em>s</em><sub><em>i</em></sub> = ±1</span>，这样对于不同的<span
+class="math inline"><em>i</em></span>是没有差别的：</p>
+<p><span class="math display">$$\begin{align}
+\left\{\sum_{\left\{s_i^\alpha, s_i^\beta, \ldots, s_i^n\right)} \exp
+\left(\beta^2 J^2 \sum_{\alpha&lt;\beta} q_{\alpha \beta} S^\alpha
+S^\beta+\beta \sum_\alpha\left(J_0 m_\alpha+h\right)
+S^\alpha\right)\right\}^N \equiv \exp \left\{N \log
+\sum_{\left\{s_i^\alpha, s_i^\beta, \ldots, s_i^n\right)} \exp
+\left(L\left(\left\{q_{\alpha \beta},
+m_\alpha\right\}\right)\right)\right\} \label{18}
+\end{align}$$</span></p>
+<p>其中定义： <span class="math display">$$\begin{align}
+L\left(\left\{q_{\alpha \beta}, m_\alpha\right\}\right):=\beta^2 J^2
+\sum_{\alpha&lt;\beta} q_{\alpha \beta} S^\alpha S^\beta+\beta
+\sum_\alpha\left(J_0 m_\alpha+h\right) S^\alpha \label{19}
+\end{align}$$</span></p>
+<p>将<span class="math inline">$\eqref{18}\eqref{19}$</span>代入<span
+class="math inline">$\eqref{14}$</span>：</p>
+<p><span class="math display">$$\begin{equation}
+\begin{aligned}
+\left[Z^n\right]=&amp; C_4 \exp \left(\frac{N \beta^2 J^2 n}{4}\right)
+\int_{-\infty}^{\infty} \prod_{\alpha&lt;\beta} d q_{\alpha \beta}
+\prod_\alpha d m_\alpha \\
+&amp; \exp \left\{-\frac{\beta^2 J^2 N}{2} \sum_{\alpha&lt;\beta}
+q_{\alpha \beta}^2-\frac{\beta J_0 N}{2} \sum_\alpha m_\alpha^2+N \log
+\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right)} \exp (L)\right\}
+\end{aligned} \label{20}
+\end{equation}$$</span></p>
+<p>由于热力学极限有<span
+class="math inline"><em>N</em> → ∞</span>，采用Laplace近似可知（进行该近似其是会出现一个常数项，这里没有写出，因为直接扔掉也对结果没有影响），结果取决于与指数上最大值的那个点：</p>
+<p><span class="math display">$$
+\begin{gather}
+E:=-\frac{\beta^2 J^2 N}{2} \sum_{\alpha&lt;\beta} q_{\alpha
+\beta}^2-\frac{\beta J_0 N}{2} \sum_\alpha m_\alpha^2+N \log
+\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp (L)
+\label{22}\\
+\left\{q_{\alpha \beta}^{\star}, m_\alpha^{\star}\right\}=\arg \max
+_{\left\{q_{\alpha \beta}, m_\alpha\right\}} E
+\end{gather}
+$$</span></p>
+<p>因此<span class="math inline">$\eqref{14}$</span>转变为：</p>
+<p><span class="math display">$$\begin{align}
+{\left[Z^n\right] } &amp; =C_4 \exp \left\{\frac{N \beta^2 J^2
+n}{4}-\frac{\beta^2 J^2 N}{2} \sum_{\alpha&lt;\beta}\left(q_{\alpha
+\beta}^{\star}\right)^2-\frac{\beta J_0 N}{2}
+\sum_\alpha\left(m_\alpha^{\star}\right)^2+N \log \sum_{\left\{S^\alpha,
+S^\beta, \ldots, S^n\right\}} \exp (L)\right\} \label{24}\\
+&amp; =C_4 \exp \left\{N n\left(\frac{\beta^2 J^2}{4}-\frac{\beta^2
+J^2}{2 n} \sum_{\alpha&lt;\beta}\left(q_{\alpha
+\beta}^{\star}\right)^2-\frac{\beta J_0}{2 n}
+\sum_\alpha\left(m_\alpha^{\star}\right)^2+\frac{1}{n} \log
+\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp
+(L)\right)\right\} \label{25}
+\end{align}$$</span></p>
+<p><font color='blue'>在进行到<span
+class="math inline">$\eqref{24}$</span>时候已经黔宾黩武，从定义<span
+class="math inline">$\eqref{19}$</span>中可以看出<span
+class="math inline"><em>L</em></span>包含<span
+class="math inline"><em>q</em>, <em>m</em></span>。此时处理已经很麻烦了，需要近似。</font></p>
+<p>同时采用复本极限<span
+class="math inline"><em>n</em> → 0</span>，将<span
+class="math inline">$\eqref{25}$</span>进行展开：</p>
+<p><span class="math display">$$\begin{align}
+\left[Z^n\right] \approx 1+N n\left\{\frac{\beta^2 J^2}{4}-\frac{\beta^2
+J^2}{2 n} \sum_{\alpha&lt;\beta}\left(q_{\alpha
+\beta}^{\star}\right)^2-\frac{\beta J_0}{2 n}
+\sum_\alpha\left(m_\alpha^{\star}\right)^2+\frac{1}{n} \log
+\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp (L)\right\}
+\label{26}
+\end{align}$$</span></p>
+<p>最后将<span class="math inline">$\eqref{26}$</span>代回复本技巧<span
+class="math inline">$\eqref{4}$</span>中：</p>
+<p><span class="math display">$$
+\begin{align}
+\frac{[\log Z]}{N} &amp; =\lim _{n \rightarrow 0}
+\frac{\left[Z^n\right]-1}{N n} \\
+&amp; =\lim _{n \rightarrow 0}\left\{\frac{\beta^2 J^2}{4}-\frac{\beta^2
+J^2}{2 n} \sum_{\alpha&lt;\beta}\left(q_{\alpha
+\beta}^{\star}\right)^2-\frac{\beta J_0}{2 n}
+\sum_\alpha\left(m_\alpha^{\star}\right)^2+\frac{1}{n} \log
+\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp (L)\right\}
+\label{28}
+\end{align}
+$$</span></p>
+<p>最后需要确定<span
+class="math inline">{<em>q</em><sub><em>α</em><em>β</em></sub><sup>⋆</sup>, <em>m</em><sub><em>α</em></sub><sup>⋆</sup>}</span>的表达式，使用<span
+class="math inline">$\frac{\partial}{\partial q_{\alpha \beta}}
+E=\frac{\partial}{\partial m_\alpha} E=0$</span>，从<span
+class="math inline">$\eqref{22}$</span>中得到：</p>
+<p><span class="math display">$$\begin{align}
+q_{\alpha \beta}^{\star}=&amp; \frac{1}{\beta^2 J^2}
+\frac{\partial}{\partial q_{\alpha \beta}} \log \sum_{\left\{S^\alpha,
+S^\beta, \ldots, S^n\right\}} \exp (L)=\frac{1}{\beta^2 J^2}
+\frac{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp (L)
+\beta^2 J^2}{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp
+(L)} S^\alpha S^\beta . \\
+=&amp; \frac{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}}
+S^\alpha S^\beta \exp (L)}{\sum_{\left\{S^\alpha, S^\beta, \ldots,
+S^n\right\}} \exp (L)} \\
+m_\alpha^{\star}=&amp;\frac{1}{\beta J_0} \frac{\partial}{\partial
+m_\alpha} \log \sum_{\left\{s_i^\alpha, s_i^\beta, \ldots, s_i^n\right)}
+\exp (L)=\frac{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}}
+S^\alpha \exp (L)}{\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}}
+\exp (L)} .
+\end{align}$$</span></p>
+<h2 id="q_alpha-beta-and-m_alpha-as-order-parameters"><span
+class="math inline"><em>q</em><sub><em>α</em><em>β</em></sub></span> and
+<span class="math inline"><em>m</em><sub><em>α</em></sub></span> as
+order parameters</h2>
+<p>可以改写为（<font color='blue'>并不是直接通过上面的过程的得出，只是先把结论摆出来</font>）：
+<span class="math display">$$\begin{align}
+q_{\alpha \beta}=\left[\frac{\sum_{\left\{s^\alpha, s^s, \ldots,
+s^n\right\}} S_i^\alpha S_i^\beta \exp \left(-\beta \sum_{\gamma=1}^n
+H_\gamma\right)}{\sum_{\left\{s^\alpha, s^\beta, \ldots, s^n\right\}}
+\exp \left(-\beta \sum_{\gamma=1}^n H_\gamma\right)}\right]
+\equiv\left[\left\langle S_i^\alpha S_i^\beta\right\rangle\right]
+\label{32}
+\end{align}$$</span></p>
+<p>其中： <span class="math display">$$\begin{align}
+H_\gamma=&amp;\sum_{i&lt;j} J_{i j}^2\beta S_i^\gamma S_j^\gamma-h
+\sum_i S_i^\gamma \label{33}\\
+m_\alpha=&amp;\left[\left\langle S_i^\alpha\right\rangle\right]
+\label{34}
+\end{align}$$</span></p>
+<h1 id="replica-symmetric-solution">Replica-symmetric solution</h1>
+<p>对于<span
+class="math inline">$\eqref{24}$</span>已经提到，需要处理里面的<span
+class="math inline"><em>q</em><sub><em>α</em><em>β</em></sub></span>与<span
+class="math inline"><em>m</em><sub><em>α</em></sub></span>的问题。现在直接简单粗暴的假设：
+<span class="math display">$$\begin{align}
+\forall\alpha,\beta\quad q_{\alpha\beta}=q,m_\alpha=m \label{RS}
+\end{align}$$</span></p>
+<p>将<span
+class="math inline">$\eqref{28}$</span>近似之后的结果写为;</p>
+<p><span class="math display">$$\begin{align}
+\frac{[\log Z]}{N} &amp; =\lim _{n \rightarrow 0}\left\{\frac{\beta^2
+J^2}{4}-\frac{\beta^2 J^2(n-1)}{4} q^2-\frac{\beta J_0}{2}
+m^2+\frac{1}{n} \log \sum_{\left\{S^\alpha, S^\beta, \ldots,
+S^n\right\}} \exp \left(L_{q_{\alpha \beta}=q,
+m_\alpha=m}\right)\right\} \label{35} \\
+&amp; =\frac{\beta^2 J^2}{4}\left(1+q^2\right)-\frac{\beta J_0}{2}
+m^2+\lim _{n \rightarrow 0} \frac{1}{n} \log \sum_{\left\{S^\alpha,
+S^\beta, \ldots, S^n\right\}} \exp \left(L_{q_\alpha \beta}=q,
+m_\alpha=m\right) \label{36}
+\end{align}$$</span></p>
+<p>将其中<span class="math inline"><em>L</em></span>项具体写为：</p>
+<p><span class="math display">$$\begin{align}
+\frac{1}{n} \log \sum_{\left\{s_i^\alpha, s_i^\beta, \ldots,
+s_i^n\right)} \exp \left(L_{q_{\alpha \beta}=q,
+m_\alpha=m}\right)=\frac{1}{n}\log \sum_{\left\{S^\alpha, S^\beta,
+\ldots, S^n\right\}} \exp \left(\beta^2 J^2 q \sum_{\alpha&lt;\beta}
+S^\alpha S^\beta+\beta\left(J_0 m+h\right) \sum_\alpha S^\alpha\right)
+\end{align}$$</span></p>
+<p>引入变量<span class="math inline"><em>ẑ</em></span>，结合<span
+class="math inline">$\eqref{11}$</span>将<span
+class="math inline"><em>S</em><sup><em>α</em></sup><em>S</em><sup><em>β</em></sup></span>线性化：
+<span class="math display">$$\begin{align}
+p(\hat{z})=\sqrt{\frac{1}{2 \pi}} \exp \left(-\frac{\hat{z}^2}{2}\right)
+\end{align}$$</span></p>
+<p><span class="math display">$$
+\begin{align}
+&amp; \frac{1}{n} \log \sum_{\left\{s_i^\alpha, s_i^\beta, \ldots,
+s_i^n\right)} \exp \left(\beta^2 J^2 \sum_{\alpha&lt;\beta} q_{\alpha
+\beta} S^\alpha S^\beta+\beta \sum_\alpha\left(J_0 m_\alpha+h\right)
+S^\alpha\right) \\
+= &amp; \frac{1}{n} \log \sum_{\left\{s_i^\alpha, s_i^\beta, \ldots,
+s_i^n\right)} \int d z p(z) \exp \left(\beta J \sqrt{q} \hat{z}
+\sum_\alpha S^\alpha-\frac{n}{2} \beta^2 J^2 q+\beta\left(J_0 m+h\right)
+\sum_\alpha S^\alpha\right) \\
+= &amp; \frac{1}{n} \log\left[ \exp \left(-\frac{n}{2} \beta^2 J^2
+q\right) \int d z p(\hat{z}) \sum_{\left\{S^\alpha, S^\beta, \ldots,
+S^n\right\}} \exp \left(\sum_\alpha S^\alpha\left(\beta J \sqrt{q}
+\hat{z}+\beta\left(J_0 m+h\right)\right)\right)\right] \\
+= &amp; \frac{1}{n} \log\left[ \exp \left(-\frac{n}{2} \beta^2 J^2
+q\right) \int D z \sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}}
+\exp \left(\sum_\alpha S^\alpha\left(\beta J \sqrt{q} z+\beta\left(J_0
+m+h\right)\right)\right)\right] \\
+= &amp; \frac{1}{n} \log\left[ \exp \left(-\frac{n}{2} \beta^2 J^2
+q\right) \int D z \prod_{\gamma=1}^n \sum_{S^\gamma= \pm 1} \exp
+\left(S^\gamma\left(\beta J \sqrt{q} z+\beta\left(J_0
+m+h\right)\right)\right)\right] \\
+= &amp; \frac{1}{n} \log\left[ \exp \left(-\frac{n}{2} \beta^2 J^2
+q\right) \int D z  \left\{2 \cosh \left(\beta J \sqrt{q}
+z+\beta\left(J_0 m+h\right)\right)\right\}^n\right] \label{38_1} \\
+= &amp; \frac{1}{n} \log\left[ \exp \left(-\frac{n}{2} \beta^2 J^2
+q\right) \int D z \exp \left(n \log 2 \cosh \left(\beta J \sqrt{q}
+z+\beta\left(J_0 m+h\right)\right)\right) \right] \\
+= &amp;  \left(-\frac{1}{2} \beta^2 J^2 q\right)+\frac{1}{n} \log\left[
+\int D z \exp \left(n \log 2 \cosh \left(\beta J \sqrt{q}
+z+\beta\left(J_0 m+h\right)\right)\right) \right]\label{39} \\
+\end{align}
+$$</span> 对其中<span
+class="math inline"><em>n</em></span>进行极小值展开，<font color='red'>这里其是存在一些问题更清晰的应该将求极限的操作放在后面进行，并且将另一个<span
+class="math inline"><em>n</em></span>分离出来，不过问题不大只会造成理解困难。</font></p>
+<p><span class="math display">$$\begin{align}
+&amp;\approx \left(-\frac{1}{2} \beta^2 J^2 q\right)+\frac{1}{n} \log
+\left\{1+n \int D z \log 2 \cosh \left(\beta J \sqrt{q} z+\beta\left(J_0
+m+h\right)\right)\right\} \\
+&amp;\approx \left(-\frac{1}{2} \beta^2 J^2 q\right)+\int D z \log 2
+\cosh \left(\beta J \sqrt{q} z+\beta\left(J_0
+m+h\right)\right)\label{41}
+\end{align}$$</span></p>
+<p>定义： <span class="math display">$$\begin{align}
+\tilde{H}(z):=J \sqrt{q} z+J_0 m+h  \label{42}
+\end{align}$$</span></p>
+<p>结合<span class="math inline">$\eqref{41}\eqref{42}$</span>将<span
+class="math inline">$\eqref{36}$</span>写为：</p>
+<p><span class="math display">$$\begin{align}
+\frac{[\log Z]}{N}=\frac{\beta^2 J^2}{4}(1-q)^2-\frac{\beta J_0}{2}
+m^2+\int D z \log 2 \cosh (\beta \tilde{H}(z)) \label{44}
+\end{align}$$</span></p>
+<p>通过<span class="math inline">$\partial_q \frac{[\log
+Z]}{N}=\partial_m \frac{[\log Z]}{N}=0$</span>获得极值点（计算<span
+class="math inline"><em>q</em></span>的时候需要分布积分处理一下）：</p>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">PP</span> <span class="operator">=</span> <span class="built_in">Sqrt</span><span class="punctuation">[</span><span class="variable">\[Beta]</span><span class="operator">^</span><span class="number">2</span> <span class="variable">j</span><span class="operator">^</span><span class="number">2</span> <span class="variable">q</span><span class="operator">/</span><span class="punctuation">(</span><span class="number">2</span> <span class="built_in">Pi</span><span class="punctuation">)</span><span class="punctuation">]</span> <span class="built_in">Exp</span><span class="punctuation">[</span><span class="operator">-</span><span class="variable">z</span><span class="operator">^</span><span class="number">2</span><span class="operator">/</span><span class="number">2</span> <span class="variable">\[Beta]</span><span class="operator">^</span><span class="number">2</span> <span class="variable">j</span><span class="operator">^</span><span class="number">2</span> <span class="variable">q</span><span class="punctuation">]</span><span class="operator">;</span></span><br><span class="line"></span><br><span class="line"><span class="variable">HH</span> <span class="operator">=</span> <span class="variable">j</span> <span class="built_in">Sqrt</span><span class="punctuation">[</span><span class="variable">q</span><span class="punctuation">]</span> <span class="variable">z</span> <span class="operator">+</span> <span class="variable">j0</span> <span class="variable">m</span> <span class="operator">+</span> <span class="variable">h</span><span class="operator">;</span></span><br><span class="line"><span class="variable">ZZ</span> <span class="operator">=</span> <span class="punctuation">(</span><span class="variable">\[Beta]</span><span class="operator">^</span><span class="number">2</span> <span class="variable">j</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">)</span><span class="operator">/</span><span class="number">4</span> <span class="punctuation">(</span><span class="number">1</span> <span class="operator">-</span> <span class="variable">q</span><span class="punctuation">)</span><span class="operator">^</span><span class="number">2</span> <span class="operator">-</span> <span class="punctuation">(</span><span class="variable">\[Beta]</span> <span class="variable">j0</span><span class="punctuation">)</span><span class="operator">/</span><span class="number">2</span> <span class="variable">m</span><span class="operator">^</span><span class="number">2</span> <span class="operator">+</span> </span><br><span class="line">   <span class="built_in">Inactivate</span><span class="punctuation">[</span></span><br><span class="line">    <span class="built_in">Integrate</span><span class="punctuation">[</span><span class="variable">PP</span> <span class="built_in">Log</span><span class="punctuation">[</span><span class="number">2</span> <span class="built_in">Cosh</span><span class="punctuation">[</span><span class="variable">\[Beta]</span> <span class="variable">HH</span><span class="punctuation">]</span><span class="punctuation">]</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">z</span><span class="operator">,</span> <span class="operator">-</span><span class="built_in">Infinity</span><span class="operator">,</span> <span class="built_in">Infinity</span><span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="punctuation">]</span><span class="operator">;</span></span><br><span class="line"><span class="built_in">D</span><span class="punctuation">[</span><span class="variable">ZZ</span><span class="operator">,</span> <span class="variable">m</span><span class="punctuation">]</span> <span class="operator">//</span> <span class="built_in">TraditionalForm</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">D</span><span class="punctuation">[</span><span class="built_in">Tanh</span><span class="punctuation">[</span><span class="variable">\[Beta]</span> <span class="variable">HH</span><span class="punctuation">]</span><span class="operator">,</span> <span class="variable">z</span><span class="punctuation">]</span> <span class="operator">//</span> <span class="built_in">FullSimplify</span></span><br></pre></td></tr></table></figure>
+<p><span class="math display">$$
+\begin{gather}
+m=\int D z \tanh \beta \tilde{H}(z) \label{45}\\
+q=1-\int D z \operatorname{sech}^2 \beta \tilde{H}(z)=\int D z \tanh ^2
+\beta \tilde{H}(z) \label{46}
+\end{gather}
+$$</span></p>
+<h1 id="replica-symmetry-breaking-and-the-parisi-solution">Replica
+symmetry breaking and the Parisi solution</h1>
+<h2
+id="problem-with-the-symmetric-results-negative-entropy-at-low-temperature">Problem
+with the symmetric results: negative entropy at low temperature</h2>
+<p>进行这样的假设<span
+class="math inline"><em>J</em><sub>0</sub> = <em>h</em> = 0</span>，有
+<span class="math inline">$\tilde{H}(z)=J \sqrt{q}
+z$</span>；并且有零温极限<span
+class="math inline"><em>β</em> → ∞</span>，此时<span
+class="math inline"><em>q</em> → 1</span>。但还是需要更<span
+class="math inline"><em>q</em></span>与<span
+class="math inline"><em>β</em></span>的线性结果，将<span
+class="math inline">$\eqref{46}$</span>在这个条件下进行零温近似：</p>
+<p><span class="math display">$$\begin{align}
+\lim _{\beta \rightarrow \infty} \int D z \operatorname{sech}^2 \beta
+\tilde{H}(z)&amp;=\int D z \frac{2}{\beta J} \delta(\beta J z)\\
+&amp;=\sqrt{\frac{2}{\pi}} \frac{T}{J}
+\end{align}$$</span></p>
+<p>考虑到<span class="math inline">$\int d x\operatorname{sech}^2 \beta
+x=\frac{2}{\beta}$</span>，等价于<span class="math inline">$\int d
+x\frac{2}{\beta}\delta(x)$</span>。</p>
+<p>因此有： <span class="math display">$$\begin{align}
+q=1-\frac{T}{J} \sqrt{\frac{2}{\pi}} \label{q_limit}
+\end{align}$$</span></p>
+<p>计算自由能： <span class="math display">$$\begin{align}
+[f]\beta=-\frac{[\log Z]}{N}=-\frac{\beta^2 J^2}{4}(1-q)^2-\int D z \log
+2 \cosh (\beta J \sqrt{q} z) \label{48}
+\end{align}$$</span></p>
+<p>其中<span
+class="math inline">[<em>f</em>]</span>表示构型平均。将<span
+class="math inline">$\eqref{q_limit}$</span>代入<span
+class="math inline">$\eqref{48}$</span>最后一项：</p>
+<p><span class="math display">$$\begin{align}
+\int D z \log 2 \cosh (\beta J \sqrt{q} z) &amp; =2 \int_0^{\infty} D z
+\log 2 \cosh (\beta J \sqrt{q} z) \\
+&amp; =2 \int_0^{\infty} D z \log 2 \frac{\exp (-\beta J \sqrt{q}
+z)+\exp (\beta J \sqrt{q} z)}{2} \\
+&amp; \approx 2 \int_0^{\infty} D z \log 2 \frac{\exp (\beta J \sqrt{q}
+z)}{2} \\
+&amp;=\frac{2 \beta J \sqrt{q}}{\sqrt{2\pi}}
+\end{align}$$</span></p>
+<p><span class="math inline">$\sqrt{q}$</span>已经是<span
+class="math inline">1</span>附近的小量，因此结合<span
+class="math inline">$\eqref{q_limit}$</span>有<span
+class="math inline">$\sqrt{q}\approx q=1-\frac{T}{J}
+\sqrt{\frac{2}{\pi}}$</span>：</p>
+<p><span class="math display">$$\begin{align}
+\int D z \log 2 \cosh (\beta J \sqrt{q} z)
+&amp;=\frac{2 \beta J}{\sqrt{2\pi}}\left(1-\frac{T}{J}
+\sqrt{\frac{2}{\pi}}\right) \\
+&amp;= \sqrt{\frac{2}{\pi}}\beta J-\frac{2}{\pi}
+\end{align}$$</span></p>
+<p>从<span class="math inline">$\eqref{48}$</span>自由能有：</p>
+<p><span class="math display">$$\begin{align}
+[f] \approx -\sqrt{\frac{2}{\pi}}J + \frac{2 T}{\pi}
+\end{align}$$</span></p>
+<p>利用关系<span class="math inline">$S=-\frac{\partial F}{\partial
+T}$</span>，得到熵为： <span class="math display">$$\begin{align}
+S=-\frac{2}{\pi}
+\end{align}$$</span></p>
+<p>显然负熵是没有含义的，这来源于假设的错误，需要引入复本对称破缺解决。</p>
+<h2 id="stability-of-solutions">Stability of solutions</h2>
+<p>利用一阶梯度为零的方法寻找极值，这存在一个问题：找到的解是否稳定？利用Hassian矩阵分析稳定性，并且假定<span
+class="math inline"><em>h</em> = 0</span>。注记： <span
+class="math display">$$\begin{align}
+y^{\alpha \beta}:=\beta J q_{\alpha \beta}, x^\alpha=\sqrt{\beta J_0}
+m_\alpha
+\end{align}$$</span></p>
+<p>改写<span class="math inline">$\eqref{28}$</span>：</p>
+<p><span class="math display">$$\begin{align}
+[f]=-\frac{\beta J^2}{4}-\lim _{n \rightarrow 0} \frac{1}{\beta
+n}\left\{-\sum_{\alpha&lt;\beta} \frac{1}{2}\left(y^{\alpha
+\beta}\right)^2-\sum_\alpha \frac{1}{2}\left(x^\alpha\right)^2+\log
+\sum_{\left\{S^\alpha, S^\beta, \ldots, S^n\right\}} \exp \left(\beta J
+\sum_{\alpha&lt;\beta} y^{\alpha \beta} S^\alpha S^\beta+\sqrt{\beta
+J_0} \sum_\alpha x^\alpha S^\alpha\right)\right\}
+\end{align}$$</span></p>
+<p>结合之前的复本近似假设，认为不同的值是微扰之后的结果<span
+class="math inline"><em>x</em><sup><em>α</em></sup> = <em>x</em> + <em>ϵ</em><sup><em>α</em></sup>, <em>y</em><sup><em>α</em><em>β</em></sup> = <em>y</em> + <em>η</em><sup><em>α</em><em>β</em></sup></span>，则<span
+class="math inline">$\eqref{19}$</span>：</p>
+<p><span class="math display">$$\begin{align}
+&amp; L_0:=\beta J y \sum_{\alpha&lt;\beta} S^\alpha S^\beta+\sqrt{\beta
+J_0} x \sum_\alpha S^\alpha \\
+&amp; \langle f\rangle_{L^0}=\frac{\sum_{\left\{S^\alpha, S^\beta,
+\ldots, S^n\right\}} e^{L_0\left(\left\{S^\alpha, S^\beta, \ldots,
+S^n\right\}\right)} f}{\sum_{\left\{S^\alpha, S^\beta, \ldots,
+S^n\right\}} e^{L_0\left(\left\{S^\alpha, S^\beta, \ldots,
+S^n\right\}\right)} }
+\end{align}$$</span></p>
+<p><font color='red'>需要完善</font></p>
+<h1 id="append">Append</h1>
+<h2 id="hessian">Hessian</h2>
+<p>Hessian矩阵在极值点的稳定性分析中起着关键作用，具体涉及以下几个方面：</p>
+<h3 id="hessian矩阵的定义">Hessian矩阵的定义</h3>
+<p>Hessian矩阵是由二阶偏导数组成的方阵，表示函数在某一点的二阶导数信息。对于一个多变量函数
+<span
+class="math inline"><em>f</em>(<em>x</em><sub>1</sub>, <em>x</em><sub>2</sub>, …, <em>x</em><sub><em>n</em></sub>)</span>，Hessian矩阵
+<span class="math inline"><em>H</em></span> 定义为：</p>
+<p><span class="math display">$$
+H = \begin{bmatrix}
+\frac{\partial^2 f}{\partial x_1^2} &amp; \frac{\partial^2 f}{\partial
+x_1 \partial x_2} &amp; \cdots &amp; \frac{\partial^2 f}{\partial x_1
+\partial x_n} \\
+\frac{\partial^2 f}{\partial x_2 \partial x_1} &amp; \frac{\partial^2
+f}{\partial x_2^2} &amp; \cdots &amp; \frac{\partial^2 f}{\partial x_2
+\partial x_n} \\
+\vdots &amp; \vdots &amp; \ddots &amp; \vdots \\
+\frac{\partial^2 f}{\partial x_n \partial x_1} &amp; \frac{\partial^2
+f}{\partial x_n \partial x_2} &amp; \cdots &amp; \frac{\partial^2
+f}{\partial x_n^2}
+\end{bmatrix}
+$$</span></p>
+<h3 id="极值点与hessian矩阵">极值点与Hessian矩阵</h3>
+<p>在某一点 <span
+class="math inline"><em>x</em><sub>0</sub></span>，如果 <span
+class="math inline">∇<em>f</em>(<em>x</em><sub>0</sub>) = 0</span>，则
+<span class="math inline"><em>x</em><sub>0</sub></span>
+是一个驻点，可能是极大值点、极小值点或鞍点。Hessian矩阵 <span
+class="math inline"><em>H</em>(<em>x</em><sub>0</sub>)</span>
+在这个驻点的性质可以帮助确定这个驻点的类型。</p>
+<h3 id="hessian矩阵的正定性与负定性">Hessian矩阵的正定性与负定性</h3>
+<ol type="1">
+<li><strong>正定矩阵与局部极小值</strong>:
+<ul>
+<li>一个正定矩阵的所有特征值都是正的。</li>
+<li>对于任何非零向量 <span class="math inline"><em>v</em></span>，有
+<span
+class="math inline"><em>v</em><sup><em>T</em></sup><em>H</em><em>v</em> &gt; 0</span>。</li>
+<li>如果在驻点 <span
+class="math inline"><em>x</em><sub>0</sub></span>，Hessian矩阵 <span
+class="math inline"><em>H</em>(<em>x</em><sub>0</sub>)</span>
+是正定的，那么在 <span class="math inline"><em>x</em><sub>0</sub></span>
+附近，函数 <span class="math inline"><em>f</em></span>
+的曲率向上，类似于一个碗的形状。对于任何微小的偏离 <span
+class="math inline"><em>x</em><sub>0</sub></span> 的向量 <span
+class="math inline"><em>v</em></span>，二阶泰勒展开式的二次项 <span
+class="math inline">$\frac{1}{2} v^T H v$</span> 会贡献一个正值，因此
+<span
+class="math inline"><em>f</em>(<em>x</em><sub>0</sub> + <em>v</em>) &gt; <em>f</em>(<em>x</em><sub>0</sub>)</span>，即
+<span class="math inline"><em>x</em><sub>0</sub></span>
+是局部极小值点。</li>
+</ul></li>
+<li><strong>负定矩阵与局部极大值</strong>:
+<ul>
+<li>一个负定矩阵的所有特征值都是负的。</li>
+<li>对于任何非零向量 <span class="math inline"><em>v</em></span>，有
+<span
+class="math inline"><em>v</em><sup><em>T</em></sup><em>H</em><em>v</em> &lt; 0</span>。</li>
+<li>如果在驻点 <span
+class="math inline"><em>x</em><sub>0</sub></span>，Hessian矩阵 <span
+class="math inline"><em>H</em>(<em>x</em><sub>0</sub>)</span>
+是负定的，那么在 <span class="math inline"><em>x</em><sub>0</sub></span>
+附近，函数 <span class="math inline"><em>f</em></span>
+的曲率向下，类似于一个倒置的碗的形状。对于任何微小的偏离 <span
+class="math inline"><em>x</em><sub>0</sub></span> 的向量 <span
+class="math inline"><em>v</em></span>，二阶泰勒展开式的二次项 <span
+class="math inline">$\frac{1}{2} v^T H v$</span> 会贡献一个负值，因此
+<span
+class="math inline"><em>f</em>(<em>x</em><sub>0</sub> + <em>v</em>) &lt; <em>f</em>(<em>x</em><sub>0</sub>)</span>，即
+<span class="math inline"><em>x</em><sub>0</sub></span>
+是局部极大值点。</li>
+</ul></li>
+<li><strong>混合正负特征值与鞍点</strong>:
+<ul>
+<li>如果Hessian矩阵 <span
+class="math inline"><em>H</em>(<em>x</em><sub>0</sub>)</span>
+既有正特征值也有负特征值，那么它既不正定也不负定。</li>
+<li>在这种情况下，存在一些方向 <span
+class="math inline"><em>v</em><sub>1</sub></span> 使得 <span
+class="math inline"><em>v</em><sub>1</sub><sup><em>T</em></sup><em>H</em><em>v</em><sub>1</sub> &gt; 0</span>，同时存在其他方向
+<span class="math inline"><em>v</em><sub>2</sub></span> 使得 <span
+class="math inline"><em>v</em><sub>2</sub><sup><em>T</em></sup><em>H</em><em>v</em><sub>2</sub> &lt; 0</span>。</li>
+<li>如果在驻点 <span
+class="math inline"><em>x</em><sub>0</sub></span>，Hessian矩阵 <span
+class="math inline"><em>H</em>(<em>x</em><sub>0</sub>)</span>
+既不正定也不负定，那么在 <span
+class="math inline"><em>x</em><sub>0</sub></span> 附近，函数 <span
+class="math inline"><em>f</em></span>
+会在某些方向上向上弯曲（极小值行为），而在其他方向上向下弯曲（极大值行为）。这意味着
+<span class="math inline"><em>x</em><sub>0</sub></span>
+不是局部极值点，而是一个鞍点，类似于马鞍的形状，在某些方向上是极小值，在另一些方向上是极大值。</li>
+</ul></li>
+</ol>
+<h3 id="实际应用">实际应用</h3>
+<p>在优化问题中，Hessian矩阵用于评估驻点的稳定性和类型。在机器学习和深度学习中，Hessian矩阵用于分析损失函数的曲率和优化算法的收敛性。</p>
+<p>总结来说，Hessian矩阵通过其正定性或负定性帮助我们区分驻点的类型，从而判断这些点是极大值点、极小值点还是鞍点，这对于理解函数的局部行为和稳定性非常重要。</p>
+<h2 id="expleftfracpartialpartial-hright形式算子含义"><span
+class="math inline">$\exp\left(\frac{\partial}{\partial
+h}\right)$</span>形式算子含义</h2>
+<p>(()) 是一个形式算子（formal
+operator），它的作用可以理解为将函数沿着其变量 <span
+class="math inline"><em>h</em></span>
+方向移动一个单位距离。要理解这一点，我们需要结合泰勒级数展开和算子的作用进行说明。</p>
+<h3 id="泰勒级数展开">泰勒级数展开</h3>
+<p>考虑一个函数 <span
+class="math inline"><em>f</em>(<em>h</em>)</span>，在 <span
+class="math inline"><em>h</em></span> 处的泰勒展开可以表示为：</p>
+<p><span class="math display">$$f(h + a) = \sum_{n=0}^{\infty}
+\frac{a^n}{n!} \frac{\partial^n f(h)}{\partial h^n}$$</span></p>
+<p>这个展开式表示的是函数 <span
+class="math inline"><em>f</em>(<em>h</em>)</span> 在 <span
+class="math inline"><em>h</em></span> 点处的 <span
+class="math inline"><em>a</em></span> 位移。特别地，当 <span
+class="math inline"><em>a</em> = 1</span> 时：</p>
+<p><span class="math display">$$f(h + 1) = \sum_{n=0}^{\infty}
+\frac{1^n}{n!} \frac{\partial^n f(h)}{\partial h^n} =
+\sum_{n=0}^{\infty} \frac{1}{n!} \frac{\partial^n f(h)}{\partial
+h^n}$$</span></p>
+<h3 id="形式算子-expleftfracpartialpartial-hright">形式算子 <span
+class="math inline">$\exp\left(\frac{\partial}{\partial
+h}\right)$</span></h3>
+<p>形式算子 <span
+class="math inline">$\exp\left(\frac{\partial}{\partial
+h}\right)$</span> 的定义基于它的泰勒级数展开：</p>
+<p><span class="math display">$$\exp\left(\frac{\partial}{\partial
+h}\right) = \sum_{n=0}^{\infty} \frac{1}{n!} \left(
+\frac{\partial}{\partial h} \right)^n$$</span></p>
+<p>当这个算子作用在函数 <span
+class="math inline"><em>f</em>(<em>h</em>)</span>
+上时，它会应用上述展开式：</p>
+<p><span class="math display">$$\exp\left(\frac{\partial}{\partial
+h}\right) f(h) = \sum_{n=0}^{\infty} \frac{1}{n!} \left(
+\frac{\partial}{\partial h} \right)^n f(h)$$</span></p>
+<p>这实际上与泰勒展开式中 <span
+class="math inline"><em>a</em> = 1</span> 的情况一致：</p>
+<p><span class="math display">$$\exp\left(\frac{\partial}{\partial
+h}\right) f(h) = \sum_{n=0}^{\infty} \frac{1}{n!} \frac{\partial^n
+f(h)}{\partial h^n} = f(h + 1)$$</span></p>
+<h3 id="具体说明">具体说明</h3>
+<ol type="1">
+<li><p><strong>泰勒展开表示位移</strong>：泰勒级数展开表示函数在其定义点的某一位移。例如，<span
+class="math inline"><em>f</em>(<em>h</em> + <em>a</em>)</span> 是函数
+<span class="math inline"><em>f</em>(<em>h</em>)</span> 在 <span
+class="math inline"><em>h</em></span> 点处的 <span
+class="math inline"><em>a</em></span> 位移。</p></li>
+<li><p><strong>算子的作用</strong>：<span
+class="math inline">$\exp\left(\frac{\partial}{\partial
+h}\right)$</span> 作为一个形式算子，其作用相当于将函数沿着其变量 <span
+class="math inline"><em>h</em></span>
+方向移动一个单位。因为它的作用与泰勒展开的结果一致，当 <span
+class="math inline"><em>a</em> = 1</span>
+时，正好表示向前移动一个单位距离。</p></li>
+<li><p><strong>形式算子的求和性质</strong>：通过展开 <span
+class="math inline">$\exp\left(\frac{\partial}{\partial
+h}\right)$</span>
+的泰勒级数，我们实际上是在累加所有阶数的导数项，这与泰勒级数本身的形式完全吻合，确保了我们得到的结果是函数在
+<span class="math inline"><em>h</em></span> 处的一个单位位移。</p></li>
+</ol>
+<h3 id="总结">总结</h3>
+<p><span class="math inline">$\exp\left(\frac{\partial}{\partial
+h}\right)$</span> 形式算子的作用可以理解为利用泰勒级数展开的特性，将函数
+<span class="math inline"><em>f</em>(<em>h</em>)</span> 沿变量 <span
+class="math inline"><em>h</em></span>
+的方向移动一个单位距离。这种理解源于泰勒展开中的每一项都对应于函数的一个导数项，而形式算子的展开正好与泰勒展开的累加形式一致，从而实现了位移的效果。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spin-Glass/" rel="tag"># Spin Glass</a>
+              <a href="/tags/Replica-Method/" rel="tag"># Replica Method</a>
+              <a href="/tags/Sherrington-Kirkpatrick-Model/" rel="tag"># Sherrington-Kirkpatrick Model</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/11/15/Phys/Hopfield/Hopfield3/" rel="prev" title="Hopfield Model 相图">
+      <i class="fa fa-chevron-left"></i> Hopfield Model 相图
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/11/20/Phys/SK_model/SK_model1/" rel="next" title="The Parisi solution of Sherrington-Kirkpatrick Model">
+      The Parisi solution of Sherrington-Kirkpatrick Model <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#sherrington-kirkpatrick-model"><span class="nav-number">1.</span> <span class="nav-text">Sherrington-Kirkpatrick
+Model</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#calculating-the-free-energy-with-replica-method"><span class="nav-number">2.</span> <span class="nav-text">Calculating the
+free energy with replica method</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#q_alpha-beta-and-m_alpha-as-order-parameters"><span class="nav-number">2.1.</span> <span class="nav-text">qαβ and
+mα as
+order parameters</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#replica-symmetric-solution"><span class="nav-number">3.</span> <span class="nav-text">Replica-symmetric solution</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#replica-symmetry-breaking-and-the-parisi-solution"><span class="nav-number">4.</span> <span class="nav-text">Replica
+symmetry breaking and the Parisi solution</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#problem-with-the-symmetric-results-negative-entropy-at-low-temperature"><span class="nav-number">4.1.</span> <span class="nav-text">Problem
+with the symmetric results: negative entropy at low temperature</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#stability-of-solutions"><span class="nav-number">4.2.</span> <span class="nav-text">Stability of solutions</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#append"><span class="nav-number">5.</span> <span class="nav-text">Append</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#hessian"><span class="nav-number">5.1.</span> <span class="nav-text">Hessian</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#hessian%E7%9F%A9%E9%98%B5%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="nav-number">5.1.1.</span> <span class="nav-text">Hessian矩阵的定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%81%E5%80%BC%E7%82%B9%E4%B8%8Ehessian%E7%9F%A9%E9%98%B5"><span class="nav-number">5.1.2.</span> <span class="nav-text">极值点与Hessian矩阵</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hessian%E7%9F%A9%E9%98%B5%E7%9A%84%E6%AD%A3%E5%AE%9A%E6%80%A7%E4%B8%8E%E8%B4%9F%E5%AE%9A%E6%80%A7"><span class="nav-number">5.1.3.</span> <span class="nav-text">Hessian矩阵的正定性与负定性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E5%BA%94%E7%94%A8"><span class="nav-number">5.1.4.</span> <span class="nav-text">实际应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#expleftfracpartialpartial-hright%E5%BD%A2%E5%BC%8F%E7%AE%97%E5%AD%90%E5%90%AB%E4%B9%89"><span class="nav-number">5.2.</span> <span class="nav-text">$\exp\left(\frac{\partial}{\partial
+h}\right)$形式算子含义</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%B0%E5%8B%92%E7%BA%A7%E6%95%B0%E5%B1%95%E5%BC%80"><span class="nav-number">5.2.1.</span> <span class="nav-text">泰勒级数展开</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BD%A2%E5%BC%8F%E7%AE%97%E5%AD%90-expleftfracpartialpartial-hright"><span class="nav-number">5.2.2.</span> <span class="nav-text">形式算子 $\exp\left(\frac{\partial}{\partial
+h}\right)$</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B7%E4%BD%93%E8%AF%B4%E6%98%8E"><span class="nav-number">5.2.3.</span> <span class="nav-text">具体说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">5.2.4.</span> <span class="nav-text">总结</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

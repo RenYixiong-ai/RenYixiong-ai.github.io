@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="展示利用机器学习提升的MC在一些模型中的失败： * 为什么说失败？哪些指标说明失败？ * 在怎样的模型中？这种模型具有什么样的特点？ * 实验条件是什么？ 参考文献： * Machine-learning-assisted Monte Carlo fails at sampling computationally hard problems 配套代码10.5281&#x2F;zenodo.7567683 *">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Machine-learning-assisted Monte Carlo fails at sampling computationally hard problems">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="展示利用机器学习提升的MC在一些模型中的失败： * 为什么说失败？哪些指标说明失败？ * 在怎样的模型中？这种模型具有什么样的特点？ * 实验条件是什么？ 参考文献： * Machine-learning-assisted Monte Carlo fails at sampling computationally hard problems 配套代码10.5281&#x2F;zenodo.7567683 *">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/A_4.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/A_5.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/A_6.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/A_7.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/A_9.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/B_2.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/B_5.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/C_1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/D_1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/D_2.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/D_6.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/E_1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/E_2.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/E_3.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/E_4.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/E_5.png">
+<meta property="article:published_time" content="2024-04-19T08:00:00.000Z">
+<meta property="article:modified_time" content="2025-05-08T10:14:14.381Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Physics">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/A_4.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Machine-learning-assisted Monte Carlo fails at sampling computationally hard problems | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/04/19/Phys/BoostMC_fail/BoostMC_fail/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Machine-learning-assisted Monte Carlo fails at sampling computationally hard problems
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-04-19 16:00:00" itemprop="dateCreated datePublished" datetime="2024-04-19T16:00:00+08:00">2024-04-19</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-08 18:14:14" itemprop="dateModified" datetime="2025-05-08T18:14:14+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>5.8k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>11 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>展示利用机器学习提升的MC在一些模型中的失败： *
+为什么说失败？哪些指标说明失败？ *
+在怎样的模型中？这种模型具有什么样的特点？ * 实验条件是什么？</p>
+<p>参考文献： * <a
+target="_blank" rel="noopener" href="https://doi.org/10.1088/2632-2153/acbe91">Machine-learning-assisted
+Monte Carlo fails at sampling computationally hard problems</a>
+配套代码<a
+target="_blank" rel="noopener" href="https://zenodo.org/records/7567683">10.5281/zenodo.7567683</a> *
+<a target="_blank" rel="noopener" href="https://doi.org/10.3390/condmat7020038">Neural Annealing and
+Visualization of Autoregressive Neural Networks in the Newman–Moore
+Model</a> * <a
+target="_blank" rel="noopener" href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.60.5068">Glassy
+dynamics and aging in an exactly solvable spin model</a> * <a
+target="_blank" rel="noopener" href="https://journals.aps.org/prb/abstract/10.1103/PhysRevB.108.174107">Boundary
+conditions dependence of the phase transition in the quantum
+Newman-Moore mode</a> * <a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/1712.09913">Visualizing the Loss Landscape
+of Neural Nets</a></p>
+<span id="more"></span>
+<h1 id="background">Background</h1>
+<p>经典MC的问题在于使用细致平衡条件进行局部更新，无法处理临界慢化、关联长度长问题；一些改进的措施是将局部更新改为全局更新，但是这种方案与模型的结构直接相关。</p>
+<p>最近利用机器学习诞生了一些高效的方案，通过近似分布<span
+class="math inline"><em>P</em>(<em>σ</em>)</span>来获得目标分布，并且进行高效采样。</p>
+<p>现在面临的困境本质与90年代修改MC方案是一样的，两种都是在进行采样。在当时已经提出了一些benchmark对不同方案进行检验。但是现在机器学习策略大多聚焦于解决MC之前的困境，并没有测试之前的benchmark。</p>
+<p>接下来考虑一些难以采样的随机问题。</p>
+<h1 id="fails-at-sampling-computationally-hard-problems">Fails at
+sampling computationally hard problems</h1>
+<p>在采样问题中通常会遇到mode-collapse in learning the auxiliary
+model，这是由于在多峰分布情况下模型只学习到其中的一个峰分布。</p>
+<p>模型是否准确学到分布，作者提出了三个重要的判断指标： *
+其采样的接受概率是否足够高 <span class="math display">$$
+  \operatorname{Acc}\left[\sigma_{\text {old }} \rightarrow
+\sigma_{\text {new }}\right]=\min \left[1,
+\frac{\mathrm{e}^{-(\beta+\delta \beta) H\left(\sigma_{\text {new
+}}\right)} P_{\mathrm{AR}}\left(\sigma_{\text {old
+}}\right)}{\mathrm{e}^{-(\beta+\delta \beta) H\left(\sigma_{\text {old
+}}\right) }P_{\mathrm{AR}}\left(\sigma_{\text {new }}\right)}\right]
+  $$</span> *
+全局MCMC动态初始化于由AR模型生成的配置接近静止状态（即，像能量这样的单时间数量在时间上是恒定的，而像相关性这样的双时间数量只依赖于时间差）。<font color='red'>不一定吧？</font>
+* 时间依赖的关联项消失。</p>
+<p><font color='red'>这个作者提出的benchmark主要针对VAN这种直接生成下一步分布的模型，但是如果模型只是估计分布概率，这个benchmark并不有效。</font></p>
+<h2 id="coloring">Coloring</h2>
+<p><font color='yellow'>该模型本质就是随机图上的Potts Model。</font></p>
+<p>关于这个模型有一些参考资料：</p>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="https://iopscience.iop.org/article/10.1209/0295-5075/81/57005">random
+first order transition universality class</a></li>
+<li><a
+target="_blank" rel="noopener" href="https://www.tandfonline.com/doi/full/10.1080/00018732.2016.1211393">Statistical
+physics of inference: thresholds and algorithms Adv. Phys</a></li>
+</ul>
+<p>The hard-to-sample coloring problem: <span
+class="math inline"><em>N</em></span>个变量<span
+class="math inline"><em>σ</em><sub><em>i</em></sub> ∈ {0, …, <em>q</em> − 1}</span>，每一个有<span
+class="math inline"><em>q</em></span>概率染色，节点位于Erdős-Rényi随机图<span
+class="math inline">𝒢</span>上，每条边以相同的概率进行采样，连通概率为<span
+class="math inline"><em>c</em></span>。将模型的Hamiltonian 写为： <span
+class="math display">$$\begin{align}
+H(\sigma)=\sum_{\langle i, j\rangle \in \mathcal{G}} \delta_{\sigma_i,
+\sigma_j}
+\end{align}$$</span> 对于一个<span
+class="math inline"><em>q</em></span>态的Potts模型，这是一反铁磁模型，在这样的随机图的基态下如何选取使得能量最低，等价于随机图着色问题。</p>
+<p><img src="./A_4.png"
+alt="Coloring—Phase diagram of the coloring of Erdös-Rényi random graphs" />
+<span
+class="math inline"><em>T</em><sub><em>d</em></sub></span>线是玻璃相转变，在其之下关联时间随尺寸变大指数增加，<span
+class="math inline"><em>T</em><sub><em>k</em></sub></span>是凝聚线，在其之下不存在平坦的基态。其中小图表示在<span
+class="math inline"><em>c</em> = 40</span>的情况，利用MCMC模拟不同体系尺寸的关联时间，横坐标为<span
+class="math inline"><em>T</em> − <em>T</em><sub><em>d</em></sub></span>.关联函数为<span
+class="math inline">$C(t, \tau)=\frac{1}{N} \sum_{i=1}^N
+\delta_{\sigma_i(t), \sigma_i(t+\tau)}$</span>.</p>
+<figure>
+<img src="./A_5.png"
+alt="模型实验结果，用于选取最好的模型进行下一步测试" />
+<figcaption
+aria-hidden="true">模型实验结果，用于选取最好的模型进行下一步测试</figcaption>
+</figure>
+<p>每幅图中两条水平的线表示MCMC采样的值（橙色），或者空腔采样的值（蓝色）。横坐标表示不同的模型。可以看到能量和熵在均值附近，考虑涨落影响是正常的。考虑到温度较高，不在基态也合理。接下来再看，随着模型的表现能力增强（网络复杂、regularization、dropout），能量下降熵也下降，作者认为这里发生这种因素的原因是过拟合<font color='red'>（非常主观的猜测，但这个猜测却是文章的重要转折点）</font>。接下来作者认为评判的参数维度是更低的能量于更高的熵，最好的模型是shallow
+MADE (ColoredMADE)。</p>
+<p>接下来将用表现最好的网络进行测试，演示其为什么失败。</p>
+<p><img src="./A_6.png" alt="模型实验结果" /> 其中 variational 和
+maximum likelihood
+代表模型训练的两种方式，前者是wu等提出的方案，后者是基于前者方案加入极大似然估计（即进一步使用细致平衡挑选样本）。</p>
+<p>a、b表明在高温下利用AR与传统算法没有区别<font color='red'>高温本来关联就弱</font>；在低温情况下利用AR系统转变的更快<font color='red'>这个算法能解决关联问题，不是很好么？</font>综上，AR失败的，因为不能在低温情况下采到能量更低的样本。以上讨论在<span
+class="math inline"><em>T</em> &gt; 0.3</span>的情况下，更低传统方法也会失效。</p>
+<p>在d图中可以看出 maximum likelihood
+策略在低温情况下能量较高，温度升高逐渐接近MCMC采样值。从e图中能够发现，熵的值接近。但是从f图看熵-能量关系，可以立刻看出与传统方案的区别。</p>
+<p>从e图中看 variational
+方案，可以发现，熵在低温情况下很低，这是由于发生了mode-collapsed，模型聚集在其中的一个峰上。</p>
+<p><img src="./A_7.png" alt="模型实验结果2" /> 其中the Boltzmann ratio
+<span
+class="math inline"><em>P</em><sub><em>B</em></sub>(<em>σ</em><sub>new
+</sub>)/<em>P</em><sub><em>B</em></sub>(<em>σ</em><sub>old
+</sub>)</span> and the model ratio <span
+class="math inline"><em>P</em><sub><em>A</em><em>R</em></sub>(<em>σ</em><sub>old
+</sub>)/<em>P</em><sub>AR </sub>(<em>σ</em><sub>new </sub>)</span>.
+通过实验发现，接受率随着步数（与旧模型的相差程度）的增多，在剧烈下降，这意味着
+maximum likelihood 方案在低温情况基本不能探索，能量无法下降。</p>
+<p><img src="./A_9.png" alt="模型实验结果3" />
+上图想要说明，因为在低温情况，传统采样关联性很强，而AR模型关联性下降很快，因此认为能量依旧很高。<font color='red'>为什么不直接放能量图呢？我怀疑是因为AR模型在几个能量相近局域最小值之间跳，传统方法陷在一个局域最小值点中了。</font></p>
+<h1
+id="neural-annealing-and-visualization-in-the-newmanmoore-model">Neural
+Annealing and Visualization in the Newman–Moore Model</h1>
+<p>The classical triangular plaquette model (TPM), introduced by Newman
+and Moore, also named <a
+target="_blank" rel="noopener" href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.60.5068">Newman–Moore
+Model.</a></p>
+<p>The classical triangular plaquette model
+是一个用于描述磁性系统中的自旋冰态（spin ice
+state）的简化模型。在这个模型中，磁性离子位于三角形stop的顶点上，形成一个由三角形组成的格子（plaquette）。每个三角形代表一个“空位”，其中的磁性离子可以有向上或向下的磁矩。在自旋冰态中，由于几何限制和磁相互作用的特定规则，每个三角形内部的磁矩配置必须是两个向上，一个向下，或者两个向下，一个向上。这种配置被称为“two-in,
+one-out”规则。</p>
+<p><font color='red'>这篇文章有一个问题，其使用了RNN进行训练。而且并没有说明该网络在非阻措问题上的表现能力。</font></p>
+<figure>
+<img src="./B_2.png" alt="模型实验结果4" />
+<figcaption aria-hidden="true">模型实验结果4</figcaption>
+</figure>
+<p>在Newman–Moore
+Model上，可以观察到在小尺寸下符合的很好，但是随着晶格尺寸的变大，基态自由能突然发生改变<font color='red'>（我更怀疑是由于计算失误）</font>，有一个突然的上升，这可能由于陷入到了一种局域解中。</p>
+<figure>
+<img src="./B_5.png" alt="模型实验结果6" />
+<figcaption aria-hidden="true">模型实验结果6</figcaption>
+</figure>
+<p>除了变分自由能的最小值现在已接近T0 =
+10时的确切值。随着温度的降低，景观形状变得更加崎岖，出现了相当大的高能量平台和快速变化的障碍，最终导致局部最小值消失，退火结束时变成了完全混乱的景观。因此，从这个角度来看，很明显这里存在训练问题，阻碍了变分神经退火的成功应用。</p>
+<p><font color='red'>这篇文章需要更多的实验</font></p>
+<h1
+id="a-method-for-quantifying-the-generalization-capabilities-of-generative-models-for-solving-ising-models">A
+method for quantifying the generalization capabilities of generative
+models for solving Ising models</h1>
+<ul>
+<li><a
+target="_blank" rel="noopener" href="https://www.cs.toronto.edu/~norouzi/research/papers/hdml.pdf">Hamming
+Distance Metric Learning</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/458114525">漫谈-Distance
+Metric Learning那些事儿</a></li>
+</ul>
+<p>Here we design a Hamming distance
+(一种用于衡量字符串之间差距的距离判定方法，将字符编码为二进制，通过记数差异位数，得到距离)
+regularizer in the framework of a class of generative models,
+variational autoregressive networks (VANs), to quantify the
+generalization capabilities of various network architectures combined
+with VAN.</p>
+<p><span class="math display">$$\begin{align}
+\mathcal{L}=&amp;F_q+R_h \\
+F_q=&amp;\sum_{\mathbf{s}}
+q_\theta(\mathbf{s})\left[E(\mathbf{s})+\frac{1}{\beta} \ln
+q_\theta(\mathbf{s})\right] \\
+R_h=&amp;\sum_{\mathbf{s}}\left|h m_{\mathbf{g}}(\mathbf{s})-z\right| \\
+\nabla_\theta \mathcal{L}=&amp;\mathbb{E}_{\mathbf{s} \sim
+q_\theta(\mathbf{s})}\left\{\left[E(\mathbf{s})+\frac{1}{\beta} \ln
+q_\theta(\mathbf{s})\right] \nabla_\theta \ln
+q_\theta(\mathbf{s})\right\} \\
+\end{align}$$</span> 其中<span
+class="math inline"><em>h</em><em>m</em><sub><em>g</em></sub>(<em>s</em>)</span>衡量与基态的距离。
+<font color='red'>最后一项目有问题，因为<span
+class="math inline"><em>R</em><sub><em>h</em></sub></span>采样方式是通过<span
+class="math inline"><em>q</em><sub><em>θ</em></sub></span>。不过不会对训练产生影响，毕竟反向传播是准确的。</font></p>
+<figure>
+<img src="./C_1.png" alt="模型实验结果6" />
+<figcaption aria-hidden="true">模型实验结果6</figcaption>
+</figure>
+<p>上图演示了收敛到正确基态的过程。</p>
+<p>该模型有效的原因就是因为加入了Hamming
+distance，但是需要知道正确的基态，这个正确基态是这样来的： &gt; The
+previous researches have illustrated that only by containing the
+configurations in the training datasets that are close to the ground
+state, measured by Hamming distance, to train the neural networks, may
+we obtain the ground state after training [4–7]. Therefore, we design
+this regularizer to explore the relationship between the Hamming
+distance and the success rates of finding the ground state for different
+network architectures combined with VAN.</p>
+<p>不得不说，度量学习（distance metric
+learning）是提升表现力的好手段。</p>
+<h1
+id="message-passing-variational-autoregressive-network-for-solving-intractable-ising-models">Message
+Passing Variational Autoregressive Network for Solving Intractable Ising
+Models</h1>
+<p>通过加入消息传递机制，提升了模型的表现能力。</p>
+<figure>
+<img src="./D_1.png" alt="模型实验结果D_1" />
+<figcaption aria-hidden="true">模型实验结果D_1</figcaption>
+</figure>
+<p>上图基于<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1906.00275">Wishart planted
+ensemble
+(WPE)</a>模型，分别对比了不同算法在基态时候能量差分布图。说明文章中所提到的算法是有其优越性的。</p>
+<figure>
+<img src="./D_2.png" alt="模型实验结果D_2" />
+<figcaption aria-hidden="true">模型实验结果D_2</figcaption>
+</figure>
+<p>消息传递层，主要增加了不同节点之间相互作用的耦合。文章同时还论证了为什么增加这样的网络结构能够降低能量、自由能，从而提升模型能力。
+<font color='red'>文章中如何从(21)得到(18)，我觉得这里有问题。同样的对于(22)的论证同样存在问题，非凸函数<span
+class="math inline"><em>q</em><sub><em>θ</em></sub></span>最外层加一个<span
+class="math inline">ln </span>并不会变成凸函数。</font></p>
+<figure>
+<img src="./D_6.png" alt="模型实验结果D_6" />
+<figcaption aria-hidden="true">模型实验结果D_6</figcaption>
+</figure>
+<p>实验结果说明，在具有阻锉的结构下，文章所提到的方法确实能够得到更好的基态。</p>
+<p><font color='blue'>这篇文章加入了消息传递层，使得最终能探索到更低的能量状态。消息传递的方案本身，是在处理具有弱阻锉情况下的模型自由能，而文章中用到的模型属于弱耦合的模型，是消息传递算法可以处理的。</font></p>
+<h1 id="variational-neural-annealing">Variational Neural Annealing</h1>
+<p>主要探讨在RNN的基础上，利用模拟退火方式采样，结合变分方式训练，最后在基态问题上的优秀表现。</p>
+<p>文章中采用的变分退火公式： <span
+class="math display"><em>F</em><sub><strong>λ</strong></sub>(<em>t</em>) = ⟨<em>H</em><sub>target
+</sub>⟩<sub><strong>λ</strong></sub> − <em>T</em>(<em>t</em>)<em>S</em><sub>classical
+</sub>(<em>p</em><sub><strong>λ</strong></sub>),</span></p>
+<p><img src="./E_1.png" alt="VNA" />
+从红色到蓝色代表了温度的下降，其中黄线是Boltamann
+分布，红线和绿线代表模拟和变分的结果，可见最后变分的结果更靠近真实分布</p>
+<figure>
+<img src="./E_2.png" alt="VNA" />
+<figcaption aria-hidden="true">VNA</figcaption>
+</figure>
+<p>模拟退火算法在经典和量子状态下的演示图。</p>
+<p>接下来，文章展示了在random Ising chains、Edwards-Anderson
+model、SherringtonKirkpatrick (SK) model、Wishart planted ensemble
+(WPE)下的实验结果，均展示了该方案能够很好的探索到模型基态。</p>
+<p><img src="./E_3.png" alt="Result1" /> <img src="./E_4.png"
+alt="Result2" /> <img src="./E_5.png" alt="Result3" /></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Physics/" rel="tag"># Physics</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/04/17/DL/Survey_MCTS/Survey_MCTS/" rel="prev" title="A Survey of Monte Carlo Tree Search Methods">
+      <i class="fa fa-chevron-left"></i> A Survey of Monte Carlo Tree Search Methods
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/05/08/DL/Kolmogorov%E2%80%93Arnold_Networks/Kolmogorov%E2%80%93Arnold_Networks/" rel="next" title="KAN: Kolmogorov–Arnold Networks">
+      KAN: Kolmogorov–Arnold Networks <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#background"><span class="nav-number">1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#fails-at-sampling-computationally-hard-problems"><span class="nav-number">2.</span> <span class="nav-text">Fails at
+sampling computationally hard problems</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#coloring"><span class="nav-number">2.1.</span> <span class="nav-text">Coloring</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#neural-annealing-and-visualization-in-the-newmanmoore-model"><span class="nav-number">3.</span> <span class="nav-text">Neural
+Annealing and Visualization in the Newman–Moore Model</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#a-method-for-quantifying-the-generalization-capabilities-of-generative-models-for-solving-ising-models"><span class="nav-number">4.</span> <span class="nav-text">A
+method for quantifying the generalization capabilities of generative
+models for solving Ising models</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#message-passing-variational-autoregressive-network-for-solving-intractable-ising-models"><span class="nav-number">5.</span> <span class="nav-text">Message
+Passing Variational Autoregressive Network for Solving Intractable Ising
+Models</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#variational-neural-annealing"><span class="nav-number">6.</span> <span class="nav-text">Variational Neural Annealing</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">320k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:43</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
