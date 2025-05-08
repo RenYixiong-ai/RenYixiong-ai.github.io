@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/append/</loc>
+    
+    <lastmod>2025-05-08</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://renyixiong-ai.github.io/2022/11/15/Phys/Hopfield/Hopfield3/</loc>
     
     <lastmod>2025-05-08</lastmod>
@@ -353,15 +362,6 @@
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/append/</loc>
-    
-    <lastmod>2025-04-03</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://renyixiong-ai.github.io/2024/11/08/Math/BayesianOpt/BayesianOpt/</loc>
     
     <lastmod>2025-04-03</lastmod>
@@ -425,6 +425,13 @@
 
   
   <url>
+    <loc>https://renyixiong-ai.github.io/tags/Markdown/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>https://renyixiong-ai.github.io/tags/Spin-Glass/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
@@ -433,6 +440,20 @@
   
   <url>
     <loc>https://renyixiong-ai.github.io/tags/Fermi-Bose-Machine/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Multi-Agent/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Prompt/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -453,7 +474,224 @@
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/tags/Markdown/</loc>
+    <loc>https://renyixiong-ai.github.io/tags/Natural-Gradients/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/PPO/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/TRPO/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Policy-Gradients/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Reinforcement-Learning/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Student-of-Games/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Computer-Physics/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Boltzmann-Machine/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Replica-Method/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Energy-based-Model/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Physics/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Monte-Carlo/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Tensor-Network/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Hopfield-Model/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Random-Matrix/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Sherrington-Kirkpatrick-Model/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Parisi-solution/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Replica-Symmetry-Breaking/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Combinatorial-Optimization-Methods/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Quantum-Field-Theory/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Path-Integrals/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Path-Integrals-Monte-Carlo/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Bayesian-Optimization/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/NP-problems/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Ising/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Kullback-Leibler-Divergence/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/KL-Divergence/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Potts-Model/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Graphs/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Complex-Network/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Laplacian-Matrix/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Hypergraph-Neural-Networks/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -474,35 +712,28 @@
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/tags/Reinforcement-Learning/</loc>
+    <loc>https://renyixiong-ai.github.io/tags/%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/tags/Combinatorial-Optimization-Methods/</loc>
+    <loc>https://renyixiong-ai.github.io/tags/%E7%B3%BB%E7%BB%BC/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/tags/Evolution/</loc>
+    <loc>https://renyixiong-ai.github.io/tags/Clasical-dynamics/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/tags/Kolmogorov%E2%80%93Arnold-Networks/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Physics/</loc>
+    <loc>https://renyixiong-ai.github.io/tags/Nonequilibrium-Thermodynamics/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -524,6 +755,48 @@
   
   <url>
     <loc>https://renyixiong-ai.github.io/tags/Self-Supervised-Learning/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Evolution/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/ViT/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/ViViT/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Transform/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Monte-Carlo-Tree-Search/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/tags/Kolmogorov%E2%80%93Arnold-Networks/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -572,42 +845,7 @@
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/tags/Monte-Carlo/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Monte-Carlo-Tree-Search/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://renyixiong-ai.github.io/tags/Sora/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Transform/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Bayesian-Optimization/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Nonequilibrium-Thermodynamics/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -620,245 +858,14 @@
     <priority>0.2</priority>
   </url>
   
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Computer-Physics/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/ViT/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/ViViT/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/NP-problems/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Ising/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Kullback-Leibler-Divergence/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/KL-Divergence/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Boltzmann-Machine/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Replica-Method/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Energy-based-Model/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Hopfield-Model/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Quantum-Field-Theory/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Path-Integrals/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Path-Integrals-Monte-Carlo/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Replica-Symmetry-Breaking/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Sherrington-Kirkpatrick-Model/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Potts-Model/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Random-Matrix/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Parisi-solution/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Natural-Gradients/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/PPO/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/TRPO/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Policy-Gradients/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Tensor-Network/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Student-of-Games/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Multi-Agent/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Prompt/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Graphs/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Complex-Network/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Laplacian-Matrix/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Hypergraph-Neural-Networks/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/%E7%B3%BB%E7%BB%BC/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://renyixiong-ai.github.io/tags/Clasical-dynamics/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
 
+  
+  <url>
+    <loc>https://renyixiong-ai.github.io/categories/Note/</loc>
+    <lastmod>2025-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
   
   <url>
     <loc>https://renyixiong-ai.github.io/categories/Machine-Learning/</loc>
@@ -868,7 +875,7 @@
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/categories/Note/</loc>
+    <loc>https://renyixiong-ai.github.io/categories/Largent-language-Model/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -882,13 +889,6 @@
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/categories/Math/</loc>
-    <lastmod>2025-05-08</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://renyixiong-ai.github.io/categories/Physics/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
@@ -896,14 +896,14 @@
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/categories/AI-for-Science/</loc>
+    <loc>https://renyixiong-ai.github.io/categories/Math/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>https://renyixiong-ai.github.io/categories/Largent-language-Model/</loc>
+    <loc>https://renyixiong-ai.github.io/categories/AI-for-Science/</loc>
     <lastmod>2025-05-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
