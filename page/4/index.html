@@ -177,6 +177,111 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/03/08/RL/PPO/PPO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/03/08/RL/PPO/PPO/" class="post-title-link" itemprop="url">Policy Gradients In Reinforcement</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2024-03-08 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-08T00:00:00+08:00">2024-03-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-08 18:20:12" itemprop="dateModified" datetime="2025-05-08T18:20:12+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>17k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>30 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><font color='red'>文中有一些问题仍未处理，缺失具体代码的解读，对于TRPO算法的认知仍然存在不清楚的地方，高阶梯度怎么算的</font></p>
+<h1 id="abstract">Abstract</h1>
+<p>这是一篇关于策略梯度算法的总结。首先给出梯度策略，介绍其基本含义，但是初始方案存在一个问题，可以知道梯度变化的方向，不知道梯度的步长。然后，提出自然梯度算法，通过加入约束的方案计算出梯度的步长。接下来，Trust
+Region Policy
+Optimization（TRPO）算法在此基础上进一步优化，进一步提出约束，使得满足该约束条件的样本可以稳定提升策略性能。最后，虽然TRPO十分优秀，但是大量的计算使其效率不高，因此进行简化提出Proximal
+Policy Optimization（PPO）算法。</p>
+<p><strong>基于值函数的强化学习</strong>：通过递归，求解bellman
+方程维护Q值（离散列表或者神经网络），每次选择动作会选择该状态下对应Q值最大的动作。使得期望奖励值最大。</p>
+<p><strong>基于策略的强化学习</strong>：不再通过价值函数确定动作，而是直接学习策略本身，通过一组参数<span
+class="math inline"><em>θ</em></span>对策略进行参数化，并通过神经网络优化<span
+class="math inline"><em>θ</em></span>。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/08/RL/PPO/PPO/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1153,107 +1258,6 @@ and RSB solutions for SK model with spin-S</a></p>
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2022/11/20/Phys/SK_model/SK_model/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ren Yixiong">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yixiong's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/11/20/Phys/SK_model/SK_model/" class="post-title-link" itemprop="url">Sherrington-Kirkpatrick Model</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-11-20 21:37:00" itemprop="dateCreated datePublished" datetime="2022-11-20T21:37:00+08:00">2022-11-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-04-03 16:43:45" itemprop="dateModified" datetime="2025-04-03T16:43:45+08:00">2025-04-03</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>20k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>35 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>利用复本方法计算 Sherrington-Kirkpatrick（SK）
-模型。目的是掌握和熟悉复本方法的使用。</p>
-<p>Reference: * Statistical Physics of Spin Glasses and Information
-Processing. Nishimori * <a
-target="_blank" rel="noopener" href="https://hzshan.github.io/replica_method_in_SK_model.pdf">Replica
-calculations for the SK model</a>笔误有点多</p>
-<p>Link: * <a href="/2022/11/12/Phys/Hopfield/Hopfield/" title="Hopfield Model">Hopfield Model</a> * <a href="/2022/11/13/Phys/replica/replica/" title="Replica">Replica</a> * <a href="/2022/11/20/Phys/SK_model/SK_model1/" title="The Parisi solution of Sherrington-Kirkpatrick Model">The Parisi solution of Sherrington-Kirkpatrick Model</a></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/11/20/Phys/SK_model/SK_model/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1323,7 +1327,7 @@ calculations for the SK model</a>笔误有点多</p>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-count">47</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -1368,12 +1372,12 @@ calculations for the SK model</a>笔误有点多</p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">320k</span>
+    <span title="Symbols count total">325k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">9:43</span>
+    <span title="Reading time total">9:50</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
   </div>

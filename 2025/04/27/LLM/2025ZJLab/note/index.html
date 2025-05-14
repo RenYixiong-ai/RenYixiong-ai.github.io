@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="GgT5ZflbkwsNKpDm5Tou0_J9qmdMniAiIzZ84RQe5zM">
+  <meta name="msvalidate.01" content="07C0174F9E4B4B2C960172E0CDFB3DC9">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="参加杨东平老师在之江实验室举办的大语言模型研讨会议，从物理、神经计算、生物等方面理解和看待语言模型以及神经网络的发展。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ZheJiang Lab">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2025/04/27/LLM/2025ZJLab/note/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="参加杨东平老师在之江实验室举办的大语言模型研讨会议，从物理、神经计算、生物等方面理解和看待语言模型以及神经网络的发展。">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/04/27/LLM/2025ZJLab/note/invite.jpeg">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/04/27/LLM/2025ZJLab/note/anchor.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/04/27/LLM/2025ZJLab/note/expriment.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/04/27/LLM/2025ZJLab/note/anchor-1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/04/27/LLM/2025ZJLab/note/information-flow.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/04/27/LLM/2025ZJLab/note/information-cosine.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/04/27/LLM/2025ZJLab/note/anchor-para.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/04/27/LLM/2025ZJLab/note/RC.png">
+<meta property="article:published_time" content="2025-04-27T08:06:00.000Z">
+<meta property="article:modified_time" content="2025-05-14T06:51:03.115Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Multi-Agent">
+<meta property="article:tag" content="Prompt">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2025/04/27/LLM/2025ZJLab/note/invite.jpeg">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2025/04/27/LLM/2025ZJLab/note/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>ZheJiang Lab | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2025/04/27/LLM/2025ZJLab/note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ZheJiang Lab
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-04-27 16:06:00" itemprop="dateCreated datePublished" datetime="2025-04-27T16:06:00+08:00">2025-04-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-14 14:51:03" itemprop="dateModified" datetime="2025-05-14T14:51:03+08:00">2025-05-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>4.1k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>7 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>参加杨东平老师在之江实验室举办的大语言模型研讨会议，从物理、神经计算、生物等方面理解和看待语言模型以及神经网络的发展。</p>
+<span id="more"></span>
+<h1 id="introduction">Introduction</h1>
+<figure>
+<img src="./invite.jpeg" alt="会议日程" />
+<figcaption aria-hidden="true">会议日程</figcaption>
+</figure>
+<h1 id="侧向预测编码">侧向预测编码</h1>
+<p>参考文献： * <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2501.12139">Discontinuous
+phase transition of feature detection in lateral predictive coding</a> *
+<a target="_blank" rel="noopener" href="https://doi.org/10.1007/s11433-024-2341-2">Energy-information
+trade-oﬀ induces continuous and discontinuous phase transitions in
+lateral predictive coding</a></p>
+<h2 id="什么是lateral-predictive-coding">什么是lateral predictive
+coding？</h2>
+<p>通过观察同一层网络相互之间的关系，从而对自身进行预测，将预测结果与自身对照，产生误差，对误差进行回传。对于同一层的不同变量记为<span
+class="math inline"><em>x</em><sub><em>i</em></sub><sup><em>l</em></sup></span>，误差<span
+class="math inline"><em>ϵ</em><sub><em>i</em></sub><sup><em>l</em></sup> = <em>x</em><sub><em>i</em></sub><sup><em>l</em></sup> − <em>f</em>(<em>x</em><sub><em>i</em></sub><sup><em>l</em></sup>)</span>，通过Bottom-up（类似于反向传播）的方式优化。引入lateral
+predictive
+coding的目的在于可以减少冗余，如果一个网络大部分内容可以预测（<span
+class="math inline"><em>ϵ</em> = 0</span>），那么很多的信息就是无用信息。</p>
+<p>这是一个用lateral 方案对MNIST数据集进行预测的例子： <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ==== LPC 模拟模型 ====</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">LPC_MNIST</span>(nn.Module):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">        <span class="built_in">super</span>().__init__()</span><br><span class="line">        <span class="variable language_">self</span>.linear = nn.Linear(<span class="number">28</span>*<span class="number">28</span>, <span class="number">256</span>)</span><br><span class="line">        <span class="variable language_">self</span>.lateral = nn.Linear(<span class="number">256</span>, <span class="number">256</span>)  <span class="comment"># lateral prediction within same layer</span></span><br><span class="line">        <span class="variable language_">self</span>.classifier = nn.Linear(<span class="number">256</span>, <span class="number">10</span>)</span><br><span class="line">        </span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">forward</span>(<span class="params">self, x</span>):</span><br><span class="line">        x = x.view(x.size(<span class="number">0</span>), -<span class="number">1</span>)  <span class="comment"># 展平</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 主激活</span></span><br><span class="line">        h = torch.relu(<span class="variable language_">self</span>.linear(x))  <span class="comment"># shape: (B, 256)</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 侧向预测（当前层内部）</span></span><br><span class="line">        h_detached = h.detach()  <span class="comment"># 假设 lateral 连接不能访问当前梯度</span></span><br><span class="line">        h_pred = <span class="variable language_">self</span>.lateral(h_detached)  <span class="comment"># h_i ≈ f(h_j≠i)</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># 预测误差</span></span><br><span class="line">        error = h - h_pred</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 用预测误差作为表征送入分类器</span></span><br><span class="line">        out = <span class="variable language_">self</span>.classifier(error)</span><br><span class="line">        <span class="keyword">return</span> out, error</span><br></pre></td></tr></table></figure>
+注意到，最后进行分类所使用的特征数据是误差<span
+class="math inline"><em>ϵ</em></span>。</p>
+<h2 id="理论框架">理论框架</h2>
+<p>将LPC写为动力学过程： <span class="math display">$$
+\begin{align}
+\frac{d \bf x}{d t} = \bf s -\bf x - \bf W \bf x
+\end{align}
+$$</span> 其中<span class="math inline">$\bf s$</span>是输入向量，<span
+class="math inline">$\bf x$</span>可以认为是预测误差。稳定解为：<span
+class="math inline">$\bf x=(\bf I+\bf W)^{-1}\bf s$</span>。</p>
+<p>将预测误差和定义为能量： <span class="math display">$$\begin{align}
+E\,\equiv\,\sum_{i=1}^{N}\Bigl\langle\bigl|x_{i}\bigr|\Bigr\rangle\,=\,\sum_{i=1}^{N}\Bigl\langle\Bigl|\sum_{j=1}^{N}\bigl(\frac{I}{I+W}\bigr)_{i
+j}s_{j}\Bigr|\Bigr\rangle
+\end{align}$$</span></p>
+<p>熵为（文章的补充材料中有证明）： <span
+class="math display">$$\begin{align}
+S=-\log\bigl[\operatorname*{det}(I+W)\bigr]
+\end{align}$$</span></p>
+<p>以熵作为输出信息的复杂度，从自由能和能量竞争的理论出发，发现lateral编码会出现非连续相变，或许进一步揭示了lateral
+predictive coding的潜在运行机制。</p>
+<p>核心思路是，定义能量，并且通过随机矩阵计算熵的表达式，通过自由能最小化的方式，用温度调控两者的分布</p>
+<h1
+id="大模型机理分析数据合成与慢思考机制">大模型机理分析——数据合成与慢思考机制</h1>
+<p>刘勇老师研究LLM如何进行思考，从泛化上界的视角研究MCTS提升模型能力的原理。</p>
+<p>我的思考是，如何把多智能体的想法和泛化上界相结合，通过证明把人类的经验总结进prompt会提升模型的表达能力。</p>
+<h1
+id="通过凝聚现象理解语言模型的推理与记忆">通过凝聚现象理解语言模型的推理与记忆</h1>
+<p>参考文献： - <a
+target="_blank" rel="noopener" href="https://neurips.cc/virtual/2024/poster/94702">Initialization is
+Critical to Whether Transformers Fit Composite Functions by Reasoning or
+Memorizing</a> - <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2401.08309">ANCHOR
+FUNCTION: A TYPE OF BENCHMARK FUNCTIONS FOR STUDYING LANGUAGE
+MODELS</a></p>
+<p>通过设计精巧实验(称为 anchor
+function)，分析不同初始化方法下，模型产生的记忆与推理两种模式。</p>
+<h2 id="anchor-function">Anchor function</h2>
+<h3 id="one-anchor-function">One-anchor function</h3>
+<p>考虑函数 <span
+class="math inline"><em>f</em>(<em>X</em>) : ℝ<sup><em>n</em> × <em>d</em></sup> → ℝ<sup><em>d</em></sup></span>
+，<span class="math inline"><em>n</em></span>是输入信息的长度，<span
+class="math inline"><em>d</em></span>是tokens的长度，<span
+class="math inline"><em>X</em> = (<strong>x</strong><sub><strong>1</strong></sub>, <strong>x</strong><sub><strong>2</strong></sub>, <strong>x</strong><sub><strong>3</strong></sub>⋯<strong>x</strong><sub><strong>n</strong></sub>)</span>并且<span
+class="math inline"><strong>x</strong><sub><strong>i</strong></sub> ∈ ℝ<sup><em>d</em></sup></span>。有如下的映射关系：
+<span class="math display">$$\begin{align}
+f(\mathbf{x_1}, \mathbf{x_2}, \mathbf{x_3}\cdots\mathbf{x_n}) =
+\mathbf{x_{i+1}}\quad \text{where}\quad x_i =a
+\end{align}$$</span></p>
+<p>例如对于<span class="math inline"><em>d</em> = 1</span>维、<span
+class="math inline"><em>a</em> = 3</span>的情况下<span
+class="math inline"><em>f</em>(12, 33, 14, 3, 42, 54, 34, 20, 28) = 42</span>。其中<span
+class="math inline"><em>a</em> = 3</span>是一个钩子，找到序列中对应的位置，然后给出后一个位置的结果。可以得到一个更加普适的函数：
+<span class="math display">$$\begin{align}
+f(\mathbf{x_1}, \mathbf{x_2}, \mathbf{x_3}\cdots\mathbf{x_n}) =
+g(\mathbf{x_{i+1}})\quad \text{where}\quad x_i =a
+\end{align}$$</span> 其中<span
+class="math inline">𝕩<sub>𝕚</sub></span>为钩子(anchor)项，对应的<span
+class="math inline">𝕩<sub>𝕚 + 𝟙</sub></span>是钥匙(key)项。</p>
+<h3 id="two-anchor-composite-function">Two-anchor composite
+function</h3>
+<p>Anchor 集为一系列不同的token，例如<span
+class="math inline"><em>A</em> = {<em>a</em><sub>1</sub>, <em>a</em><sub>2</sub>, ⋯, <em>a</em><sub><em>J</em></sub>}</span>，输出函数为<span
+class="math inline"><em>g</em>(𝕩; <em>a</em><sub><em>k</em></sub>)</span>。在每一个输入的序列中，有且仅有一对连续元素属于<span
+class="math inline"><em>A</em></span>： <span
+class="math display">$$\begin{align}
+f(\mathbf{x_1}, \mathbf{x_2}, \mathbf{x_3}\cdots\mathbf{x_n}) =
+g(g(\mathbf{x_{i-1}};\mathbf{x_{i}});\mathbf{x_{i+1}})\quad
+\text{where}\quad x_i,x_{i+1} \in A
+\end{align}$$</span></p>
+<p>可以得到以下集中任务分类： <img src="./anchor.png"
+alt="anchor" /></p>
+<h2 id="experiment">Experiment</h2>
+<figure>
+<img src="./expriment.png" alt="figure" />
+<figcaption aria-hidden="true">figure</figcaption>
+</figure>
+<p>上图是实验示意图，输入包含三个部分：anchor项（黄色）、key项（橙色）、噪声项（灰色），输出为目标结果。anchor项是与众不同的，这个实验中为<span
+class="math inline">1, 2, 3, 4</span>，并且每一种anchor表示对key项的一个操作。一共有用16种组合，其中15种项是在训练过程中作为输入集，并且这里面有14个是可以通过推理得出的，<span
+class="math inline">(3, 4)</span>这个组合只能通过记忆得出，一组<span
+class="math inline">(4, 3)</span>用于测试。这组测试anchor会给出三种可能的结果，一种是学习到对称性给出和<span
+class="math inline">(3, 4)</span>一样的解，一种是学习到推理解，以及其它非推理解。</p>
+<p>通过实验发现，解的类型和初始化参数、网络深度有关，通过设置超参<span
+class="math inline"><em>γ</em></span>调控不同的学习模式，<span
+class="math inline">1/<em>d</em><sub>in</sub><sup><em>γ</em></sup></span>是每层参数的标准差，其中<span
+class="math inline"><em>d</em><sub>in</sub></span>是输入神经元数目。</p>
+<p><img src="./anchor-1.png" /></p>
+<p>从实验中可以发现，存在一个明显的分界线，在不同的超参下识别的结果存在明显的分别。可能的解释是，在方差较小的时候，参数变化小，因此需要学习推理的内容；当方差变大模型可以学习更多的内容，因此参数倾向于记忆内容；方差进一步增大，模型会记忆更多内容，正确率下降。</p>
+<p>从以下几个方面分析模型学习到不同策略的原因： * 信息流 *
+信息在向量空间的表示 * 不同观点下的模型复杂度</p>
+<figure>
+<img src="./information-flow.png" alt="information-flow" />
+<figcaption aria-hidden="true">information-flow</figcaption>
+</figure>
+<p>上面是从信息流动的角度分析，浅层的网络对于信息处理起到了重要的作用。(a)(b)图分析了对称解的情况，浅层网络将anchor映射到一组位置，然后将key表示在这个结果上；在图(b)中通过t-SNE降维的方法，将不同anchor得到的结果降维，发现能够很好分类。图(c)是推理的结果，显示会先把key映射到对应的anchor上然后进行处理。</p>
+<figure>
+<img src="./information-cosine.png" alt="information-cosine" />
+<figcaption aria-hidden="true">information-cosine</figcaption>
+</figure>
+<p>上图是度量cosine相似度的热力图。图(a)是推理的结果，红框表示是相同的输出结果，可以发现，其具有很高的相似度；图(b)是对称的结果，基本没有相似性。这样显然的区别，表明模型推理能力和结构有关。为了进一步验证这个猜想，设计one-anchor的实验（图c），发现模型确实在推理的结果上表现相似。</p>
+<figure>
+<img src="./anchor-para.png" alt="information-para" />
+<figcaption aria-hidden="true">information-para</figcaption>
+</figure>
+<p>上图(a)(b)是计算参数的权重<span
+class="math inline"><em>W</em></span>cosin距离的热力图，其中图(a)表示推理的结果，可以看到出现明显的方向性，图(b)是对称解，并没有明显的方向性，复杂度柔和进模型中。图(c)(d)为t-SNE之后的embedding结果，图(c)为推理解有明显的方向，相比之下对称解图(d)显得杂乱。</p>
+<h1 id="深度学习机理的动力学分析">深度学习机理的动力学分析</h1>
+<p>赵鸿老师通过自己的方式，从数据和参数层面，分析神经网络的相关性质，很物理也很有趣。</p>
+<h1 id="储备池计算">储备池计算</h1>
+<p>参考文献： * <a
+target="_blank" rel="noopener" href="https://doi.org/10.1016/j.neunet.2019.03.005">Recent advances in
+physical reservoir computing: A review</a></p>
+<p>储备池计算（Reservoir
+Computing），就是通过非线性的动力学过程将数据特征升至高维时间空间中，从而完成特征提取。</p>
+<p><img src="./RC.png" /> 上图是储备池计算的示意图，在a图中输入权重<span
+class="math inline"><em>W</em><sup><em>i</em><em>n</em></sup></span>与动力学参数<span
+class="math inline"><em>W</em></span>是固定参数，不参与训练。只训练读出头部分<span
+class="math inline"><em>W</em><sup><em>o</em><em>u</em><em>t</em></sup></span>。</p>
+<h1 id="大语言模型的训练">大语言模型的训练</h1>
+<p>陈星强和吴生礅在进行大模型的训练，通过unsloth这个包。重复这个工作，找他俩商量聊天，完成这个任务。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Multi-Agent/" rel="tag"># Multi-Agent</a>
+              <a href="/tags/Prompt/" rel="tag"># Prompt</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/04/13/LLM/multiAgent/multiAgent/" rel="prev" title="RECONCILE and ReAgent">
+      <i class="fa fa-chevron-left"></i> RECONCILE and ReAgent
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#introduction"><span class="nav-number">1.</span> <span class="nav-text">Introduction</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BE%A7%E5%90%91%E9%A2%84%E6%B5%8B%E7%BC%96%E7%A0%81"><span class="nav-number">2.</span> <span class="nav-text">侧向预测编码</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFlateral-predictive-coding"><span class="nav-number">2.1.</span> <span class="nav-text">什么是lateral predictive
+coding？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%90%86%E8%AE%BA%E6%A1%86%E6%9E%B6"><span class="nav-number">2.2.</span> <span class="nav-text">理论框架</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%9C%BA%E7%90%86%E5%88%86%E6%9E%90%E6%95%B0%E6%8D%AE%E5%90%88%E6%88%90%E4%B8%8E%E6%85%A2%E6%80%9D%E8%80%83%E6%9C%BA%E5%88%B6"><span class="nav-number">3.</span> <span class="nav-text">大模型机理分析——数据合成与慢思考机制</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%87%9D%E8%81%9A%E7%8E%B0%E8%B1%A1%E7%90%86%E8%A7%A3%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E6%8E%A8%E7%90%86%E4%B8%8E%E8%AE%B0%E5%BF%86"><span class="nav-number">4.</span> <span class="nav-text">通过凝聚现象理解语言模型的推理与记忆</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#anchor-function"><span class="nav-number">4.1.</span> <span class="nav-text">Anchor function</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#one-anchor-function"><span class="nav-number">4.1.1.</span> <span class="nav-text">One-anchor function</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#two-anchor-composite-function"><span class="nav-number">4.1.2.</span> <span class="nav-text">Two-anchor composite
+function</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#experiment"><span class="nav-number">4.2.</span> <span class="nav-text">Experiment</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%9C%BA%E7%90%86%E7%9A%84%E5%8A%A8%E5%8A%9B%E5%AD%A6%E5%88%86%E6%9E%90"><span class="nav-number">5.</span> <span class="nav-text">深度学习机理的动力学分析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%82%A8%E5%A4%87%E6%B1%A0%E8%AE%A1%E7%AE%97"><span class="nav-number">6.</span> <span class="nav-text">储备池计算</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A4%A7%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%9A%84%E8%AE%AD%E7%BB%83"><span class="nav-number">7.</span> <span class="nav-text">大语言模型的训练</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">62</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">325k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:50</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
