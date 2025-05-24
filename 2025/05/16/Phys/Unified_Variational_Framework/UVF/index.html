@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <meta name="google-site-verification" content="GgT5ZflbkwsNKpDm5Tou0_J9qmdMniAiIzZ84RQe5zM">
+  <meta name="msvalidate.01" content="07C0174F9E4B4B2C960172E0CDFB3DC9">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="提出一种通过最小化交叠矩阵逆的乘积，寻找多体波函数基态的算法。 Link: * A Unified Variational Framework for Quantum Excited States * Spectral Inference Networks: Unifying Deep and Spectral Learning * The Geometry of Algorithms with">
+<meta property="og:type" content="article">
+<meta property="og:title" content="A Unified Variational Framework for Quantum Excited States">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/index.html">
+<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:description" content="提出一种通过最小化交叠矩阵逆的乘积，寻找多体波函数基态的算法。 Link: * A Unified Variational Framework for Quantum Excited States * Spectral Inference Networks: Unifying Deep and Spectral Learning * The Geometry of Algorithms with">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF/UVF_1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF/UVF_2.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF/UVF_3.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF/UVF_4.png">
+<meta property="article:published_time" content="2025-05-16T02:37:00.000Z">
+<meta property="article:modified_time" content="2025-05-24T03:18:31.004Z">
+<meta property="article:author" content="Ren Yixiong">
+<meta property="article:tag" content="Variational">
+<meta property="article:tag" content="Optimize">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF/UVF_1.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>A Unified Variational Framework for Quantum Excited States | Yixiong's Blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Yixiong's Blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="Searching..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          A Unified Variational Framework for Quantum Excited States
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2025-05-16 10:37:00" itemprop="dateCreated datePublished" datetime="2025-05-16T10:37:00+08:00">2025-05-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-24 11:18:31" itemprop="dateModified" datetime="2025-05-24T11:18:31+08:00">2025-05-24</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>2.3k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>4 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>提出一种通过最小化交叠矩阵逆的乘积，寻找多体波函数基态的算法。</p>
+<p>Link: * <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2504.21459">A Unified
+Variational Framework for Quantum Excited States</a> * <a
+target="_blank" rel="noopener" href="https://arxiv.org/abs/1806.02215">Spectral Inference Networks:
+Unifying Deep and Spectral Learning</a> * <a
+target="_blank" rel="noopener" href="https://epubs.siam.org/doi/10.1137/S0895479895290954">The Geometry
+of Algorithms with Orthogonality Constraints</a> * <a
+target="_blank" rel="noopener" href="https://www.science.org/doi/10.1126/science.adn0137">Accurate
+computation of quantum excited states with neural networks</a></p>
+<span id="more"></span>
+<h1 id="background">Background</h1>
+<p>从最初的牛顿迭代法出发，首先在1998年提出一种基于矩阵本征值的迭代方法，然后deepmind团队拓展该方法，用于求解薛定谔方程。</p>
+<p>众说周知，牛顿梯度下降法是结合梯度信息求解优化问题的开篇之作，之后为了克服阻措并且应用于大规模优化提出随机梯度下降以及之后动量的梯度下降，以及为在数值求解微分方程中提升准确度提出龙革-库塔方法。那么，新的方法是为了处理什么困难，是基于什么样的物理含义？</p>
+<p>新的算法作用于 stiefel 和 grassmann
+manifolds，对于一个有约束的优化问题，将解空间去除约束部分，则得到这两种流形。用以处理最小化<span
+class="math inline"><em>F</em>(<em>Y</em>)</span>问题，其中存在约束条件<span
+class="math inline"><em>Y</em><em>Y</em><sup>−1</sup> = <em>I</em></span>，假设有<span
+class="math inline"><em>F</em>(<em>Y</em>) = <em>F</em>(<em>Y</em><em>Q</em>)</span>则对应为Grassmann
+manifold，否则为 Stiefel
+manifold。修改的出发点是将有约束问题转化为无约束问题，进行处理。</p>
+<p><img src="./UVF/UVF_1.png" /></p>
+<p>整体流程为首先初始化选取初始点，然后通过计算梯度，逐渐更新逼近最小值。切向量<span
+class="math inline"><em>Δ</em></span>通过<span
+class="math inline"><em>Y</em><sup><em>T</em></sup><em>Δ</em> + <em>Δ</em><sup><em>T</em></sup><em>Y</em> = 0</span>定义，对于法向量通过最小化任意切向量的内积寻找<span
+class="math inline">min <em>T</em><em>r</em>(<em>Δ</em><sub>1</sub><sup><em>T</em></sup><em>Δ</em><sub>2</sub>)</span>。在文章中有很多的内容，用于具体说明计算法向量的方法。</p>
+<p><img src="./UVF/UVF_2.png" /> <img src="./UVF/UVF_3.png" /></p>
+<p>接下来将本质值作为求解目标。 <span
+class="math display">$$\begin{align}
+&amp;\max_\mathbf u \mathbf u^T \mathbf A \mathbf u,\quad \mathbf u^T
+\mathbf u =1 \\
+&amp;\max_\mathbf u \frac{\mathbf u^T \mathbf A \mathbf u}{\mathbf u^T
+\mathbf u}
+\end{align}$$</span></p>
+<p>本征向量的集合<span
+class="math inline"><strong>U</strong> = (<strong>u</strong><sub>1</sub>, <strong>u</strong><sub>2</sub>, <strong>u</strong><sub>3</sub>⋯<strong>u</strong><sub><em>N</em></sub>)</span>，对应最大特征值的特征向量为：
+<span class="math display">$$\begin{align}
+&amp; \mathbf u_i = \arg \max_\mathbf u \frac{\mathbf u^T \mathbf A
+\mathbf u}{\mathbf u^T \mathbf u} \\
+&amp; \max_\mathbf U \text{Tr}\left((\mathbf U^T \mathbf U)^{-1}\mathbf
+U^T \mathbf A \mathbf U\right) \\
+\end{align}$$</span></p>
+<p>展开写为： <span class="math display">$$\begin{align}
+\operatorname*{max}_{\mathbf{U}}\operatorname{Tr}\left(\left(\sum_{i}\mathbf{u}^{i
+T}\mathbf{u}^{i}\right)^{-1}\sum_{i j}A_{i j}\mathbf{u}^{i
+T}\mathbf{u}^{j}\right)
+\end{align}$$</span></p>
+<p>在特征向量中，其中操作为内积，拓展到特征函数，需要引入核函数<span
+class="math inline">$\langle f,g\rangle\stackrel{\cdot}{=}\int
+f(\mathbf{x})g(\mathbf{x})p(\mathbf{x})d\mathbf{x}\,=\,\mathbb{E}_{\mathbf{x}\sim
+p(\mathbf{x})}\dot{[f(\mathbf{x})g(\mathbf{x})]}$</span>，构造对称操作线性函数<span
+class="math inline">𝒦[<em>f</em>](<strong>x</strong>) = 𝔼<sub><strong>x</strong><sup>′</sup></sub>[<em>k</em>(<strong>x</strong>, <strong>x</strong><sup>′</sup>)<em>f</em>(<strong>x</strong><sup>′</sup>)]</span>：</p>
+<p><span class="math display">$$\begin{align}
+\operatorname*{max}_{\mathbf{u}}\operatorname{Tr}\left(\mathbb{E}_{\mathbf{x}}\left[\mathbf{u}(\mathbf{x})\mathbf{u}(\mathbf{x})^{T}\right]^{-1}\mathbb{E}_{\mathbf{x},\mathbf{x}^{\prime}}\left[k(\mathbf{x},\mathbf{x}^{\prime})\mathbf{u}(\mathbf{x})\mathbf{u}(\mathbf{x}^{\prime})^{T}\right]\right)
+\end{align}$$</span></p>
+<p>其中<span
+class="math inline"><em>k</em>(<strong>x</strong>, <strong>x</strong><sup>′</sup>)</span>是定义的核函数。</p>
+<h1 id="method">Method</h1>
+<p>从<span
+class="math inline"><em>N</em><sub><em>s</em></sub></span>个非正交态<span
+class="math inline">{|<em>ψ</em><sub><em>i</em></sub>(<em>θ</em><sub><em>i</em></sub>)⟩}</span>的集合中，最小化<span
+class="math inline"><em>L</em> = Tr(<em>S</em><sup>−1</sup><em>H</em>)</span>，其中<span
+class="math inline"><em>θ</em><sub><em>i</em></sub></span>是变分参数，</p>
+<p><span class="math display">$$\begin{align}
+&amp;{\bf S}_{i
+j}(\vec{\theta})=\langle\psi_{i}(\vec{\theta}_{i})|\psi_{j}(\vec{\theta}_{j})\rangle,\\
+&amp;{\bf H}_{i
+j}(\vec{\theta})=\langle\psi_{i}(\vec{\theta}_{i})|H|\psi_{j}(\vec{\theta}_{j})\rangle
+\end{align}$$</span></p>
+<p><img src="./UVF/UVF_4.png" /></p>
+<p>工作流程如上图片，通过张量矩阵乘积态表示波函数，然后计算overlap
+matrix和hamilitonian matrix，通过优化算法计算函数的损失。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Variational/" rel="tag"># Variational</a>
+              <a href="/tags/Optimize/" rel="tag"># Optimize</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/04/27/LLM/2025ZJLab/note/" rel="prev" title="ZheJiang Lab">
+      <i class="fa fa-chevron-left"></i> ZheJiang Lab
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#background"><span class="nav-number">1.</span> <span class="nav-text">Background</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#method"><span class="nav-number">2.</span> <span class="nav-text">Method</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">48</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">categories</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="Symbols count total">327k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="Reading time total">9:54</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
