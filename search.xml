@@ -11898,4 +11898,203 @@ id="基于第一性原理的电负性绝对硬度fukui函数">基于第一性原
         <tag>Clasical dynamics</tag>
       </tags>
   </entry>
+  <entry>
+    <title>DeepSeek</title>
+    <url>/2025/02/08/LLM/DeepSeek/DeepSeek/</url>
+    <content><![CDATA[<p>回顾DeepSeek模型发展过程，从最初的数据训练和模型搭建出发，为了在受限的硬件条件下创在出更加高效的模型，修改模型的架构，最后提出基于强化学习的模型微调方案。</p>
+<p>Reference: * <a href="https://arxiv.org/pdf/2401.02954">DeepSeek LLM
+Scaling Open-Source Language Models with Longtermism</a> * <a
+href="https://arxiv.org/abs/2402.03300">DeepSeekMath: Pushing the Limits
+of Mathematical Reasoning in Open Language Models</a> * <a
+href="https://export.arxiv.org/pdf/2405.04434">DeepSeek-V2: A Strong,
+Economical, and Efficient Mixture-of-Experts Language Model</a> * <a
+href="https://arxiv.org/pdf/2412.19437">DeepSeek-V3 Technical Report</a>
+* <a href="https://arxiv.org/pdf/2501.12948">DeepSeek-R1: Incentivizing
+Reasoning Capability in LLMs via Reinforcement Learning</a> * <a
+href="https://arxiv.org/abs/2401.06066">DeepSeekMoE: Towards Ultimate
+Expert Specialization in Mixture-of-Experts Language Models</a> * <a
+href="https://arxiv.org/pdf/2502.02523">Brief analysis of DeepSeek R1
+and its implications for Generative AI</a> * <a
+href="https://arxiv.org/abs/2408.15664">Auxiliary-Loss-Free Load
+Balancing Strategy for Mixture-of-Experts</a> * <a
+href="https://arxiv.org/abs/2203.02155">Training language models to
+follow instructions with human feedback</a></p>
+<span id="more"></span>
+<h1 id="deepseek-v1">DeepSeek-V1</h1>
+<p>重复数据删除（deduplication）：唯一性的实例。</p>
+<p>过滤（filtering）:增强数据的信息密度。</p>
+<p>混合（remixing）：多样化表示。</p>
+<p>在tokenizer过程中，使用Byte-level Byte-Pair Encoding (BBPE)
+算法。</p>
+<p>模型结构基于LLaMA</p>
+<h1 id="deepseek-v2">DeepSeek-V2</h1>
+<p>在模型架构上进行改变，引入Multi-head Latent Attention
+(MLA)，并且使用混合专家模型Mixture-of-Experts
+(MoE)节省参数量级。这个版本的俄模型，核心在于经济、高效的训练。</p>
+<figure>
+<img src="./v2-1.png" alt="模型表现能力" />
+<figcaption aria-hidden="true">模型表现能力</figcaption>
+</figure>
+<p>图中展示了使用混合技术带来的模型能力提升。</p>
+<figure>
+<img src="./v2-2.png" alt="模型结构" />
+<figcaption aria-hidden="true">模型结构</figcaption>
+</figure>
+<p>在新的架构中，Attention部分通过重新设计进一步压榨硬件设备的性能<font color='red'>和传统的Transformer有什么区别？</font>。
+同时为了提升推理的精度，在Feed-Forward
+Network部分采用专家模型<font color='red'>不同类型的专家模型，分别在什么时候使用呢？如果和共享的模块一样，需要进行全部的推理，这个专家模块依旧十分消耗硬件资源</font>。</p>
+<figure>
+<img src="./v2-3.png" alt="Transformer" />
+<figcaption aria-hidden="true">Transformer</figcaption>
+</figure>
+<p>经典的Multi-Head Attention (MHA)结构如下：</p>
+<p><span class="math display">$$\begin{aligned}
+&amp; {\left[\mathbf{q}_{t, 1} ; \mathbf{q}_{t, 2} ; \ldots ;
+\mathbf{q}_{t, n_h}\right]=\mathbf{q}_t} \\
+&amp; {\left[\mathbf{k}_{t, 1} ; \mathbf{k}_{t, 2} ; \ldots ;
+\mathbf{k}_{t, n_h}\right]=\mathbf{k}_t,} \\
+&amp; {\left[\mathbf{v}_{t, 1} ; \mathbf{v}_{t, 2} ; \ldots ;
+\mathbf{v}_{t, n_h}\right]=\mathbf{v}_t,} \\
+&amp; \mathbf{o}_{t, i}=\sum_{j=1}^t
+\operatorname{Softmax}_j\left(\frac{\mathbf{q}_{t, i}^T \mathbf{k}_{j,
+i}}{\sqrt{d_h}}\right) \mathbf{v}_{j, i} \\
+&amp; \quad \mathbf{u}_t=W^O\left[\mathbf{o}_{t, 1} ; \mathbf{o}_{t, 2}
+; \ldots ; \mathbf{o}_{t, n_h}\right]
+\end{aligned}$$</span></p>
+<p>由于每一个向量都需要单独的存储<span
+class="math inline"><em>k</em>, <em>q</em>, <em>v</em></span>矩阵，造成很高的存储开销。为了节省开销，采用Low-Rank
+Key-Value Joint Compression技术，提出新的Multi-Head Latent
+Attention（MLA），保存低纬信息<span
+class="math inline"><em>c</em><sub><em>t</em></sub><sup><em>k</em><em>v</em></sup></span>通过上投影技术，还原<span
+class="math inline"><em>k</em>, <em>v</em></span>的值。</p>
+<p><span class="math display">$$\begin{aligned}
+\mathbf{c}_t^{K V} &amp; =W^{D K V} \mathbf{h}_t \\
+\mathbf{k}_t^C &amp; =W^{U K} \mathbf{c}_t^{K V} \\
+\mathbf{v}_t^C &amp; =W^{U V} \mathbf{c}_t^{K V}
+\end{aligned}$$</span></p>
+<p>专家模型为：</p>
+<p><span class="math display">$$\begin{aligned} &amp;
+\mathbf{h}_t^{\prime}=\mathbf{u}_t+\sum_{i=1}^{N_s}
+\operatorname{FFN}_i^{(s)}\left(\mathbf{u}_t\right)+\sum_{i=1}^{N_r}
+g_{i, t} \operatorname{FFN}_i^{(r)}\left(\mathbf{u}_t\right), \\ &amp;
+g_{i, t}= \begin{cases}s_{i, t}, &amp; s_{i, t} \in
+\operatorname{Topk}\left(\left\{s_{j, t} \mid 1 \leqslant j \leqslant
+N_r\right\}, K_r\right), \\ 0, &amp; \text { otherwise, }\end{cases} \\
+&amp; s_{i, t}=\operatorname{Softmax}_i\left(\mathbf{u}_t^T
+\mathbf{e}_i\right),\end{aligned}$$</span></p>
+<p>其中<span
+class="math inline">FEN<sup>(<em>s</em>)</sup></span>是通用(share)权重，<span
+class="math inline">FEN<sup>(<em>r</em>)</sup></span>是专家（routed
+experts）权重。</p>
+<p>在损失函数的设计上，集中于三部分：专家权重、硬件平衡、通讯平衡。同时为了减轻由于加载不要均衡造成的问题，引入了Token-Dropping技术。</p>
+<h1 id="deepseek-v3">DeepSeek-V3</h1>
+<p>为了均衡模型表现性能和加载均衡，V3的混合专家模型中采用了auxiliary-loss-free
+load balancing strategy。</p>
+<p><span class="math display">$$g_{i, t}^{\prime}= \begin{cases}s_{i,
+t}, &amp; s_{i, t}+b_i \in \operatorname{Topk}\left(\left\{s_{j, t}+b_j
+\mid 1 \leqslant j \leqslant N_r\right\}, K_r\right), \\ 0, &amp; \text
+{ otherwise } .\end{cases}$$</span></p>
+<p>给专家模型增加一个偏置项。<font color='red'>这个偏置项有什么作用呢？为什么通过这个偏置能够均衡之前的问题。</font>定义超参<span
+class="math inline"><em>γ</em></span>为偏执更新速度，如果一个专家模型过载，将会通过参数<span
+class="math inline"><em>γ</em></span>来降低偏置；相反，如果调用过多就会通过过参数<span
+class="math inline"><em>γ</em></span>提升其偏置。</p>
+<h1 id="deepseek-r1">DeepSeek-R1</h1>
+<figure>
+<img src="./r1-1.png" alt="R1表现能力" />
+<figcaption aria-hidden="true">R1表现能力</figcaption>
+</figure>
+<p>主要贡献在于使用纯强化学习的方式进行微调，获得更高的表现能力。模型基座是DeepSeek-V3。</p>
+<p>模型DeepSeek-R1-Zero使用完全的强化学习思路，没有其它的数据进行有监督微调；模型DeepSeek-R1同样使用强化学习进行微调，但是使用少量的数据（long
+Chain-of-Thought examples）进行微调，有更好的表现能力。</p>
+<p>采用基于PPO算法改进的Group Relative Policy Optimization
+(GRPO)算法，放弃评价模型（critic model），使用群体分数估计baseline。</p>
+<p><span class="math display">$$\begin{gathered}
+\mathcal{J}_{G R P O}(\theta)=\mathbb{E}\left[q \sim
+P(Q),\left\{o_i\right\}_{i=1}^G \sim \pi_{\theta_{o l d}}(O \mid
+q)\right] \frac{1}{G} \sum_{i=1}^G\left(\min
+\left(\frac{\pi_\theta\left(o_i \mid q\right)}{\pi_{\theta_{o l
+d}}\left(o_i \mid q\right)} A_i,
+\operatorname{clip}\left(\frac{\pi_\theta\left(o_i \mid
+q\right)}{\pi_{\theta_{\text {old }}}\left(o_i \mid q\right)},
+1-\varepsilon, 1+\varepsilon\right) A_i\right)-\beta \mathbb{D}_{K
+L}\left(\pi_\theta| | \pi_{r e f}\right)\right) \\ \mathbb{D}_{K
+L}\left(\pi_\theta| | \pi_{r e f}\right)=\frac{\pi_{r e f}\left(o_i \mid
+q\right)}{\pi_\theta\left(o_i \mid q\right)}-\log \frac{\pi_{r e
+f}\left(o_i \mid q\right)}{\pi_\theta\left(o_i \mid q\right)}-1
+\end{gathered}$$</span></p>
+<p>优势函数<span class="math inline"><em>A</em></span>为： <span
+class="math display">$$A_i=\frac{r_i-\operatorname{mean}\left(\left\{r_1,
+r_2, \cdots, r_G\right\}\right)}{\operatorname{std}\left(\left\{r_1,
+r_2, \cdots, r_G\right\}\right)}$$</span></p>
+<figure>
+<img src="./GRPO-1.png" alt="PPO vs GRPO" />
+<figcaption aria-hidden="true">PPO vs GRPO</figcaption>
+</figure>
+<p>上面是PPO与GRPO的对比图。PPO算法核心为通过裁切限制算法的优化幅度，在公式中表现为：</p>
+<p><span class="math display">$$
+\min \left(\frac{\pi_\theta\left(o_i \mid q\right)}{\pi_{\theta_{o l
+d}}\left(o_i \mid q\right)} A_i,
+\operatorname{clip}\left(\frac{\pi_\theta\left(o_i \mid
+q\right)}{\pi_{\theta_{\text {old }}}\left(o_i \mid q\right)},
+1-\varepsilon, 1+\varepsilon\right) A_i\right)
+$$</span></p>
+<p>GRPO在这基础上计算多个优势函数取平均。为了减轻奖励模型的过优化问题，在其中加入了KL散度作为惩罚项，并且通过<span
+class="math inline"><em>β</em></span>调整惩罚项的大小，为了使得KL散度恒为正，进行了一些调整。</p>
+]]></content>
+      <categories>
+        <category>Machine Learning</category>
+        <category>Large Language models</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Machine Learning</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Design Topological Materials by Reinforcement Fine-Tuned Generative Model</title>
+    <url>/2025/05/26/ai4sci/TopolRFT/TopolRFT/</url>
+    <content><![CDATA[<p>通过强化学习微调生成模型，使得生成的拓扑绝缘体和拓扑材料结构准确率上升。</p>
+<p>Reference: * <a href="https://arxiv.org/abs/2504.13048">Design
+Topological Materials by Reinforcement Fine-Tuned Generative
+Model</a></p>
+<span id="more"></span>
+<p>使用生成模型生成材料，其中有一些基本的问题： 1. 使用的是什么模型？ 2.
+输入和输出是什么？ 3. 数据如何得到以及数据规模大小？ 4.
+强化学习的reward是什么？ 5. 通过哪些实验指标说明有效性？</p>
+<h1 id="数据集">数据集</h1>
+<p>这篇文章采用了两种数据集： 文献<a
+href="https://www.sciencedirect.com/science/article/pii/S2950463524000036?via%3Dihub#da0005">Con-CDVAE:
+A method for the conditional generation of crystal
+structures</a>数据集<a
+href="https://cmpdc.iphy.ac.cn/materialsgalaxy/#/services/structures_generator">Topological
+Crystals Database</a>，该项目的<a
+href="https://github.com/cyye001/Con-CDVAE">代码仓库</a>。</p>
+<p>文献<a href="https://doi.org/10.1038/s41586-025-08628-5">A generative
+model for inorganic materials design</a>数据集和代码链接<a
+href="https://github.com/microsoft/mattergen">Alex-MP datasets</a>。</p>
+<h1 id="模型">模型</h1>
+<p>采用模型<a href="https://arxiv.org/pdf/2402.03992">SPACE GROUP
+CONSTRAINED CRYSTAL GENERATION</a>，代码地址<a
+href="https://github.com/jiaor17/DiffCSP-PP">DiffCSP-PP</a>。</p>
+<p>输入信息： <figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;spacegroup_number&quot;: 58,</span><br><span class="line">    &quot;wyckoff_letters&quot;: [&quot;2a&quot;,&quot;2d&quot;,&quot;4g&quot;],</span><br><span class="line">    &quot;atom_types&quot;: [&quot;Mn&quot;,&quot;Li&quot;,&quot;O&quot;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure> 输出信息为结构文件。</p>
+<h1 id="workflow">Workflow</h1>
+<p><img src="./workflow.png" /></p>
+<p>使用生成扩散过程，逐步还原最初的模型。并且，为了增强正确率，结合PPO算法：</p>
+<p><span class="math display">$$
+J^{\mathrm{off}}(\theta)=\mathbb{E}_{\tau\sim
+p_{\theta^{\prime}}}\left[\sum_{t=1}^{T}\frac{p_{\theta}({\mathcal{M}}_{t-1}|{\mathcal{M}}_{t})}{p_{\theta^{\prime}}({\mathcal{M}}_{t-1}|{\mathcal{M}}_{t})}r({\mathcal{M}}_{0})\right]
+$$</span></p>
+<h1 id="result">Result</h1>
+<p><img src="./table1.png" /> <img src="./fig1.png" /> <img
+src="./fig2.png" /></p>
+]]></content>
+      <categories>
+        <category>AI for Science</category>
+      </categories>
+      <tags>
+        <tag>Reinforcement Learning</tag>
+        <tag>Large Language Model</tag>
+        <tag>Fine Tuning</tag>
+      </tags>
+  </entry>
 </search>
