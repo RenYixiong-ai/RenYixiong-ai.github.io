@@ -29,17 +29,17 @@
 <meta property="og:site_name" content="Yixiong&#39;s Blog">
 <meta property="og:description" content="提出一种通过最小化交叠矩阵逆的乘积，寻找多体波函数基态的算法。 Link: * A Unified Variational Framework for Quantum Excited States * Spectral Inference Networks: Unifying Deep and Spectral Learning * The Geometry of Algorithms with">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF/UVF_1.png">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF/UVF_2.png">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF/UVF_3.png">
-<meta property="og:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF/UVF_4.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF_1.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF_2.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF_3.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF_4.png">
 <meta property="article:published_time" content="2025-05-16T02:37:00.000Z">
-<meta property="article:modified_time" content="2025-05-24T03:18:31.004Z">
+<meta property="article:modified_time" content="2025-05-27T07:28:15.142Z">
 <meta property="article:author" content="Ren Yixiong">
 <meta property="article:tag" content="Variational">
 <meta property="article:tag" content="Optimize">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF/UVF_1.png">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/UVF_1.png">
 
 <link rel="canonical" href="https://renyixiong-ai.github.io/2025/05/16/Phys/Unified_Variational_Framework/UVF/">
 
@@ -219,7 +219,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-05-24 11:18:31" itemprop="dateModified" datetime="2025-05-24T11:18:31+08:00">2025-05-24</time>
+                <time title="Modified: 2025-05-27 15:28:15" itemprop="dateModified" datetime="2025-05-27T15:28:15+08:00">2025-05-27</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -276,12 +276,12 @@ class="math inline"><em>Y</em><em>Y</em><sup>−1</sup> = <em>I</em></span>�
 class="math inline"><em>F</em>(<em>Y</em>) = <em>F</em>(<em>Y</em><em>Q</em>)</span>则对应为Grassmann
 manifold，否则为 Stiefel
 manifold。修改的出发点是将有约束问题转化为无约束问题，进行处理。</p>
-<p><img src="./UVF/UVF_1.png" /></p>
+<p><img src="./UVF_1.png" /></p>
 <p>整体流程为首先初始化选取初始点，然后通过计算梯度，逐渐更新逼近最小值。切向量<span
 class="math inline"><em>Δ</em></span>通过<span
 class="math inline"><em>Y</em><sup><em>T</em></sup><em>Δ</em> + <em>Δ</em><sup><em>T</em></sup><em>Y</em> = 0</span>定义，对于法向量通过最小化任意切向量的内积寻找<span
 class="math inline">min <em>T</em><em>r</em>(<em>Δ</em><sub>1</sub><sup><em>T</em></sup><em>Δ</em><sub>2</sub>)</span>。在文章中有很多的内容，用于具体说明计算法向量的方法。</p>
-<p><img src="./UVF/UVF_2.png" /> <img src="./UVF/UVF_3.png" /></p>
+<p><img src="./UVF_2.png" /> <img src="./UVF_3.png" /></p>
 <p>接下来将本质值作为求解目标。 <span
 class="math display">$$\begin{align}
 &amp;\max_\mathbf u \mathbf u^T \mathbf A \mathbf u,\quad \mathbf u^T
@@ -324,7 +324,7 @@ j}(\vec{\theta})=\langle\psi_{i}(\vec{\theta}_{i})|\psi_{j}(\vec{\theta}_{j})\ra
 &amp;{\bf H}_{i
 j}(\vec{\theta})=\langle\psi_{i}(\vec{\theta}_{i})|H|\psi_{j}(\vec{\theta}_{j})\rangle
 \end{align}$$</span></p>
-<p><img src="./UVF/UVF_4.png" /></p>
+<p><img src="./UVF_4.png" /></p>
 <p>工作流程如上图片，通过张量矩阵乘积态表示波函数，然后计算overlap
 matrix和hamilitonian matrix，通过优化算法计算函数的损失。</p>
 
