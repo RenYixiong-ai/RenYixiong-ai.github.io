@@ -177,7 +177,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/01/19/DL/Score_matching_model/Score_matching_model/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -191,7 +191,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/" class="post-title-link" itemprop="url">Boltzmann Machine</a>
+            <a href="/2024/01/19/DL/Score_matching_model/Score_matching_model/" class="post-title-link" itemprop="url">Score matching model</a>
         </h2>
 
         <div class="post-meta">
@@ -201,14 +201,14 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2022-11-30 21:37:00" itemprop="dateCreated datePublished" datetime="2022-11-30T21:37:00+08:00">2022-11-30</time>
+              <time title="Created: 2024-01-19 17:08:51" itemprop="dateCreated datePublished" datetime="2024-01-19T17:08:51+08:00">2024-01-19</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-05-08 18:13:35" itemprop="dateModified" datetime="2025-05-08T18:13:35+08:00">2025-05-08</time>
+                <time title="Modified: 2025-05-08 18:09:55" itemprop="dateModified" datetime="2025-05-08T18:09:55+08:00">2025-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -216,7 +216,7 @@
               </span>
               <span class="post-meta-item-text">In</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
                 </span>
             </span>
 
@@ -226,14 +226,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>10k</span>
+              <span>9.5k</span>
             </span>
             <span class="post-meta-item" title="Reading time">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>19 mins.</span>
+              <span>17 mins.</span>
             </span>
 
         </div>
@@ -245,13 +245,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>波尔兹曼机是物理模型，同时也是早期的机器学习模型。</p>
-<p>Reference: * <a
-target="_blank" rel="noopener" href="https://campus.swarma.org/course/4543/study">神经网络的统计力学 –
-受限制玻尔兹曼机的统计力学</a></p>
+          <h1 id="简介">简介</h1>
+<p>这篇文章主要描述基于得分匹配（Score matching
+model）的想法，以及之后主要的修改思路。这种思路是生成模型的一种，与GAN、normal-flow等模型具备同样的功能。</p>
+<p>本篇文章大量借鉴<a
+target="_blank" rel="noopener" href="https://bobondemon.github.io/2022/01/08/Estimation-of-Non-Normalized-Statistical-Models-by-Score-Matching/">棒棒生博客</a>，推荐阅读原文博客。本文章在其基础上加入一些作者本人的思考，并且统一符号，增加阅读流畅性。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/#more" rel="contents">
+              <a class="btn" href="/2024/01/19/DL/Score_matching_model/Score_matching_model/#more" rel="contents">
                 Read more &raquo;
               </a>
             </div>
@@ -438,6 +439,104 @@ E(\mathbf{s}) = -\sum_{i&lt;j} J_{ij} s_i s_j
 <h2 id="总结">总结</h2>
 <p>逆Ising问题涉及从观测数据中推断Ising模型的相互作用参数。本文介绍了五种求解方法：极大似然估计（MLE）、蒙特卡罗方法（MCMC）、平均场近似、伪似然估计（PLE）以及对比散度（CD）。每种方法都有其优缺点，选择合适的方法取决于具体问题的规模、数据特性和计算资源。</p>
 
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Yixiong's Blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/" class="post-title-link" itemprop="url">Boltzmann Machine</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-11-30 21:37:00" itemprop="dateCreated datePublished" datetime="2022-11-30T21:37:00+08:00">2022-11-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2025-05-08 18:13:35" itemprop="dateModified" datetime="2025-05-08T18:13:35+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="Symbols count in article">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">Symbols count in article: </span>
+              <span>10k</span>
+            </span>
+            <span class="post-meta-item" title="Reading time">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">Reading time &asymp;</span>
+              <span>19 mins.</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>波尔兹曼机是物理模型，同时也是早期的机器学习模型。</p>
+<p>Reference: * <a
+target="_blank" rel="noopener" href="https://campus.swarma.org/course/4543/study">神经网络的统计力学 –
+受限制玻尔兹曼机的统计力学</a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2022/11/30/Phys/Boltzmann_machine_phy/Boltzmann_machine_phy/#more" rel="contents">
+                Read more &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -2062,109 +2161,10 @@ of Research</a></p>
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2022/09/16/CS/git/git/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ren Yixiong">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yixiong's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/09/16/CS/git/git/" class="post-title-link" itemprop="url">Git Note</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2022-09-16 00:00:01" itemprop="dateCreated datePublished" datetime="2022-09-16T00:00:01+08:00">2022-09-16</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-05-08 17:59:06" itemprop="dateModified" datetime="2025-05-08T17:59:06+08:00">2025-05-08</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Note/" itemprop="url" rel="index"><span itemprop="name">Note</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>1.8k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="git简单教程">Git简单教程</h1>
-<p>工作逻辑图： <img src="./workflow.png" alt="逻辑图" /></p>
-<p>每次更改完文件，需要将文件先增加进版本库，然后再提交改变确认本次所有修改完成，并备注本次内容。</p>
-<p>reference: * <a
-target="_blank" rel="noopener" href="https://mofanpy.com/tutorials/others/git/">莫凡PYTHON</a></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/09/16/CS/git/git/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -2230,12 +2230,12 @@ target="_blank" rel="noopener" href="https://mofanpy.com/tutorials/others/git/">
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-count">51</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">categories</span>
       </div>
       <div class="site-state-item site-state-tags">
@@ -2275,12 +2275,12 @@ target="_blank" rel="noopener" href="https://mofanpy.com/tutorials/others/git/">
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">332k</span>
+    <span title="Symbols count total">334k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">10:04</span>
+    <span title="Reading time total">10:06</span>
 </div>
   <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
   </div>
