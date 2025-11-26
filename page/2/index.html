@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
@@ -9,8 +9,6 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
   <link rel="mask-icon" href="/images/logo.svg" color="#222">
-  <meta name="google-site-verification" content="GgT5ZflbkwsNKpDm5Tou0_J9qmdMniAiIzZ84RQe5zM">
-  <meta name="msvalidate.01" content="07C0174F9E4B4B2C960172E0CDFB3DC9">
 
 <link rel="stylesheet" href="/css/main.css">
 
@@ -19,15 +17,16 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":false,"back2top":{"enable":false,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":{}},"algolia":{"hits":5,"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta property="og:type" content="website">
-<meta property="og:title" content="Yixiong&#39;s Blog">
+<meta property="og:title" content="renyixiong blog">
 <meta property="og:url" content="https://renyixiong-ai.github.io/page/2/index.html">
-<meta property="og:site_name" content="Yixiong&#39;s Blog">
-<meta property="og:locale" content="en_US">
-<meta property="article:author" content="Ren Yixiong">
+<meta property="og:site_name" content="renyixiong blog">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="renyixiong">
+<meta property="article:tag" content="blog">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://renyixiong-ai.github.io/page/2/">
@@ -39,11 +38,11 @@
     sidebar: "",
     isHome : true,
     isPost : false,
-    lang   : 'en'
+    lang   : 'zh-CN'
   };
 </script>
 
-  <title>Yixiong's Blog</title>
+  <title>renyixiong blog</title>
   
 
 
@@ -76,16 +75,18 @@
 
 <!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
 <!-- hexo injector head_end end --></head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
+  <div class="container">
     <div class="headband"></div>
 
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="切换导航栏">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -96,14 +97,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Yixiong's Blog</h1>
+      <h1 class="site-title">renyixiong blog</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -115,55 +115,24 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="Searching..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
 
 </div>
     </header>
 
     
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
 
 
     <main class="main">
@@ -176,22 +145,22 @@
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/09/18/Phys/TNMC/TNMC/">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/11/07/CS/data_law/data_law/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="name" content="renyixiong">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yixiong's Blog">
+      <meta itemprop="name" content="renyixiong blog">
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2024/09/18/Phys/TNMC/TNMC/" class="post-title-link" itemprop="url">Tensor network Monte Carlo simulations for the two-dimensional random-bond Ising model</a>
+            <a href="/2024/11/07/CS/data_law/data_law/" class="post-title-link" itemprop="url">A law of data separation in deep learning</a>
         </h2>
 
         <div class="post-meta">
@@ -199,41 +168,41 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2024-09-18 11:11:00" itemprop="dateCreated datePublished" datetime="2024-09-18T11:11:00+08:00">2024-09-18</time>
+              <time title="创建时间：2024-11-07 11:57:00" itemprop="dateCreated datePublished" datetime="2024-11-07T11:57:00+08:00">2024-11-07</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-05-08 18:18:15" itemprop="dateModified" datetime="2025-05-08T18:18:15+08:00">2025-05-08</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-08 17:58:30" itemprop="dateModified" datetime="2025-05-08T17:58:30+08:00">2025-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">In</span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
                 </span>
             </span>
 
           <br>
-            <span class="post-meta-item" title="Symbols count in article">
+            <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>3.3k</span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.6k</span>
             </span>
-            <span class="post-meta-item" title="Reading time">
+            <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>6 mins.</span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -245,17 +214,15 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <p>Tensor Network Monte Carlo (TNMC)
-method将张量网络和蒙特卡洛模拟结合，是一种新的模拟方法。本文分为两个部分，介绍TNMC方法，以及其在随机二维Ising模型上的实验。</p>
-<p>Link: * <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2409.06538">Tensor network
-Monte Carlo simulations for the two-dimensional random-bond Ising
-model</a> * <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1507.00767">Unbiased Monte
-Carlo for the age of tensor networks</a></p>
-<p>Code: * <a target="_blank" rel="noopener" href="https://github.com/Fermichen99/TNMC">TNMC</a></p>
+          <p>这篇文章研究机器学习过程中，隐藏层对数据的处理方式，发现数据在等几何定律的分离，并且可以观察到类别的出现，因此总结归纳了一个可以量化的规律。</p>
+<p>Reference: * <a
+href="https://www.pnas.org/doi/10.1073/pnas.2221704120">A law of data
+separation in deep learning</a> * <a
+href="https://github.com/HornHehhf/Equi-Separation">github地址</a></p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2024/09/18/Phys/TNMC/TNMC/#more" rel="contents">
-                Read more &raquo;
+              <a class="btn" href="/2024/11/07/CS/data_law/data_law/#more" rel="contents">
+                阅读全文 &raquo;
               </a>
             </div>
           <!--/noindex-->
@@ -277,17 +244,225 @@ Carlo for the age of tensor networks</a></p>
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/08/27/Phys/Annealing_root_finding/Annealing_root_finding/">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/10/16/DL/ActiveLearning/ActiveLearning/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="name" content="renyixiong">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yixiong's Blog">
+      <meta itemprop="name" content="renyixiong blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/10/16/DL/ActiveLearning/ActiveLearning/" class="post-title-link" itemprop="url">Active Learning Literature Survey</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-10-16 16:06:00" itemprop="dateCreated datePublished" datetime="2024-10-16T16:06:00+08:00">2024-10-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-08 17:59:47" itemprop="dateModified" datetime="2025-05-08T17:59:47+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>介绍Active
+Learning的基本概念与算法，以及相关python库——ALiPy的使用。</p>
+<blockquote>
+<p>The key idea behind active learning is that a machine learning
+algorithm can achieve greater accuracy with fewer labeled training
+instances if it is allowed to choose the data from which is learns.</p>
+</blockquote>
+<p>Reference: * <a
+href="https://www.semanticscholar.org/paper/Active-Learning-Literature-Survey-Settles/818826f356444f3daa3447755bf63f171f39ec47">Active
+Learning Literature Survey</a> * <a
+href="https://arxiv.org/pdf/1901.03802">ALiPy: Active Learning in
+Python</a> * <a
+href="https://github.com/NUAA-AL/alipy">GitHub:ALiPy</a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/10/16/DL/ActiveLearning/ActiveLearning/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/09/18/Phys/TNMC/TNMC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="renyixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="renyixiong blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/09/18/Phys/TNMC/TNMC/" class="post-title-link" itemprop="url">Tensor network Monte Carlo simulations for the two-dimensional random-bond Ising model</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-09-18 11:11:00" itemprop="dateCreated datePublished" datetime="2024-09-18T11:11:00+08:00">2024-09-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-08 18:18:15" itemprop="dateModified" datetime="2025-05-08T18:18:15+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Tensor Network Monte Carlo (TNMC)
+method将张量网络和蒙特卡洛模拟结合，是一种新的模拟方法。本文分为两个部分，介绍TNMC方法，以及其在随机二维Ising模型上的实验。</p>
+<p>Link: * <a href="https://arxiv.org/abs/2409.06538">Tensor network
+Monte Carlo simulations for the two-dimensional random-bond Ising
+model</a> * <a href="https://arxiv.org/abs/1507.00767">Unbiased Monte
+Carlo for the age of tensor networks</a></p>
+<p>Code: * <a href="https://github.com/Fermichen99/TNMC">TNMC</a></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/09/18/Phys/TNMC/TNMC/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/08/27/Phys/Annealing_root_finding/Annealing_root_finding/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="renyixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="renyixiong blog">
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -300,41 +475,41 @@ Carlo for the age of tensor networks</a></p>
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2024-08-27 17:30:00" itemprop="dateCreated datePublished" datetime="2024-08-27T17:30:00+08:00">2024-08-27</time>
+              <time title="创建时间：2024-08-27 17:30:00" itemprop="dateCreated datePublished" datetime="2024-08-27T17:30:00+08:00">2024-08-27</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-05-08 18:13:00" itemprop="dateModified" datetime="2025-05-08T18:13:00+08:00">2025-05-08</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-08 18:13:00" itemprop="dateModified" datetime="2025-05-08T18:13:00+08:00">2025-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">In</span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
                 </span>
             </span>
 
           <br>
-            <span class="post-meta-item" title="Symbols count in article">
+            <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
+                <span class="post-meta-item-text">本文字数：</span>
               <span>1.3k</span>
             </span>
-            <span class="post-meta-item" title="Reading time">
+            <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>2 mins.</span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -349,12 +524,12 @@ Carlo for the age of tensor networks</a></p>
           <p>在数值分析和科学计算中，Newton-Raphson方法是一个非常重要的工具，它被广泛用于求解方程的根。然而，经典的Newton-Raphson方法在面对复杂的非线性方程和多个根的情况下，可能会出现收敛性差、振荡或发散的情况。为了解决这些问题，研究者们提出了一种基于物理学启发的新方法，该方法在保留Newton-Raphson方法优点的同时，通过引入一个新的参数<span
 class="math inline"><em>β</em></span>，有效提升了算法的收敛速度和稳定性。</p>
 <p>Link: * <a
-target="_blank" rel="noopener" href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.110.025305">Annealing
+href="https://journals.aps.org/pre/abstract/10.1103/PhysRevE.110.025305">Annealing
 approach to root finding</a></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/08/27/Phys/Annealing_root_finding/Annealing_root_finding/#more" rel="contents">
-                Read more &raquo;
+                阅读全文 &raquo;
               </a>
             </div>
           <!--/noindex-->
@@ -376,17 +551,17 @@ approach to root finding</a></p>
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/08/26/DL/LossPlasticity/LossPlasticity/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="name" content="renyixiong">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yixiong's Blog">
+      <meta itemprop="name" content="renyixiong blog">
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -399,41 +574,41 @@ approach to root finding</a></p>
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2024-08-26 10:30:00" itemprop="dateCreated datePublished" datetime="2024-08-26T10:30:00+08:00">2024-08-26</time>
+              <time title="创建时间：2024-08-26 10:30:00" itemprop="dateCreated datePublished" datetime="2024-08-26T10:30:00+08:00">2024-08-26</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-05-08 18:09:08" itemprop="dateModified" datetime="2025-05-08T18:09:08+08:00">2025-05-08</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-08 18:09:08" itemprop="dateModified" datetime="2025-05-08T18:09:08+08:00">2025-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">In</span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
                 </span>
             </span>
 
           <br>
-            <span class="post-meta-item" title="Symbols count in article">
+            <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
+                <span class="post-meta-item-text">本文字数：</span>
               <span>1k</span>
             </span>
-            <span class="post-meta-item" title="Reading time">
+            <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>2 mins.</span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -446,14 +621,14 @@ approach to root finding</a></p>
 
       
           <p>文章主要讨论在持续学习任务中，损失具有弹性是很关键，进而指出在深度学习中，仅仅依靠反向传播是不够的，需要结合随机、非梯度的优化方式（例如演化计算等）。</p>
-<p>Link: * <a target="_blank" rel="noopener" href="https://doi.org/10.1038/s41586-024-07711-7">Loss of
+<p>Link: * <a href="https://doi.org/10.1038/s41586-024-07711-7">Loss of
 plasticity in deep continual learning</a> * <a
-target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzkxODQ0MTQzMg==&amp;mid=2247489568&amp;idx=1&amp;sn=606d85bf9c0df3780f4dc3ccd5835c8d&amp;chksm=c0a474736003b8a50446944aee862eb1417da7025d4892f919e940496e644a24d700688cdb9d&amp;mpshare=1&amp;scene=1&amp;srcid=0825em2QJV5witmRbRpL25ZX&amp;sharer_shareinfo=58591a65fb8a82b6749c7ee6829e99a3&amp;sharer_shareinfo_first=58591a65fb8a82b6749c7ee6829e99a3#rd">Nature正刊（演化深度持续学习）Loss
+href="https://mp.weixin.qq.com/s?__biz=MzkxODQ0MTQzMg==&amp;mid=2247489568&amp;idx=1&amp;sn=606d85bf9c0df3780f4dc3ccd5835c8d&amp;chksm=c0a474736003b8a50446944aee862eb1417da7025d4892f919e940496e644a24d700688cdb9d&amp;mpshare=1&amp;scene=1&amp;srcid=0825em2QJV5witmRbRpL25ZX&amp;sharer_shareinfo=58591a65fb8a82b6749c7ee6829e99a3&amp;sharer_shareinfo_first=58591a65fb8a82b6749c7ee6829e99a3#rd">Nature正刊（演化深度持续学习）Loss
 of plasticity in deep continual learning</a></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/08/26/DL/LossPlasticity/LossPlasticity/#more" rel="contents">
-                Read more &raquo;
+                阅读全文 &raquo;
               </a>
             </div>
           <!--/noindex-->
@@ -475,17 +650,17 @@ of plasticity in deep continual learning</a></p>
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/08/25/DL/Injectivity_ReLU/InjecReLU/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="name" content="renyixiong">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yixiong's Blog">
+      <meta itemprop="name" content="renyixiong blog">
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -498,41 +673,41 @@ of plasticity in deep continual learning</a></p>
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2024-08-25 17:30:00" itemprop="dateCreated datePublished" datetime="2024-08-25T17:30:00+08:00">2024-08-25</time>
+              <time title="创建时间：2024-08-25 17:30:00" itemprop="dateCreated datePublished" datetime="2024-08-25T17:30:00+08:00">2024-08-25</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-04-03 16:43:45" itemprop="dateModified" datetime="2025-04-03T16:43:45+08:00">2025-04-03</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-03 16:43:45" itemprop="dateModified" datetime="2025-04-03T16:43:45+08:00">2025-04-03</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">In</span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
                 </span>
             </span>
 
           <br>
-            <span class="post-meta-item" title="Symbols count in article">
+            <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
+                <span class="post-meta-item-text">本文字数：</span>
               <span>1.6k</span>
             </span>
-            <span class="post-meta-item" title="Reading time">
+            <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>3 mins.</span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -545,12 +720,12 @@ of plasticity in deep continual learning</a></p>
 
       
           <p>对于ReLU激活层单向性的分析，得到变化的上下界。</p>
-<p>Link: * <a target="_blank" rel="noopener" href="https://arxiv.org/abs/2302.14112">Injectivity of
+<p>Link: * <a href="https://arxiv.org/abs/2302.14112">Injectivity of
 ReLU networks: perspectives from statistical physics</a></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/08/25/DL/Injectivity_ReLU/InjecReLU/#more" rel="contents">
-                Read more &raquo;
+                阅读全文 &raquo;
               </a>
             </div>
           <!--/noindex-->
@@ -572,17 +747,17 @@ ReLU networks: perspectives from statistical physics</a></p>
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/08/24/RL/SoG/SoG/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="name" content="renyixiong">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yixiong's Blog">
+      <meta itemprop="name" content="renyixiong blog">
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -595,41 +770,41 @@ ReLU networks: perspectives from statistical physics</a></p>
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2024-08-24 12:00:00" itemprop="dateCreated datePublished" datetime="2024-08-24T12:00:00+08:00">2024-08-24</time>
+              <time title="创建时间：2024-08-24 12:00:00" itemprop="dateCreated datePublished" datetime="2024-08-24T12:00:00+08:00">2024-08-24</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-05-08 18:20:31" itemprop="dateModified" datetime="2025-05-08T18:20:31+08:00">2025-05-08</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-08 18:20:31" itemprop="dateModified" datetime="2025-05-08T18:20:31+08:00">2025-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">In</span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
                 </span>
             </span>
 
           <br>
-            <span class="post-meta-item" title="Symbols count in article">
+            <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
+                <span class="post-meta-item-text">本文字数：</span>
               <span>771</span>
             </span>
-            <span class="post-meta-item" title="Reading time">
+            <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -646,13 +821,13 @@ of
 Games（SoG），该算法类似于AlphaZero通过自博弈的方式完成训练，同时拓展了适用边界——适用于非完全信息博弈，例如扑克。</p>
 <p><font color='red'>这个算法结合了很多内容，并没有读懂</font></p>
 <p>Link: * <a
-target="_blank" rel="noopener" href="https://www.science.org/doi/10.1126/sciadv.adg3256#supplementary-materials">Student
+href="https://www.science.org/doi/10.1126/sciadv.adg3256#supplementary-materials">Student
 of Games:Aunified learning algorithm forboth perfect andimperfect
 information games</a></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/08/24/RL/SoG/SoG/#more" rel="contents">
-                Read more &raquo;
+                阅读全文 &raquo;
               </a>
             </div>
           <!--/noindex-->
@@ -674,17 +849,17 @@ information games</a></p>
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/08/21/ai4sci/MLRG/MLRG/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="name" content="renyixiong">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yixiong's Blog">
+      <meta itemprop="name" content="renyixiong blog">
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -697,41 +872,41 @@ information games</a></p>
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2024-08-21 12:00:00" itemprop="dateCreated datePublished" datetime="2024-08-21T12:00:00+08:00">2024-08-21</time>
+              <time title="创建时间：2024-08-21 12:00:00" itemprop="dateCreated datePublished" datetime="2024-08-21T12:00:00+08:00">2024-08-21</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-05-08 17:56:42" itemprop="dateModified" datetime="2025-05-08T17:56:42+08:00">2025-05-08</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-08 17:56:42" itemprop="dateModified" datetime="2025-05-08T17:56:42+08:00">2025-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">In</span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/AI-for-Science/" itemprop="url" rel="index"><span itemprop="name">AI for Science</span></a>
                 </span>
             </span>
 
           <br>
-            <span class="post-meta-item" title="Symbols count in article">
+            <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
+                <span class="post-meta-item-text">本文字数：</span>
               <span>770</span>
             </span>
-            <span class="post-meta-item" title="Reading time">
+            <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -745,12 +920,12 @@ information games</a></p>
       
           <p>通过构建三个网络学习实空间重整化过程中的参数变化。</p>
 <p>Reference: * <a
-target="_blank" rel="noopener" href="https://doi.org/10.1088/2632-2153/ad0101">Machine learning
+href="https://doi.org/10.1088/2632-2153/ad0101">Machine learning
 renormalization group for statistical physics</a></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/08/21/ai4sci/MLRG/MLRG/#more" rel="contents">
-                Read more &raquo;
+                阅读全文 &raquo;
               </a>
             </div>
           <!--/noindex-->
@@ -772,17 +947,17 @@ renormalization group for statistical physics</a></p>
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/07/09/Phys/science_3831989/RSP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="name" content="renyixiong">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yixiong's Blog">
+      <meta itemprop="name" content="renyixiong blog">
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -795,41 +970,41 @@ renormalization group for statistical physics</a></p>
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2024-07-09 10:37:00" itemprop="dateCreated datePublished" datetime="2024-07-09T10:37:00+08:00">2024-07-09</time>
+              <time title="创建时间：2024-07-09 10:37:00" itemprop="dateCreated datePublished" datetime="2024-07-09T10:37:00+08:00">2024-07-09</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-05-08 18:17:30" itemprop="dateModified" datetime="2025-05-08T18:17:30+08:00">2025-05-08</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-08 18:17:30" itemprop="dateModified" datetime="2025-05-08T18:17:30+08:00">2025-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">In</span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
                 </span>
             </span>
 
           <br>
-            <span class="post-meta-item" title="Symbols count in article">
+            <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
+                <span class="post-meta-item-text">本文字数：</span>
               <span>703</span>
             </span>
-            <span class="post-meta-item" title="Reading time">
+            <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -842,12 +1017,12 @@ renormalization group for statistical physics</a></p>
 
       
           <p>Parisi关于组合优化问题的分析。</p>
-<p>reference: * <a target="_blank" rel="noopener" href="https://www.jstor.org/stable/3831989">Analytic
+<p>reference: * <a href="https://www.jstor.org/stable/3831989">Analytic
 and Algorithmic Solution of Random Satisfiability Problems</a></p>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/07/09/Phys/science_3831989/RSP/#more" rel="contents">
-                Read more &raquo;
+                阅读全文 &raquo;
               </a>
             </div>
           <!--/noindex-->
@@ -869,17 +1044,17 @@ and Algorithmic Solution of Random Satisfiability Problems</a></p>
       
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/07/03/Phys/replica/replica_math/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="name" content="renyixiong">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yixiong's Blog">
+      <meta itemprop="name" content="renyixiong blog">
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
@@ -892,41 +1067,41 @@ and Algorithmic Solution of Random Satisfiability Problems</a></p>
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2024-07-03 21:37:00" itemprop="dateCreated datePublished" datetime="2024-07-03T21:37:00+08:00">2024-07-03</time>
+              <time title="创建时间：2024-07-03 21:37:00" itemprop="dateCreated datePublished" datetime="2024-07-03T21:37:00+08:00">2024-07-03</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-04-03 16:43:45" itemprop="dateModified" datetime="2025-04-03T16:43:45+08:00">2025-04-03</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-04-03 16:43:45" itemprop="dateModified" datetime="2025-04-03T16:43:45+08:00">2025-04-03</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">In</span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
                 </span>
             </span>
 
           <br>
-            <span class="post-meta-item" title="Symbols count in article">
+            <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
+                <span class="post-meta-item-text">本文字数：</span>
               <span>1.3k</span>
             </span>
-            <span class="post-meta-item" title="Reading time">
+            <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>2 mins.</span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
             </span>
 
         </div>
@@ -1009,206 +1184,10 @@ i\epsilon)] $$</span></p>
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/06/25/CS/hexo/hexo/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ren Yixiong">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yixiong's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/06/25/CS/hexo/hexo/" class="post-title-link" itemprop="url">Hexo 使用指南</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2024-06-25 10:38:00" itemprop="dateCreated datePublished" datetime="2024-06-25T10:38:00+08:00">2024-06-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-04-03 16:43:45" itemprop="dateModified" datetime="2025-04-03T16:43:45+08:00">2025-04-03</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hexo/" itemprop="url" rel="index"><span itemprop="name">Hexo</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>616</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>主要用于实现我对 Hexo 各种奇奇怪怪的需求。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/06/25/CS/hexo/hexo/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/06/11/DL/DRL_COM/NCORL/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ren Yixiong">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yixiong's Blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/06/11/DL/DRL_COM/NCORL/" class="post-title-link" itemprop="url">Neural Combiantorial Optimization with Reinforcement Learning</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2024-06-11 19:06:00" itemprop="dateCreated datePublished" datetime="2024-06-11T19:06:00+08:00">2024-06-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-05-08 18:07:05" itemprop="dateModified" datetime="2025-05-08T18:07:05+08:00">2025-05-08</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">In</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="Symbols count in article">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
-              <span>2.5k</span>
-            </span>
-            <span class="post-meta-item" title="Reading time">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>5 mins.</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>Utilizing neural networks and reinforcement learning to tackle the
-Traveling Salesman Problem, where the neural network model is a
-Recurrent Neural Network (RNN), and the policy for reinforcement
-learning employs policy gradients.</p>
-<p>Reference: * <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1611.09940">Neural
-Combinatorial Optimization with Reinforcement Learning</a> * <a
-target="_blank" rel="noopener" href="https://github.com/pemami4911/neural-combinatorial-rl-pytorch">code</a></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2024/06/11/DL/DRL_COM/NCORL/#more" rel="contents">
-                Read more &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="上一页"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1252,10 +1231,10 @@ target="_blank" rel="noopener" href="https://github.com/pemami4911/neural-combin
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
-          Table of Contents
+          文章目录
         </li>
         <li class="sidebar-nav-overview">
-          Overview
+          站点概览
         </li>
       </ul>
 
@@ -1266,7 +1245,7 @@ target="_blank" rel="noopener" href="https://github.com/pemami4911/neural-combin
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <p class="site-author-name" itemprop="name">renyixiong</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
@@ -1274,17 +1253,17 @@ target="_blank" rel="noopener" href="https://github.com/pemami4911/neural-combin
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">51</span>
-          <span class="site-state-item-name">posts</span>
+          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">10</span>
-        <span class="site-state-item-name">categories</span>
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">67</span>
-        <span class="site-state-item-name">tags</span>
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span>
       </div>
   </nav>
 </div>
@@ -1314,19 +1293,19 @@ target="_blank" rel="noopener" href="https://github.com/pemami4911/neural-combin
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+  <span class="author" itemprop="copyrightHolder">renyixiong</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">334k</span>
+    <span title="站点总字数">309k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">10:06</span>
+    <span title="站点阅读时长">4:41</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
 
         
@@ -1344,12 +1323,8 @@ target="_blank" rel="noopener" href="https://github.com/pemami4911/neural-combin
 
   
   <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
 <script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
 
 
 <script src="/js/schemes/muse.js"></script>
@@ -1363,10 +1338,6 @@ target="_blank" rel="noopener" href="https://github.com/pemami4911/neural-combin
   
 
 
-
-
-  
-<script src="/js/local-search.js"></script>
 
 
 

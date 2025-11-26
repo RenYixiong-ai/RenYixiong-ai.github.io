@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":false,"back2top":{"enable":false,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":{}},"algolia":{"hits":5,"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="使用副本方法研究神经网络训练中双下降（doube decent）现象。 Reference: * 作业题目">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Replica in Double Decent">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2025/09/17/Phys/replica_double_decent/note/index.html">
+<meta property="og:site_name" content="renyixiong blog">
+<meta property="og:description" content="使用副本方法研究神经网络训练中双下降（doube decent）现象。 Reference: * 作业题目">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/09/17/Phys/replica_double_decent/note/doubledecent.png">
+<meta property="article:published_time" content="2025-09-17T08:37:00.000Z">
+<meta property="article:modified_time" content="2025-11-26T09:56:14.393Z">
+<meta property="article:author" content="renyixiong">
+<meta property="article:tag" content="Spin Glass">
+<meta property="article:tag" content="Replica Method">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2025/09/17/Phys/replica_double_decent/note/doubledecent.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2025/09/17/Phys/replica_double_decent/note/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Replica in Double Decent | renyixiong blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">renyixiong blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2025/09/17/Phys/replica_double_decent/note/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="renyixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="renyixiong blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Replica in Double Decent
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-09-17 16:37:00" itemprop="dateCreated datePublished" datetime="2025-09-17T16:37:00+08:00">2025-09-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-11-26 17:56:14" itemprop="dateModified" datetime="2025-11-26T17:56:14+08:00">2025-11-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>14k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>13 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>使用副本方法研究神经网络训练中双下降（doube decent）现象。</p>
+<p>Reference: * <a
+href="https://liyuhao.com.cn/files/SMNN/SMNN-2025.pdf">作业题目</a></p>
+<span id="more"></span>
+<h1 id="问题">问题</h1>
+<p>给定一个数据集 <span
+class="math inline"><em>D</em> = {<em>x</em><sup><em>μ</em></sup>, <em>y</em><sup><em>μ</em></sup>}<sub><em>μ</em> = 1</sub><sup><em>P</em></sup></span>，其中
+<span
+class="math inline"><em>x</em><sup><em>μ</em></sup> ∈ ℝ<sup><em>N</em></sup></span>，每个元素服从高斯分布
+<span class="math inline">𝒩(0, 1)</span>。标签 <span
+class="math inline"><em>y</em><sup><em>μ</em></sup></span>
+由下式产生：</p>
+<p><span class="math display">$$
+y^\mu = \frac{1}{\sqrt{N}} \sum_{i=1}^N w_i^* x_i^\mu + \sigma
+\epsilon^\mu
+$$</span></p>
+<p>其中 <span
+class="math inline"><em>ϵ</em><sup><em>μ</em></sup> ∼ 𝒩(0, 1)</span>，真实权重满足
+<span class="math inline">$|\bf{w}^*|^2 = N$</span>。</p>
+<p>考虑如下哈密顿量：</p>
+<p><span class="math display">$$
+H(w) = \frac{1}{2\lambda} \sum_{\mu=1}^P \Big( \sum_{i=1}^N \frac{w_i
+x_i^\mu}{\sqrt N} - y^\mu \Big)^2 + \frac{1}{2} \sum_{i=1}^N w_i^2
+$$</span></p>
+<p>其中<span class="math inline"><em>w</em></span>为学习到的参数，<span
+class="math inline"><em>w</em><sup>*</sup></span>为目标参数（最优超参），这是一个
+teacher-student 模型。</p>
+<h1 id="研究任务">研究任务：</h1>
+<ol type="1">
+<li>用复本理论计算泛化误差：</li>
+</ol>
+<p><span class="math display">$$
+E_g = \Big\lang \Big( \frac{1}{\sqrt{N}} \sum_{i=1}^N (w_i - w_i^*)
+x_i^\mu \Big)^2 \Big\rangle_x
+$$</span></p>
+<p>并绘制 <span
+class="math inline"><em>E</em><sub><em>g</em></sub></span> 与 <span
+class="math inline"><em>α</em> = <em>P</em>/<em>N</em></span>
+的关系，考察不同 <span
+class="math inline"><em>σ</em>, <em>λ</em>, <em>β</em></span>
+情况。同时比较有限 <span class="math inline"><em>N</em></span>
+数值实验结果与理论是否一致。</p>
+<ol start="2" type="1">
+<li><p>在低温极限下，当 <span
+class="math inline"><em>λ</em> = 0</span>，研究零噪声与有限噪声情形下
+<span class="math inline"><em>E</em><sub><em>g</em></sub></span> 与
+<span class="math inline"><em>α</em></span> 的关系。</p></li>
+<li><p>（进阶）分析是否能得到 <span
+class="math inline"><em>E</em><sub><em>g</em></sub></span> 随 <span
+class="math inline"><em>α</em></span> 的解析关系？自由能对 <span
+class="math inline"><em>α</em></span>
+的导数是否出现不连续（一级相变）？是否能观测到双下降现象？</p></li>
+</ol>
+<h1 id="副本计算">副本计算</h1>
+<p><span class="math display">$$
+P = \frac{H(\bf{w})}{Z}\quad Z=\int d \bf{w} \exp\{-\beta H(\bf{w})\}
+$$</span></p>
+<p>并且有： <span class="math display">$$
+f = \frac{-1}{\beta N}\lang\ln Z\rang
+$$</span></p>
+<p>利用副本技巧： <span class="math display">$$
+f = \lim_{N\to \infin, n\to \infin}\frac{-1}{\beta N n}\lang\ln Z^n\rang
+= \lim_{N\to \infin, n\to \infin}\frac{-1}{\beta N n}\ln\lang Z^n\rang
+$$</span></p>
+<p>计算配分函数的副本平均：</p>
+<p><span class="math display">$$
+\begin{align*}
+\lang Z^n \rang &amp;= \left\lang
+    \int \prod_{a}^n\prod_i^N d w^a_i \exp\{-\beta H(\bf{w})\}
+    \right\rang \\
+&amp;= \left\lang
+\int \prod_{a}^n\prod_i^N d w^a_i \exp\left\{\frac{-\beta}{2\lambda}
+\sum_{\mu=1}^P \Big( \sum_{i=1}^N \frac{w_i^a x_i^\mu}{\sqrt N} - y^\mu
+\Big)^2 - \frac{\beta}{2} \sum_{i=1}^N {w_i^a}^2\right\}
+\right\rang \\
+&amp;= \left\lang
+\int \prod_{a}^n\prod_i^N d w^a_i \exp\left\{\frac{-\beta}{2\lambda}
+\sum_{\mu=1}^P \Big( \sum_{i=1}^N \frac{w_i^a x_i^\mu}{\sqrt N} -
+\frac{1}{\sqrt{N}} \sum_{i=1}^N w_i^* x_i^\mu - \sigma \epsilon^\mu
+\Big)^2 - \frac{\beta}{2} \sum_{i=1}^N {w_i^a}^2\right\}
+\right\rang \\
+&amp;= \left\lang
+\int \exp\left\{\frac{-\beta}{2\lambda} \sum_{a}^{n}\sum_{\mu=1}^P \Big(
+\sum_{i=1}^N \frac{w_i^a x_i^\mu}{\sqrt N} - \frac{1}{\sqrt{N}}
+\sum_{i=1}^N w_i^* x_i^\mu - \sigma \epsilon^\mu \Big)^2 -
+\frac{\beta}{2} \sum_{a}^{n}\sum_{i=1}^N {w_i^a}^2\right\}
+\left(\prod_{a}^n\prod_i^N d w^a_i \right)
+\right\rang
+\end{align*}
+$$</span></p>
+<h2 id="数据分布变为隐藏层分布">数据分布变为隐藏层分布</h2>
+<p>将对整体的期望，写为对于指数的期望： <span class="math display">$$
+\begin{align}
+\lang Z^n \rang = \int \exp N\left\{-\alpha G_E - \frac{\beta}{2 N}
+\sum_{a}^{n}\sum_{i=1}^N {w_i^a}^2\right\} \prod_{a}^n\prod_i^N d w^a_i
+\end{align}
+$$</span></p>
+<p>对于数据的期望，其中对于<span
+class="math inline"><em>P</em></span>的求和，可以认为是独立同分布，因此可以直接将求和符号去掉<span
+class="math inline"><em>P</em> = <em>α</em><em>N</em></span>，可以得到：</p>
+<p><span class="math display">$$
+\begin{align}
+G_E = -\ln \left\lang\exp \left\{
+    \frac{-\beta}{2\lambda} \sum_{a}^{n} \Big( \sum_{i=1}^N \frac{w_i^a
+x_i^\mu}{\sqrt N} - \frac{1}{\sqrt{N}} \sum_{i=1}^N w_i^* x_i^\mu -
+\sigma \epsilon^\mu \Big)^2
+\right\}\right\rang
+\end{align}
+$$</span></p>
+<p>接下来引入局域场： <span class="math display">$$\begin{align}
+v^a &amp;= \sum_{i=1}^N \frac{w_i^a x_i^\mu}{\sqrt N} \\
+u &amp;= \sum_{i=1}^N \frac{w_i^* x_i^\mu}{\sqrt N}
+\end{align}$$</span></p>
+<p>由于<span
+class="math inline"><em>x</em><sub><em>i</em></sub> ∼ 𝒩(0, 1)</span>，任意高斯向量的线性变换仍然是高斯向量，可以得到局域场联合分布的协方差：</p>
+<p><span
+class="math display">(<em>u</em>, {<em>v</em><sub><em>a</em></sub>}) ∼ 𝒩(0, <em>Σ</em>),  <em>Σ</em><sub><em>u</em><em>u</em></sub> = 1, <em>Σ</em><sub><em>u</em><em>v</em><sub><em>a</em></sub></sub> = <em>r</em><sub><em>a</em></sub>, <em>Σ</em><sub><em>v</em><sub><em>a</em></sub><em>v</em><sub><em>b</em></sub></sub> = <em>q</em><sup><em>a</em><em>b</em></sup></span></p>
+<p>其中<span class="math inline"><em>r</em></span>和<span
+class="math inline"><em>q</em></span>为序参量： <span
+class="math display">$$\begin{align}
+r^a &amp;= \sum_{i=1}^N \frac{w_i^a w_i^*}{ N} \\
+q^{ab} &amp;= \sum_{i=1}^N \frac{w_i^a w_i^b}{N}
+\end{align}$$</span></p>
+<p>可以将配分函数进一步写为： <span class="math display">$$
+\begin{align*}
+\lang Z^n \rang &amp;= \int \exp \left\{ N\left(-\alpha G_E -
+\frac{\beta}{2 } \sum_{a}^{n} q^{aa}\right)\right\} \
+\prod_{a\leq b}^n\delta(N q^{ab}-\sum_i^N w_i^a w_i^b) \
+\prod_{a=1}^n \delta(Nr^a -\sum_i^N w_i^a w_i^*)\
+d N r^a d N q^{a b}\prod_i^N d w_i^a \\
+&amp;= \int \exp \left\{ N\left(-\alpha G_E - \frac{\beta}{2 }
+\sum_{a}^{n} q^{aa}\right)\right\} \
+\prod_{a\leq b}^n\left(\frac{1}{2\pi i}\int d\hat q^{ab}\
+\exp\Big[-N\hat q^{ab} q^{ab}+\hat q^{ab}\sum_i
+w_i^{(a)}w_i^{(b)}\Big]\right) \
+\prod_{a=1}^n \left(\frac{1}{2\pi i}\int d\hat r_a\ \exp\!\Big[-N\hat
+r_a r_a+\hat r_a \sum_i w_i^* w_i^{(a)}\Big]\right)\
+d N r^a d N q^{a b}\prod_i^N d w_i^a \\
+&amp;=\int \left(\prod_a^n \frac{N d r^a d \hat r^a}{2\pi i} \right)
+\left(\prod_{a\leq b}^n \frac{N d q^{ab} d \hat q^{ab}}{2\pi i} \right)
+\
+\exp \left\{ -\alpha N G_E\right\} \\
+&amp;\quad \int\prod_{i,a}^{N,n} d w_i^a\exp \left\{ N\left(
+    - \frac{\beta}{2 } \sum_{a}^{n} q^{aa}\
+    - \hat q^{ab} q^{ab}+\frac{1}{N}\hat q^{ab}\sum_i w_i^{a}w_i^{b} \
+    -\hat r_a r_a+\frac{1}{N}\hat r_a \sum_i w_i^* w_i^{a}
+\right)\right\} \\
+&amp;=\int \left(\prod_a^n \frac{N d r^a d \hat r^a}{2\pi i} \right)
+\left(\prod_{a\leq b}^n \frac{N d q^{ab} d \hat q^{ab}}{2\pi i} \right)
+\
+\exp \left\{ -\alpha N G_E\right\} \\
+&amp;\quad \exp \left\{ N\left(
+    - \frac{\beta}{2 } \sum_{a}^{n} q^{aa}\
+    - \hat q^{ab} q^{ab} \
+    -\hat r_a r_a
+\right)\right\} \\
+&amp;\quad \int\prod_{i,a}^{N,n} d w_i^a\exp \left\{ N\left(
+    \frac{1}{N}\hat q^{ab}\sum_i w_i^{a}w_i^{b} \
+    +\frac{1}{N}\hat r_a \sum_i w_i^* w_i^{a}
+\right)\right\} \\
+&amp;=\int \left(\prod_a^n \frac{N d r^a d \hat r^a}{2\pi i} \right)
+\left(\prod_{a\leq b}^n \frac{N d q^{ab} d \hat q^{ab}}{2\pi i} \right)
+\exp \left\{ N\left(-\alpha G_E+G_S\right)\right\}
+\end{align*}
+$$</span></p>
+<p>其中有： <span class="math display">$$
+\begin{align*}
+G_E &amp;= -\ln \left\lang\exp \left\{
+    \frac{-\beta}{2\lambda} \sum_{a}^{n} \Big( \sum_{i=1}^N \frac{w_i^a
+x_i^\mu}{\sqrt N} - \frac{1}{\sqrt{N}} \sum_{i=1}^N w_i^* x_i^\mu -
+\sigma \epsilon^\mu \Big)^2
+\right\}\right\rang \\
+&amp;= -\ln \left\lang\exp \left\{
+    \frac{-\beta}{2\lambda} \sum_{a}^{n} \Big( v^a - u - \sigma \epsilon
+\Big)^2
+\right\}\right\rang
+\end{align*}
+$$</span> 以及： <span class="math display">$$
+\begin{align*}
+G_S &amp;= \left(
+    - \frac{\beta}{2 } \sum_{a}^{n} q^{aa}\
+    - \sum_{a\leq b}^n\hat q^{ab} q^{ab} \
+    - \sum_a^n\hat r_a r_a
+\right) \
++\frac{1}{N}\ln\int\prod_{i,a}^{N,n} d w_i^a\exp \left\{  
+    \hat q^{ab}\sum_i w_i^{a}w_i^{b} \
+    +\hat r_a \sum_i w_i^* w_i^{a}
+\right\} \\
+\end{align*}
+$$</span></p>
+<p>目前为止整体计算时严格的，成功将输入数据<span
+class="math inline"><em>x</em></span>通过线性变换与权重<span
+class="math inline"><em>w</em></span>相耦合，产生新的序参量<span
+class="math inline"><em>u</em></span>、<span
+class="math inline"><em>v</em></span>。由于为线性变换，且知道<span
+class="math inline"><em>x</em></span>的分布情况，因此可以将<span
+class="math inline"><em>u</em></span>、<span
+class="math inline"><em>v</em></span>的联合分布写出来。同时产生必要的方差项，也称其为overlap项，在我看来就是将两个矩阵进行交叠，衡量矩阵交叠程度（即矩阵相似性）。</p>
+<p>然后通过将<span
+class="math inline"><em>δ</em></span>转变为高斯积分，将积分测度进行修改。</p>
+<p>接下来采用副本对称假设，将求解目标近似： <span
+class="math display">$$\begin{align}
+r^a = r&amp;,\quad \hat r^a = \hat r\\
+q^{ab} = \delta_{ab}q'+(1-\delta_{ab})q&amp;,\quad \hat
+q^{ab}=\delta_{ab}(-\frac{1}{2}\hat q')+(1-\delta_{ab})\hat q
+\end{align}$$</span></p>
+<p>接下来结合副本技巧逐个求解<span
+class="math inline"><em>G</em><sub><em>S</em></sub></span>与<span
+class="math inline"><em>G</em><sub><em>E</em></sub></span>项。</p>
+<h2 id="熵项g_s">熵项<span
+class="math inline"><em>G</em><sub><em>S</em></sub></span></h2>
+<p><span class="math display">$$
+\begin{align*}
+G_S &amp;= \left(
+    - \frac{\beta}{2 } \sum_{a}^{n} q^{aa}\
+    - \sum_{a\leq b}^n\hat q^{ab} q^{ab} \
+    - \sum_a^n\hat r_a r_a
+\right) \
++\frac{1}{N}\ln\int\prod_{i,a}^{N,n} d w_i^a\exp \left\{  
+    \hat q^{ab}\sum_i w_i^{a}w_i^{b} \
+    +\hat r_a \sum_i w_i^* w_i^{a}
+\right\} \\
+&amp;= \left(
+    - \frac{n \beta}{2 } q'\
+    - \frac{n(n-1)}{2}\hat q q \
+    + \frac{n}{2}\hat q' q'
+    - n \hat r r
+\right) \
++\frac{1}{N}\ln\int\prod_{i,a}^{N,n} d w_i^a\exp \left\{  
+    \frac{1}{2}\hat q\sum_{ab}\sum_i w_i^{a}w_i^{b} \
+    -\frac{1}{2}(\hat q'+\hat q)\sum_a \sum_i w_i^{a}w_i^{a} \
+    +\hat r \sum_a\sum_i w_i^* w_i^{a}
+\right\} \\
+&amp;= \left(
+    - \frac{n \beta}{2 } q'\
+    - \frac{n(n-1)}{2}\hat q q \
+    + \frac{n}{2}\hat q' q'
+    - n \hat r r
+\right) \
++\frac{1}{N}\ln\int\prod_{i,a}^{N,n} d w_i^a\exp \left\{  
+    \frac{1}{2}\hat q\sum_i \left(\sum_{a}w_i^{a}\right)^2 \
+    -\frac{1}{2}(\hat q'+\hat q)\sum_a \sum_i w_i^{a}w_i^{a} \
+    +\hat r \sum_a\sum_i w_i^* w_i^{a}
+\right\} \\
+&amp;= \left(
+    - \frac{n \beta}{2 } q'\
+    - \frac{n(n-1)}{2}\hat q q \
+    + \frac{n}{2}\hat q' q'
+    - n \hat r r
+\right) \
++\frac{1}{N}\ln\int\prod_i D z_i\int\prod_{a}^{n} d w_i^a\exp \left\{  
+    \sqrt{\hat q}\sum_i \sum_{a}w_i^{a}z_i \
+    -\frac{1}{2}(\hat q'+\hat q)\sum_a \sum_i w_i^{a}w_i^{a} \
+    +\hat r \sum_a\sum_i w_i^* w_i^{a}
+\right\} \\
+&amp;= \left(
+    - \frac{n \beta}{2 } q'\
+    - \frac{n(n-1)}{2}\hat q q \
+    + \frac{n}{2}\hat q' q'
+    - n \hat r r
+\right) \
++\frac{1}{N}\ln \left[\int D z \left[\int d w\exp \left\{  
+    \sqrt{\hat q} w z \
+    -\frac{1}{2}(\hat q'+\hat q)  w w \
+    +\hat r  w^* w
+\right\} \right]^n\right]^{N}\\
+&amp;= \left(
+    - \frac{n \beta}{2 } q'\
+    - \frac{n(n-1)}{2}\hat q q \
+    + \frac{n}{2}\hat q' q'
+    - n \hat r r
+\right) \
++\ln \int D z \left[\int d w\exp \left\{  
+    \sqrt{\hat q} w z \
+    -\frac{1}{2}(\hat q'+\hat q)  w w \
+    +\hat r  w^* w
+\right\} \right]^n\\
+\end{align*}
+$$</span></p>
+<p>上面最后一步通过引入辅助变量，将平方项变为线性项，从而把副本的数量<span
+class="math inline"><em>n</em></span>之间的耦合消去。由于假设<span
+class="math inline">lim <em>N</em> → ∞</span>，因此可以将<span
+class="math inline">⟪<em>z</em><sup><em>n</em></sup>⟫ ∼ <em>N</em>(−<em>α</em><em>G</em><sub><em>E</em></sub> + <em>G</em><sub><em>S</em></sub>)</span>，从而可以分别求<span
+class="math inline"><em>G</em><sub><em>S</em></sub></span>与<span
+class="math inline"><em>G</em><sub><em>E</em></sub></span>的极限。</p>
+<p><span class="math display">$$
+\begin{align*}
+\lim_{n\to 0}\frac{G_S}{n} &amp;= \left(
+    - \frac{\beta}{2 } q'\
+    + \frac{1}{2}\hat q q \
+    + \frac{1}{2}\hat q' q'
+    - \hat r r
+\right)\
++\lim_{n\to 0}\frac{1}{n}\ln \int D z \left[\int d w\exp \left\{  
+    \sqrt{\hat q} w z \
+    -\frac{1}{2}(\hat q'+\hat q)  w w \
+    +\hat r  w^* w
+\right\} \right]^n\\
+&amp;= \left(
+    - \frac{\beta}{2 } q'\
+    + \frac{1}{2}\hat q q \
+    + \frac{1}{2}\hat q' q'
+    - \hat r r
+\right)\
++\int D z \ln\int d w\exp \left\{  
+    \sqrt{\hat q} w z \
+    -\frac{1}{2}(\hat q'+\hat q)  w w \
+    +\hat r  w^* w
+\right\}\\
+&amp;=  - \frac{\beta}{2 } q'\
+    + \frac{1}{2}\hat q q \
+    + \frac{1}{2}\hat q' q'
+    - \hat r r
++\frac{1}{2}\ln{2\pi}-\frac{1}{2}\ln(\hat q+\hat q')+\frac{\hat q+\hat
+r^2 {w^*}^2}{2(\hat q+\hat q')}\\
+\end{align*}
+$$</span></p>
+<p>由于约束<span class="math inline">$|\bf{w}^*|^2 = N$</span>，而<span
+class="math inline">$\bf w$</span>为一个<span
+class="math inline"><em>N</em></span>维向量，因此平均下<span
+class="math inline"><em>w</em><sup>*</sup><sup>2</sup> = 1</span>。</p>
+<p><span class="math display">$$
+\begin{align*}
+\lim_{n\to 0}\frac{G_S}{n} &amp;=  - \frac{\beta}{2 } q'\
+    + \frac{1}{2}\hat q q \
+    + \frac{1}{2}\hat q' q'
+    - \hat r r
++\frac{1}{2}\ln{2\pi}-\frac{1}{2}\ln(\hat q+\hat q')+\frac{\hat q+\hat
+r^2}{2(\hat q+\hat q')}\\
+\end{align*}
+$$</span></p>
+<h2 id="能量项g_e">能量项<span
+class="math inline"><em>G</em><sub><em>E</em></sub></span></h2>
+<p><span class="math display">$$
+\begin{align*}
+G_E &amp;= -\ln \left\lang\exp \left\{
+    \frac{-\beta}{2\lambda} \sum_{a}^{n} \Big( v^a - u - \sigma \epsilon
+\Big)^2
+\right\}\right\rang
+\end{align*}
+$$</span></p>
+<p>其中期望是对输入数据<span
+class="math inline"><em>x</em></span>进行，并且<span
+class="math inline"><em>x</em></span>符合一个特定分布，在经过线性变换之后我们将其转化为<span
+class="math inline"><em>v</em></span>、<span
+class="math inline"><em>u</em></span>之间的组合。因为高斯分布在经过线性变化之后依旧是高斯分布，接下来期望就是计算<span
+class="math inline"><em>u</em></span>、<span
+class="math inline"><em>v</em></span>。</p>
+<p>已经知道分布为: <span
+class="math display">(<em>u</em>, {<em>v</em><sub><em>a</em></sub>}) ∼ 𝒩(0, <em>Σ</em>),  <em>Σ</em><sub><em>u</em><em>u</em></sub> = 1, <em>Σ</em><sub><em>u</em><em>v</em><sub><em>a</em></sub></sub> = <em>r</em>, <em>Σ</em><sub><em>v</em><sub><em>a</em></sub><em>v</em><sub><em>b</em></sub></sub> = <em>δ</em><sub><em>a</em><em>b</em></sub><em>q</em><sup>′</sup> + (1 − <em>δ</em><sub><em>a</em><em>b</em></sub>)<em>q</em></span></p>
+<p>计算混合高斯分布的条件分布，由高斯条件分布公式得到： <span
+class="math display">𝔼[<em>v</em><sub><em>a</em></sub> | <em>u</em>] = <em>r</em> <em>u</em>,   Cov(<em>v</em> | <em>u</em>) = <em>C</em> = (<em>q</em>’ − <em>q</em>) <em>I</em><sub><em>n</em></sub> + (<em>q</em> − <em>r</em><sup>2</sup>) <strong>1</strong><strong>1</strong><sup>⊤</sup></span></p>
+<p>其中 <span
+class="math inline"><strong>1</strong> = (1, …, 1)<sup>⊤</sup> ∈ ℝ<sup><em>n</em></sup></span>。</p>
+<p>记 <span
+class="math inline"><em>c</em> ≡ <em>u</em> − <em>σ</em><em>ϵ</em></span>。则
+<span class="math inline">$\sum_{a=1}^n (u-v_a-\sigma\epsilon)^2 \;=\;
+\|\;v - c\,\mathbf 1\;\|_2^2$</span>， 在给定 <span
+class="math inline"><em>u</em>, <em>ϵ</em></span> 下，<span
+class="math inline"><em>v</em> − <em>c</em><strong>1</strong> ∼ 𝒩 ((<em>r</em><em>u</em> − <em>c</em>)<strong>1</strong>, <em>C</em>)</span>。</p>
+<p>高斯二次型的矩母函数给出（对固定 <span
+class="math inline"><em>u</em>, <em>ϵ</em></span>）： <span
+class="math display">$$\mathbb
+E\!\left[\exp\!\left(-\frac{\beta}{2\lambda}\|v-c\mathbf
+1\|^2\right)\Big|\,u,\epsilon\right]
+= \det\!\big(I_n+\tfrac{\beta}{\lambda}C\big)^{-1/2}\;
+\exp\!\left(-\frac{\beta}{2\lambda}(r u-c)^2\,\mathbf
+1^\top(I_n+\tfrac{\beta}{\lambda}C)^{-1}\mathbf 1\right)$$</span></p>
+<p>利用 C 的“秩一更新”谱分解</p>
+<p><span
+class="math inline"><em>C</em> = (<em>q</em>’ − <em>q</em>)<em>I</em><sub><em>n</em></sub> + (<em>q</em> − <em>r</em><sup>2</sup>)<strong>1</strong><strong>1</strong><sup>⊤</sup></span>
+的特征值： <span
+class="math display"><em>λ</em><sub>⟂</sub> = <em>q</em>’ − <em>q</em>  (重数
+<em>n</em> − 1),   <em>λ</em><sub>∥</sub> = <em>q</em>’ − <em>q</em> + <em>n</em>(<em>q</em> − <em>r</em><sup>2</sup>)</span>
+因此 <span class="math display">$$\begin{align*}
+&amp;\det(I_n+\tfrac{\beta}{\lambda}C)=\big(1+\tfrac{\beta}{\lambda}(q'-q)\big)^{n-1}\!\big(1+\tfrac{\beta}{\lambda}\lambda_\parallel\big)\\
+&amp;\mathbf 1^\top(I_n+\tfrac{\beta}{\lambda}C)^{-1}\mathbf 1
+=\frac{n}{\,1+\tfrac{\beta}{\lambda}\lambda_\parallel\,}
+\end{align*}$$</span></p>
+<p>把 <span
+class="math inline"><em>c</em> = <em>u</em> − <em>σ</em><em>ϵ</em>、(<em>r</em><em>u</em> − <em>c</em>) = (<em>r</em> − 1)<em>u</em> + <em>σ</em><em>ϵ</em></span>
+代回得： <span class="math display">$$\begin{aligned}
+&amp;\mathbb E\!\left[\exp\!\left(-\frac{\beta}{2\lambda}\sum_a
+(u-v_a-\sigma\epsilon)^2\right)\Big|u,\epsilon\right]\\
+&amp;\quad=\Big(1+\tfrac{\beta}{\lambda}(q'-q)\Big)^{-\frac{n-1}{2}}
+\Big(1+\tfrac{\beta}{\lambda}\big(q'-q+n(q-r^2)\big)\Big)^{-\frac{1}{2}}
+\\ &amp;\qquad\times
+\exp\!\left(-\frac{\beta}{2\lambda}\,\frac{n\,\big((r-1)u+\sigma\epsilon\big)^2}{\,1+\tfrac{\beta}{\lambda}\big(q'-q+n(q-r^2)\big)\,}\right).
+\end{aligned}$$</span></p>
+<p>再对 <span class="math inline"><em>u</em>, <em>ϵ</em></span>
+做平均并取 <span class="math inline"><em>n</em> → 0</span></p>
+<p><span class="math inline"><em>u</em>, <em>ϵ</em></span>
+独立标准高斯，<span
+class="math inline">(<em>r</em> − 1)<em>u</em> + <em>σ</em><em>ϵ</em> ∼ 𝒩(0, (<em>r</em> − 1)<sup>2</sup> + <em>σ</em><sup>2</sup>)</span>。用
+<span class="math display">$$\mathbb
+E\big[e^{-\frac{a}{2}Z^2}\big]=(1+a)^{-1/2}\quad (Z\sim\mathcal
+N(0,1))$$</span></p>
+<p>并只保留 <span class="math inline"><em>O</em>(<em>n</em>)</span>
+项（因为最后要计算 <span
+class="math inline">lim<sub><em>n</em> → 0</sub><em>G</em><sub><em>E</em></sub>/<em>n</em></span>），记
+<span class="math display">$$A\equiv
+1+\frac{\beta}{\lambda}(q'-q)=\frac{\lambda+\beta(q'-q)}{\lambda}$$</span></p>
+<p>则 <span class="math display">$$\lim_{n\to 0}\frac{G_E}{n}
+=\frac{1}{2}\ln A
++\frac{1}{2}\frac{\beta}{\lambda
+A}\Big[q-2r+1+\sigma^2\Big]$$</span></p>
+<p>把 <span
+class="math inline">ln <em>A</em> = ln (<em>λ</em> + <em>β</em>(<em>q</em><sup>′</sup> − <em>q</em>)) − ln <em>λ</em></span>
+展开，并注意 <span
+class="math inline"><em>λ</em><em>A</em> = <em>λ</em> + <em>β</em>(<em>q</em><sup>′</sup> − <em>q</em>)</span>，得到：
+<span class="math display">$$\lim_{n\to 0}\frac{G_E}{n}
+=\frac{1}{2}\ln\!\big[\lambda+\beta(q’-q)\big]-\frac{1}{2}\ln\lambda
++\frac{1}{2}\,\frac{\beta\,(q-2r+1+\sigma^2)}{\lambda+\beta(q’-q)}$$</span></p>
+<h3 id="更为简洁的做法">更为简洁的做法</h3>
+<p>核心观念：对 <span
+class="math display"><em>Y</em> = (<em>u</em> − <em>v</em><sub>1</sub> − <em>σ</em><em>ϵ</em>, …, <em>u</em> − <em>v</em><sub><em>n</em></sub> − <em>σ</em><em>ϵ</em>)<sup>⊤</sup></span></p>
+<p>有 <span class="math display">$$\mathbb
+E\!\left[e^{-\frac{\beta}{2\lambda}\|Y\|^2}\right]
+=\det\!\Big(I_n+\tfrac{\beta}{\lambda}\,\mathrm{Cov}(Y)\Big)^{-1/2}$$</span></p>
+<p>而 <span
+class="math display">Cov(<em>Y</em>) = <em>a</em> <em>I</em><sub><em>n</em></sub> + <em>b</em> <strong>1</strong><strong>1</strong><sup>⊤</sup>,  <em>a</em> = <em>q</em>’ − <em>q</em>,  <em>b</em> = 1 − 2<em>r</em> + <em>σ</em><sup>2</sup> + <em>q</em></span></p>
+<p>这种“<span
+class="math inline"><em>a</em><em>I</em> + <em>b</em>11<sup>⊤</sup></span>”矩阵的特征值是：<span
+class="math inline"><em>a</em></span>（重数 n-1）与 <span
+class="math inline"><em>a</em> + <em>b</em><em>n</em></span>（沿 <span
+class="math inline"><strong>1</strong></span> 方向）。于是 <span
+class="math display">$$G_E=\tfrac12\ln\det\!\Big(I+\tfrac{\beta}{\lambda}\mathrm{Cov}(Y)\Big)
+=\tfrac12\Big[(n-1)\ln\!\big(1+\tfrac{\beta}{\lambda}a\big)
++\ln\!\big(1+\tfrac{\beta}{\lambda}(a+bn)\big)\Big]$$</span></p>
+<p>纯标量的函数；现在对它做 <span
+class="math inline"><em>n</em> → 0</span>，利用 Mathematica 计算:</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$Assumptions = &#123;beta &gt; 0, lambda &gt; 0, sigma &gt;= 0, </span><br><span class="line">  qPrime &gt;= q, r ∈ Reals, q ∈ Reals&#125;;</span><br><span class="line"></span><br><span class="line">a = qPrime - q;</span><br><span class="line">b = 1 - 2 r + sigma^2 + q;</span><br><span class="line"></span><br><span class="line">GE = 1/2 * ((n - 1) * Log[1 + beta/lambda * a] </span><br><span class="line">      + Log[1 + beta/lambda * (a + b * n)]);</span><br><span class="line"></span><br><span class="line">Limit[GE/n, n -&gt; 0, Assumptions -&gt; $Assumptions] // FullSimplify</span><br></pre></td></tr></table></figure>
+<p>得到一致的结果： <span
+class="math display">$$\frac{1}{2}\ln\!\big[\lambda+\beta(q’-q)\big]-\frac{1}{2}\ln\lambda
++\frac{1}{2}\,\frac{\beta\,(q-2r+1+\sigma^2)}{\lambda+\beta(q’-q)}$$</span></p>
+<h2 id="鞍点方程">鞍点方程</h2>
+<figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">(* 参数假设 *)</span></span><br><span class="line"><span class="built_in">$Assumptions</span> <span class="operator">=</span> <span class="punctuation">&#123;</span><span class="variable">alpha</span> <span class="operator">&gt;</span> <span class="number">0</span><span class="operator">,</span> <span class="variable">beta</span> <span class="operator">&gt;</span> <span class="number">0</span><span class="operator">,</span> <span class="variable">lambda</span> <span class="operator">&gt;</span> <span class="number">0</span><span class="operator">,</span> <span class="variable">sigma</span> <span class="operator">&gt;=</span> <span class="number">0</span><span class="operator">,</span> </span><br><span class="line">   <span class="variable">r</span> ∈ <span class="built_in">Reals</span><span class="operator">,</span> <span class="variable">q</span> ∈ <span class="built_in">Reals</span><span class="operator">,</span> <span class="variable">qPrime</span> ∈ <span class="built_in">Reals</span><span class="operator">,</span> </span><br><span class="line">   <span class="variable">rHat</span> ∈ <span class="built_in">Reals</span><span class="operator">,</span> <span class="variable">qHat</span> ∈ <span class="built_in">Reals</span><span class="operator">,</span> <span class="variable">qHatPrime</span> ∈ <span class="built_in">Reals</span><span class="punctuation">&#125;</span><span class="operator">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">(* 能量项 GE/n *)</span></span><br><span class="line"><span class="variable">GEoverN</span> <span class="operator">=</span> <span class="number">1</span><span class="operator">/</span><span class="number">2</span> <span class="punctuation">(</span><span class="built_in">Log</span><span class="punctuation">[</span><span class="variable">lambda</span> <span class="operator">+</span> <span class="variable">beta</span> <span class="punctuation">(</span><span class="variable">qPrime</span> <span class="operator">-</span> <span class="variable">q</span><span class="punctuation">)</span><span class="punctuation">]</span> <span class="operator">-</span> <span class="built_in">Log</span><span class="punctuation">[</span><span class="variable">lambda</span><span class="punctuation">]</span><span class="punctuation">)</span> <span class="operator">+</span> </span><br><span class="line">   <span class="number">1</span><span class="operator">/</span><span class="number">2</span> <span class="variable">beta</span> <span class="punctuation">(</span><span class="variable">q</span> <span class="operator">-</span> <span class="number">2</span> <span class="variable">r</span> <span class="operator">+</span> <span class="number">1</span> <span class="operator">+</span> <span class="variable">sigma</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">)</span><span class="operator">/</span><span class="punctuation">(</span><span class="variable">lambda</span> <span class="operator">+</span> <span class="variable">beta</span> <span class="punctuation">(</span><span class="variable">qPrime</span> <span class="operator">-</span> <span class="variable">q</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="operator">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">(* 熵项 GS/n *)</span></span><br><span class="line"><span class="variable">GSoverN</span> <span class="operator">=</span> <span class="operator">-</span><span class="variable">r</span> <span class="variable">rHat</span> <span class="operator">+</span> <span class="number">1</span><span class="operator">/</span><span class="number">2</span> <span class="variable">q</span> <span class="variable">qHat</span> <span class="operator">+</span> <span class="number">1</span><span class="operator">/</span><span class="number">2</span> <span class="variable">qPrime</span> <span class="variable">qHatPrime</span> <span class="operator">-</span> <span class="punctuation">(</span><span class="variable">beta</span><span class="operator">/</span><span class="number">2</span><span class="punctuation">)</span> <span class="variable">qPrime</span> <span class="operator">+</span> </span><br><span class="line">   <span class="number">1</span><span class="operator">/</span><span class="number">2</span> <span class="built_in">Log</span><span class="punctuation">[</span><span class="number">2</span> <span class="built_in">Pi</span><span class="punctuation">]</span> <span class="operator">-</span> <span class="number">1</span><span class="operator">/</span><span class="number">2</span> <span class="built_in">Log</span><span class="punctuation">[</span><span class="variable">qHat</span> <span class="operator">+</span> <span class="variable">qHatPrime</span><span class="punctuation">]</span> <span class="operator">+</span> </span><br><span class="line">   <span class="punctuation">(</span><span class="variable">qHat</span> <span class="operator">+</span> <span class="variable">rHat</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">)</span><span class="operator">/</span><span class="punctuation">(</span><span class="number">2</span> <span class="punctuation">(</span><span class="variable">qHat</span> <span class="operator">+</span> <span class="variable">qHatPrime</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="operator">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">(* 总的自由能 *)</span></span><br><span class="line"><span class="variable">Phi</span> <span class="operator">=</span> <span class="operator">-</span><span class="variable">alpha</span> <span class="variable">GEoverN</span> <span class="operator">+</span> <span class="variable">GSoverN</span> <span class="operator">//</span> <span class="built_in">Simplify</span><span class="operator">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">(* 对 hat 变量的鞍点条件 *)</span></span><br><span class="line"><span class="variable">eqsHat</span> <span class="operator">=</span> <span class="built_in">Thread</span><span class="punctuation">[</span><span class="built_in">D</span><span class="punctuation">[</span><span class="variable">Phi</span><span class="operator">,</span> <span class="type">#</span><span class="punctuation">]</span> <span class="operator">==</span> <span class="number">0</span> <span class="operator">&amp;</span> <span class="operator">/@</span> <span class="punctuation">&#123;</span><span class="variable">rHat</span><span class="operator">,</span> <span class="variable">qHat</span><span class="operator">,</span> <span class="variable">qHatPrime</span><span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="operator">;</span></span><br><span class="line"></span><br><span class="line"><span class="variable">eqsHat2</span> <span class="operator">=</span> <span class="built_in">Thread</span><span class="punctuation">[</span><span class="built_in">D</span><span class="punctuation">[</span><span class="variable">Phi</span><span class="operator">,</span> <span class="type">#</span><span class="punctuation">]</span> <span class="operator">==</span> <span class="number">0</span> <span class="operator">&amp;</span> <span class="operator">/@</span> <span class="punctuation">&#123;</span><span class="variable">r</span><span class="operator">,</span> <span class="variable">q</span><span class="operator">,</span> <span class="variable">qPrime</span><span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="operator">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">(* 解出 hat 变量 *)</span></span><br><span class="line"><span class="variable">sol1</span> <span class="operator">=</span> <span class="built_in">Solve</span><span class="punctuation">[</span><span class="variable">eqsHat</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">rHat</span><span class="operator">,</span> <span class="variable">qHat</span><span class="operator">,</span> <span class="variable">qHatPrime</span><span class="punctuation">&#125;</span><span class="operator">,</span> <span class="built_in">Reals</span><span class="punctuation">]</span> <span class="operator">//</span> <span class="built_in">Simplify</span></span><br><span class="line"></span><br><span class="line"><span class="variable">sol2</span> <span class="operator">=</span> <span class="built_in">Solve</span><span class="punctuation">[</span><span class="variable">eqsHat2</span><span class="operator">,</span> <span class="punctuation">&#123;</span><span class="variable">rHat</span><span class="operator">,</span> <span class="variable">qHat</span><span class="operator">,</span> <span class="variable">qHatPrime</span><span class="punctuation">&#125;</span><span class="operator">,</span> <span class="built_in">Reals</span><span class="punctuation">]</span> <span class="operator">//</span> <span class="built_in">Simplify</span></span><br></pre></td></tr></table></figure>
+<p>然后将解进行简化 <figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">(* 定义两组解 *)</span></span><br><span class="line"><span class="variable">sol1</span> <span class="operator">=</span> <span class="punctuation">&#123;</span></span><br><span class="line">   <span class="variable">rHat</span> <span class="operator">-&gt;</span> <span class="operator">-</span><span class="punctuation">(</span><span class="variable">r</span><span class="operator">/</span><span class="punctuation">(</span><span class="variable">q</span> <span class="operator">-</span> <span class="variable">qPrime</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="operator">,</span></span><br><span class="line">   <span class="variable">qHat</span> <span class="operator">-&gt;</span> <span class="punctuation">(</span><span class="variable">q</span> <span class="operator">-</span> <span class="variable">r</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">)</span><span class="operator">/</span><span class="punctuation">(</span><span class="variable">q</span> <span class="operator">-</span> <span class="variable">qPrime</span><span class="punctuation">)</span><span class="operator">^</span><span class="number">2</span><span class="operator">,</span></span><br><span class="line">   <span class="variable">qHatPrime</span> <span class="operator">-&gt;</span> <span class="punctuation">(</span><span class="operator">-</span><span class="number">2</span> <span class="variable">q</span> <span class="operator">+</span> <span class="variable">qPrime</span> <span class="operator">+</span> <span class="variable">r</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">)</span><span class="operator">/</span><span class="punctuation">(</span><span class="variable">q</span> <span class="operator">-</span> <span class="variable">qPrime</span><span class="punctuation">)</span><span class="operator">^</span><span class="number">2</span></span><br><span class="line"><span class="punctuation">&#125;</span><span class="operator">;</span></span><br><span class="line"></span><br><span class="line"><span class="variable">sol2</span> <span class="operator">=</span> <span class="punctuation">&#123;</span></span><br><span class="line">   <span class="variable">rHat</span> <span class="operator">-&gt;</span> <span class="punctuation">(</span><span class="variable">alpha</span> <span class="variable">beta</span><span class="punctuation">)</span><span class="operator">/</span><span class="punctuation">(</span><span class="variable">lambda</span> <span class="operator">-</span> <span class="variable">beta</span> <span class="variable">q</span> <span class="operator">+</span> <span class="variable">beta</span> <span class="variable">qPrime</span><span class="punctuation">)</span><span class="operator">,</span></span><br><span class="line">   <span class="variable">qHat</span> <span class="operator">-&gt;</span> <span class="punctuation">(</span><span class="variable">alpha</span> <span class="variable">beta</span><span class="operator">^</span><span class="number">2</span> <span class="punctuation">(</span><span class="number">1</span> <span class="operator">+</span> <span class="variable">q</span> <span class="operator">-</span> <span class="number">2</span> <span class="variable">r</span> <span class="operator">+</span> <span class="variable">sigma</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="operator">/</span><span class="punctuation">(</span><span class="variable">lambda</span> <span class="operator">+</span> <span class="variable">beta</span> <span class="punctuation">(</span><span class="operator">-</span><span class="variable">q</span> <span class="operator">+</span> <span class="variable">qPrime</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="operator">^</span><span class="number">2</span><span class="operator">,</span></span><br><span class="line">   <span class="variable">qHatPrime</span> <span class="operator">-&gt;</span> <span class="variable">beta</span> <span class="operator">+</span> <span class="punctuation">(</span><span class="variable">alpha</span> <span class="variable">beta</span> <span class="punctuation">(</span><span class="variable">lambda</span> <span class="operator">+</span> <span class="variable">beta</span> <span class="punctuation">(</span><span class="operator">-</span><span class="number">1</span> <span class="operator">-</span> <span class="number">2</span> <span class="variable">q</span> <span class="operator">+</span> <span class="variable">qPrime</span> <span class="operator">+</span> <span class="number">2</span> <span class="variable">r</span> <span class="operator">-</span> <span class="variable">sigma</span><span class="operator">^</span><span class="number">2</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="operator">/</span><span class="punctuation">(</span><span class="variable">lambda</span> <span class="operator">+</span> <span class="variable">beta</span> <span class="punctuation">(</span><span class="operator">-</span><span class="variable">q</span> <span class="operator">+</span> <span class="variable">qPrime</span><span class="punctuation">)</span><span class="punctuation">)</span><span class="operator">^</span><span class="number">2</span></span><br><span class="line"><span class="punctuation">&#125;</span><span class="operator">;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">(* 对比化简：将 sol1 代回鞍点方程，看能否简化为 sol2 *)</span></span><br><span class="line"><span class="built_in">Simplify</span><span class="punctuation">[</span><span class="variable">sol1</span> <span class="operator">/.</span> <span class="variable">sol2</span><span class="operator">,</span> </span><br><span class="line"> <span class="built_in">Assumptions</span> <span class="operator">-&gt;</span> <span class="punctuation">&#123;</span><span class="variable">alpha</span> <span class="operator">&gt;</span> <span class="number">0</span><span class="operator">,</span> <span class="variable">beta</span> <span class="operator">&gt;</span> <span class="number">0</span><span class="operator">,</span> <span class="variable">lambda</span> <span class="operator">&gt;</span> <span class="number">0</span><span class="operator">,</span> <span class="variable">sigma</span> <span class="operator">&gt;=</span> <span class="number">0</span><span class="operator">,</span> </span><br><span class="line">   <span class="variable">r</span> ∈ <span class="built_in">Reals</span><span class="operator">,</span> <span class="variable">q</span> ∈ <span class="built_in">Reals</span><span class="operator">,</span> <span class="variable">qPrime</span> ∈ <span class="built_in">Reals</span><span class="punctuation">&#125;</span><span class="punctuation">]</span></span><br></pre></td></tr></table></figure></p>
+<p>得到迭代方程为： <span class="math display">$$\begin{aligned}
+\frac{\alpha \beta}{\lambda - \beta q + \beta q'} &amp;\;\;=\;\;
+-\frac{r}{\,q - q'} \, \\
+\frac{\alpha \beta^{2}\,\big(1 + q - 2r + \sigma^{2}\big)}{\big(\lambda
++ \beta(-q+q')\big)^{2}} &amp;\;\;=\;\; \frac{q - r^{2}}{(q - q')^{2}}
+\, \\
+\beta + \frac{\alpha \beta \,\big(\lambda + \beta(-1 - 2q + q' + 2r -
+\sigma^{2})\big)}{\big(\lambda + \beta(-q+q')\big)^{2}} &amp;\;\;=\;\;
+\frac{-2q + q' + r^{2}}{(q - q')^{2}}
+\end{aligned}$$</span></p>
+<p>先记 <span
+class="math inline"><em>Δ</em> ≡ <em>q</em>’ − <em>q</em></span>。</p>
+<ol type="1">
+<li>更新 <span class="math inline"><em>Δ</em></span></li>
+</ol>
+<p>由第1式： <span class="math display">$$ \quad
+\Delta^{\text{new}}\;=\;\frac{r^{(t)}\,\lambda}{\beta(\alpha-r^{(t)})}\  \tag{U1}$$</span>
+给定 <span class="math inline"><em>r</em><sup>(<em>t</em>)</sup></span>
+先算 <span class="math inline"><em>Δ</em><sup>new</sup></span>。</p>
+<ol start="2" type="1">
+<li>更新 <span class="math inline"><em>q</em></span></li>
+</ol>
+<p>把第2式整理为对 <span class="math inline"><em>q</em></span>
+的固定点： <span
+class="math display">$${q-r^2}\;=\;\alpha\Big(\frac{\beta\Delta}{\lambda+\beta\Delta}\Big)^2
+\Big(1+q-2r+\sigma^2\Big)$$</span> 定义<span
+class="math inline">$K\;\equiv\;\alpha\Big(\frac{\beta\Delta}{\lambda+\beta\Delta}\Big)^2,$</span>可解得
+<span class="math display">$$ \
+q^{\text{new}}\;=\;\frac{\,r^{2}+K\,(1-2r+\sigma^{2})\,}{\,1-K\,}\  \tag{U2}$$</span>
+注意这一步只用到 <span
+class="math inline"><em>r</em>, <em>Δ</em></span>，不需要旧的 <span
+class="math inline"><em>q</em></span>。</p>
+<ol start="3" type="1">
+<li>更新 <span class="math inline"><em>q</em><sup>′</sup></span></li>
+</ol>
+<p>最简便的是用 <span class="math inline"><em>Δ</em></span> 回填： <span
+class="math display"><em>q</em><sup>′</sup><sup>new</sup> = <em>q</em><sup>new</sup> + <em>Δ</em><sup>new</sup> </span></p>
+<ol start="4" type="1">
+<li>一种稳健的循环（带阻尼）</li>
+</ol>
+<p>给定初值 <span
+class="math inline"><em>r</em><sup>(0)</sup> ∈ (0, min {<em>α</em>, 1})</span>，循环：
+<span class="math display">$$\begin{aligned}
+&amp;\Delta^\star\leftarrow
+\frac{r^{(t)}\lambda}{\beta(\alpha-r^{(t)})},\quad
+K\leftarrow
+\alpha\Big(\frac{\beta\Delta^\star}{\lambda+\beta\Delta^\star}\Big)^2,\\
+&amp;q^\star\leftarrow
+\frac{r^{(t)2}+K(1-2r^{(t)}+\sigma^2)}{1-K},\qquad
+q’^\star\leftarrow q^\star+\Delta^\star,\\
+&amp;\text{（可选：用第3式的残差 } \mathcal R(r^{(t)}) \text{ 调整 }
+r)\\
+&amp;r^{(t+1)}\leftarrow (1-\eta)\,r^{(t)}+\eta\cdot
+\frac{\alpha\beta\,\Delta^\star}{\lambda+\beta\Delta^\star}\quad
+(\eta\in(0,1]) .
+\end{aligned}$$</span> • 若不想用方程(3)做校正，可以直接用 (U1)
+的左式更新 r（如上），通常加一点阻尼 $$会更稳。 •
+也可以把第3式写成一维残差 <span
+class="math inline"><em>g</em>(<em>r</em>) = 0</span>，每步做一次牛顿/割线更新
+<span class="math inline"><em>r</em></span>。</p>
+<ol start="5" type="1">
+<li>用第3式构造一维残差并更新 <span
+class="math inline"><em>r</em></span>（可替代 (U1)）</li>
+</ol>
+<p>先用 <span class="math inline"><em>r</em></span> 生成 <span
+class="math inline"><em>Δ</em>(<em>r</em>), <em>q</em>(<em>r</em>)</span>（按
+(U2) 里的 K 与 (U1) 的 <span class="math inline"><em>Δ</em></span>
+公式），再把 <span
+class="math display">$$g(r)\;\equiv\;\underbrace{\beta+\dfrac{\alpha\beta\,[\lambda+\beta(-1-q+\Delta(r)+2r-\sigma^2)]}{(\lambda+\beta\Delta(r))^2}}_{\text{LHS
+(3)}}
+\;-\;\underbrace{\Big(\frac{r^{2}-q(r)}{\Delta(r)^2}+\frac{1}{\Delta(r)}\Big)}_{\text{RHS(3)}}.$$</span>
+做一维根求解： <span class="math display">$$ r^{(t+1)} \;=\; r^{(t)} -
+\eta \,\frac{g(r^{(t)})}{g’(r^{(t)})}\ \ \text{或}\ \
+r^{(t+1)}=r^{(t)}-\eta\,\frac{g(r^{(t)})}{g(r^{(t)})-g(r^{(t-1)})}\,(r^{(t)}-r^{(t-1)}).$$</span>
+• 第一种是牛顿（需要数导，数值差分即可）； •
+第二种是割线（不需要导数），<span
+class="math inline"><em>η</em> ∈ (0, 1]</span> 为阻尼。</p>
+<p>收敛判据：$|r<sup>{(t+1)}-r</sup>{(t)}|+|q<sup>{(t+1)}-q</sup>{(t)}|+|q’<sup>{(t+1)}-q’</sup>{(t)}|&lt;$且
+<span
+class="math inline">|<em>g</em>(<em>r</em><sup>(<em>t</em> + 1)</sup>)| &lt; <em>ε</em></span>。</p>
+<h2 id="泛化误差">泛化误差</h2>
+<p>泛化误差为: <span class="math display">$$\begin{aligned}
+E_g &amp;= \Big\lang \Big( \frac{1}{\sqrt{N}} \sum_{i=1}^N (w_i - w_i^*)
+x_i^\mu \Big)^2 \Big\rangle_x \\
+&amp;= \Big\lang (v - u)^2 \Big\rangle_x \\
+&amp;= \mathrm{Var}(v)+\mathrm{Var}(u)-2\,\mathrm{Cov}(u,v)\\
+&amp;= 1 + q' - 2r
+\end{aligned}$$</span></p>
+<h1 id="实验与理论结果">实验与理论结果</h1>
+<p>通过迭代方程，得到双下降图像： <img src="./doubledecent.png" /></p>
+<p>实验得到，这里有一个tric，epoch一定要大： <img
+src="./double_decent.png" /></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Spin-Glass/" rel="tag"># Spin Glass</a>
+              <a href="/tags/Replica-Method/" rel="tag"># Replica Method</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/05/29/ai4sci/AISciAgree/AISciAgree/" rel="prev" title="Do Two AI Scientists Agree?">
+      <i class="fa fa-chevron-left"></i> Do Two AI Scientists Agree?
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">1.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%A0%94%E7%A9%B6%E4%BB%BB%E5%8A%A1"><span class="nav-number">2.</span> <span class="nav-text">研究任务：</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%89%AF%E6%9C%AC%E8%AE%A1%E7%AE%97"><span class="nav-number">3.</span> <span class="nav-text">副本计算</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%88%86%E5%B8%83%E5%8F%98%E4%B8%BA%E9%9A%90%E8%97%8F%E5%B1%82%E5%88%86%E5%B8%83"><span class="nav-number">3.1.</span> <span class="nav-text">数据分布变为隐藏层分布</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%86%B5%E9%A1%B9g_s"><span class="nav-number">3.2.</span> <span class="nav-text">熵项GS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%83%BD%E9%87%8F%E9%A1%B9g_e"><span class="nav-number">3.3.</span> <span class="nav-text">能量项GE</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E4%B8%BA%E7%AE%80%E6%B4%81%E7%9A%84%E5%81%9A%E6%B3%95"><span class="nav-number">3.3.1.</span> <span class="nav-text">更为简洁的做法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9E%8D%E7%82%B9%E6%96%B9%E7%A8%8B"><span class="nav-number">3.4.</span> <span class="nav-text">鞍点方程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%9B%E5%8C%96%E8%AF%AF%E5%B7%AE"><span class="nav-number">3.5.</span> <span class="nav-text">泛化误差</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%9E%E9%AA%8C%E4%B8%8E%E7%90%86%E8%AE%BA%E7%BB%93%E6%9E%9C"><span class="nav-number">4.</span> <span class="nav-text">实验与理论结果</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">renyixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">renyixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">309k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:41</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>

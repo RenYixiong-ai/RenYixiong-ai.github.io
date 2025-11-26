@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
@@ -9,8 +9,6 @@
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
   <link rel="mask-icon" href="/images/logo.svg" color="#222">
-  <meta name="google-site-verification" content="GgT5ZflbkwsNKpDm5Tou0_J9qmdMniAiIzZ84RQe5zM">
-  <meta name="msvalidate.01" content="07C0174F9E4B4B2C960172E0CDFB3DC9">
 
 <link rel="stylesheet" href="/css/main.css">
 
@@ -19,20 +17,20 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":true},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":false,"back2top":{"enable":false,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":{}},"algolia":{"hits":5,"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
   </script>
 
   <meta name="description" content="考虑到状态的演化，最直接的想法是通过经典力学通过拉格朗日量来构建经典的运动路径。如何处理的问题不是精确的状态，而是概率密度的分布，如何求概率密度分布的演化？路径积分则是十分自然的想法。将每一个小的状态，以任意的路径进行演化，最后得到最终转态的概率分布。这样处理的麻烦在于，不是每一条路径都是等价的，有一些路径发生的概率高一些，另一些则低一些。如何表示这样的概率分布，以及实际得到演化后的概率分布，则是">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Feynman path integrals">
 <meta property="og:url" content="https://renyixiong-ai.github.io/2024/05/26/Phys/Path_integrals/Path_integrals/index.html">
-<meta property="og:site_name" content="Yixiong&#39;s Blog">
+<meta property="og:site_name" content="renyixiong blog">
 <meta property="og:description" content="考虑到状态的演化，最直接的想法是通过经典力学通过拉格朗日量来构建经典的运动路径。如何处理的问题不是精确的状态，而是概率密度的分布，如何求概率密度分布的演化？路径积分则是十分自然的想法。将每一个小的状态，以任意的路径进行演化，最后得到最终转态的概率分布。这样处理的麻烦在于，不是每一条路径都是等价的，有一些路径发生的概率高一些，另一些则低一些。如何表示这样的概率分布，以及实际得到演化后的概率分布，则是">
-<meta property="og:locale" content="en_US">
+<meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://renyixiong-ai.github.io/2024/05/26/Phys/Path_integrals/Path_integrals/path_integral.png">
 <meta property="article:published_time" content="2024-05-26T07:18:00.000Z">
 <meta property="article:modified_time" content="2025-05-08T10:16:44.589Z">
-<meta property="article:author" content="Ren Yixiong">
+<meta property="article:author" content="renyixiong">
 <meta property="article:tag" content="Quantum Field Theory">
 <meta property="article:tag" content="Path Integrals">
 <meta property="article:tag" content="Path Integrals Monte Carlo">
@@ -48,11 +46,11 @@
     sidebar: "",
     isHome : false,
     isPost : true,
-    lang   : 'en'
+    lang   : 'zh-CN'
   };
 </script>
 
-  <title>Feynman path integrals | Yixiong's Blog</title>
+  <title>Feynman path integrals | renyixiong blog</title>
   
 
 
@@ -85,16 +83,18 @@
 
 <!-- hexo injector head_end start -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
 <!-- hexo injector head_end end --></head>
 
 <body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
+  <div class="container">
     <div class="headband"></div>
 
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="切换导航栏">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -105,14 +105,13 @@
 
     <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Yixiong's Blog</h1>
+      <h1 class="site-title">renyixiong blog</h1>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
 
   <div class="site-nav-right">
     <div class="toggle popup-trigger">
-        <i class="fa fa-search fa-fw fa-lg"></i>
     </div>
   </div>
 </div>
@@ -124,55 +123,24 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
-      <li class="menu-item menu-item-search">
-        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>Search
-        </a>
-      </li>
   </ul>
 </nav>
 
 
 
-  <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
-  <span class="search-icon">
-    <i class="fa fa-search"></i>
-  </span>
-  <div class="search-input-container">
-    <input autocomplete="off" autocapitalize="off"
-           placeholder="Searching..." spellcheck="false"
-           type="search" class="search-input">
-  </div>
-  <span class="popup-btn-close">
-    <i class="fa fa-times-circle"></i>
-  </span>
-</div>
-<div id="search-result">
-  <div id="no-result">
-    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
-  </div>
-</div>
-
-    </div>
-  </div>
 
 </div>
     </header>
 
     
-  <div class="back-to-top">
-    <i class="fa fa-arrow-up"></i>
-    <span>0%</span>
-  </div>
 
 
     <main class="main">
@@ -186,17 +154,17 @@
     
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/05/26/Phys/Path_integrals/Path_integrals/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Ren Yixiong">
+      <meta itemprop="name" content="renyixiong">
       <meta itemprop="description" content="">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Yixiong's Blog">
+      <meta itemprop="name" content="renyixiong blog">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
@@ -208,41 +176,41 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">发表于</span>
 
-              <time title="Created: 2024-05-26 15:18:00" itemprop="dateCreated datePublished" datetime="2024-05-26T15:18:00+08:00">2024-05-26</time>
+              <time title="创建时间：2024-05-26 15:18:00" itemprop="dateCreated datePublished" datetime="2024-05-26T15:18:00+08:00">2024-05-26</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2025-05-08 18:16:44" itemprop="dateModified" datetime="2025-05-08T18:16:44+08:00">2025-05-08</time>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-08 18:16:44" itemprop="dateModified" datetime="2025-05-08T18:16:44+08:00">2025-05-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
               </span>
-              <span class="post-meta-item-text">In</span>
+              <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
                   <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
                 </span>
             </span>
 
           <br>
-            <span class="post-meta-item" title="Symbols count in article">
+            <span class="post-meta-item" title="本文字数">
               <span class="post-meta-item-icon">
                 <i class="far fa-file-word"></i>
               </span>
-                <span class="post-meta-item-text">Symbols count in article: </span>
+                <span class="post-meta-item-text">本文字数：</span>
               <span>33k</span>
             </span>
-            <span class="post-meta-item" title="Reading time">
+            <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
-                <span class="post-meta-item-text">Reading time &asymp;</span>
-              <span>1:01</span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>30 分钟</span>
             </span>
 
         </div>
@@ -256,9 +224,9 @@
       
         <p>考虑到状态的演化，最直接的想法是通过经典力学通过拉格朗日量来构建经典的运动路径。如何处理的问题不是精确的状态，而是概率密度的分布，如何求概率密度分布的演化？路径积分则是十分自然的想法。将每一个小的状态，以任意的路径进行演化，最后得到最终转态的概率分布。这样处理的麻烦在于，不是每一条路径都是等价的，有一些路径发生的概率高一些，另一些则低一些。如何表示这样的概率分布，以及实际得到演化后的概率分布，则是本文要探讨的。</p>
 <p>当然，这只是一个简单的版本，需要更多的讨论。</p>
-<p>参考： * <a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/275827978">QM -
+<p>参考： * <a href="https://zhuanlan.zhihu.com/p/275827978">QM -
 路径积分 (Path Integral) PT. 1 - 基本构架</a> * <a
-target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/270684456">QM - 路径积分 (Path
+href="https://zhuanlan.zhihu.com/p/270684456">QM - 路径积分 (Path
 Integral) PT. 2 - 求解实例</a></p>
 <span id="more"></span>
 <h1 id="路径积分的基本构架">路径积分的基本构架</h1>
@@ -1071,7 +1039,7 @@ S^{\mathrm{c}}&amp;=\frac{m \omega}{2}\left\{\left(x^2+x_0^2\right) \cot
 <p><font color='red'>应该考虑相位了，但现在还没出现问题，之再说吧。详细讨论看上面引用的内容。</font></p>
 <h1 id="路径积分蒙特卡洛">路径积分蒙特卡洛</h1>
 <p>参考： * <a
-target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/509118112">路径积分蒙特卡洛
+href="https://zhuanlan.zhihu.com/p/509118112">路径积分蒙特卡洛
 PIMC</a></p>
 <p>考虑量子力学中的哈密顿量以及波函数：</p>
 <p><span class="math display">$$\begin{align}
@@ -1255,10 +1223,10 @@ class="math inline">ℏ = 1</span>进行无量纲化了。</p>
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
-          Table of Contents
+          文章目录
         </li>
         <li class="sidebar-nav-overview">
-          Overview
+          站点概览
         </li>
       </ul>
 
@@ -1274,7 +1242,7 @@ Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" hr
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">Ren Yixiong</p>
+  <p class="site-author-name" itemprop="name">renyixiong</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
@@ -1282,17 +1250,17 @@ Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" hr
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">51</span>
-          <span class="site-state-item-name">posts</span>
+          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">10</span>
-        <span class="site-state-item-name">categories</span>
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">67</span>
-        <span class="site-state-item-name">tags</span>
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span>
       </div>
   </nav>
 </div>
@@ -1322,19 +1290,19 @@ Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" hr
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">Ren Yixiong</span>
+  <span class="author" itemprop="copyrightHolder">renyixiong</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="Symbols count total">334k</span>
+    <span title="站点总字数">309k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="Reading time total">10:06</span>
+    <span title="站点阅读时长">4:41</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
 
         
@@ -1352,12 +1320,8 @@ Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" hr
 
   
   <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
 <script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
 
 
 <script src="/js/schemes/muse.js"></script>
@@ -1371,10 +1335,6 @@ Algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" hr
   
 
 
-
-
-  
-<script src="/js/local-search.js"></script>
 
 
 
