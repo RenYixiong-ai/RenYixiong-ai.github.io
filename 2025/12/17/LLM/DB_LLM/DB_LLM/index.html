@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"renyixiong-ai.github.io","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":false,"back2top":{"enable":false,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":{}},"algolia":{"hits":5,"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":false,"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.json"};
+  </script>
+
+  <meta name="description" content="研究神经网络的势能分布一般从损失函数的哈密顿量出发，然而损失函数一般是局域的分布，很难解释深度情况的。本文作者提供了一种全新的解析视角，通过对数据采样，依靠样本间的流动构造伪势能解释样本流动的原因。 Reference: * Detailed balance in large language model-driven agents * code * data">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Detailed balance in large language model-driven agents">
+<meta property="og:url" content="https://renyixiong-ai.github.io/2025/12/17/LLM/DB_LLM/DB_LLM/index.html">
+<meta property="og:site_name" content="renyixiong blog">
+<meta property="og:description" content="研究神经网络的势能分布一般从损失函数的哈密顿量出发，然而损失函数一般是局域的分布，很难解释深度情况的。本文作者提供了一种全新的解析视角，通过对数据采样，依靠样本间的流动构造伪势能解释样本流动的原因。 Reference: * Detailed balance in large language model-driven agents * code * data">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/12/17/LLM/DB_LLM/DB_LLM/potential.png">
+<meta property="og:image" content="https://renyixiong-ai.github.io/2025/12/17/LLM/DB_LLM/DB_LLM/experiments.png">
+<meta property="article:published_time" content="2025-12-17T01:17:00.000Z">
+<meta property="article:modified_time" content="2025-12-28T12:10:51.129Z">
+<meta property="article:author" content="renyixiong">
+<meta property="article:tag" content="Machine Learning">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://renyixiong-ai.github.io/2025/12/17/LLM/DB_LLM/DB_LLM/potential.png">
+
+<link rel="canonical" href="https://renyixiong-ai.github.io/2025/12/17/LLM/DB_LLM/DB_LLM/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Detailed balance in large language model-driven agents | renyixiong blog</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --></head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">renyixiong blog</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2025/12/17/LLM/DB_LLM/DB_LLM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="renyixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="renyixiong blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Detailed balance in large language model-driven agents
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2025-12-17 09:17:00" itemprop="dateCreated datePublished" datetime="2025-12-17T09:17:00+08:00">2025-12-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-12-28 20:10:51" itemprop="dateModified" datetime="2025-12-28T20:10:51+08:00">2025-12-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/Large-Language-models/" itemprop="url" rel="index"><span itemprop="name">Large Language models</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>研究神经网络的势能分布一般从损失函数的哈密顿量出发，然而损失函数一般是局域的分布，很难解释深度情况的。本文作者提供了一种全新的解析视角，通过对数据采样，依靠样本间的流动构造伪势能解释样本流动的原因。</p>
+<p>Reference: * <a href="https://arxiv.org/pdf/2512.10047">Detailed
+balance in large language model-driven agents</a> * <a
+href="https://github.com/SonnyNondegeneracy/detialed-balance-llm/tree/main">code</a>
+* <a
+href="https://huggingface.co/datasets/Nondegeneracy/detailed-balance-llm">data</a></p>
+<span id="more"></span>
+<p>之前和作者聊过，提出该工作的动机是因为其之前的LLM+符号回归的工作，核心思路是将之前遗传算法等算子切换为LLM，从中发现LLM似乎重视提出几个相似的算子。由此提出了势能的想法。这是一篇很有意思的工作，从唯相的角度研究势能分布。在细致阅读前有这样几个问题：
+1. 为什么是细致平衡？众所周知，细致平衡不是平衡态的必要条件。 2.
+具体的实现细节我还没有想到，是如何从状态转移提取势能。 3.
+大模型返回的样本，是否会收到提示词的影响？即提示词是否会改变势能的形状？
+4. 这种转移背后对应的物理含义是什么？势能表示的是什么势能？</p>
+<h1 id="theory">Theory</h1>
+<figure>
+<img src="./potential.png" alt="示意图" />
+<figcaption aria-hidden="true">示意图</figcaption>
+</figure>
+<p>给模型一串输入让模型按照设定的约束给出输出，这样的一个过程认为是从一个采样点跳跃到另一个采样点<span
+class="math inline">𝒯(<em>g</em> ← <em>f</em>) = <em>P</em>(<em>g</em>|<em>f</em>)</span>。上图是根据约束的样本空间表面，从一个点到另一个点认为是一个跳跃。</p>
+<p>这个约束是将26个字母进行标号，要求给出的词和为100。具体的prompt为：
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">prefix = <span class="string">&quot;If the 26 English letters A B C D E F G H I J K L M N O P Q R S T U V W X Y Z correspond to the numbers 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 respectively, then ~ Knowledge K + N + O + W + L + E + D + G + E = 11 + 14 + 15 + 23 + 12 + 5 + 4 +7 +5 = 96% Workhard W + O + R + K + H + A + R + D = 23 + 15 + 18 + 11 + 8 + 1 +18 + 4 = 98% This means that knowledge and hard work can contribute up to 96% and 98% to our lives. Is it Luck? L + U + C+ K = 12 + 21 + 3 + 11 = 47% Is it Love? L + O+ V + E = 12 +15+ 22 + 5 = 54% It seems that these things we usually consider important do not play the most crucial role. So, what can determine our life at 100%? Is it Money? M + O + N + E + Y = 13 +15 +14 + 5 + 25 = 72% It seems not.&quot;</span></span><br><span class="line"></span><br><span class="line">prompt = (</span><br><span class="line">    f<span class="string">&quot;&#123;prefix&#125;&quot;</span></span><br><span class="line">    f<span class="string">&quot;An example word is &#123;words&#125;, whose letters add up to 100%. &quot;</span></span><br><span class="line">    <span class="string">&quot;Please give me a new word whose letters add up to 100%. &quot;</span></span><br><span class="line">    <span class="string">&quot;Only provide the word without any additional explanation.&quot;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<p>作者假设采样空间是平衡态，采用了较强的平衡假设——细致平衡条件，从<span
+class="math inline"><em>f</em> → <em>g</em></span>以及<span
+class="math inline"><em>g</em> → <em>f</em></span>之间应当满足<span
+class="math inline"><em>P</em>(<em>g</em>|<em>f</em>) = <em>P</em>(<em>f</em>｜<em>g</em>)</span>。</p>
+<p>假设这样的跳转，类似于运动的变化，运动能量来源于某种势能“<span
+class="math inline"><em>V</em></span>”（动力学过程中的Lyapunov
+function），定义这种驱动项为<span
+class="math inline"><em>K</em> (<em>V</em>(<em>f</em>) − <em>V</em>(<em>g</em>))</span>。其中<span
+class="math inline"><em>K</em></span>是非凸函数，本文采用<span
+class="math inline"><em>K</em>(<em>x</em>) = exp (−<em>β</em><em>x</em>/2)</span>。从而定义作用量<span
+class="math inline"><em>S</em></span>为：</p>
+<p><span class="math display">$$\begin{align}
+  \mathcal{S} = \int_{f\in \mathcal{C}}\int_{g\in \mathcal{C}}
+\mathcal{T}(g\gets f)\, K\!\left(V(f)-V(g)\right)\, Df\, Dg
+\end{align}$$</span></p>
+<p>通过对作用量变分<span
+class="math inline"><em>δ</em>𝒮 = 0</span>得到： <span
+class="math display">$$\begin{align}
+  \int_{g \in \mathcal{C}} \mathcal{T}(g\gets f)\,
+K'\!\left(V_{\mathcal{T}}(f)-V_{\mathcal{T}}(g)\right)\, Dg\nonumber -
+\int_{h \in \mathcal{C}} \mathcal{T}(f\gets h)\,
+K'\!\left(V_{\mathcal{T}}(h)-V_{\mathcal{T}}(f)\right)\, Dh = 0
+\end{align}$$</span></p>
+<p>接下来通过训练，给每一个状态标出一个标量，最小化变分量，从而使其满足细致平衡条件。</p>
+<h1 id="experiments">Experiments</h1>
+<p><img src="./experiments.png" /></p>
+<p>上图给出了不同结果之间的距离，以及跳到标量最低的值。</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/09/17/Phys/replica_double_decent/note/" rel="prev" title="Replica in Double Decent">
+      <i class="fa fa-chevron-left"></i> Replica in Double Decent
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#theory"><span class="nav-number">1.</span> <span class="nav-text">Theory</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#experiments"><span class="nav-number">2.</span> <span class="nav-text">Experiments</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">renyixiong</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">64</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">renyixiong</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">311k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">4:43</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+</body>
+</html>
