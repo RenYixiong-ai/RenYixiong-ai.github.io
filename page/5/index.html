@@ -146,6 +146,211 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/03/08/RL/PPO/PPO/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="renyixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="renyixiong blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/03/08/RL/PPO/PPO/" class="post-title-link" itemprop="url">Policy Gradients In Reinforcement</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-08 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-08T00:00:00+08:00">2024-03-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-08 18:20:12" itemprop="dateModified" datetime="2025-05-08T18:20:12+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>17k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>15 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><font color='red'>文中有一些问题仍未处理，缺失具体代码的解读，对于TRPO算法的认知仍然存在不清楚的地方，高阶梯度怎么算的</font></p>
+<h1 id="abstract">Abstract</h1>
+<p>这是一篇关于策略梯度算法的总结。首先给出梯度策略，介绍其基本含义，但是初始方案存在一个问题，可以知道梯度变化的方向，不知道梯度的步长。然后，提出自然梯度算法，通过加入约束的方案计算出梯度的步长。接下来，Trust
+Region Policy
+Optimization（TRPO）算法在此基础上进一步优化，进一步提出约束，使得满足该约束条件的样本可以稳定提升策略性能。最后，虽然TRPO十分优秀，但是大量的计算使其效率不高，因此进行简化提出Proximal
+Policy Optimization（PPO）算法。</p>
+<p><strong>基于值函数的强化学习</strong>：通过递归，求解bellman
+方程维护Q值（离散列表或者神经网络），每次选择动作会选择该状态下对应Q值最大的动作。使得期望奖励值最大。</p>
+<p><strong>基于策略的强化学习</strong>：不再通过价值函数确定动作，而是直接学习策略本身，通过一组参数<span
+class="math inline"><em>θ</em></span>对策略进行参数化，并通过神经网络优化<span
+class="math inline"><em>θ</em></span>。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/08/RL/PPO/PPO/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="renyixiong">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="renyixiong blog">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/" class="post-title-link" itemprop="url">Neural Network Diffusion</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-03-04 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-04T00:00:00+08:00">2024-03-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2025-05-08 18:09:26" itemprop="dateModified" datetime="2025-05-08T18:09:26+08:00">2025-05-08</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Machine-Learning/" itemprop="url" rel="index"><span itemprop="name">Machine Learning</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>824</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="introduction">Introduction</h1>
+<p>这篇文章的主要任务是，利用Diffusion
+Model生成具备高表现能力的神经网络参数。</p>
+<p>利用 autoencoder 和 laten diffusion model
+两个主要部件，其中autoencoder将网络参数进行提取，diffusion
+model再进行训练，然后再将训练好的模型进行解码。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2024/03/04/DL/Neural_Network_Diffusion/Neural_Network_Diffusion/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2024/02/29/DL/ViT_ViViT/ViT_ViViT/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1022,466 +1227,6 @@ and RSB solutions for SK model with spin-S</a></p>
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2022/11/20/Phys/SK_model/SK_model/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="renyixiong">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="renyixiong blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/11/20/Phys/SK_model/SK_model/" class="post-title-link" itemprop="url">Sherrington-Kirkpatrick Model</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-11-20 21:37:00" itemprop="dateCreated datePublished" datetime="2022-11-20T21:37:00+08:00">2022-11-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-04-03 16:43:45" itemprop="dateModified" datetime="2025-04-03T16:43:45+08:00">2025-04-03</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>20k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>18 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>利用复本方法计算 Sherrington-Kirkpatrick（SK）
-模型。目的是掌握和熟悉复本方法的使用。</p>
-<p>Reference: * Statistical Physics of Spin Glasses and Information
-Processing. Nishimori * <a
-href="https://hzshan.github.io/replica_method_in_SK_model.pdf">Replica
-calculations for the SK model</a>笔误有点多</p>
-<p>Link: * <a href="/2022/11/12/Phys/Hopfield/Hopfield/" title="Hopfield Model">Hopfield Model</a> * <a href="/2022/11/13/Phys/replica/replica/" title="Replica">Replica</a> * <a href="/2022/11/20/Phys/SK_model/SK_model1/" title="The Parisi solution of Sherrington-Kirkpatrick Model">The Parisi solution of Sherrington-Kirkpatrick Model</a></p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2022/11/20/Phys/SK_model/SK_model/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://renyixiong-ai.github.io/2022/11/15/Phys/Hopfield/Hopfield3/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="renyixiong">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="renyixiong blog">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2022/11/15/Phys/Hopfield/Hopfield3/" class="post-title-link" itemprop="url">Hopfield Model 相图</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2022-11-15 22:37:00" itemprop="dateCreated datePublished" datetime="2022-11-15T22:37:00+08:00">2022-11-15</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-05-08 18:45:38" itemprop="dateModified" datetime="2025-05-08T18:45:38+08:00">2025-05-08</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Physics/" itemprop="url" rel="index"><span itemprop="name">Physics</span></a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="far fa-file-word"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>9.1k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="far fa-clock"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>8 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="phase-diagram">Phase Diagram</h1>
-<p>根据<a href="/2022/11/14/Phys/Hopfield/Hopfield1/" title="Hopfield 自由能求解">“Hopfield 自由能”</a>中的讨论，可知：</p>
-<p><span class="math display">$$\begin{align}
-&amp; q=\int D z \tanh ^2 \beta(\sqrt{\alpha r} z+m) \label{860} \\
-&amp; m=\int D z\langle\xi \tanh \beta(\sqrt{\alpha r} z+m
-\xi)\rangle=\int D z \tanh \beta(\sqrt{\alpha r} z+m) \label{861} \\
-&amp; r=\frac{q}{(1-\beta+\beta q)^2} \label{862}\\
-\end{align}$$</span></p>
-<p>通过数值求解 <span
-class="math inline">$\eqref{860},\eqref{861},\eqref{862}$</span>
-可以得到Hopfield的相图：</p>
-<figure>
-<img src="./diagram.png" alt="diagram" />
-<figcaption aria-hidden="true">diagram</figcaption>
-</figure>
-<p>在高温的情况下，热噪音阻碍了模式恢复的过程，因此<span
-class="math inline"><em>m</em> = 0, <em>q</em> = 0, <em>r</em> = 0</span>；当温度下降，参数开始在临界线<span
-class="math inline"><em>T</em><sub><em>g</em></sub></span>不稳定，可以通过<span
-class="math inline">$\eqref{860}$</span>分析得到；随着温度继续下降，Spin
-Glass相变成亚稳定态，相变线<span
-class="math inline"><em>T</em><sub><em>M</em></sub></span>，恢复的模式是局域稳定的，这个相变是一阶相变。当记忆率下降，转变为稳定的态，对应相变线为<span
-class="math inline"><em>T</em><sub><em>c</em></sub></span>。</p>
-<p>在温度<span
-class="math inline"><em>T</em> = 0</span>的时候，每个自旋的平均熵值为<span
-class="math inline">$S=-\left.\frac{\partial f}{\partial T}\right|_{T
-\rightarrow 0}=-\frac{1}{2} \alpha[\ln (1-C)+C
-/(1-C)]$</span>，其中<span
-class="math inline"><em>C</em> = <em>β</em>(1 − <em>q</em>)</span>，可知自旋平均值是负数，这是非物理的。</p>
-<h1 id="hopfield-model-with-arbitrary-hebbian-length">Hopfield Model
-with Arbitrary Hebbian Length</h1>
-<p>Hebbian learning
-是一种学习算法和理论，用于解释神经网络中的突触可塑性。其核心思想可以用一句话概括，即“同步触发的神经元会连线在一起”（“Cells
-that fire together, wire together”）。这个概念最早由加拿大心理学家Donald
-Hebb在1949年提出，故称为Hebbian学习。</p>
-<p>具体来说，Hebbian学习的基本原则如下：</p>
-<ol type="1">
-<li><p><strong>联结权重的更新</strong>：如果一个神经元A经常且重复地激活神经元B，那么神经元A和神经元B之间的突触连接会变得更强。这意味着两个神经元之间的联结权重会增加。</p></li>
-<li><p><strong>时间一致性</strong>：为了使联结权重增加，神经元A的发火必须在神经元B的发火之前或同时发生。这种时间上的一致性被认为是形成记忆和学习的基础。</p></li>
-<li><p><strong>局部性</strong>：Hebbian学习是一种局部学习规则，即每个突触的权重更新只依赖于连接的两个神经元的活动，而不依赖于整个网络的状态。</p></li>
-</ol>
-<p>在数学上，Hebbian学习规则可以表示为：</p>
-<p><span class="math display">$$\begin{align}
-\Delta w_{ij} = \eta x_i y_j
-\end{align}$$</span></p>
-<p>其中，<span
-class="math inline"><em>Δ</em><em>w</em><sub><em>i</em><em>j</em></sub></span>
-表示神经元 <span class="math inline"><em>i</em></span> 和神经元 <span
-class="math inline"><em>j</em></span> 之间的突触权重变化，<span
-class="math inline"><em>η</em></span> 是学习率，<span
-class="math inline"><em>x</em><sub><em>i</em></sub></span> 和 <span
-class="math inline"><em>y</em><sub><em>j</em></sub></span> 分别是神经元
-<span class="math inline"><em>i</em></span> 和神经元 <span
-class="math inline"><em>j</em></span> 的激活状态。</p>
-<p>Hebbian学习在神经科学和人工神经网络领域都有重要影响，特别是在理解神经网络如何通过经验和环境进行学习和调整方面。</p>
-<p>Hebbian strength
-指的是神经元之间突触连接的强度，定义如下的神经元权重：</p>
-<p><span class="math display">$$\begin{align}
-J_{i j}=\frac{1}{N} \sum_{\mu=1}^P\left[c \xi_i^\mu \xi_j^\mu+\gamma
-\sum_{r=1}^d\left(\xi_i^\mu \xi_j^{\mu+r}+\xi_i^{\mu+r}
-\xi_j^\mu\right)\right]
-\end{align}$$</span></p>
-<p>其中<span class="math inline"><em>c</em></span>是标准Hebbian
-strength；<span
-class="math inline"><em>γ</em></span>是不同记忆模式之间的强度；<span
-class="math inline"><em>d</em></span>是模型的Hebbian
-长度，之前讨论的是<span
-class="math inline"><em>d</em> = 1</span>的情形，只记忆其中一个模式，<span
-class="math inline"><em>d</em> = 0</span>是标准的Hopfield Model。<span
-class="math inline"><em>ξ</em><sub><em>i</em></sub><sup><em>μ</em></sup></span>是二值变量，例如<span
-class="math inline">$p\left(\xi_i^\mu= \pm 1\right)=\frac{1}{2}
-\delta\left(\xi_i^\mu+1\right)+\frac{1}{2}
-\delta\left(\xi_i^\mu-1\right)$</span>。讨论的是<span
-class="math inline"><em>P</em></span>与<span
-class="math inline"><em>N</em></span>的极限情形，<span
-class="math inline">$\alpha=\frac{P}{N}$</span>是memory load。</p>
-<h2 id="computation-of-the-disorder-averaged-free-energy">Computation of
-the Disorder-Averaged Free Energy</h2>
-<p>将<span class="math inline"><strong>J</strong></span>重新写为：</p>
-<p><span class="math display">$$\begin{align}
-\mathbf{J}&amp;=\frac{1}{N} \xi^{\mathrm{T}} \mathbf{X} \xi \\
-X_{\mu \eta} &amp; =c \delta_{\mu \eta}+\gamma
-\sum_{r=1}^d\left(\delta_{\mu,(\eta+r) \bmod P}+\delta_{\mu,(\eta-r)
-\bmod P}\right) \\
-&amp; =(c-\gamma) \delta_{\mu \eta}+\gamma \sum_{r=-d}^d
-\delta_{\mu,(\eta+r) \bmod P}
-\end{align}$$</span></p>
-<p><span class="math inline"><strong>X</strong></span>的第<span
-class="math inline"><em>m</em></span>个本征值为，<a
-href="https://ieeexplore.ieee.org/document/8187426">解的思路</a>： <span
-class="math display">$$\begin{align}
-\lambda_m&amp;=\sum_{k=0}^{P-1} X_{1(k+1)} e^{-2 \pi i m k / P} \\
-&amp; =\sum_{k=0}^{P-1} X_{1(k+1)} \cos \left(2 \pi \frac{m k}{P}\right)
-\\
-&amp; =\sum_{k=0}^{P-1}\left[c \delta_{0 k}+\gamma
-\sum_{r=1}^d\left(\delta_{0,(k+r) \bmod P}+\delta_{0,(k-r) \bmod
-P)}\right] \cos \left(2 \pi \frac{m k}{P}\right)\right. \\
-&amp; =c+\gamma \sum_{r=1}^d\left[\cos \left(-2 \pi \frac{m
-r}{P}\right)+\cos \left(2 \pi \frac{m r}{P}\right)\right] \\
-&amp; =c+2 \gamma \sum_{r=1}^d \cos \left(2 \pi \frac{m r}{P}\right)
-\end{align}$$</span> 其中<span
-class="math inline"><em>m</em> = 0, 1, …, <em>P</em> − 1</span>。</p>
-<p>Hamiltonian和配分函数为： <span class="math display">$$\begin{align}
-\mathcal{H}(\mathbf{s})&amp;=-\frac{1}{2} \sum_{i \neq j} J_{i j} s_i
-s_j \\
-Z&amp;=\operatorname{Tr} \exp \left[\frac{\beta}{2 N}
-\mathbf{s}^{\mathrm{T}} \boldsymbol{\xi}^{\mathrm{T}} \mathbf{X}
-\boldsymbol{\xi} \mathbf{s}\right]
-\end{align}$$</span></p>
-<p>其中 <span class="math inline">Tr</span> 表示对分立 <span
-class="math inline"><strong>s</strong></span> 的求和。使用复本技巧：
-<span class="math display">$$\begin{align}
-\langle\ln Z\rangle=\lim _{n \rightarrow 0} \frac{\ln \left\langle
-Z^n\right\rangle}{n},
-\end{align}$$</span> 其中<span class="math inline">⟨⋅⟩</span>表示对<span
-class="math inline"><strong>ξ</strong></span>的求和。因此有： <span
-class="math display">$$\begin{align}
-Z^n=\operatorname{Tr} \exp \left[\frac{\beta}{2 N}
-\sum_{a=1}^n\left(\mathbf{s}^a\right)^{\mathrm{T}}
-\boldsymbol{\xi}^{\mathrm{T}} \mathbf{X} \boldsymbol{\xi}
-\mathbf{s}^a\right] .
-\end{align}$$</span></p>
-<p>考虑<span
-class="math inline"><em>S</em></span>个凝聚（foreground）模式<span
-class="math inline"><em>P</em> − <em>S</em></span>个非凝聚（background）模式。<font color='red'>这里这两个模式的类别，表示什么含义？每次恢复的模式不应该只有一个么？</font>根据以上定义，可以将<span
-class="math inline"><strong>X</strong></span>分为： <span
-class="math display">$$\begin{align}
-\mathbf{X}=\left[\begin{array}{ll}
-\mathbf{X}_{F F} &amp; \mathbf{X}_{F B} \\
-\mathbf{X}_{B F} &amp; \mathbf{X}_{B B}
-\end{array}\right]
-\end{align}$$</span> 其中 <span
-class="math inline"><strong>X</strong><sub><em>F</em><em>F</em></sub> ∈ ℝ<sup><em>S</em> × <em>S</em></sup>, <strong>X</strong><sub><em>B</em><em>F</em></sub><sup>T</sup> = <strong>X</strong><sub><em>F</em><em>B</em></sub> ∈ ℝ<sup><em>S</em> × (<em>P</em> − <em>S</em>)</sup></span>
-and <span
-class="math inline"><strong>X</strong><sub><em>B</em><em>B</em></sub> ∈ ℝ<sup>(<em>P</em> − <em>S</em>) × (<em>P</em> − <em>S</em>)</sup></span>。</p>
-<p>将<span
-class="math inline"><strong>X</strong><sub><em>B</em><em>B</em></sub></span>
-对角化 <span
-class="math inline"><strong>X</strong><sub><em>B</em><em>B</em></sub><sup><em>μ</em><em>ν</em></sup> = ∑<sub><em>σ</em></sub><em>λ</em><sub><em>σ</em></sub><em>η</em><sub><em>μ</em></sub><sup><em>σ</em></sup><em>η</em><sub><em>ν</em></sub><sup><em>σ</em></sup></span>，其中
-<span class="math inline"><em>λ</em><sub><em>σ</em></sub></span> 与
-<span
-class="math inline"><em>η</em><sub><em>μ</em></sub><sup><em>σ</em></sup></span>
-是本征值与本征态。</p>
-<p>使用Hubbard-Stratonovich transformation：<span
-class="math inline">$\exp \left[\frac{1}{2} b^2\right]=$</span> <span
-class="math inline">∫<em>D</em><em>x</em>exp [±<em>b</em><em>x</em>]</span>,
-其中 <span class="math inline">$D x=\frac{1}{\sqrt{2 \pi}} \exp
-\left(-\frac{x^2}{2}\right) d x$</span>，因此有： <span
-class="math display">$$
-\begin{align}
-Z^n=&amp;\operatorname{Tr} \exp \left[ \frac{\beta}{2 N} \sum_{a, i, j,
-\mu \in B, v \in B} s_i^a \xi_i^\mu X_{\mu \nu} \xi_j^v
-s_j^a+\frac{\beta}{N} \sum_{a, i, j, \mu \in B, v \in F} s_i^a \xi_i^\mu
-X_{\mu \nu} \xi_j^v s_j^a  +\frac{\beta}{2 N} \sum_{a, i, j, \mu \in F,
-v \in F} s_i^a \xi_i^\mu X_{\mu \nu} \xi_j^v s_j^a\right] \\
-=&amp;\operatorname{Tr} \exp  {\left[\frac{\beta}{2 N} \sum_{a, \sigma}
-\lambda_\sigma\left(\sum_{i, \mu \in B} s_i^a \xi_i^\mu
-\eta_\mu^\sigma\right)^2+\frac{\beta}{N} \sum_{a, i, j, \mu \in B, v \in
-F} s_i^a \xi_i^\mu X_{\mu \nu} \xi_j^v s_j^a +\frac{\beta}{2 N} \sum_{a,
-i, j, \mu \in F, v \in F} s_i^a \xi_i^\mu X_{\mu \nu} \xi_j^\nu
-s_j^a\right]} \\
-= &amp; \operatorname{Tr} \prod_{a, \sigma} \int D x_\sigma^a \exp
-\left[\sum_{i, \mu \in B} \frac{\xi_i^\mu}{\sqrt{N}}\left(\sum_{a,
-\sigma} s_i^a \eta_\mu^\sigma \sqrt{\beta \lambda_\sigma}
-x_\sigma^a+\frac{\beta}{\sqrt{N}} \sum_{a, j, v \in F} s_i^a X_{\mu \nu}
-\xi_j^v s_j^a\right)+\frac{\beta}{2 N} \sum_{a, i, j, \mu \in F, v \in
-F} s_i^a \xi_i^\mu X_{\mu \nu} \xi_j^v s_j^a\right]
-\end{align}
-$$</span></p>
-<p>定义： <span class="math display">$$\begin{align}
-\Phi_B=&amp;\exp \left[\sum_{i, \mu \in B}
-\frac{\xi_i^\mu}{\sqrt{N}}\left(\sum_{a, \sigma} s_i^a \eta_\mu^\sigma
-\sqrt{\beta \lambda_\sigma} x_\sigma^a+\frac{\beta}{\sqrt{N}} \sum_{a,
-j, v \in F} s_i^a X_{\mu \nu} \xi_j^v s_j^a\right)\right] \\
-\Phi_F=&amp;\exp \left[\frac{\beta}{2 N} \sum_{a, i, j, \mu \in F, v \in
-F} s_i^a \xi_i^\mu X_{\mu \nu} \xi_j^v s_j^a\right]
-\end{align}$$</span></p>
-<p>计算无序平均<span
-class="math inline">{<em>ξ</em><sub><em>i</em></sub><sup><em>μ</em></sup>}</span>，可以有：
-<span class="math display">$$\begin{align}
-\left\langle Z^n\right\rangle=\left\langle\operatorname{Tr} \prod_{a,
-\sigma} \int D x_\sigma^a \Phi_B \Phi_F\right\rangle
-\end{align}$$</span></p>
-<p>首先分析<span
-class="math inline">⟨<em>Φ</em><sub><em>B</em></sub>⟩</span>，结合两个序参量<span
-class="math inline">$q_{a b}=\frac{1}{N} \sum_i^N s_i^a s_i^b
-\quad\text{for}\quad a \neq b$</span> 和 <span
-class="math inline">$m_\mu^a=\frac{1}{N} \sum_i \xi_i^\mu s_i^a$</span>
-有： <span class="math display">$$\begin{aligned}
-\left\langle\Phi_B\right\rangle=&amp;\exp \left\{\frac{1}{2 N} \sum_{i,
-\mu \in B}\left[\sum_a s_i^a\left(\sum_\sigma \eta_\mu^\sigma
-\sqrt{\beta \lambda_\sigma} x_\sigma^a+\frac{\beta}{\sqrt{N}} \sum_{j, v
-\in F} X_{\mu \nu} \xi_j^v s_j^a\right)\right]^2\right\} \\
-\left\langle\Phi_B\right\rangle= &amp; \int \prod_{a \neq b} \frac{d
-q_{a b} d \hat{q}_{a b}}{2 \pi / N} \prod_{a, \mu \in F} \frac{d m_\mu^a
-d \hat{m}_\mu^a}{2 \pi / N} \\
-&amp; \times \exp \left[-\frac{1}{2} N \sum_{a \neq b} \hat{q}_{a b}
-q_{a b}+\frac{1}{2} \sum_{a \neq b} \hat{q}_{a b} \sum_i s_i^a s_i^b-N
-\sum_{a, \mu \in F} m_\mu^a \hat{m}_\mu^a+\sum_{a, \mu \in F}
-\hat{m}_\mu^a \sum_i \xi_i^\mu s_i^a\right] \\
-&amp; \times \exp \left[\frac{1}{2} \sum_{\mu \in B}
-\sum_a\left(\sum_\sigma \eta_\mu^\sigma \sqrt{\beta \lambda_\sigma}
-x_\sigma^a+\beta \sqrt{N} \sum_{\nu \in F} X_{\mu \nu}
-m_v^a\right)^2\right] \\
-&amp; \times \exp \left[\frac{1}{2} \sum_{\mu \in B} \sum_{a \neq b}
-q_{a b}\left(\sum_\sigma \eta_\mu^\sigma \sqrt{\beta \lambda_\sigma}
-x_\sigma^a+\beta \sqrt{N} \sum_{\nu \in F} X_{\mu \nu}
-m_v^a\right)\right. \\
-&amp; \left.\times\left(\sum_\sigma \eta_\mu^\sigma \sqrt{\beta
-\lambda_\sigma} x_\sigma^b+\beta \sqrt{N} \sum_{\nu \in F} X_{\mu \nu}
-m_v^b\right)\right]
-\end{aligned}$$</span></p>
-<p>再结合<span
-class="math inline"><em>δ</em></span>函数傅里叶变换与复本对称的应用：</p>
-<p><span class="math display">$$
-\begin{aligned}
-\left\langle\Phi_B\right\rangle=&amp;\int \frac{d q d \hat{q}}{(2 \pi /
-N)^{n(n-1)}} \frac{d m d \hat{m}}{(2 \pi / N)^{n S}}-N n \sum_{\mu \in
-F} m_\mu \hat{m}_\mu \exp \left[-\frac{1}{2} N n(n-1) \hat{q} q
-\quad+\frac{1}{2} \hat{q} \sum_{a \neq b} \sum_i s_i^a s_i^b+\sum_{a,
-\mu \in F} \hat{m}_\mu \sum_i \xi_i^\mu s_i^a\right] \exp \left[\frac {
-1 } { 2 } \sum _ { \mu \in B } \sum _ { a } \left(\sum_\sigma
-\eta_\mu^\sigma \sqrt{\beta \lambda_\sigma}
-x_\sigma^a\right.\left.\quad+\beta \sqrt{N} \sum_{\nu \in F} X_{\mu \nu}
-m_v\right)^2\right] \\
-&amp;\times \exp \left[\frac{q}{2} \sum_{\mu \in B} \sum_{a \neq
-b}\left(\sum_\sigma \eta_\mu^\sigma \sqrt{\beta \lambda_\sigma}
-x_\sigma^a+\beta \sqrt{N} \sum_{v \in F} X_{\mu \nu} m_\nu\right)
-\times\left(\sum_\sigma \eta_\mu^\sigma \sqrt{\beta \lambda_\sigma}
-x_\sigma^b+\beta \sqrt{N} \sum_{v \in F} X_{\mu \nu} m_v\right)\right]
-\\
-=&amp;\int \frac{d q d \hat{q}}{(2 \pi / N)^{n(n-1)}} \frac{d m d
-\hat{m}}{(2 \pi / N)^{n S}} \exp \left[-\frac{1}{2} N n(n-1) \hat{q}
-q+\frac{1}{2} \hat{q} \sum_{a \neq b} \sum_i s_i^a s_i^b-N n \sum_{\mu
-\in F} m_\mu \hat{m}_\mu +\sum_{a, \mu \in F} \hat{m}_\mu \sum_i
-\xi_i^\mu s_i^a\right] \\
-&amp;\times \exp \left[\frac{1-q}{2} \sum_{\mu \in B}
-\sum_a\left(\sum_\sigma \eta_\mu^\sigma \sqrt{\beta \lambda_\sigma}
-x_\sigma^a+\beta \sqrt{N} \sum_{\nu \in F} X_{\mu \nu}
-m_v\right)^2\right] \\
-&amp; \times \exp \left[\frac{q}{2} \sum_{\mu \in B}\left(\sum_{a,
-\sigma} \eta_\mu^\sigma \sqrt{\beta \lambda_\sigma} x_\sigma^a+\beta n
-\sqrt{N} \sum_{\nu \in F} X_{\mu \nu} m_\nu\right)^2\right] \\
-= &amp; \int \frac{d q d \hat{q}}{(2 \pi / N)^{n(n-1)}} \frac{d m d
-\hat{m}}{(2 \pi / N)^{n S}} \prod_{\mu, a} D y_\mu^a \prod_\mu D z_\mu
-\\
-&amp; \times \exp \left[-\frac{1}{2} N n(n-1) \hat{q} q+\frac{1}{2}
-\hat{q} \sum_{a \neq b} \sum_i s_i^a s_i^b-N n \sum_{\mu \in F} m_\mu
-\hat{m}_\mu+\sum_{a, \mu \in F} \hat{m}_\mu \sum_i \xi_i^\mu
-s_i^a\right] \\
-&amp; \times \exp \left[\sqrt{1-q} \sum_{\mu \in B}
-\sum_a\left(\sum_\sigma \eta_\mu^\sigma \sqrt{\beta \lambda_\sigma}
-x_\sigma^a+\beta \sqrt{N} \sum_{\nu \in F} X_{\mu \nu} m_\nu\right)
-y_\mu^a\right] \\
-&amp; \times \exp \left[\sqrt{q} \sum_{\mu \in B}\left(\sum_{a, \sigma}
-\eta_\mu^\sigma \sqrt{\beta \lambda_\sigma} x_\sigma^a+\beta n \sqrt{N}
-\sum_{\nu \in F} X_{\mu \nu} m_\nu\right) z_\mu\right] \\
-= &amp; \int \frac{d q d \hat{q}}{(2 \pi / N)^{n(n-1)}} \frac{d m d
-\hat{m}}{(2 \pi / N)^{n S}} \prod_{\mu, a} D y_\mu^a \prod_\mu D z_\mu
-\\
-&amp; \times \exp \left[-\frac{1}{2} N n(n-1) \hat{q} q+\frac{1}{2}
-\hat{q} \sum_{a \neq b} \sum_i s_i^a s_i^b-N n \sum_{\mu \in F} m_\mu
-\hat{m}_\mu+\sum_{a, \mu \in F} \hat{m}_\mu \sum_i \xi_i^\mu
-s_i^a\right] \\
-&amp; \times \exp \left[\sum_{a, \sigma} x_\sigma^a \sqrt{\beta
-\lambda_\sigma} \sum_{\mu \in B} \eta_\mu^\sigma\left(\sqrt{1-q}
-y_\mu^a+\sqrt{q} z_\mu\right)\right] \\
-&amp; \times \exp \left[\beta \sqrt{N} \sum_{a, \mu \in B} \sum_{v \in
-F} X_{\mu \nu} m_\nu\left(\sqrt{1-q} y_\mu^a+\sqrt{q}
-z_\mu\right)\right]
-\end{aligned}
-$$</span></p>
-<p><font color='red'>参考原书</font></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1551,12 +1296,12 @@ $$</span></p>
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">56</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">分类</span>
       </div>
       <div class="site-state-item site-state-tags">
@@ -1587,7 +1332,7 @@ $$</span></p>
 <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2025</span>
+  <span itemprop="copyrightYear">2026</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -1596,12 +1341,12 @@ $$</span></p>
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">313k</span>
+    <span title="站点总字数">315k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">4:44</span>
+    <span title="站点阅读时长">4:46</span>
 </div>
   <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
