@@ -1,5 +1,5 @@
-https://renyixiong-ai.github.io/2026/01/07/LLM/LLDM/LLDM/
 https://renyixiong-ai.github.io/2026/01/02/LLM/Bayesian_Transformer/BT/
+https://renyixiong-ai.github.io/2026/01/07/LLM/LLDM/LLDM/
 https://renyixiong-ai.github.io/2025/12/29/Phys/Energy_base_model/EBM/
 https://renyixiong-ai.github.io/2025/12/17/LLM/DB_LLM/DB_LLM/
 https://renyixiong-ai.github.io/2025/02/08/LLM/DeepSeek/DeepSeek/
